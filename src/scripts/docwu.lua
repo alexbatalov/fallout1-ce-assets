@@ -1,0 +1,603 @@
+local fallout = require("fallout")
+
+local start
+local do_dialogue
+local social_skills
+local DocWu00
+local DocWu01
+local DocWu02
+local DocWu03
+local DocWu04
+local DocWu05
+local DocWu06
+local DocWu06a
+local DocWu07
+local DocWu08
+local DocWu09
+local DocWu10
+local DocWu10a
+local DocWu10b
+local DocWu10c
+local DocWu11
+local DocWu12
+local DocWu13
+local DocWu14
+local DocWu15
+local DocWu16
+local DocWu17
+local DocWu17a
+local DocWu17b
+local DocWu18
+local DocWu19
+local DocWu19a
+local DocWu19b
+local DocWu20
+local DocWu20a
+local DocWu20b
+local DocWu21
+local DocWu21a
+local DocWu22
+local DocWu23
+local DocWu24
+local DocWu24a
+local DocWu24b
+local DocWuOpts1
+local DocWuOpts2
+local DocWuOpts3
+local DocWuOpts4
+local DocWuOpts5
+local DocWuOpts5a
+local DocWuEnd
+
+local healing = 0
+local Only_Once = 1
+local hostile = 0
+
+local get_reaction
+local ReactToLevel
+local LevelToReact
+local UpReact
+local DownReact
+local BottomReact
+local TopReact
+local BigUpReact
+local BigDownReact
+local UpReactLevel
+local DownReactLevel
+local Goodbyes
+
+local exit_line = 0
+
+function start()
+    if Only_Once then
+        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 20)
+        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 69)
+        Only_Once = 0
+    end
+    if fallout.script_action() == 11 then
+        do_dialogue()
+    else
+        if fallout.script_action() == 18 then
+            if fallout.source_obj() == fallout.dude_obj() then
+                if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+                    fallout.set_global_var(156, 1)
+                    fallout.set_global_var(157, 0)
+                end
+                if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(160) > (3 * fallout.global_var(159))) or (fallout.global_var(157) == 1)) then
+                    fallout.set_global_var(157, 1)
+                    fallout.set_global_var(156, 0)
+                end
+                fallout.set_global_var(160, fallout.global_var(160) + 1)
+                if (fallout.global_var(160) % 6) == 0 then
+                    fallout.set_global_var(155, fallout.global_var(155) + 1)
+                end
+            end
+        else
+            if fallout.script_action() == 12 then
+                if hostile then
+                    hostile = 0
+                    fallout.attack_complex(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+                end
+            else
+                if (fallout.script_action() == 21) or (fallout.script_action() == 3) then
+                else
+                    if fallout.script_action() == 4 then
+                        hostile = 1
+                    else
+                        if fallout.script_action() == 22 then
+                            if fallout.fixed_param() == 1 then
+                                if (healing == 1) or (healing == 3) then
+                                    fallout.float_msg(fallout.dude_obj(), fallout.message_str(400, 138), 2)
+                                else
+                                    if healing == 2 then
+                                        fallout.float_msg(fallout.dude_obj(), fallout.message_str(400, 152), 2)
+                                    else
+                                        if healing == 4 then
+                                            fallout.float_msg(fallout.dude_obj(), fallout.message_str(400, 175), 2)
+                                        else
+                                            if healing == 5 then
+                                                fallout.float_msg(fallout.self_obj(), fallout.message_str(400, 150), 8)
+                                            else
+                                                if healing == 6 then
+                                                    fallout.float_msg(fallout.self_obj(), fallout.message_str(400, 178), 8)
+                                                end
+                                            end
+                                        end
+                                    end
+                                end
+                                fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(3), 2)
+                            else
+                                if fallout.fixed_param() == 2 then
+                                    if healing < 4 then
+                                        fallout.float_msg(fallout.self_obj(), fallout.message_str(400, 139), 8)
+                                    else
+                                        if healing == 4 then
+                                            fallout.float_msg(fallout.self_obj(), fallout.message_str(400, 176), 8)
+                                        end
+                                    end
+                                    fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(3), 3)
+                                else
+                                    if fallout.fixed_param() == 3 then
+                                        if healing == 1 then
+                                            if fallout.get_critter_stat(fallout.dude_obj(), 34) == 0 then
+                                                fallout.float_msg(fallout.self_obj(), fallout.message_str(400, 140), 8)
+                                            else
+                                                fallout.float_msg(fallout.self_obj(), fallout.message_str(400, 141), 8)
+                                            end
+                                        else
+                                            if healing == 2 then
+                                                fallout.float_msg(fallout.self_obj(), fallout.message_str(400, 153), 8)
+                                            else
+                                                if healing == 3 then
+                                                    if fallout.get_critter_stat(fallout.dude_obj(), 34) == 0 then
+                                                        fallout.float_msg(fallout.self_obj(), fallout.message_str(400, 167), 8)
+                                                    else
+                                                        fallout.float_msg(fallout.self_obj(), fallout.message_str(400, 168), 8)
+                                                    end
+                                                end
+                                            end
+                                        end
+                                    end
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
+end
+
+function do_dialogue()
+    get_reaction()
+    fallout.start_gdialog(400, fallout.self_obj(), 4, -1, -1)
+    fallout.gsay_start()
+    healing = 0
+    if fallout.local_var(5) == 1 then
+        DocWu00()
+    else
+        if fallout.local_var(6) == 1 then
+            DocWu01()
+        else
+            if fallout.local_var(7) == 1 then
+                DocWu02()
+            else
+                DocWu03()
+            end
+        end
+    end
+    fallout.gsay_end()
+    fallout.end_dialogue()
+    if healing then
+        fallout.use_obj(fallout.dude_obj())
+        fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(2), 1)
+    end
+end
+
+function social_skills()
+    get_reaction()
+    fallout.dialogue_system_enter()
+end
+
+function DocWu00()
+    local v0 = 0
+    fallout.set_local_var(4, 1)
+    fallout.set_local_var(5, 1)
+    if fallout.get_critter_stat(fallout.dude_obj(), 34) == 0 then
+        fallout.gsay_reply(400, fallout.message_str(400, 102))
+    else
+        fallout.gsay_reply(400, fallout.message_str(400, 103))
+    end
+    fallout.giq_option(7, 400, 106, DocWu04, 50)
+    DocWuOpts1()
+    fallout.giq_option(4, 400, 109, DocWu07, 50)
+    DocWuOpts2()
+    fallout.giq_option(4, 400, 111, DocWu09, 50)
+    DocWuOpts3()
+end
+
+function DocWu01()
+    fallout.set_local_var(6, 1)
+    fallout.gsay_reply(400, 113)
+    fallout.giq_option(7, 400, 114, DocWu11, 50)
+    DocWuOpts1()
+    fallout.giq_option(4, 400, 115, DocWu12, 50)
+    DocWuOpts2()
+    fallout.giq_option(4, 400, 116, DocWu09, 50)
+    DocWuOpts3()
+end
+
+function DocWu02()
+    fallout.set_local_var(7, 1)
+    fallout.gsay_reply(400, 117)
+    fallout.giq_option(7, 400, 118, DocWu13, 50)
+    DocWuOpts1()
+    fallout.giq_option(4, 400, 119, DocWu12, 50)
+    DocWuOpts2()
+    fallout.giq_option(4, 400, 120, DocWu14, 50)
+    DocWuOpts3()
+end
+
+function DocWu03()
+    fallout.set_local_var(5, 0)
+    fallout.set_local_var(6, 0)
+    fallout.set_local_var(7, 0)
+    fallout.gsay_reply(400, 121)
+    fallout.giq_option(7, 400, 122, DocWu15, 50)
+    DocWuOpts1()
+    fallout.giq_option(4, 400, 123, DocWu12, 50)
+    DocWuOpts2()
+    fallout.giq_option(4, 400, 124, DocWu14, 50)
+    DocWuOpts3()
+end
+
+function DocWu04()
+    fallout.gsay_reply(400, 125)
+    fallout.giq_option(7, 400, 126, DocWu16, 50)
+    DocWuOpts4()
+end
+
+function DocWu05()
+    fallout.gsay_reply(400, 130)
+    fallout.giq_option(0, 400, 101, DocWuEnd, 50)
+end
+
+function DocWu06()
+    fallout.gsay_reply(400, 131)
+    fallout.giq_option(0, 400, 100, DocWu06a, 50)
+end
+
+function DocWu06a()
+    healing = 1
+end
+
+function DocWu07()
+    fallout.gsay_reply(400, 142)
+    DocWuOpts4()
+end
+
+function DocWu08()
+    fallout.gsay_reply(400, 143)
+    fallout.giq_option(0, 400, 101, DocWuEnd, 50)
+end
+
+function DocWu09()
+    fallout.gsay_reply(400, 144)
+    fallout.giq_option(4, 400, 145, DocWu06, 50)
+    fallout.giq_option(4, 400, 146, DocWu23, 50)
+    fallout.giq_option(4, 400, 147, DocWu24, 50)
+end
+
+function DocWu10()
+    fallout.gsay_reply(400, 148)
+    fallout.giq_option(0, 400, 100, DocWu10a, 50)
+end
+
+function DocWu10a()
+    fallout.gsay_reply(400, 151)
+    fallout.giq_option(0, 400, 100, DocWu10c, 50)
+end
+
+function DocWu10b()
+    healing = 5
+end
+
+function DocWu10c()
+    healing = 2
+end
+
+function DocWu11()
+    fallout.gsay_reply(400, 154)
+    DocWuOpts4()
+end
+
+function DocWu12()
+    fallout.gsay_reply(400, 155)
+    DocWuOpts4()
+end
+
+function DocWu13()
+    fallout.gsay_reply(400, 156)
+    DocWuOpts4()
+end
+
+function DocWu14()
+    fallout.gsay_reply(400, 157)
+    fallout.giq_option(4, 400, 158, DocWu06, 50)
+    fallout.giq_option(4, 400, 159, DocWu23, 50)
+    fallout.giq_option(4, 400, 160, DocWu24, 50)
+end
+
+function DocWu15()
+    fallout.gsay_reply(400, 161)
+    fallout.giq_option(4, 400, 162, DocWu06, 50)
+    fallout.giq_option(4, 400, 163, DocWu23, 50)
+    fallout.giq_option(4, 400, 160, DocWu24, 50)
+end
+
+function DocWu16()
+    fallout.gsay_reply(400, 164)
+    fallout.giq_option(4, 400, 162, DocWu06, 50)
+    fallout.giq_option(4, 400, 163, DocWu23, 50)
+    fallout.giq_option(4, 400, 160, DocWu24, 50)
+end
+
+function DocWu17()
+    fallout.gsay_reply(400, 165)
+    fallout.giq_option(0, 400, 100, DocWu17a, 50)
+end
+
+function DocWu17a()
+    fallout.gsay_reply(400, 166)
+    fallout.giq_option(0, 400, 100, DocWu17b, 50)
+end
+
+function DocWu17b()
+    healing = 3
+end
+
+function DocWu18()
+    fallout.gsay_reply(400, 169)
+    fallout.giq_option(0, 400, 101, DocWuEnd, 50)
+end
+
+function DocWu19()
+    local v0 = 0
+    local v1 = 0
+    v1 = fallout.get_critter_stat(fallout.dude_obj(), 7)
+    v0 = fallout.get_critter_stat(fallout.dude_obj(), 35)
+    if v0 == v1 then
+        fallout.gsay_reply(400, 170)
+        fallout.giq_option(0, 400, 101, DocWuEnd, 50)
+    else
+        if v0 > (v1 // 2) then
+            DocWu19a()
+        else
+            DocWu19b()
+        end
+    end
+end
+
+function DocWu19a()
+    fallout.gsay_reply(400, 171)
+    fallout.giq_option(4, 400, 127, DocWu06, 50)
+    fallout.giq_option(4, 400, 173, DocWu23, 50)
+end
+
+function DocWu19b()
+    fallout.gsay_reply(400, 171)
+    fallout.giq_option(4, 400, 127, DocWu06, 50)
+    fallout.giq_option(4, 400, 173, DocWu18, 50)
+end
+
+function DocWu20()
+    fallout.gsay_reply(400, 174)
+    fallout.giq_option(0, 400, 100, DocWu20a, 50)
+end
+
+function DocWu20a()
+    fallout.gsay_reply(400, 137)
+    fallout.giq_option(0, 400, 100, DocWu20b, 50)
+end
+
+function DocWu20b()
+    healing = 4
+end
+
+function DocWu21()
+    fallout.gsay_reply(400, 177)
+    fallout.giq_option(0, 400, 100, DocWu21a, 50)
+end
+
+function DocWu21a()
+    healing = 6
+end
+
+function DocWu22()
+    fallout.gsay_reply(400, 179)
+    fallout.giq_option(0, 400, 101, DocWuEnd, 50)
+end
+
+function DocWu23()
+    fallout.gsay_reply(400, 180)
+    fallout.giq_option(0, 400, 101, DocWuEnd, 50)
+end
+
+function DocWu24()
+    local v0 = 0
+    local v1 = 0
+    v1 = fallout.get_critter_stat(fallout.dude_obj(), 7)
+    v0 = fallout.get_critter_stat(fallout.dude_obj(), 35)
+    if v0 == v1 then
+        fallout.gsay_reply(400, 170)
+        fallout.giq_option(0, 400, 101, DocWuEnd, 50)
+    else
+        if v0 > (v1 // 2) then
+            DocWu24a()
+        else
+            DocWu24b()
+        end
+    end
+end
+
+function DocWu24a()
+    fallout.gsay_reply(400, 181)
+    fallout.giq_option(4, 400, 127, DocWu17, 50)
+    fallout.giq_option(4, 400, 173, DocWu23, 50)
+end
+
+function DocWu24b()
+    fallout.gsay_reply(400, 182)
+    fallout.giq_option(4, 400, 183, DocWu06, 50)
+    fallout.giq_option(4, 400, 173, DocWu23, 50)
+end
+
+function DocWuOpts1()
+    fallout.giq_option(4, 400, 107, DocWu05, 50)
+    fallout.giq_option(4, 400, 108, DocWu06, 50)
+end
+
+function DocWuOpts2()
+    fallout.giq_option(4, 400, 110, DocWu08, 50)
+end
+
+function DocWuOpts3()
+    fallout.giq_option(-3, 400, 112, DocWu10, 50)
+    fallout.giq_option(-3, 400, 184, DocWuEnd, 50)
+end
+
+function DocWuOpts4()
+    fallout.giq_option(4, 400, 127, DocWu17, 50)
+    fallout.giq_option(4, 400, 128, DocWu18, 50)
+    fallout.giq_option(4, 400, 129, DocWu19, 50)
+end
+
+function DocWuOpts5()
+    fallout.gsay_reply(400, 132)
+    fallout.giq_option(7, 400, 133, DocWuOpts5a, 50)
+    fallout.giq_option(4, 400, 134, DocWu21, 50)
+    fallout.giq_option(4, 400, 135, DocWu22, 50)
+    fallout.giq_option(4, 400, 136, DocWuOpts5a, 50)
+end
+
+function DocWuOpts5a()
+    if fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), 14, 0)) then
+        DocWu20()
+    else
+        DocWu21()
+    end
+end
+
+function DocWuEnd()
+end
+
+function get_reaction()
+    if fallout.local_var(2) == 0 then
+        fallout.set_local_var(0, 50)
+        fallout.set_local_var(1, 2)
+        fallout.set_local_var(2, 1)
+        fallout.set_local_var(0, fallout.local_var(0) + (5 * fallout.get_critter_stat(fallout.dude_obj(), 3)) - 25)
+        fallout.set_local_var(0, fallout.local_var(0) + (10 * fallout.has_trait(0, fallout.dude_obj(), 10)))
+        if fallout.has_trait(0, fallout.dude_obj(), 39) then
+            if fallout.global_var(155) > 0 then
+                fallout.set_local_var(0, fallout.local_var(0) + fallout.global_var(155))
+            else
+                fallout.set_local_var(0, fallout.local_var(0) - fallout.global_var(155))
+            end
+        else
+            if fallout.local_var(3) == 1 then
+                fallout.set_local_var(0, fallout.local_var(0) - fallout.global_var(155))
+            else
+                fallout.set_local_var(0, fallout.local_var(0) + fallout.global_var(155))
+            end
+        end
+        if fallout.global_var(158) > 2 then
+            fallout.set_local_var(0, fallout.local_var(0) - 30)
+        end
+        if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(160) > (3 * fallout.global_var(159))) or (fallout.global_var(157) == 1)) then
+            fallout.set_local_var(0, fallout.local_var(0) + 20)
+        end
+        if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+            fallout.set_local_var(0, fallout.local_var(0) - 20)
+        end
+        ReactToLevel()
+    end
+end
+
+function ReactToLevel()
+    if fallout.local_var(0) <= 25 then
+        fallout.set_local_var(1, 1)
+    else
+        if fallout.local_var(0) <= 75 then
+            fallout.set_local_var(1, 2)
+        else
+            fallout.set_local_var(1, 3)
+        end
+    end
+end
+
+function LevelToReact()
+    if fallout.local_var(1) == 1 then
+        fallout.set_local_var(0, fallout.random(1, 25))
+    else
+        if fallout.local_var(1) == 2 then
+            fallout.set_local_var(0, fallout.random(26, 75))
+        else
+            fallout.set_local_var(0, fallout.random(76, 100))
+        end
+    end
+end
+
+function UpReact()
+    fallout.set_local_var(0, fallout.local_var(0) + 10)
+    ReactToLevel()
+end
+
+function DownReact()
+    fallout.set_local_var(0, fallout.local_var(0) - 10)
+    ReactToLevel()
+end
+
+function BottomReact()
+    fallout.set_local_var(1, 1)
+    fallout.set_local_var(0, 1)
+end
+
+function TopReact()
+    fallout.set_local_var(0, 100)
+    fallout.set_local_var(1, 3)
+end
+
+function BigUpReact()
+    fallout.set_local_var(0, fallout.local_var(0) + 25)
+    ReactToLevel()
+end
+
+function BigDownReact()
+    fallout.set_local_var(0, fallout.local_var(0) - 25)
+    ReactToLevel()
+end
+
+function UpReactLevel()
+    fallout.set_local_var(1, fallout.local_var(1) + 1)
+    if fallout.local_var(1) > 3 then
+        fallout.set_local_var(1, 3)
+    end
+    LevelToReact()
+end
+
+function DownReactLevel()
+    fallout.set_local_var(1, fallout.local_var(1) - 1)
+    if fallout.local_var(1) < 1 then
+        fallout.set_local_var(1, 1)
+    end
+    LevelToReact()
+end
+
+function Goodbyes()
+    exit_line = fallout.message_str(634, fallout.random(100, 105))
+end
+
+local exports = {}
+exports.start = start
+return exports

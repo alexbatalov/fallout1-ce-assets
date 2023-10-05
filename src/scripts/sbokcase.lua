@@ -1,0 +1,48 @@
+local fallout = require("fallout")
+
+local start
+local pickup_p_proc
+local description_p_proc
+local look_at_p_proc
+local chairend
+
+function start()
+    if fallout.script_action() == 4 then
+        pickup_p_proc()
+    else
+        if fallout.script_action() == 3 then
+            description_p_proc()
+        else
+            if fallout.script_action() == 21 then
+                look_at_p_proc()
+            end
+        end
+    end
+end
+
+function pickup_p_proc()
+    if not(fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), 10, 0))) and (fallout.global_var(246) ~= 1) then
+        fallout.script_overrides()
+        fallout.set_map_var(2, 1)
+    end
+end
+
+function description_p_proc()
+    fallout.script_overrides()
+    fallout.display_msg(fallout.message_str(122, 100))
+end
+
+function look_at_p_proc()
+    fallout.script_overrides()
+    fallout.display_msg(fallout.message_str(122, 101))
+end
+
+function chairend()
+end
+
+local exports = {}
+exports.start = start
+exports.pickup_p_proc = pickup_p_proc
+exports.description_p_proc = description_p_proc
+exports.look_at_p_proc = look_at_p_proc
+return exports
