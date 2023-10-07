@@ -12,7 +12,7 @@ function start()
                 fallout.display_msg(fallout.message_str(152, 101))
                 fallout.display_msg(fallout.message_str(152, 100))
                 fallout.give_exp_points(500)
-                fallout.display_msg(fallout.message_str(152, 102) + 500 + fallout.message_str(152, 103))
+                fallout.display_msg(fallout.message_str(152, 102) .. 500 .. fallout.message_str(152, 103))
             end
         end
     end

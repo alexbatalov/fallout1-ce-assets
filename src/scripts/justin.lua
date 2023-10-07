@@ -503,7 +503,7 @@ function Justin35()
     v0 = fallout.item_caps_adjust(fallout.dude_obj(), 1000)
     fallout.set_global_var(155, fallout.global_var(155) + 4)
     fallout.give_exp_points(1400)
-    fallout.display_msg(fallout.message_str(766, 103) + 1400 + fallout.message_str(766, 104))
+    fallout.display_msg(fallout.message_str(766, 103) .. 1400 .. fallout.message_str(766, 104))
     fallout.gsay_message(696, 172, 49)
     fallout.gsay_message(696, 173, 49)
 end

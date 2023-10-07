@@ -125,7 +125,7 @@ function start()
         if fallout.global_var(55) ~= 0 then
             cur_count = 240 - ((fallout.game_time() // 10) - fallout.global_var(55))
             if cur_count ~= prev_count then
-                fallout.display_msg(fallout.message_str(447, 100) + cur_count + fallout.message_str(447, 101))
+                fallout.display_msg(fallout.message_str(447, 100) .. cur_count .. fallout.message_str(447, 101))
                 prev_count = cur_count
             end
             if ((fallout.game_time() // 10) - fallout.global_var(55)) > 240 then

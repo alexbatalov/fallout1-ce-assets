@@ -216,18 +216,18 @@ function Demetre00()
     local v0 = 0
     v0 = fallout.get_critter_stat(fallout.dude_obj(), 0)
     if v0 < 4 then
-        fallout.gsay_reply(566, fallout.message_str(566, 101) + " " + fallout.message_str(566, 102))
+        fallout.gsay_reply(566, fallout.message_str(566, 101) .. " " .. fallout.message_str(566, 102))
     else
         if (v0 >= 4) and (v0 < 6) then
-            fallout.gsay_reply(566, fallout.message_str(566, 101) + " " + fallout.message_str(566, 103))
+            fallout.gsay_reply(566, fallout.message_str(566, 101) .. " " .. fallout.message_str(566, 103))
         else
             if (v0 >= 6) and (v0 < 8) then
-                fallout.gsay_reply(566, fallout.message_str(566, 101) + " " + fallout.message_str(566, 104))
+                fallout.gsay_reply(566, fallout.message_str(566, 101) .. " " .. fallout.message_str(566, 104))
             else
                 if (v0 >= 8) and (v0 < 10) then
-                    fallout.gsay_reply(566, fallout.message_str(566, 101) + " " + fallout.message_str(566, 105))
+                    fallout.gsay_reply(566, fallout.message_str(566, 101) .. " " .. fallout.message_str(566, 105))
                 else
-                    fallout.gsay_reply(566, fallout.message_str(566, 101) + " " + fallout.message_str(566, 106))
+                    fallout.gsay_reply(566, fallout.message_str(566, 101) .. " " .. fallout.message_str(566, 106))
                 end
             end
         end

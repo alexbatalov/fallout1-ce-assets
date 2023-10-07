@@ -96,7 +96,7 @@ function start()
                     fallout.set_global_var(591, 0)
                 end
                 if fallout.global_var(147) ~= 0 then
-                    fallout.display_msg(fallout.message_str(442, 107) + (300 - ((fallout.game_time() // 10) - fallout.global_var(147))) + fallout.message_str(442, 108))
+                    fallout.display_msg(fallout.message_str(442, 107) .. (300 - ((fallout.game_time() // 10) - fallout.global_var(147))) .. fallout.message_str(442, 108))
                     if ((fallout.game_time() // 10) - fallout.global_var(147)) >= 300 then
                         fallout.play_gmovie(3)
                         fallout.metarule(13, 0)

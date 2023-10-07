@@ -750,7 +750,7 @@ function Rutger48()
     fallout.set_map_var(10, 1)
     fallout.set_map_var(41, 4)
     fallout.give_exp_points(1000)
-    fallout.display_msg(fallout.message_str(766, 103) + 1000 + fallout.message_str(766, 104))
+    fallout.display_msg(fallout.message_str(766, 103) .. 1000 .. fallout.message_str(766, 104))
     fallout.set_global_var(155, fallout.global_var(155) + 5)
     fallout.gsay_message(401, 218, 49)
 end

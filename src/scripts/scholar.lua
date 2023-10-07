@@ -133,17 +133,17 @@ end
 function Scout0()
     fallout.gsay_reply(263, 110)
     fallout.giq_option(-3, 263, 111, Scout1, 50)
-    fallout.giq_option(4, 263, fallout.message_str(263, 112) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(263, 113), Scout4, 50)
-    fallout.giq_option(4, 263, fallout.message_str(263, 114) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(263, 115), combat, 50)
+    fallout.giq_option(4, 263, fallout.message_str(263, 112) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(263, 113), Scout4, 50)
+    fallout.giq_option(4, 263, fallout.message_str(263, 114) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(263, 115), combat, 50)
     fallout.giq_option(6, 263, 116, Scout11, 50)
 end
 
 function Scout1()
     fallout.gsay_reply(263, 117)
-    fallout.giq_option(-3, 263, fallout.message_str(263, 118) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(263, 119), combat, 50)
-    fallout.giq_option(-3, 263, fallout.message_str(263, 120) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(263, 121), Scout2, 50)
+    fallout.giq_option(-3, 263, fallout.message_str(263, 118) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(263, 119), combat, 50)
+    fallout.giq_option(-3, 263, fallout.message_str(263, 120) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(263, 121), Scout2, 50)
     fallout.giq_option(-3, 263, fallout.message_str(263, 122), Scout3, 50)
-    fallout.giq_option(-3, 263, fallout.message_str(263, 123) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(263, 124), Scout3, 50)
+    fallout.giq_option(-3, 263, fallout.message_str(263, 123) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(263, 124), Scout3, 50)
 end
 
 function Scout2()

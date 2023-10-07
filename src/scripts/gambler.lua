@@ -99,7 +99,7 @@ function Hernandez03()
     v0 = fallout.do_check(fallout.dude_obj(), 1, 0)
     v1 = fallout.message_str(247, 110)
     if fallout.is_success(v0) then
-        v1 = v1 + fallout.message_str(247, 111)
+        v1 = v1 .. fallout.message_str(247, 111)
     end
     fallout.gsay_message(247, v1, 50)
     fallout.gsay_reply(247, 112)

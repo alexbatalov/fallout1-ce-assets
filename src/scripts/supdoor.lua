@@ -58,7 +58,7 @@ function use_skill_on_p_proc()
                 fallout.set_local_var(0, 1)
                 fallout.set_map_var(18, 4)
                 fallout.display_msg(fallout.message_str(63, 100))
-                fallout.display_msg(fallout.message_str(766, 103) + "100" + fallout.message_str(766, 104))
+                fallout.display_msg(fallout.message_str(766, 103) .. "100" .. fallout.message_str(766, 104))
                 fallout.give_exp_points(100)
             else
                 if fallout.is_critical(v0) then
@@ -93,7 +93,7 @@ function use_obj_on_p_proc()
             fallout.set_local_var(0, 1)
             fallout.set_map_var(18, 4)
             fallout.display_msg(fallout.message_str(63, 100))
-            fallout.display_msg(fallout.message_str(766, 103) + "100" + fallout.message_str(766, 104))
+            fallout.display_msg(fallout.message_str(766, 103) .. "100" .. fallout.message_str(766, 104))
             fallout.give_exp_points(100)
         else
             if fallout.is_critical(v1) then

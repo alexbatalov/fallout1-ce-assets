@@ -307,7 +307,7 @@ function Damage_Dude()
     if fallout.local_var(0) == 1 then
         fallout.display_msg(fallout.message_str(306, 101))
     else
-        fallout.display_msg(fallout.message_str(306, 102) + fallout.local_var(0) + fallout.message_str(306, 103))
+        fallout.display_msg(fallout.message_str(306, 102) .. fallout.local_var(0) .. fallout.message_str(306, 103))
     end
 end
 

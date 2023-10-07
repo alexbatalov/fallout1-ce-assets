@@ -49,7 +49,7 @@ function start()
                             fallout.script_overrides()
                             Shocked = fallout.random(3, 7)
                             fallout.critter_dmg(fallout.dude_obj(), Shocked, 0)
-                            fallout.display_msg(fallout.message_str(321, 102) + Shocked + fallout.message_str(321, 103))
+                            fallout.display_msg(fallout.message_str(321, 102) .. Shocked .. fallout.message_str(321, 103))
                             fallout.set_local_var(0, fallout.local_var(0) + 1)
                         else
                             if fallout.local_var(2) == 0 then
@@ -76,7 +76,7 @@ function Traps()
             fallout.set_local_var(0, 5)
             Shocked = fallout.random(2, fallout.local_var(0))
             fallout.critter_dmg(fallout.dude_obj(), Shocked, 0)
-            fallout.display_msg(fallout.message_str(321, 114) + Shocked + fallout.message_str(321, 115))
+            fallout.display_msg(fallout.message_str(321, 114) .. Shocked .. fallout.message_str(321, 115))
             fallout.set_local_var(0, fallout.local_var(0) + 1)
         end
     else
@@ -93,7 +93,7 @@ function Sciences()
             fallout.set_local_var(0, 5)
             Shocked = fallout.random(2, fallout.local_var(0))
             fallout.critter_dmg(fallout.dude_obj(), Shocked, 0)
-            fallout.display_msg(fallout.message_str(321, 118) + Shocked + fallout.message_str(321, 119))
+            fallout.display_msg(fallout.message_str(321, 118) .. Shocked .. fallout.message_str(321, 119))
             fallout.set_local_var(0, fallout.local_var(0) + 1)
         end
     else
@@ -106,7 +106,7 @@ function Picklocks()
         if fallout.local_var(0) > 2 then
             Shocked = fallout.random(2, fallout.local_var(0))
             fallout.critter_dmg(fallout.dude_obj(), Shocked, 0)
-            fallout.display_msg(fallout.message_str(321, 121) + Shocked + fallout.message_str(321, 122))
+            fallout.display_msg(fallout.message_str(321, 121) .. Shocked .. fallout.message_str(321, 122))
             fallout.set_local_var(0, fallout.local_var(0) + 1)
         else
             fallout.set_local_var(0, fallout.local_var(0) + 1)
@@ -128,7 +128,7 @@ function Using_Door()
         if fallout.local_var(0) > 2 then
             Shocked = fallout.random(2, fallout.local_var(0))
             fallout.critter_dmg(fallout.dude_obj(), Shocked, 0)
-            fallout.display_msg(fallout.message_str(321, 106) + Shocked + fallout.message_str(321, 107))
+            fallout.display_msg(fallout.message_str(321, 106) .. Shocked .. fallout.message_str(321, 107))
             fallout.set_local_var(0, fallout.local_var(0) + 1)
         else
             fallout.set_local_var(0, fallout.local_var(0) + 1)

@@ -29,7 +29,7 @@ function start()
                                 fallout.display_msg(fallout.message_str(301, 104))
                                 fallout.set_global_var(139, 2)
                                 fallout.give_exp_points(1000)
-                                fallout.display_msg(fallout.message_str(766, 103) + "1000" + fallout.message_str(766, 104))
+                                fallout.display_msg(fallout.message_str(766, 103) .. "1000" .. fallout.message_str(766, 104))
                             else
                                 if fallout.has_skill(fallout.dude_obj(), 13) < 35 then
                                     fallout.set_local_var(0, 1)
@@ -58,7 +58,7 @@ function start()
                                 if fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), 13, 10)) then
                                     fallout.display_msg(fallout.message_str(301, 104))
                                     fallout.set_global_var(139, 2)
-                                    fallout.display_msg(fallout.message_str(766, 103) + "1000" + fallout.message_str(766, 104))
+                                    fallout.display_msg(fallout.message_str(766, 103) .. "1000" .. fallout.message_str(766, 104))
                                     fallout.give_exp_points(1000)
                                 else
                                     if fallout.has_skill(fallout.dude_obj(), 13) < 35 then

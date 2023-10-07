@@ -61,7 +61,7 @@ function PaladinARandom()
             v1 = fallout.message_str(325, 103)
         else
             if v0 == 4 then
-                v1 = fallout.message_str(325, 104) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(325, 105)
+                v1 = fallout.message_str(325, 104) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(325, 105)
             else
                 if v0 == 5 then
                     v1 = fallout.message_str(325, 106)

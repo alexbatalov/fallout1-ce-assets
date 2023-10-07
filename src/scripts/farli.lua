@@ -59,7 +59,7 @@ end
 
 function farli1()
     fallout.gsay_reply(315, 103)
-    fallout.giq_option(3, 315, fallout.message_str(315, 104) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(315, 105), farli2, 50)
+    fallout.giq_option(3, 315, fallout.message_str(315, 104) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(315, 105), farli2, 50)
 end
 
 function farli2()

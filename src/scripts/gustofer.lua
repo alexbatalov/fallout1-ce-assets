@@ -239,10 +239,10 @@ function Gustofer05()
     local v0 = 0
     v0 = fallout.message_str(529, 110)
     if (fallout.game_time() // (10 * 60 * 60 * 24) % 3) == 1 then
-        v0 = v0 + fallout.message_str(529, 112)
+        v0 = v0 .. fallout.message_str(529, 112)
     else
         if (fallout.game_time() // (10 * 60 * 60 * 24) % 3) == 2 then
-            v0 = v0 + fallout.message_str(529, 111)
+            v0 = v0 .. fallout.message_str(529, 111)
         end
     end
     fallout.float_msg(fallout.self_obj(), v0, 0)

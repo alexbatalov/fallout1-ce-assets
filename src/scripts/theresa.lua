@@ -225,7 +225,7 @@ function timed_event_p_proc()
 end
 
 function Theresa01()
-    fallout.gsay_reply(378, fallout.message_str(378, 101) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(378, 102))
+    fallout.gsay_reply(378, fallout.message_str(378, 101) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(378, 102))
     fallout.giq_option(4, 378, 103, Theresa02, 50)
     fallout.giq_option(4, 378, 104, Theresa03, 50)
     fallout.giq_option(-3, 378, 105, Theresa04, 50)

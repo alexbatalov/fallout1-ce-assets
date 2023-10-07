@@ -34,7 +34,7 @@ function skills()
         if fallout.global_var(78) ~= 1 then
             fallout.set_global_var(78, 1)
             temp = 1250
-            fallout.display_msg(fallout.message_str(725, 204) + temp + fallout.message_str(725, 205))
+            fallout.display_msg(fallout.message_str(725, 204) .. temp .. fallout.message_str(725, 205))
             fallout.give_exp_points(temp)
         end
     else

@@ -187,7 +187,7 @@ end
 function Katja01()
     fallout.set_global_var(244, 1)
     fallout.gsay_reply(623, 102)
-    fallout.giq_option(4, 623, fallout.message_str(623, 103) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(623, 104), Katja02, 50)
+    fallout.giq_option(4, 623, fallout.message_str(623, 103) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(623, 104), Katja02, 50)
     fallout.giq_option(4, 623, 105, Katja02, 50)
     fallout.giq_option(5, 623, 106, Katja05, 50)
     fallout.giq_option(-3, 623, 189, KatjaExit, 50)
@@ -221,7 +221,7 @@ end
 
 function Katja05()
     fallout.gsay_reply(623, 117)
-    fallout.giq_option(4, 623, fallout.message_str(623, 103) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(623, 104), Katja02, 50)
+    fallout.giq_option(4, 623, fallout.message_str(623, 103) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(623, 104), Katja02, 50)
     fallout.giq_option(4, 623, 118, Katja07, 50)
     fallout.giq_option(4, 623, 115, KatjaEnd, 50)
 end

@@ -318,7 +318,7 @@ function bluff_end()
     if fallout.local_var(4) == 0 then
         fallout.set_local_var(4, 1)
         temp = 750
-        fallout.display_msg(fallout.message_str(673, 200) + temp + fallout.message_str(673, 201))
+        fallout.display_msg(fallout.message_str(673, 200) .. temp .. fallout.message_str(673, 201))
         fallout.give_exp_points(temp)
     end
 end

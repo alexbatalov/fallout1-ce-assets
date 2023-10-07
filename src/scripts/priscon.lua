@@ -28,7 +28,7 @@ function start()
             if fallout.local_var(1) == 0 then
                 fallout.set_local_var(1, 1)
                 temp = 2000
-                fallout.display_msg(fallout.message_str(682, 301) + temp + fallout.message_str(682, 302))
+                fallout.display_msg(fallout.message_str(682, 301) .. temp .. fallout.message_str(682, 302))
                 fallout.give_exp_points(temp)
             end
             fallout.set_map_var(7, 1)

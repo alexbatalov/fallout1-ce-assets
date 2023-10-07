@@ -86,7 +86,7 @@ end
 function Lorri01()
     fallout.gsay_reply(0, 102)
     fallout.giq_option(4, 0, 103, Lorri02, 50)
-    fallout.giq_option(4, 0, fallout.message_str(0, 104) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(0, 105), Lorri03, 50)
+    fallout.giq_option(4, 0, fallout.message_str(0, 104) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(0, 105), Lorri03, 50)
     fallout.giq_option(-3, 0, fallout.message_str(0, 106), Lorri15, 50)
 end
 

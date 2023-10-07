@@ -85,7 +85,7 @@ function use_p_proc()
             if fallout.source_obj() == fallout.dude_obj() then
                 fallout.display_msg(fallout.message_str(911, 106))
             else
-                fallout.display_msg(fallout.proto_data(fallout.obj_pid(fallout.source_obj()), 1) + fallout.message_str(911, 105))
+                fallout.display_msg(fallout.proto_data(fallout.obj_pid(fallout.source_obj()), 1) .. fallout.message_str(911, 105))
             end
         else
             fallout.display_msg(fallout.message_str(911, 104))
@@ -103,7 +103,7 @@ function use_p_proc()
                 if fallout.source_obj() == fallout.dude_obj() then
                     fallout.display_msg(fallout.message_str(911, 106))
                 else
-                    fallout.display_msg(fallout.proto_data(fallout.obj_pid(fallout.source_obj()), 1) + fallout.message_str(911, 105))
+                    fallout.display_msg(fallout.proto_data(fallout.obj_pid(fallout.source_obj()), 1) .. fallout.message_str(911, 105))
                 end
             else
                 fallout.display_msg(fallout.message_str(911, 104))
@@ -133,10 +133,10 @@ function use_skill_on_p_proc()
             if fallout.source_obj() == fallout.dude_obj() then
                 fallout.display_msg(fallout.message_str(911, 106))
                 fallout.set_local_var(0, 1)
-                fallout.display_msg(fallout.message_str(766, 103) + "50" + fallout.message_str(766, 104))
+                fallout.display_msg(fallout.message_str(766, 103) .. "50" .. fallout.message_str(766, 104))
                 fallout.give_exp_points(50)
             else
-                fallout.display_msg(fallout.proto_data(fallout.obj_pid(fallout.source_obj()), 1) + fallout.message_str(911, 105))
+                fallout.display_msg(fallout.proto_data(fallout.obj_pid(fallout.source_obj()), 1) .. fallout.message_str(911, 105))
             end
         else
             fallout.display_msg(fallout.message_str(911, 104))
@@ -153,7 +153,7 @@ function use_skill_on_p_proc()
                 fallout.set_local_var(1, 1)
                 fallout.display_msg(fallout.message_str(911, 111))
                 fallout.obj_unlock(fallout.self_obj())
-                fallout.display_msg(fallout.message_str(766, 103) + "50" + fallout.message_str(766, 104))
+                fallout.display_msg(fallout.message_str(766, 103) .. "50" .. fallout.message_str(766, 104))
                 fallout.give_exp_points(50)
             else
                 if fallout.is_critical(v0) then
@@ -182,7 +182,7 @@ function use_obj_on_p_proc()
                 if fallout.source_obj() == fallout.dude_obj() then
                     fallout.display_msg(fallout.message_str(911, 106))
                 else
-                    fallout.display_msg(fallout.proto_data(fallout.obj_pid(fallout.source_obj()), 1) + fallout.message_str(911, 105))
+                    fallout.display_msg(fallout.proto_data(fallout.obj_pid(fallout.source_obj()), 1) .. fallout.message_str(911, 105))
                 end
             else
                 fallout.display_msg(fallout.message_str(911, 104))
@@ -200,7 +200,7 @@ function use_obj_on_p_proc()
                     if fallout.source_obj() == fallout.dude_obj() then
                         fallout.display_msg(fallout.message_str(911, 106))
                     else
-                        fallout.display_msg(fallout.proto_data(fallout.obj_pid(fallout.source_obj()), 1) + fallout.message_str(911, 105))
+                        fallout.display_msg(fallout.proto_data(fallout.obj_pid(fallout.source_obj()), 1) .. fallout.message_str(911, 105))
                     end
                 else
                     fallout.display_msg(fallout.message_str(911, 104))
@@ -216,7 +216,7 @@ function use_obj_on_p_proc()
                     if fallout.is_success(v2) then
                         fallout.set_local_var(1, 1)
                         fallout.display_msg(fallout.message_str(911, 111))
-                        fallout.display_msg(fallout.message_str(766, 103) + "50" + fallout.message_str(766, 104))
+                        fallout.display_msg(fallout.message_str(766, 103) .. "50" .. fallout.message_str(766, 104))
                         fallout.give_exp_points(50)
                         fallout.obj_unlock(fallout.self_obj())
                     else
@@ -242,7 +242,7 @@ function use_obj_on_p_proc()
                 if fallout.source_obj() == fallout.dude_obj() then
                     fallout.display_msg(fallout.message_str(911, 106))
                 else
-                    fallout.display_msg(fallout.proto_data(fallout.obj_pid(fallout.source_obj()), 1) + fallout.message_str(911, 105))
+                    fallout.display_msg(fallout.proto_data(fallout.obj_pid(fallout.source_obj()), 1) .. fallout.message_str(911, 105))
                 end
             else
                 fallout.display_msg(fallout.message_str(911, 104))
@@ -258,7 +258,7 @@ function use_obj_on_p_proc()
                     if fallout.source_obj() == fallout.dude_obj() then
                         fallout.display_msg(fallout.message_str(911, 106))
                     else
-                        fallout.display_msg(fallout.proto_data(fallout.obj_pid(fallout.source_obj()), 1) + fallout.message_str(911, 105))
+                        fallout.display_msg(fallout.proto_data(fallout.obj_pid(fallout.source_obj()), 1) .. fallout.message_str(911, 105))
                     end
                 else
                     fallout.display_msg(fallout.message_str(911, 104))

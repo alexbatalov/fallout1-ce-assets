@@ -164,21 +164,21 @@ function Francis06()
 end
 
 function Francis07_1()
-    fallout.gsay_message(399, fallout.message_str(399, 129) + fallout.message_str(399, 130), 50)
+    fallout.gsay_message(399, fallout.message_str(399, 129) .. fallout.message_str(399, 130), 50)
 end
 
 function Francis07_2()
 end
 
 function Francis08_1()
-    fallout.gsay_message(399, fallout.message_str(399, 131) + fallout.message_str(399, 132), 50)
+    fallout.gsay_message(399, fallout.message_str(399, 131) .. fallout.message_str(399, 132), 50)
 end
 
 function Francis08_2()
 end
 
 function Francis09_1()
-    fallout.gsay_message(399, fallout.message_str(399, 133) + fallout.message_str(399, 134), 50)
+    fallout.gsay_message(399, fallout.message_str(399, 133) .. fallout.message_str(399, 134), 50)
 end
 
 function Francis09_2()
@@ -186,21 +186,21 @@ function Francis09_2()
 end
 
 function Francis10_1()
-    fallout.gsay_message(399, fallout.message_str(399, 135) + fallout.message_str(399, 136), 50)
+    fallout.gsay_message(399, fallout.message_str(399, 135) .. fallout.message_str(399, 136), 50)
 end
 
 function Francis10_2()
 end
 
 function Francis11_1()
-    fallout.gsay_message(399, fallout.message_str(399, 137) + fallout.message_str(399, 138), 50)
+    fallout.gsay_message(399, fallout.message_str(399, 137) .. fallout.message_str(399, 138), 50)
 end
 
 function Francis11_2()
 end
 
 function Francis12_1()
-    fallout.gsay_message(399, fallout.message_str(399, 139) + fallout.message_str(399, 140), 50)
+    fallout.gsay_message(399, fallout.message_str(399, 139) .. fallout.message_str(399, 140), 50)
 end
 
 function Francis12_2()
@@ -219,7 +219,7 @@ function Francis14()
 end
 
 function Francis15_1()
-    fallout.gsay_message(399, fallout.message_str(399, 144) + fallout.message_str(399, 145) + fallout.message_str(399, 146), 50)
+    fallout.gsay_message(399, fallout.message_str(399, 144) .. fallout.message_str(399, 145) .. fallout.message_str(399, 146), 50)
 end
 
 function Francis15_2()
@@ -233,7 +233,7 @@ function Francis16()
 end
 
 function Francis17_1()
-    fallout.gsay_message(399, fallout.message_str(399, 148) + fallout.message_str(399, 149), 50)
+    fallout.gsay_message(399, fallout.message_str(399, 148) .. fallout.message_str(399, 149), 50)
 end
 
 function Francis17_2()
@@ -260,7 +260,7 @@ function Francis20()
 end
 
 function Francis21_1()
-    fallout.gsay_message(399, fallout.message_str(399, 155) + fallout.message_str(399, 156), 50)
+    fallout.gsay_message(399, fallout.message_str(399, 155) .. fallout.message_str(399, 156), 50)
 end
 
 function Francis21_2()

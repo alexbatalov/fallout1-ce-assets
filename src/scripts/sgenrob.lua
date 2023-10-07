@@ -44,8 +44,8 @@ function use_skill_on_p_proc()
 end
 
 function combat_p_proc()
-    fallout.display_msg("Glow_Power == " + fallout.global_var(224))
-    fallout.display_msg("Weapons_Armed == " + fallout.global_var(140))
+    fallout.display_msg("Glow_Power == " .. fallout.global_var(224))
+    fallout.display_msg("Weapons_Armed == " .. fallout.global_var(140))
     if (fallout.fixed_param() == 4) and (fallout.global_var(224) ~= 2) and (fallout.global_var(140) ~= 0) then
         fallout.script_overrides()
         fallout.anim(fallout.self_obj(), 48, 0)

@@ -312,22 +312,22 @@ function RecalcDateString()
         end
     end
     if v1 == 1 then
-        DayString = DayString + fallout.message_str(605, 197)
+        DayString = DayString .. fallout.message_str(605, 197)
     else
         if v1 == 5 then
-            DayString = DayString + fallout.message_str(605, 198)
+            DayString = DayString .. fallout.message_str(605, 198)
         else
             if v1 == 10 then
-                DayString = DayString + fallout.message_str(605, 199)
+                DayString = DayString .. fallout.message_str(605, 199)
             else
                 if v1 == 15 then
-                    DayString = DayString + fallout.message_str(605, 200)
+                    DayString = DayString .. fallout.message_str(605, 200)
                 else
                     if v1 == 20 then
-                        DayString = DayString + fallout.message_str(605, 201)
+                        DayString = DayString .. fallout.message_str(605, 201)
                     else
                         if v1 == 25 then
-                            DayString = DayString + fallout.message_str(605, 202)
+                            DayString = DayString .. fallout.message_str(605, 202)
                         end
                     end
                 end
@@ -370,9 +370,9 @@ function WMDriver02()
     RecalcDateString()
     v0 = fallout.local_var(5)
     if v0 == fallout.get_day() then
-        fallout.gsay_reply(605, fallout.message_str(605, 106) + fallout.message_str(605, 107))
+        fallout.gsay_reply(605, fallout.message_str(605, 106) .. fallout.message_str(605, 107))
     else
-        fallout.gsay_reply(605, fallout.message_str(605, 106) + fallout.message_str(605, 108) + DayString + fallout.message_str(605, 111))
+        fallout.gsay_reply(605, fallout.message_str(605, 106) .. fallout.message_str(605, 108) .. DayString .. fallout.message_str(605, 111))
     end
     WMDriver04()
 end
@@ -385,7 +385,7 @@ function WMDriver03()
         if v0 == fallout.get_day() then
             fallout.gsay_reply(605, fallout.message_str(605, 107))
         else
-            fallout.gsay_reply(605, fallout.message_str(605, 108) + DayString + fallout.message_str(605, 111))
+            fallout.gsay_reply(605, fallout.message_str(605, 108) .. DayString .. fallout.message_str(605, 111))
         end
         WMDriver04()
     else
@@ -507,7 +507,7 @@ end
 
 function WMDriver18()
     RecalcDateString()
-    fallout.gsay_reply(605, fallout.message_str(605, 146) + DayString + fallout.message_str(605, 153))
+    fallout.gsay_reply(605, fallout.message_str(605, 146) .. DayString .. fallout.message_str(605, 153))
     fallout.giq_option(4, 605, 154, WMDriver30, 50)
     fallout.giq_option(4, 605, 155, WMDriver34, 50)
 end
@@ -622,7 +622,7 @@ function WMDriver29()
     local v0 = 0
     RecalcDateString()
     v0 = fallout.local_var(5)
-    fallout.gsay_message(605, fallout.message_str(605, 196) + DayString + fallout.message_str(605, 203) + fallout.message_str(605, 195), 50)
+    fallout.gsay_message(605, fallout.message_str(605, 196) .. DayString .. fallout.message_str(605, 203) .. fallout.message_str(605, 195), 50)
 end
 
 function WMDriver30()

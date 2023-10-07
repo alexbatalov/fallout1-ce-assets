@@ -104,7 +104,7 @@ function start()
             if fallout.global_var(295) > 0 then
                 Encounter_Num = fallout.global_var(295)
                 fallout.set_global_var(295, 0)
-                fallout.debug_msg("Coast encounter type: " + Encounter_Num)
+                fallout.debug_msg("Coast encounter type: " .. Encounter_Num)
             end
             choose_start()
             Dude_tile = fallout.tile_num(fallout.dude_obj())

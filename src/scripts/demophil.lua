@@ -158,7 +158,7 @@ function Phil02()
     else
         v0 = fallout.message_str(376, 106)
     end
-    fallout.gsay_reply(376, v0 + fallout.message_str(376, 107))
+    fallout.gsay_reply(376, v0 .. fallout.message_str(376, 107))
     fallout.giq_option(4, 376, 108, Phil04, 50)
     fallout.giq_option(4, 376, 109, PhilEnd, 50)
     fallout.giq_option(6, 376, 110, Phil05, 50)

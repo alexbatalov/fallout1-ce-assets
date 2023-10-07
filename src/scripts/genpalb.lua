@@ -208,11 +208,11 @@ function GenPalB05()
     known = 1
     fallout.gsay_reply(759, 116)
     if (fallout.global_var(101) == 0) and (fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 55) == 0) then
-        fallout.giq_option(4, 759, fallout.message_str(759, 117) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(759, 118), GenPalB17, 50)
+        fallout.giq_option(4, 759, fallout.message_str(759, 117) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(759, 118), GenPalB17, 50)
     end
-    fallout.giq_option(4, 759, fallout.message_str(759, 117) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(759, 119), GenPalB18, 50)
-    fallout.giq_option(4, 759, fallout.message_str(759, 117) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(759, 120), GenPalB19, 50)
-    fallout.giq_option(4, 759, fallout.message_str(759, 117) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(759, 121), GenPalB21, 50)
+    fallout.giq_option(4, 759, fallout.message_str(759, 117) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(759, 119), GenPalB18, 50)
+    fallout.giq_option(4, 759, fallout.message_str(759, 117) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(759, 120), GenPalB19, 50)
+    fallout.giq_option(4, 759, fallout.message_str(759, 117) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(759, 121), GenPalB21, 50)
     fallout.giq_option(4, 759, 122, GenPalB21, 51)
     fallout.giq_option(-3, 759, 123, GenPalB22, 50)
 end

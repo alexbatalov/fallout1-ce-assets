@@ -184,7 +184,7 @@ function Daren01()
     if fallout.global_var(111) == 1 then
         fallout.giq_option(4, 582, 103, Daren03, 50)
     end
-    fallout.giq_option(4, 582, fallout.message_str(582, 104) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(582, 105), Daren04, 50)
+    fallout.giq_option(4, 582, fallout.message_str(582, 104) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(582, 105), Daren04, 50)
     fallout.giq_option(4, 582, 106, Daren07, 50)
     fallout.giq_option(4, 582, 107, Daren06, 50)
     fallout.giq_option(-3, 582, 108, Daren06, 50)
@@ -209,7 +209,7 @@ function Daren03()
 end
 
 function Daren04()
-    fallout.gsay_message(582, fallout.message_str(582, 119) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(582, 120), 51)
+    fallout.gsay_message(582, fallout.message_str(582, 119) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(582, 120), 51)
     DarenEndLeon()
 end
 

@@ -191,7 +191,7 @@ function talk_p_proc()
 end
 
 function Cindy01()
-    fallout.gsay_reply(168, fallout.message_str(168, 102) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(168, 103))
+    fallout.gsay_reply(168, fallout.message_str(168, 102) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(168, 103))
     fallout.giq_option(4, 168, 104, Cindy03, 50)
     fallout.giq_option(4, 168, 105, Cindy04, 50)
     fallout.giq_option(-3, 168, 106, Cindy02, 50)

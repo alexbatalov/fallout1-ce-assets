@@ -101,7 +101,7 @@ end
 
 function talk_p_proc()
     if fallout.global_var(128) == 2 then
-        fallout.float_msg(fallout.self_obj(), fallout.message_str(670, 101) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1), 0)
+        fallout.float_msg(fallout.self_obj(), fallout.message_str(670, 101) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1), 0)
     else
         if fallout.local_var(0) then
             Alex01()

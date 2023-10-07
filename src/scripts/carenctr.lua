@@ -98,8 +98,8 @@ function map_enter_p_proc()
     if fallout.metarule(14, 0) then
         fallout.set_global_var(215, 1)
         fallout.set_global_var(216, 2)
-        fallout.debug_msg("CVan_Driver == " + fallout.global_var(215))
-        fallout.debug_msg("CVan_Guard == " + fallout.global_var(216))
+        fallout.debug_msg("CVan_Driver == " .. fallout.global_var(215))
+        fallout.debug_msg("CVan_Guard == " .. fallout.global_var(216))
         Place_Caravan()
         if fallout.global_var(199) == 1 then
             if fallout.cur_map_index() == 56 then
@@ -1492,8 +1492,8 @@ function Place_Caravan()
             Players_Elevation = 2
         end
     end
-    fallout.debug_msg("Procedure CVan_Driver == " + fallout.global_var(215))
-    fallout.debug_msg("Procedure CVan_Guard == " + fallout.global_var(216))
+    fallout.debug_msg("Procedure CVan_Driver == " .. fallout.global_var(215))
+    fallout.debug_msg("Procedure CVan_Guard == " .. fallout.global_var(216))
     if fallout.global_var(215) == 1 then
         Critter_Tile = fallout.tile_num_in_direction(fallout.tile_num(fallout.dude_obj()), 4, 6)
         v0 = fallout.create_object_sid(16777233, Critter_Tile, fallout.elevation(fallout.dude_obj()), 761)

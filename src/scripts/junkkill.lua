@@ -56,7 +56,7 @@ function start()
         if fallout.script_action() == 23 then
             Lighting()
             if fallout.external_var("award") and not(fallout.map_var(4)) and (fallout.global_var(143) == 2) then
-                fallout.display_msg(fallout.message_str(338, 175) + fallout.external_var("award") + fallout.message_str(338, 176))
+                fallout.display_msg(fallout.message_str(338, 175) .. fallout.external_var("award") .. fallout.message_str(338, 176))
                 fallout.give_exp_points(fallout.external_var("award"))
                 fallout.set_map_var(4, 1)
             end

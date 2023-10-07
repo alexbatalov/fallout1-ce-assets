@@ -125,7 +125,7 @@ function do_dialogue()
 end
 
 function ration01()
-    fallout.sayReply(0, "Hello, " + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + ". Have you found the water chip yet?")
+    fallout.sayReply(0, "Hello, " .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. ". Have you found the water chip yet?")
     if fallout.get_critter_stat(fallout.dude_obj(), 4) >= 4 then
         fallout.sayOption("No, not yet.", ration03)
     end

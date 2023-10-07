@@ -322,7 +322,7 @@ function Gab21()
         fallout.set_global_var(265, 2)
         fallout.set_global_var(155, fallout.global_var(155) + 1)
         fallout.give_exp_points(1000)
-        fallout.display_msg(fallout.message_str(766, 103) + 1000 + fallout.message_str(766, 104))
+        fallout.display_msg(fallout.message_str(766, 103) .. 1000 .. fallout.message_str(766, 104))
         fallout.set_local_var(6, 1)
     end
 end
@@ -338,7 +338,7 @@ function Gab22()
         fallout.set_global_var(614, 9202)
         fallout.set_global_var(155, fallout.global_var(155) + 1)
         fallout.give_exp_points(1000)
-        fallout.display_msg(fallout.message_str(766, 103) + 1000 + fallout.message_str(766, 104))
+        fallout.display_msg(fallout.message_str(766, 103) .. 1000 .. fallout.message_str(766, 104))
         fallout.set_local_var(5, 1)
     end
 end

@@ -35,7 +35,7 @@ function start()
             end
         end
         if fallout.global_var(55) ~= 0 then
-            fallout.display_msg(fallout.message_str(446, 100) + (240 - ((fallout.game_time() // 10) - fallout.global_var(55))) + fallout.message_str(446, 101))
+            fallout.display_msg(fallout.message_str(446, 100) .. (240 - ((fallout.game_time() // 10) - fallout.global_var(55))) .. fallout.message_str(446, 101))
             if ((fallout.game_time() // 10) - fallout.global_var(55)) > 240 then
                 fallout.display_msg(fallout.message_str(446, 102))
                 fallout.play_gmovie(6)
@@ -47,7 +47,7 @@ function start()
     if fallout.script_action() == 23 then
         fallout.set_light_level(75)
         if fallout.global_var(55) ~= 0 then
-            fallout.display_msg(fallout.message_str(446, 104) + (240 - ((fallout.game_time() // 10) - fallout.global_var(55))) + fallout.message_str(446, 105))
+            fallout.display_msg(fallout.message_str(446, 104) .. (240 - ((fallout.game_time() // 10) - fallout.global_var(55))) .. fallout.message_str(446, 105))
             if ((fallout.game_time() // 10) - fallout.global_var(55)) > 240 then
                 fallout.display_msg(fallout.message_str(446, 106))
                 fallout.play_gmovie(6)
@@ -58,7 +58,7 @@ function start()
     end
     if fallout.script_action() == 16 then
         if fallout.global_var(55) ~= 0 then
-            fallout.display_msg(fallout.message_str(446, 108) + (240 - ((fallout.game_time() // 10) - fallout.global_var(55))) + fallout.message_str(446, 109))
+            fallout.display_msg(fallout.message_str(446, 108) .. (240 - ((fallout.game_time() // 10) - fallout.global_var(55))) .. fallout.message_str(446, 109))
             if ((fallout.game_time() // 10) - fallout.global_var(55)) > 240 then
                 fallout.display_msg(fallout.message_str(446, 110))
                 fallout.play_gmovie(6)

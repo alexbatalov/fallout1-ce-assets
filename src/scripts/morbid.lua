@@ -419,44 +419,44 @@ function Morbid09()
     fallout.gsay_message(104, 121, 50)
     g9 = fallout.message_str(104, 122)
     if fallout.get_critter_stat(fallout.dude_obj(), 35) == fallout.get_critter_stat(fallout.dude_obj(), 7) then
-        g9 = g9 + fallout.message_str(104, 178)
+        g9 = g9 .. fallout.message_str(104, 178)
     else
         if fallout.get_critter_stat(fallout.dude_obj(), 35) > (fallout.get_critter_stat(fallout.dude_obj(), 7) * 0.70000) then
-            g9 = g9 + fallout.message_str(104, 179)
+            g9 = g9 .. fallout.message_str(104, 179)
         else
             if fallout.get_critter_stat(fallout.dude_obj(), 35) > (fallout.get_critter_stat(fallout.dude_obj(), 7) * 0.50000) then
-                g9 = g9 + fallout.message_str(104, 180)
+                g9 = g9 .. fallout.message_str(104, 180)
             else
                 if fallout.get_critter_stat(fallout.dude_obj(), 35) > (fallout.get_critter_stat(fallout.dude_obj(), 7) * 0.30000) then
-                    g9 = g9 + fallout.message_str(104, 181)
+                    g9 = g9 .. fallout.message_str(104, 181)
                 else
-                    g9 = g9 + fallout.message_str(104, 182)
+                    g9 = g9 .. fallout.message_str(104, 182)
                 end
             end
         end
     end
-    g9 = g9 + fallout.message_str(104, fallout.random(183, 186))
+    g9 = g9 .. fallout.message_str(104, fallout.random(183, 186))
     if fallout.get_poison(fallout.dude_obj()) then
-        g9 = g9 + fallout.message_str(104, fallout.random(187, 190))
+        g9 = g9 .. fallout.message_str(104, fallout.random(187, 190))
     end
     v0 = fallout.get_critter_stat(fallout.dude_obj(), 37)
     if v0 > 30 then
         if v0 < 101 then
-            g9 = g9 + fallout.message_str(104, 191)
+            g9 = g9 .. fallout.message_str(104, 191)
         else
             if v0 < 201 then
-                g9 = g9 + fallout.message_str(104, 192)
+                g9 = g9 .. fallout.message_str(104, 192)
             else
                 if v0 < 401 then
-                    g9 = g9 + fallout.message_str(104, 193)
+                    g9 = g9 .. fallout.message_str(104, 193)
                 else
-                    g9 = g9 + fallout.message_str(104, 194)
+                    g9 = g9 .. fallout.message_str(104, 194)
                 end
             end
         end
     end
     if (v0 > 30) and (v0 < 251) then
-        g9 = g9 + fallout.message_str(104, 195)
+        g9 = g9 .. fallout.message_str(104, 195)
     end
     g6 = fallout.get_critter_stat(fallout.dude_obj(), 7) - fallout.get_critter_stat(fallout.dude_obj(), 35)
     if fallout.local_var(1) >= 2 then
@@ -478,7 +478,7 @@ function Morbid09()
 end
 
 function Morbid09a()
-    fallout.gsay_reply(104, fallout.message_str(104, 123) + g7 + fallout.message_str(104, 124))
+    fallout.gsay_reply(104, fallout.message_str(104, 123) .. g7 .. fallout.message_str(104, 124))
     fallout.giq_option(4, 104, 125, Morbid12, 50)
     fallout.giq_option(4, 104, 126, Morbid10, 51)
     fallout.giq_option(4, 104, 127, Morbid11, 50)
@@ -574,9 +574,9 @@ function Morbid20()
     local v0 = 0
     v0 = fallout.message_str(104, 158)
     if not(fallout.global_var(37)) then
-        v0 = v0 + fallout.message_str(104, 159)
+        v0 = v0 .. fallout.message_str(104, 159)
     end
-    v0 = v0 + fallout.message_str(104, 160)
+    v0 = v0 .. fallout.message_str(104, 160)
     fallout.gsay_reply(104, v0)
     fallout.giq_option(4, 104, 161, Morbid03, 50)
     fallout.giq_option(5, 104, 162, Morbid19, 50)
@@ -680,7 +680,7 @@ end
 function Morbid05L()
     local v0 = 0
     v0 = fallout.message_str(104, 218)
-    v0 = v0 + fallout.message_str(104, 220)
+    v0 = v0 .. fallout.message_str(104, 220)
     fallout.gsay_reply(104, v0)
     fallout.giq_option(5, 104, 221, Morbid07L, 50)
     fallout.giq_option(5, 104, 222, Morbid06L, 50)

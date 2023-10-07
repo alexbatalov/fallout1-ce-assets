@@ -287,7 +287,7 @@ function Lance05()
 end
 
 function Lance06()
-    fallout.gsay_reply(699, fallout.message_str(699, 123) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(699, 124))
+    fallout.gsay_reply(699, fallout.message_str(699, 123) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(699, 124))
     fallout.giq_option(4, 699, 125, Lance25, 50)
     fallout.giq_option(4, 699, 113, Lance16, 50)
     fallout.giq_option(4, 699, 127, Lance26, 50)
@@ -297,7 +297,7 @@ end
 
 function Lance07()
     known = 1
-    fallout.gsay_reply(699, fallout.message_str(699, 123) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(699, 130))
+    fallout.gsay_reply(699, fallout.message_str(699, 123) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(699, 130))
     fallout.giq_option(4, 699, 131, Lance29, 50)
     fallout.giq_option(4, 699, 113, Lance16, 50)
     if (fallout.global_var(101) == 1) and (fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 55) == 0) then

@@ -39,16 +39,16 @@ function point_run()
         end
     else
         if (v0 == 7) or (v0 == 11) then
-            fallout.display_msg(fallout.message_str(0, 103) + v0 + fallout.message_str(0, 104))
+            fallout.display_msg(fallout.message_str(0, 103) .. v0 .. fallout.message_str(0, 104))
         else
             if (v0 == 2) or (v0 == 3) or (v0 == 12) then
-                fallout.display_msg(fallout.message_str(0, 105) + v0 + fallout.message_str(0, 106))
+                fallout.display_msg(fallout.message_str(0, 105) .. v0 .. fallout.message_str(0, 106))
             else
                 while not(v3) do
                     if v2 then
                         if (v0 == 7) or (v0 == 11) then
                             v3 = 1
-                            fallout.display_msg(fallout.message_str(0, 107) + v0 + fallout.message_str(0, 108))
+                            fallout.display_msg(fallout.message_str(0, 107) .. v0 .. fallout.message_str(0, 108))
                         else
                             if v0 == v1 then
                                 v3 = 1
@@ -60,7 +60,7 @@ function point_run()
                     else
                         v2 = 1
                         v1 = v0
-                        fallout.display_msg(fallout.message_str(0, 110) + v0 + fallout.message_str(0, 111))
+                        fallout.display_msg(fallout.message_str(0, 110) .. v0 .. fallout.message_str(0, 111))
                     end
                 end
             end

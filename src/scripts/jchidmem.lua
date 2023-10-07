@@ -228,11 +228,11 @@ function Child04()
         fallout.gsay_message(108, 110, 50)
     end
     if cost > 0 then
-        fallout.gsay_reply(108, fallout.message_str(108, 111) + cost + fallout.message_str(108, 112))
+        fallout.gsay_reply(108, fallout.message_str(108, 111) .. cost .. fallout.message_str(108, 112))
         fallout.giq_option(4, 108, 113, Child04a, 50)
         fallout.giq_option(4, 108, 114, ChildEnd, 50)
         fallout.giq_option(4, 108, 115, Child09, 50)
-        fallout.giq_option(4, 108, fallout.message_str(108, 116) + (cost * 0.75000) + fallout.message_str(108, 117), Child05, 50)
+        fallout.giq_option(4, 108, fallout.message_str(108, 116) .. (cost * 0.75000) .. fallout.message_str(108, 117), Child05, 50)
     else
         fallout.gsay_message(108, 146, 50)
     end

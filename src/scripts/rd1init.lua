@@ -126,7 +126,7 @@ function look_at_p_proc()
 end
 
 function goto00()
-    fallout.gsay_reply(691, fallout.message_str(691, 103) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(691, 104))
+    fallout.gsay_reply(691, fallout.message_str(691, 103) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(691, 104))
     fallout.giq_option(4, 691, 105, goto03, 50)
     fallout.giq_option(4, 691, 106, goto01, 50)
     fallout.giq_option(4, 691, 107, goto02, 50)

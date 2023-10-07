@@ -249,7 +249,7 @@ end
 function Jon12()
     fallout.item_caps_adjust(fallout.dude_obj(), 500)
     fallout.set_local_var(5, 1)
-    fallout.gsay_message(288, fallout.message_str(288, 138) + " " + fallout.message_str(288, 139), 50)
+    fallout.gsay_message(288, fallout.message_str(288, 138) .. " " .. fallout.message_str(288, 139), 50)
     UpReact()
 end
 

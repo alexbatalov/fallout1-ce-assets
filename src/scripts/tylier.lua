@@ -41,7 +41,7 @@ function tylier01()
     fallout.giq_option(-3, 309, 102, tylier02, 50)
     fallout.giq_option(-3, 309, 103, tylier02, 50)
     fallout.giq_option(4, 309, 104, tylier02, 50)
-    fallout.giq_option(5, 309, fallout.message_str(309, 105) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(309, 106), tylier02, 50)
+    fallout.giq_option(5, 309, fallout.message_str(309, 105) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(309, 106), tylier02, 50)
     fallout.giq_option(5, 309, 107, tylier03, 50)
 end
 

@@ -317,7 +317,7 @@ function North_table()
     if fallout.global_var(295) then
         Encounter_Num = fallout.global_var(295)
         fallout.set_global_var(295, 0)
-        fallout.debug_msg("Northern mountain encounter type: " + Encounter_Num)
+        fallout.debug_msg("Northern mountain encounter type: " .. Encounter_Num)
     end
     if Encounter_Num then
         choose_start()
@@ -362,7 +362,7 @@ function South_table()
     if fallout.global_var(295) then
         Encounter_Num = fallout.global_var(295)
         fallout.set_global_var(295, 0)
-        fallout.debug_msg("Southern Mountain encounter type: " + Encounter_Num)
+        fallout.debug_msg("Southern Mountain encounter type: " .. Encounter_Num)
     end
     if Encounter_Num then
         choose_start()
@@ -404,7 +404,7 @@ function Vault_table()
     if fallout.global_var(295) then
         Encounter_Num = fallout.global_var(295)
         fallout.set_global_var(295, 0)
-        fallout.debug_msg("Vault Mountain encounter type: " + Encounter_Num)
+        fallout.debug_msg("Vault Mountain encounter type: " .. Encounter_Num)
     end
     if Encounter_Num then
         choose_start()

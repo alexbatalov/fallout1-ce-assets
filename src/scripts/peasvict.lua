@@ -51,9 +51,9 @@ function critter_p_proc()
             if not(fallout.global_var(292)) then
                 cap_count = fallout.random(80, 120)
                 if fallout.random(0, 1) then
-                    fallout.float_msg(fallout.self_obj(), fallout.message_str(352, 130) + cap_count + fallout.message_str(352, 131), 0)
+                    fallout.float_msg(fallout.self_obj(), fallout.message_str(352, 130) .. cap_count .. fallout.message_str(352, 131), 0)
                 else
-                    fallout.float_msg(fallout.self_obj(), fallout.message_str(352, 132) + cap_count + fallout.message_str(352, 133), 0)
+                    fallout.float_msg(fallout.self_obj(), fallout.message_str(352, 132) .. cap_count .. fallout.message_str(352, 133), 0)
                 end
                 fallout.add_mult_objs_to_inven(fallout.dude_obj(), fallout.create_object_sid(41, 0, 0, -1), cap_count)
                 fallout.set_global_var(292, 1)

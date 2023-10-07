@@ -217,7 +217,7 @@ end
 
 function goto15()
     fallout.gsay_reply(845, 143)
-    fallout.giq_option(4, 845, fallout.message_str(845, 144) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(845, 145), goto13, 50)
+    fallout.giq_option(4, 845, fallout.message_str(845, 144) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(845, 145), goto13, 50)
     fallout.giq_option(4, 845, 146, goto16, 50)
 end
 
@@ -337,7 +337,7 @@ function pickup_p_proc()
 end
 
 function talk_p_proc()
-    fallout.debug_msg("global_var(PART_RUN) == " + fallout.global_var(304))
+    fallout.debug_msg("global_var(PART_RUN) == " .. fallout.global_var(304))
     if fallout.global_var(304) == 4 then
         smalltalk()
     else

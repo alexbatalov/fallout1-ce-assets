@@ -15,7 +15,7 @@ function start()
                 fallout.set_local_var(0, 1)
                 fallout.display_msg(fallout.message_str(333, 102))
                 fallout.set_global_var(237, 1)
-                fallout.display_msg(fallout.message_str(766, 103) + "100" + fallout.message_str(766, 104))
+                fallout.display_msg(fallout.message_str(766, 103) .. "100" .. fallout.message_str(766, 104))
                 fallout.give_exp_points(100)
             end
         end

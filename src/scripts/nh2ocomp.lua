@@ -94,7 +94,7 @@ function removal()
                 temp = 2500 - (fallout.global_var(35) * 250)
                 fallout.set_global_var(155, fallout.global_var(155) + 3)
                 fallout.give_exp_points(temp)
-                fallout.display_msg(fallout.message_str(86, 113) + temp + fallout.message_str(86, 114))
+                fallout.display_msg(fallout.message_str(86, 113) .. temp .. fallout.message_str(86, 114))
             end
             Character_Point = Character_Point + 1
         else

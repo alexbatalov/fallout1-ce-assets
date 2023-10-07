@@ -28,7 +28,7 @@ function description_p_proc()
         if fallout.is_success(fallout.do_check(fallout.dude_obj(), 1, fallout.has_trait(0, fallout.dude_obj(), 0) - 3)) then
             v0 = fallout.message_str(612, 101)
             if fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), 11, 0)) then
-                v0 = v0 + fallout.message_str(612, 102)
+                v0 = v0 .. fallout.message_str(612, 102)
             end
             fallout.set_local_var(0, 1)
         else

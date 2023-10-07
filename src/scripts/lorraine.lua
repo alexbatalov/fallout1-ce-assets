@@ -129,7 +129,7 @@ end
 function Lorri01()
     fallout.gsay_reply(253, 102)
     fallout.giq_option(4, 253, 103, Lorri02, 50)
-    fallout.giq_option(4, 253, fallout.message_str(253, 104) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(253, 105), Lorri03, 50)
+    fallout.giq_option(4, 253, fallout.message_str(253, 104) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(253, 105), Lorri03, 50)
     fallout.giq_option(-3, 253, 106, Lorri15, 50)
 end
 
@@ -229,7 +229,7 @@ function Lorri16()
 end
 
 function Lorri17()
-    fallout.gsay_reply(253, fallout.message_str(253, 156) + fallout.message_str(253, 157))
+    fallout.gsay_reply(253, fallout.message_str(253, 156) .. fallout.message_str(253, 157))
     fallout.giq_option(4, 253, 158, Lorri18, 50)
     fallout.giq_option(4, 253, 159, Lorri08, 50)
     fallout.giq_option(4, 253, 160, Lorri19, 50)

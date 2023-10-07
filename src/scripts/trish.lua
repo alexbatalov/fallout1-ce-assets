@@ -300,7 +300,7 @@ function Trish8()
     local v0 = 0
     v0 = fallout.message_str(342, 121)
     if not(fallout.global_var(38)) then
-        v0 = v0 + fallout.message_str(342, 168)
+        v0 = v0 .. fallout.message_str(342, 168)
     end
     fallout.gsay_message(342, v0, 49)
     fallout.set_global_var(557, fallout.global_var(557) + 8)
@@ -390,7 +390,7 @@ function Trish21()
     fallout.set_local_var(11, 1)
     v0 = fallout.message_str(342, 154)
     if not(fallout.global_var(37)) then
-        v0 = v0 + fallout.message_str(342, 155)
+        v0 = v0 .. fallout.message_str(342, 155)
     end
     fallout.gsay_reply(342, v0)
     Trish24()

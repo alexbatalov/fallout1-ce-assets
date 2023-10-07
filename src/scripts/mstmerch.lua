@@ -277,7 +277,7 @@ end
 
 function MasterMerch16()
     if fallout.item_caps_total(fallout.dude_obj()) < fallout.local_var(5) then
-        fallout.gsay_message(598, fallout.message_str(598, 145) + fallout.local_var(5) + fallout.message_str(598, 146), 50)
+        fallout.gsay_message(598, fallout.message_str(598, 145) .. fallout.local_var(5) .. fallout.message_str(598, 146), 50)
         MasterMerchEnd()
     else
         fallout.gsay_reply(598, 147)
@@ -311,7 +311,7 @@ function MasterMerch18()
 end
 
 function MasterMerch19()
-    fallout.gsay_reply(598, fallout.message_str(598, 157) + fallout.local_var(5) + fallout.message_str(598, 158))
+    fallout.gsay_reply(598, fallout.message_str(598, 157) .. fallout.local_var(5) .. fallout.message_str(598, 158))
     MasterMerch15()
 end
 
@@ -324,7 +324,7 @@ function MasterMerch20()
         fallout.set_global_var(154, fallout.global_var(154) - 90)
     end
     fallout.give_exp_points(1000)
-    fallout.display_msg(fallout.message_str(766, 103) + 1000 + fallout.message_str(766, 104))
+    fallout.display_msg(fallout.message_str(766, 103) .. 1000 .. fallout.message_str(766, 104))
     fallout.gsay_message(598, 155, 50)
 end
 

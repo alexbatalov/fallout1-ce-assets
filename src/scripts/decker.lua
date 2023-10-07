@@ -199,7 +199,7 @@ end
 
 function Decker01()
     fallout.gsay_reply(42, 103)
-    fallout.giq_option(4, 42, fallout.message_str(42, 104) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(42, 105), Decker02, 50)
+    fallout.giq_option(4, 42, fallout.message_str(42, 104) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(42, 105), Decker02, 50)
     fallout.giq_option(4, 42, 106, Decker13, 51)
 end
 
@@ -269,7 +269,7 @@ end
 
 function Decker13()
     fallout.gsay_reply(42, 135)
-    fallout.giq_option(4, 42, fallout.message_str(42, 136) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(42, 137), Decker02, 50)
+    fallout.giq_option(4, 42, fallout.message_str(42, 136) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(42, 137), Decker02, 50)
     fallout.giq_option(4, 42, 138, Decker14, 50)
 end
 

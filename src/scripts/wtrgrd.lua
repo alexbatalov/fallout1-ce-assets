@@ -266,7 +266,7 @@ function timed_event_p_proc()
 end
 
 function WtrGrd01()
-    fallout.gsay_reply(163, fallout.message_str(163, 101) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(163, 102))
+    fallout.gsay_reply(163, fallout.message_str(163, 101) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(163, 102))
     fallout.giq_option(4, 163, 103, WtrGrd03, 50)
     fallout.giq_option(4, 163, 127, WtrGrd09, 50)
     fallout.giq_option(-3, 163, 104, WtrGrd02, 50)
@@ -291,7 +291,7 @@ function WtrGrd04()
 end
 
 function WtrGrd05()
-    fallout.gsay_reply(163, fallout.message_str(163, 118) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(163, 119))
+    fallout.gsay_reply(163, fallout.message_str(163, 118) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(163, 119))
     fallout.giq_option(4, 163, 120, WtrGrd06, 50)
     fallout.giq_option(6, 163, 121, WtrGRd07, 50)
     fallout.giq_option(4, 163, 127, WtrGrd09, 50)

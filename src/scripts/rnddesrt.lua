@@ -402,7 +402,7 @@ function North_table()
     if fallout.global_var(295) then
         Encounter_Num = fallout.global_var(295)
         fallout.set_global_var(295, 0)
-        fallout.debug_msg("Northern Desert encounter type: " + Encounter_Num)
+        fallout.debug_msg("Northern Desert encounter type: " .. Encounter_Num)
     end
     if Encounter_Num then
         choose_start()
@@ -444,7 +444,7 @@ function South_table()
     if fallout.global_var(295) then
         Encounter_Num = fallout.global_var(295)
         fallout.set_global_var(295, 0)
-        fallout.debug_msg("Southern Desert encounter type: " + Encounter_Num)
+        fallout.debug_msg("Southern Desert encounter type: " .. Encounter_Num)
     end
     if Encounter_Num then
         choose_start()
@@ -486,7 +486,7 @@ function Shady_table()
     if fallout.global_var(295) then
         Encounter_Num = fallout.global_var(295)
         fallout.set_global_var(295, 0)
-        fallout.debug_msg("Shady Sands Desert encounter type: " + Encounter_Num)
+        fallout.debug_msg("Shady Sands Desert encounter type: " .. Encounter_Num)
     end
     if Encounter_Num then
         choose_start()
@@ -528,7 +528,7 @@ function Raider_table()
     if fallout.global_var(295) then
         Encounter_Num = fallout.global_var(295)
         fallout.set_global_var(295, 0)
-        fallout.debug_msg("Raiders Desert encounter type: " + Encounter_Num)
+        fallout.debug_msg("Raiders Desert encounter type: " .. Encounter_Num)
     end
     if Encounter_Num then
         choose_start()
@@ -570,7 +570,7 @@ function Junk_table()
     if fallout.global_var(295) then
         Encounter_Num = fallout.global_var(295)
         fallout.set_global_var(295, 0)
-        fallout.debug_msg("Junk Town Desert encounter type: " + Encounter_Num)
+        fallout.debug_msg("Junk Town Desert encounter type: " .. Encounter_Num)
     end
     if Encounter_Num then
         choose_start()
@@ -612,7 +612,7 @@ function Hub_table()
     if fallout.global_var(295) then
         Encounter_Num = fallout.global_var(295)
         fallout.set_global_var(295, 0)
-        fallout.debug_msg("Hub Desert encounter type: " + Encounter_Num)
+        fallout.debug_msg("Hub Desert encounter type: " .. Encounter_Num)
     end
     if Encounter_Num then
         choose_start()
@@ -654,7 +654,7 @@ function Necrop_table()
     if fallout.global_var(295) then
         Encounter_Num = fallout.global_var(295)
         fallout.set_global_var(295, 0)
-        fallout.debug_msg("Necropolis Desert encounter type: " + Encounter_Num)
+        fallout.debug_msg("Necropolis Desert encounter type: " .. Encounter_Num)
     end
     if Encounter_Num then
         choose_start()
@@ -696,7 +696,7 @@ function Steel_table()
     if fallout.global_var(295) then
         Encounter_Num = fallout.global_var(295)
         fallout.set_global_var(295, 0)
-        fallout.debug_msg("Brotherhood of Steel Desert encounter type: " + Encounter_Num)
+        fallout.debug_msg("Brotherhood of Steel Desert encounter type: " .. Encounter_Num)
     end
     if Encounter_Num then
         choose_start()
@@ -738,7 +738,7 @@ function Vats_table()
     if fallout.global_var(295) then
         Encounter_Num = fallout.global_var(295)
         fallout.set_global_var(295, 0)
-        fallout.debug_msg("Vats Desert encounter type: " + Encounter_Num)
+        fallout.debug_msg("Vats Desert encounter type: " .. Encounter_Num)
     end
     if Encounter_Num then
         choose_start()
@@ -780,7 +780,7 @@ function Glow_table()
     if fallout.global_var(295) then
         Encounter_Num = fallout.global_var(295)
         fallout.set_global_var(295, 0)
-        fallout.debug_msg("Glow Desert encounter type: " + Encounter_Num)
+        fallout.debug_msg("Glow Desert encounter type: " .. Encounter_Num)
     end
     if Encounter_Num then
         choose_start()
@@ -822,7 +822,7 @@ function Bone_table()
     if fallout.global_var(295) then
         Encounter_Num = fallout.global_var(295)
         fallout.set_global_var(295, 0)
-        fallout.debug_msg("Bone Desert encounter type: " + Encounter_Num)
+        fallout.debug_msg("Bone Desert encounter type: " .. Encounter_Num)
     end
     if Encounter_Num then
         choose_start()
@@ -864,7 +864,7 @@ function Death_table()
     if fallout.global_var(295) then
         Encounter_Num = fallout.global_var(295)
         fallout.set_global_var(295, 0)
-        fallout.debug_msg("Death Claw encounter type: " + Encounter_Num)
+        fallout.debug_msg("Death Claw encounter type: " .. Encounter_Num)
     end
     if Encounter_Num then
         choose_start()
@@ -1200,15 +1200,15 @@ function North6()
             if v0 == 1 then
                 fallout.display_msg(fallout.message_str(112, 109))
             else
-                fallout.display_msg(fallout.message_str(112, 110) + v0 + fallout.message_str(112, 111))
+                fallout.display_msg(fallout.message_str(112, 110) .. v0 .. fallout.message_str(112, 111))
             end
         else
             if fallout.is_critical(Skill_roll) then
                 v1 = fallout.random(2, 4)
                 if v0 == 1 then
-                    fallout.display_msg(fallout.message_str(112, 112) + v1 + fallout.message_str(112, 113))
+                    fallout.display_msg(fallout.message_str(112, 112) .. v1 .. fallout.message_str(112, 113))
                 else
-                    fallout.display_msg(fallout.message_str(112, 114) + v0 + fallout.message_str(112, 115) + v1 + fallout.message_str(112, 116))
+                    fallout.display_msg(fallout.message_str(112, 114) .. v0 .. fallout.message_str(112, 115) .. v1 .. fallout.message_str(112, 116))
                 end
                 fallout.critter_injure(fallout.dude_obj(), 2)
             else
@@ -1217,13 +1217,13 @@ function North6()
                     if v1 == 1 then
                         fallout.display_msg(fallout.message_str(112, 117))
                     else
-                        fallout.display_msg(fallout.message_str(112, 118) + v1 + fallout.message_str(112, 119))
+                        fallout.display_msg(fallout.message_str(112, 118) .. v1 .. fallout.message_str(112, 119))
                     end
                 else
                     if v1 == 1 then
-                        fallout.display_msg(fallout.message_str(112, 120) + v0 + fallout.message_str(112, 121))
+                        fallout.display_msg(fallout.message_str(112, 120) .. v0 .. fallout.message_str(112, 121))
                     else
-                        fallout.display_msg(fallout.message_str(112, 122) + v0 + fallout.message_str(112, 123) + v1 + fallout.message_str(112, 124))
+                        fallout.display_msg(fallout.message_str(112, 122) .. v0 .. fallout.message_str(112, 123) .. v1 .. fallout.message_str(112, 124))
                     end
                 end
                 fallout.critter_injure(fallout.dude_obj(), 2)
@@ -1288,15 +1288,15 @@ function South3()
             if v0 == 1 then
                 fallout.display_msg(fallout.message_str(112, 109))
             else
-                fallout.display_msg(fallout.message_str(112, 110) + v0 + fallout.message_str(112, 111))
+                fallout.display_msg(fallout.message_str(112, 110) .. v0 .. fallout.message_str(112, 111))
             end
         else
             if fallout.is_critical(Skill_roll) then
                 v1 = fallout.random(2, 4)
                 if v0 == 1 then
-                    fallout.display_msg(fallout.message_str(112, 112) + v1 + fallout.message_str(112, 113))
+                    fallout.display_msg(fallout.message_str(112, 112) .. v1 .. fallout.message_str(112, 113))
                 else
-                    fallout.display_msg(fallout.message_str(112, 114) + v0 + fallout.message_str(112, 115) + v1 + fallout.message_str(112, 116))
+                    fallout.display_msg(fallout.message_str(112, 114) .. v0 .. fallout.message_str(112, 115) .. v1 .. fallout.message_str(112, 116))
                 end
                 fallout.critter_injure(fallout.dude_obj(), 2)
             else
@@ -1305,13 +1305,13 @@ function South3()
                     if v1 == 1 then
                         fallout.display_msg(fallout.message_str(112, 117))
                     else
-                        fallout.display_msg(fallout.message_str(112, 118) + v1 + fallout.message_str(112, 119))
+                        fallout.display_msg(fallout.message_str(112, 118) .. v1 .. fallout.message_str(112, 119))
                     end
                 else
                     if v1 == 1 then
-                        fallout.display_msg(fallout.message_str(112, 120) + v0 + fallout.message_str(112, 121))
+                        fallout.display_msg(fallout.message_str(112, 120) .. v0 .. fallout.message_str(112, 121))
                     else
-                        fallout.display_msg(fallout.message_str(112, 122) + v0 + fallout.message_str(112, 123) + v1 + fallout.message_str(112, 124))
+                        fallout.display_msg(fallout.message_str(112, 122) .. v0 .. fallout.message_str(112, 123) .. v1 .. fallout.message_str(112, 124))
                     end
                 end
                 fallout.critter_injure(fallout.dude_obj(), 2)
@@ -1572,15 +1572,15 @@ function Shady2()
             if v0 == 1 then
                 fallout.display_msg(fallout.message_str(112, 109))
             else
-                fallout.display_msg(fallout.message_str(112, 110) + v0 + fallout.message_str(112, 111))
+                fallout.display_msg(fallout.message_str(112, 110) .. v0 .. fallout.message_str(112, 111))
             end
         else
             if fallout.is_critical(Skill_roll) then
                 v1 = fallout.random(2, 4)
                 if v0 == 1 then
-                    fallout.display_msg(fallout.message_str(112, 112) + v1 + fallout.message_str(112, 113))
+                    fallout.display_msg(fallout.message_str(112, 112) .. v1 .. fallout.message_str(112, 113))
                 else
-                    fallout.display_msg(fallout.message_str(112, 114) + v0 + fallout.message_str(112, 115) + v1 + fallout.message_str(112, 116))
+                    fallout.display_msg(fallout.message_str(112, 114) .. v0 .. fallout.message_str(112, 115) .. v1 .. fallout.message_str(112, 116))
                 end
                 fallout.critter_injure(fallout.dude_obj(), 2)
             else
@@ -1589,14 +1589,14 @@ function Shady2()
                     if v1 == 1 then
                         fallout.display_msg(fallout.message_str(112, 117))
                     else
-                        fallout.display_msg(fallout.message_str(112, 118) + v1 + fallout.message_str(112, 119))
+                        fallout.display_msg(fallout.message_str(112, 118) .. v1 .. fallout.message_str(112, 119))
                     end
                     fallout.critter_injure(fallout.dude_obj(), 2)
                 else
                     if v1 == 1 then
-                        fallout.display_msg(fallout.message_str(112, 120) + v0 + fallout.message_str(112, 121))
+                        fallout.display_msg(fallout.message_str(112, 120) .. v0 .. fallout.message_str(112, 121))
                     else
-                        fallout.display_msg(fallout.message_str(112, 122) + v0 + fallout.message_str(112, 123) + v1 + fallout.message_str(112, 124))
+                        fallout.display_msg(fallout.message_str(112, 122) .. v0 .. fallout.message_str(112, 123) .. v1 .. fallout.message_str(112, 124))
                     end
                     fallout.critter_injure(fallout.dude_obj(), 2)
                 end
@@ -2120,15 +2120,15 @@ function Raider2()
             if v0 == 1 then
                 fallout.display_msg(fallout.message_str(112, 109))
             else
-                fallout.display_msg(fallout.message_str(112, 110) + v0 + fallout.message_str(112, 111))
+                fallout.display_msg(fallout.message_str(112, 110) .. v0 .. fallout.message_str(112, 111))
             end
         else
             if fallout.is_critical(Skill_roll) then
                 v1 = fallout.random(2, 4)
                 if v0 == 1 then
-                    fallout.display_msg(fallout.message_str(112, 112) + v1 + fallout.message_str(112, 113))
+                    fallout.display_msg(fallout.message_str(112, 112) .. v1 .. fallout.message_str(112, 113))
                 else
-                    fallout.display_msg(fallout.message_str(112, 114) + v0 + fallout.message_str(112, 115) + v1 + fallout.message_str(112, 116))
+                    fallout.display_msg(fallout.message_str(112, 114) .. v0 .. fallout.message_str(112, 115) .. v1 .. fallout.message_str(112, 116))
                 end
                 fallout.critter_injure(fallout.dude_obj(), 2)
             else
@@ -2137,14 +2137,14 @@ function Raider2()
                     if v1 == 1 then
                         fallout.display_msg(fallout.message_str(112, 117))
                     else
-                        fallout.display_msg(fallout.message_str(112, 118) + v1 + fallout.message_str(112, 119))
+                        fallout.display_msg(fallout.message_str(112, 118) .. v1 .. fallout.message_str(112, 119))
                     end
                     fallout.critter_injure(fallout.dude_obj(), 2)
                 else
                     if v1 == 1 then
-                        fallout.display_msg(fallout.message_str(112, 120) + v0 + fallout.message_str(112, 121))
+                        fallout.display_msg(fallout.message_str(112, 120) .. v0 .. fallout.message_str(112, 121))
                     else
-                        fallout.display_msg(fallout.message_str(112, 122) + v0 + fallout.message_str(112, 123) + v1 + fallout.message_str(112, 124))
+                        fallout.display_msg(fallout.message_str(112, 122) .. v0 .. fallout.message_str(112, 123) .. v1 .. fallout.message_str(112, 124))
                     end
                     fallout.critter_injure(fallout.dude_obj(), 2)
                 end
@@ -2338,15 +2338,15 @@ function Junk2()
             if v0 == 1 then
                 fallout.display_msg(fallout.message_str(112, 109))
             else
-                fallout.display_msg(fallout.message_str(112, 110) + v0 + fallout.message_str(112, 111))
+                fallout.display_msg(fallout.message_str(112, 110) .. v0 .. fallout.message_str(112, 111))
             end
         else
             if fallout.is_critical(Skill_roll) then
                 v1 = fallout.random(2, 4)
                 if v0 == 1 then
-                    fallout.display_msg(fallout.message_str(112, 112) + v1 + fallout.message_str(112, 113))
+                    fallout.display_msg(fallout.message_str(112, 112) .. v1 .. fallout.message_str(112, 113))
                 else
-                    fallout.display_msg(fallout.message_str(112, 114) + v0 + fallout.message_str(112, 115) + v1 + fallout.message_str(112, 116))
+                    fallout.display_msg(fallout.message_str(112, 114) .. v0 .. fallout.message_str(112, 115) .. v1 .. fallout.message_str(112, 116))
                 end
                 fallout.critter_injure(fallout.dude_obj(), 2)
             else
@@ -2355,14 +2355,14 @@ function Junk2()
                     if v1 == 1 then
                         fallout.display_msg(fallout.message_str(112, 117))
                     else
-                        fallout.display_msg(fallout.message_str(112, 118) + v1 + fallout.message_str(112, 119))
+                        fallout.display_msg(fallout.message_str(112, 118) .. v1 .. fallout.message_str(112, 119))
                     end
                     fallout.critter_injure(fallout.dude_obj(), 2)
                 else
                     if v1 == 1 then
-                        fallout.display_msg(fallout.message_str(112, 120) + v0 + fallout.message_str(112, 121))
+                        fallout.display_msg(fallout.message_str(112, 120) .. v0 .. fallout.message_str(112, 121))
                     else
-                        fallout.display_msg(fallout.message_str(112, 122) + v0 + fallout.message_str(112, 123) + v1 + fallout.message_str(112, 124))
+                        fallout.display_msg(fallout.message_str(112, 122) .. v0 .. fallout.message_str(112, 123) .. v1 .. fallout.message_str(112, 124))
                     end
                     fallout.critter_injure(fallout.dude_obj(), 2)
                 end
@@ -2575,14 +2575,14 @@ function Hub1()
     else
         Skill_roll = fallout.roll_vs_skill(fallout.dude_obj(), 17, 20 * fallout.has_trait(0, fallout.dude_obj(), 16))
         if fallout.is_success(Skill_roll) then
-            fallout.display_msg(fallout.message_str(112, 110) + v0 + fallout.message_str(112, 111))
+            fallout.display_msg(fallout.message_str(112, 110) .. v0 .. fallout.message_str(112, 111))
         else
             if fallout.is_critical(Skill_roll) then
                 v1 = fallout.random(2, 4)
             else
                 v1 = fallout.random(2, 3)
             end
-            fallout.display_msg(fallout.message_str(112, 114) + v0 + fallout.message_str(112, 115) + v1 + fallout.message_str(112, 116))
+            fallout.display_msg(fallout.message_str(112, 114) .. v0 .. fallout.message_str(112, 115) .. v1 .. fallout.message_str(112, 116))
             fallout.critter_injure(fallout.dude_obj(), 2)
         end
         fallout.critter_dmg(fallout.dude_obj(), v1, 0)
@@ -2781,15 +2781,15 @@ function Necrop1()
             if v0 == 1 then
                 fallout.display_msg(fallout.message_str(112, 109))
             else
-                fallout.display_msg(fallout.message_str(112, 110) + v0 + fallout.message_str(112, 111))
+                fallout.display_msg(fallout.message_str(112, 110) .. v0 .. fallout.message_str(112, 111))
             end
         else
             if fallout.is_critical(Skill_roll) then
                 v1 = fallout.random(2, 4)
                 if v0 == 1 then
-                    fallout.display_msg(fallout.message_str(112, 112) + v1 + fallout.message_str(112, 113))
+                    fallout.display_msg(fallout.message_str(112, 112) .. v1 .. fallout.message_str(112, 113))
                 else
-                    fallout.display_msg(fallout.message_str(112, 114) + v0 + fallout.message_str(112, 115) + v1 + fallout.message_str(112, 116))
+                    fallout.display_msg(fallout.message_str(112, 114) .. v0 .. fallout.message_str(112, 115) .. v1 .. fallout.message_str(112, 116))
                 end
                 fallout.critter_injure(fallout.dude_obj(), 2)
             else
@@ -2798,14 +2798,14 @@ function Necrop1()
                     if v1 == 1 then
                         fallout.display_msg(fallout.message_str(112, 117))
                     else
-                        fallout.display_msg(fallout.message_str(112, 118) + v1 + fallout.message_str(112, 119))
+                        fallout.display_msg(fallout.message_str(112, 118) .. v1 .. fallout.message_str(112, 119))
                     end
                     fallout.critter_injure(fallout.dude_obj(), 2)
                 else
                     if v1 == 1 then
-                        fallout.display_msg(fallout.message_str(112, 120) + v0 + fallout.message_str(112, 121))
+                        fallout.display_msg(fallout.message_str(112, 120) .. v0 .. fallout.message_str(112, 121))
                     else
-                        fallout.display_msg(fallout.message_str(112, 122) + v0 + fallout.message_str(112, 123) + v1 + fallout.message_str(112, 124))
+                        fallout.display_msg(fallout.message_str(112, 122) .. v0 .. fallout.message_str(112, 123) .. v1 .. fallout.message_str(112, 124))
                     end
                     fallout.critter_injure(fallout.dude_obj(), 2)
                 end
@@ -3329,15 +3329,15 @@ function Steel3()
             if v0 == 1 then
                 fallout.display_msg(fallout.message_str(112, 109))
             else
-                fallout.display_msg(fallout.message_str(112, 110) + v0 + fallout.message_str(112, 111))
+                fallout.display_msg(fallout.message_str(112, 110) .. v0 .. fallout.message_str(112, 111))
             end
         else
             if fallout.is_critical(Skill_roll) then
                 v1 = fallout.random(2, 4)
                 if v0 == 1 then
-                    fallout.display_msg(fallout.message_str(112, 112) + v1 + fallout.message_str(112, 113))
+                    fallout.display_msg(fallout.message_str(112, 112) .. v1 .. fallout.message_str(112, 113))
                 else
-                    fallout.display_msg(fallout.message_str(112, 114) + v0 + fallout.message_str(112, 115) + v1 + fallout.message_str(112, 116))
+                    fallout.display_msg(fallout.message_str(112, 114) .. v0 .. fallout.message_str(112, 115) .. v1 .. fallout.message_str(112, 116))
                 end
                 fallout.critter_injure(fallout.dude_obj(), 2)
             else
@@ -3346,13 +3346,13 @@ function Steel3()
                     if v1 == 1 then
                         fallout.display_msg(fallout.message_str(112, 117))
                     else
-                        fallout.display_msg(fallout.message_str(112, 118) + v1 + fallout.message_str(112, 119))
+                        fallout.display_msg(fallout.message_str(112, 118) .. v1 .. fallout.message_str(112, 119))
                     end
                 else
                     if v1 == 1 then
-                        fallout.display_msg(fallout.message_str(112, 120) + v0 + fallout.message_str(112, 121))
+                        fallout.display_msg(fallout.message_str(112, 120) .. v0 .. fallout.message_str(112, 121))
                     else
-                        fallout.display_msg(fallout.message_str(112, 122) + v0 + fallout.message_str(112, 123) + v1 + fallout.message_str(112, 124))
+                        fallout.display_msg(fallout.message_str(112, 122) .. v0 .. fallout.message_str(112, 123) .. v1 .. fallout.message_str(112, 124))
                     end
                     fallout.critter_injure(fallout.dude_obj(), 2)
                 end
@@ -3972,15 +3972,15 @@ function Vats5()
         if v0 == 1 then
             fallout.display_msg(fallout.message_str(112, 109))
         else
-            fallout.display_msg(fallout.message_str(112, 110) + v0 + fallout.message_str(112, 111))
+            fallout.display_msg(fallout.message_str(112, 110) .. v0 .. fallout.message_str(112, 111))
         end
     else
         if fallout.is_critical(Skill_roll) then
             v1 = fallout.random(2, 4)
             if v0 == 1 then
-                fallout.display_msg(fallout.message_str(112, 112) + v1 + fallout.message_str(112, 113))
+                fallout.display_msg(fallout.message_str(112, 112) .. v1 .. fallout.message_str(112, 113))
             else
-                fallout.display_msg(fallout.message_str(112, 114) + v0 + fallout.message_str(112, 115) + v1 + fallout.message_str(112, 116))
+                fallout.display_msg(fallout.message_str(112, 114) .. v0 .. fallout.message_str(112, 115) .. v1 .. fallout.message_str(112, 116))
             end
             fallout.critter_injure(fallout.dude_obj(), 2)
         else
@@ -3989,14 +3989,14 @@ function Vats5()
                 if v1 == 1 then
                     fallout.display_msg(fallout.message_str(112, 117))
                 else
-                    fallout.display_msg(fallout.message_str(112, 118) + v1 + fallout.message_str(112, 119))
+                    fallout.display_msg(fallout.message_str(112, 118) .. v1 .. fallout.message_str(112, 119))
                 end
                 fallout.critter_injure(fallout.dude_obj(), 2)
             else
                 if v1 == 1 then
-                    fallout.display_msg(fallout.message_str(112, 120) + v0 + fallout.message_str(112, 121))
+                    fallout.display_msg(fallout.message_str(112, 120) .. v0 .. fallout.message_str(112, 121))
                 else
-                    fallout.display_msg(fallout.message_str(112, 122) + v0 + fallout.message_str(112, 123) + v1 + fallout.message_str(112, 124))
+                    fallout.display_msg(fallout.message_str(112, 122) .. v0 .. fallout.message_str(112, 123) .. v1 .. fallout.message_str(112, 124))
                 end
                 fallout.critter_injure(fallout.dude_obj(), 2)
             end
@@ -4361,14 +4361,14 @@ function Death3()
     else
         Skill_roll = fallout.roll_vs_skill(fallout.dude_obj(), 17, 20 * fallout.has_trait(0, fallout.dude_obj(), 16))
         if fallout.is_success(Skill_roll) then
-            fallout.display_msg(fallout.message_str(112, 110) + v0 + fallout.message_str(112, 111))
+            fallout.display_msg(fallout.message_str(112, 110) .. v0 .. fallout.message_str(112, 111))
         else
             if fallout.is_critical(Skill_roll) then
                 v1 = fallout.random(2, 4)
             else
                 v1 = fallout.random(2, 3)
             end
-            fallout.display_msg(fallout.message_str(112, 114) + v0 + fallout.message_str(112, 115) + v1 + fallout.message_str(112, 116))
+            fallout.display_msg(fallout.message_str(112, 114) .. v0 .. fallout.message_str(112, 115) .. v1 .. fallout.message_str(112, 116))
             fallout.critter_injure(fallout.dude_obj(), 2)
         end
         fallout.critter_dmg(fallout.dude_obj(), v1, 0)
@@ -4999,7 +4999,7 @@ function Scenes()
         while v4 == v2 do
             v2 = fallout.random(0, 9)
         end
-        fallout.debug_msg(fallout.message_str(112, 304) + v2 + "")
+        fallout.debug_msg(fallout.message_str(112, 304) .. v2 .. "")
         if v2 == 0 then
             v3 = fallout.random(1, 6)
             if v3 == 1 then

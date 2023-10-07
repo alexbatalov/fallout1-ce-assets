@@ -104,7 +104,7 @@ function map_update_p_proc()
             fallout.critter_attempt_placement(fallout.external_var("RazorPtr"), 12700, 0)
             fallout.set_global_var(613, 2)
             fallout.set_global_var(155, fallout.global_var(155) + 2)
-            fallout.display_msg(fallout.message_str(766, 103) + 2000 + fallout.message_str(766, 104))
+            fallout.display_msg(fallout.message_str(766, 103) .. 2000 .. fallout.message_str(766, 104))
             fallout.give_exp_points(2000)
         else
             if (fallout.map_var(1) == 0) and (fallout.global_var(613) == 9103) then
@@ -114,7 +114,7 @@ function map_update_p_proc()
                 fallout.set_global_var(613, 2)
                 fallout.set_global_var(352, 1)
                 fallout.set_global_var(155, fallout.global_var(155) + 2)
-                fallout.display_msg(fallout.message_str(766, 103) + 2000 + fallout.message_str(766, 104))
+                fallout.display_msg(fallout.message_str(766, 103) .. 2000 .. fallout.message_str(766, 104))
                 fallout.give_exp_points(2000)
                 fallout.gfade_in(600)
             else

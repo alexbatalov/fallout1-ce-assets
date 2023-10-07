@@ -143,7 +143,7 @@ end
 
 function Zax04()
     ZaxClearance()
-    fallout.gsay_reply(828, fallout.message_str(828, 211) + fallout.message_str(828, 241) + fallout.message_str(828, 242) + fallout.message_str(828, 243))
+    fallout.gsay_reply(828, fallout.message_str(828, 211) .. fallout.message_str(828, 241) .. fallout.message_str(828, 242) .. fallout.message_str(828, 243))
     fallout.giq_option(7, 312, 119, Zax21, 50)
     fallout.giq_option(7, 312, 120, Zax15, 50)
     fallout.giq_option(5, 312, 121, Zax13, 50)
@@ -507,7 +507,7 @@ function Mainframe02()
 end
 
 function Mainframe03()
-    fallout.gsay_reply(828, fallout.message_str(828, 211) + fallout.message_str(828, 241) + fallout.message_str(828, 242) + fallout.message_str(828, 243))
+    fallout.gsay_reply(828, fallout.message_str(828, 211) .. fallout.message_str(828, 241) .. fallout.message_str(828, 242) .. fallout.message_str(828, 243))
     fallout.giq_option(4, 828, 203, Mainframe02, 50)
     fallout.giq_option(4, 828, 205, TermEnd, 50)
 end
@@ -610,7 +610,7 @@ function Mainframe06a()
 end
 
 function Mainframe07()
-    fallout.gsay_reply(828, fallout.message_str(828, 231) + fallout.message_str(828, 250) + fallout.message_str(828, 251) + fallout.message_str(828, 252))
+    fallout.gsay_reply(828, fallout.message_str(828, 231) .. fallout.message_str(828, 250) .. fallout.message_str(828, 251) .. fallout.message_str(828, 252))
     fallout.giq_option(4, 828, 229, Mainframe07a, 50)
     fallout.giq_option(4, 828, 230, Mainframe05, 50)
     fallout.giq_option(4, 828, 205, TermEnd, 50)
@@ -622,9 +622,9 @@ function Mainframe07a()
 end
 
 function Mainframe08()
-    fallout.gsay_message(828, fallout.message_str(828, 232) + fallout.message_str(828, 233), 50)
-    fallout.gsay_message(828, fallout.message_str(828, 234) + fallout.message_str(828, 235), 50)
-    fallout.gsay_reply(828, fallout.message_str(828, 236) + fallout.message_str(828, 237) + fallout.message_str(828, 238))
+    fallout.gsay_message(828, fallout.message_str(828, 232) .. fallout.message_str(828, 233), 50)
+    fallout.gsay_message(828, fallout.message_str(828, 234) .. fallout.message_str(828, 235), 50)
+    fallout.gsay_reply(828, fallout.message_str(828, 236) .. fallout.message_str(828, 237) .. fallout.message_str(828, 238))
     fallout.giq_option(4, 828, 229, Mainframe08a, 50)
     fallout.giq_option(4, 828, 230, Mainframe05, 50)
     fallout.giq_option(4, 828, 205, TermEnd, 50)

@@ -275,7 +275,7 @@ function Talus13()
 end
 
 function Talus14()
-    fallout.gsay_reply(318, fallout.message_str(318, 130) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(318, 131))
+    fallout.gsay_reply(318, fallout.message_str(318, 130) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(318, 131))
     if not(line16flag) then
         fallout.giq_option(5, 318, 132, Talus16, 50)
     else
@@ -510,7 +510,7 @@ function Talus46()
 end
 
 function Talus47()
-    fallout.gsay_reply(318, fallout.message_str(318, 201) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(318, 202))
+    fallout.gsay_reply(318, fallout.message_str(318, 201) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(318, 202))
     fallout.giq_option(4, 318, 205, Talus51, 50)
     fallout.giq_option(-3, 318, 206, Talus50, 50)
 end
@@ -570,7 +570,7 @@ function Talus54()
     fallout.set_local_var(9, 1)
     fallout.set_map_var(9, fallout.map_var(9) + 1)
     fallout.set_map_var(15, 1)
-    fallout.gsay_message(318, fallout.message_str(318, 201) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(318, 217), 50)
+    fallout.gsay_message(318, fallout.message_str(318, 201) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(318, 217), 50)
 end
 
 function Talus55()
@@ -651,7 +651,7 @@ function talk_p_proc()
     if awardex then
         awardex = 0
         temp = 1500
-        fallout.display_msg(fallout.message_str(318, 408) + temp + fallout.message_str(318, 409))
+        fallout.display_msg(fallout.message_str(318, 408) .. temp .. fallout.message_str(318, 409))
         fallout.set_global_var(155, fallout.global_var(155) + 1)
         fallout.give_exp_points(temp)
     end

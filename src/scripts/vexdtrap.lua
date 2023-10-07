@@ -11,7 +11,7 @@ function start()
                 fallout.give_exp_points(25)
                 fallout.reg_anim_func(2, fallout.source_obj())
                 if fallout.source_obj() ~= fallout.dude_obj() then
-                    fallout.display_msg(fallout.proto_data(fallout.obj_pid(fallout.source_obj()), 1) + fallout.message_str(509, 100))
+                    fallout.display_msg(fallout.proto_data(fallout.obj_pid(fallout.source_obj()), 1) .. fallout.message_str(509, 100))
                 else
                     Passed_Times = Passed_Times + 1
                     if Passed_Times > 2 then

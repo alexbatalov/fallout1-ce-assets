@@ -123,7 +123,7 @@ function OpenDoor()
     fallout.set_local_var(0, 1)
     fallout.set_map_var(55, 2)
     fallout.display_msg(fallout.message_str(63, 100))
-    fallout.display_msg(fallout.message_str(766, 103) + "45" + fallout.message_str(766, 104))
+    fallout.display_msg(fallout.message_str(766, 103) .. "45" .. fallout.message_str(766, 104))
     fallout.give_exp_points(45)
 end
 

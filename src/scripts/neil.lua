@@ -149,8 +149,8 @@ function Neil01()
     fallout.giq_option(-3, 271, 104, Neil02, 50)
     fallout.giq_option(-3, 271, 105, Neil03, 50)
     fallout.giq_option(-3, 271, 106, NeilCombat, 50)
-    fallout.giq_option(4, 271, fallout.message_str(271, 107) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(271, 108), Neil07, 50)
-    fallout.giq_option(4, 271, fallout.message_str(271, 109) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(271, 110), NeilCombat, 50)
+    fallout.giq_option(4, 271, fallout.message_str(271, 107) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(271, 108), Neil07, 50)
+    fallout.giq_option(4, 271, fallout.message_str(271, 109) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(271, 110), NeilCombat, 50)
     fallout.giq_option(5, 271, 111, Neil16, 50)
     fallout.giq_option(6, 271, 112, Neil24, 50)
     fallout.giq_option(8, 271, 113, Neil26, 50)
@@ -260,7 +260,7 @@ end
 function Neil17()
     local v0 = 0
     fallout.item_caps_adjust(fallout.dude_obj(), 200)
-    fallout.gsay_message(271, fallout.message_str(271, 159) + " " + fallout.message_str(271, 160), 50)
+    fallout.gsay_message(271, fallout.message_str(271, 159) .. " " .. fallout.message_str(271, 160), 50)
     NeilCombat()
 end
 

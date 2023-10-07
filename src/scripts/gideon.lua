@@ -403,7 +403,7 @@ function gideonnull()
         fallout.use_obj(fallout.dude_obj())
         fallout.add_obj_to_inven(fallout.dude_obj(), fallout.create_object_sid(123, 0, 0, -1))
         g2 = 1000
-        fallout.display_msg(fallout.message_str(671, 501) + g2 + fallout.message_str(671, 502))
+        fallout.display_msg(fallout.message_str(671, 501) .. g2 .. fallout.message_str(671, 502))
         fallout.give_exp_points(g2)
         fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(10), 1)
     end

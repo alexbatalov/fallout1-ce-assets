@@ -197,7 +197,7 @@ function Medic03()
 end
 
 function Medic04()
-    fallout.gsay_reply(184, fallout.message_str(184, 106) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(184, 107))
+    fallout.gsay_reply(184, fallout.message_str(184, 106) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(184, 107))
     fallout.giq_option(4, 184, 108, Medic06, 0)
     fallout.giq_option(4, 184, 109, Medic04a, 0)
     fallout.giq_option(-3, 184, 110, Medic05, 0)
@@ -323,13 +323,13 @@ function Medic19()
 end
 
 function Medic20()
-    fallout.gsay_reply(184, fallout.message_str(184, 145) + rndx + fallout.message_str(184, 146))
+    fallout.gsay_reply(184, fallout.message_str(184, 145) .. rndx .. fallout.message_str(184, 146))
     fallout.giq_option(4, 184, 147, Medic19, 0)
     fallout.giq_option(4, 184, 148, Medic22, 0)
 end
 
 function Medic21()
-    fallout.gsay_reply(184, fallout.message_str(184, 149) + rndx + fallout.message_str(184, 150) + removal + fallout.message_str(184, 151))
+    fallout.gsay_reply(184, fallout.message_str(184, 149) .. rndx .. fallout.message_str(184, 150) .. removal .. fallout.message_str(184, 151))
     fallout.giq_option(4, 184, 152, Medic19, 0)
     fallout.giq_option(4, 184, 153, Medic22, 0)
 end

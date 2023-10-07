@@ -48,7 +48,7 @@ function use_p_proc()
             if fallout.is_critical(test) then
                 rndx = fallout.random(15, 30)
                 fallout.float_msg(fallout.self_obj(), fallout.message_str(354, 102), 0)
-                fallout.display_msg(fallout.message_str(354, 103) + rndx + fallout.message_str(354, 104))
+                fallout.display_msg(fallout.message_str(354, 103) .. rndx .. fallout.message_str(354, 104))
             else
                 fallout.float_msg(fallout.self_obj(), fallout.message_str(354, 105), 0)
                 fallout.display_msg(fallout.message_str(354, 106))

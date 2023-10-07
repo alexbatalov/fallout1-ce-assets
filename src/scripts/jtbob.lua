@@ -118,9 +118,9 @@ end
 
 function bob4()
     if fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3 then
-        fallout.gsay_message(341, fallout.message_str(341, 111) + fallout.obj_pid(fallout.critter_inven_obj(fallout.dude_obj(), 1)) + fallout.message_str(341, 112), 50)
+        fallout.gsay_message(341, fallout.message_str(341, 111) .. fallout.obj_pid(fallout.critter_inven_obj(fallout.dude_obj(), 1)) .. fallout.message_str(341, 112), 50)
     else
-        fallout.gsay_message(341, fallout.message_str(341, 113) + fallout.obj_pid(fallout.critter_inven_obj(fallout.dude_obj(), 2)) + fallout.message_str(341, 114), 50)
+        fallout.gsay_message(341, fallout.message_str(341, 113) .. fallout.obj_pid(fallout.critter_inven_obj(fallout.dude_obj(), 2)) .. fallout.message_str(341, 114), 50)
     end
 end
 

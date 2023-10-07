@@ -283,7 +283,7 @@ function Officer17()
 end
 
 function Officer18()
-    fallout.gsay_reply(178, fallout.message_str(178, 134) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(178, 135))
+    fallout.gsay_reply(178, fallout.message_str(178, 134) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(178, 135))
     fallout.giq_option(4, 178, 136, Officer20, 0)
     fallout.giq_option(5, 178, 137, Officer21, 0)
     fallout.giq_option(-3, 178, 138, Officer19, 0)

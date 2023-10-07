@@ -16,7 +16,7 @@ function start()
                 fallout.set_global_var(164, 1)
                 fallout.set_local_var(0, 1)
                 fallout.rm_obj_from_inven(fallout.dude_obj(), fallout.self_obj())
-                fallout.display_msg(fallout.message_str(766, 103) + "100" + fallout.message_str(766, 104))
+                fallout.display_msg(fallout.message_str(766, 103) .. "100" .. fallout.message_str(766, 104))
                 fallout.give_exp_points(100)
             end
         end

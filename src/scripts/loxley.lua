@@ -268,7 +268,7 @@ end
 
 function loxley00a()
     fallout.gsay_reply(49, 104)
-    fallout.giq_option(4, 49, fallout.message_str(49, 105) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(49, 106), loxley02, 50)
+    fallout.giq_option(4, 49, fallout.message_str(49, 105) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(49, 106), loxley02, 50)
     fallout.giq_option(4, 49, 107, loxley00a1, 51)
     fallout.giq_option(4, 49, 108, loxley22, 50)
 end
@@ -279,7 +279,7 @@ function loxley01()
     else
         fallout.gsay_reply(49, 110)
     end
-    fallout.giq_option(4, 49, fallout.message_str(49, 111) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(49, 112), loxley02, 50)
+    fallout.giq_option(4, 49, fallout.message_str(49, 111) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(49, 112), loxley02, 50)
     fallout.giq_option(4, 49, 113, loxley01a, 51)
     fallout.giq_option(4, 49, 114, loxley22, 50)
     fallout.giq_option(5, 49, 115, loxley01b, 49)
@@ -329,7 +329,7 @@ function loxley06()
         fallout.gsay_message(49, 134, 50)
     end
     fallout.give_exp_points(900)
-    fallout.display_msg(fallout.message_str(766, 103) + 900 + fallout.message_str(766, 104))
+    fallout.display_msg(fallout.message_str(766, 103) .. 900 .. fallout.message_str(766, 104))
     fallout.set_global_var(107, 1)
     loxley06b()
 end
@@ -414,7 +414,7 @@ end
 
 function loxley21()
     fallout.gsay_reply(49, 162)
-    fallout.giq_option(4, 49, fallout.message_str(49, 163) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(49, 164), loxley02, 50)
+    fallout.giq_option(4, 49, fallout.message_str(49, 163) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(49, 164), loxley02, 50)
     fallout.giq_option(4, 49, 165, loxley10, 51)
 end
 
@@ -427,7 +427,7 @@ end
 
 function loxley23()
     fallout.gsay_reply(49, 170)
-    fallout.giq_option(4, 49, fallout.message_str(49, 171) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(49, 172), loxley02, 50)
+    fallout.giq_option(4, 49, fallout.message_str(49, 171) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(49, 172), loxley02, 50)
     fallout.giq_option(4, 49, 173, loxley23a, 51)
     fallout.giq_option(4, 49, 174, loxley22, 50)
     fallout.giq_option(5, 49, 175, loxley23b, 49)
@@ -469,7 +469,7 @@ function loxley29()
         fallout.add_obj_to_inven(fallout.self_obj(), v0)
     end
     fallout.give_exp_points(500)
-    fallout.display_msg(fallout.message_str(766, 103) + 500 + fallout.message_str(766, 104))
+    fallout.display_msg(fallout.message_str(766, 103) .. 500 .. fallout.message_str(766, 104))
     fallout.set_global_var(107, 2)
     fallout.gsay_message(49, 189, 49)
     loxleyx3()

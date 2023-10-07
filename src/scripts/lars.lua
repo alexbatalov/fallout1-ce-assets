@@ -347,7 +347,7 @@ end
 function Lars10()
     local v0 = 0
     fallout.set_local_var(4, 1)
-    v0 = fallout.message_str(518, 128) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(518, 129)
+    v0 = fallout.message_str(518, 128) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(518, 129)
     fallout.gsay_reply(518, 127)
     fallout.giq_option(4, 518, v0, Lars11, 50)
     fallout.giq_option(4, 518, 130, Lars04, 50)
@@ -358,7 +358,7 @@ end
 
 function Lars11()
     local v0 = 0
-    v0 = fallout.message_str(518, 131) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(518, 132)
+    v0 = fallout.message_str(518, 131) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(518, 132)
     fallout.gsay_reply(518, v0)
     fallout.giq_option(4, 518, 133, Lars05, 50)
     fallout.giq_option(4, 518, 134, Lars02, 50)

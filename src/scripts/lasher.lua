@@ -421,7 +421,7 @@ function lasher19()
 end
 
 function lasher20_1()
-    fallout.gsay_message(384, fallout.message_str(384, 183) + fallout.message_str(384, 183), 50)
+    fallout.gsay_message(384, fallout.message_str(384, 183) .. fallout.message_str(384, 183), 50)
 end
 
 function lasher20_2()
@@ -537,14 +537,14 @@ function lasher39()
 end
 
 function lasher40_1()
-    fallout.gsay_message(384, fallout.message_str(384, 216) + fallout.message_str(384, 217), 50)
+    fallout.gsay_message(384, fallout.message_str(384, 216) .. fallout.message_str(384, 217), 50)
 end
 
 function lasher40_2()
 end
 
 function lasher41_1()
-    fallout.gsay_message(384, fallout.message_str(384, 218) + fallout.message_str(384, 219), 50)
+    fallout.gsay_message(384, fallout.message_str(384, 218) .. fallout.message_str(384, 219), 50)
 end
 
 function lasher41_2()

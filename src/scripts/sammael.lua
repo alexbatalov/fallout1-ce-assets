@@ -126,7 +126,7 @@ end
 
 function Sammael01()
     fallout.gsay_reply(254, 102)
-    fallout.giq_option(4, 254, fallout.message_str(254, 103) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(254, 104), Sammael02, 50)
+    fallout.giq_option(4, 254, fallout.message_str(254, 103) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(254, 104), Sammael02, 50)
     fallout.giq_option(4, 254, 105, Sammael03, 50)
     fallout.giq_option(-3, 254, 106, Sammael15, 50)
 end

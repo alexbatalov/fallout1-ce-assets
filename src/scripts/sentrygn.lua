@@ -29,7 +29,7 @@ function start()
                         fallout.display_msg(fallout.message_str(304, 103))
                     end
                     fallout.critter_dmg(fallout.source_obj(), v0, 0)
-                    fallout.display_msg(fallout.message_str(304, 104) + v0 + fallout.message_str(304, 105))
+                    fallout.display_msg(fallout.message_str(304, 104) .. v0 .. fallout.message_str(304, 105))
                 end
             else
                 if fallout.is_critical(v1) then
@@ -37,13 +37,13 @@ function start()
                         fallout.display_msg(fallout.message_str(304, 106))
                     end
                     fallout.critter_dmg(fallout.source_obj(), v0, 0)
-                    fallout.display_msg(fallout.message_str(304, 107) + v0 + fallout.message_str(304, 108))
+                    fallout.display_msg(fallout.message_str(304, 107) .. v0 .. fallout.message_str(304, 108))
                 else
                     if fallout.obj_type(fallout.source_obj()) == fallout.dude_obj() then
                         fallout.display_msg(fallout.message_str(304, 109))
                     end
                     fallout.critter_dmg(fallout.source_obj(), v0, 0)
-                    fallout.display_msg(fallout.message_str(304, 110) + v0 + fallout.message_str(304, 111))
+                    fallout.display_msg(fallout.message_str(304, 110) .. v0 .. fallout.message_str(304, 111))
                 end
             end
             fallout.set_local_var(1, 0)

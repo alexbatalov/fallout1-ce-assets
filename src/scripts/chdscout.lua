@@ -192,7 +192,7 @@ function ChdScout13()
     fallout.gsay_reply(276, 137)
     fallout.giq_option(4, 276, 138, ChdScout14, 50)
     fallout.giq_option(4, 276, 139, ChdScout15, 50)
-    fallout.giq_option(4, 276, fallout.message_str(276, 140) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(276, 141), ChdScout22, 50)
+    fallout.giq_option(4, 276, fallout.message_str(276, 140) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(276, 141), ChdScout22, 50)
     fallout.giq_option(4, 276, 142, ChdScout24, 50)
     fallout.giq_option(4, 276, 143, combat, 50)
 end
@@ -215,7 +215,7 @@ end
 
 function ChdScout17()
     fallout.gsay_reply(276, 149)
-    fallout.giq_option(4, 276, fallout.message_str(276, 150) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(276, 151), ChdScout17a, 50)
+    fallout.giq_option(4, 276, fallout.message_str(276, 150) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(276, 151), ChdScout17a, 50)
     fallout.giq_option(4, 276, 152, ChdScout20, 50)
     fallout.giq_option(4, 276, 153, combat, 50)
 end
@@ -239,7 +239,7 @@ end
 
 function ChdScout20()
     fallout.gsay_reply(276, 156)
-    fallout.giq_option(4, 276, fallout.message_str(276, 157) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(276, 158), ChdScout21, 50)
+    fallout.giq_option(4, 276, fallout.message_str(276, 157) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(276, 158), ChdScout21, 50)
     fallout.giq_option(4, 276, 159, combat, 50)
 end
 
@@ -249,7 +249,7 @@ function ChdScout21()
 end
 
 function ChdScout22()
-    fallout.gsay_reply(276, fallout.message_str(276, 161) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(276, 162))
+    fallout.gsay_reply(276, fallout.message_str(276, 161) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(276, 162))
     fallout.giq_option(4, 276, 163, ChdScout23, 50)
     fallout.giq_option(4, 276, 164, ChdScout23, 50)
     fallout.giq_option(4, 276, 165, combat, 50)
@@ -269,7 +269,7 @@ function ChdScout25()
     fallout.gsay_reply(276, 168)
     fallout.giq_option(4, 276, 169, ChdScout14, 50)
     fallout.giq_option(4, 276, 170, ChdScout15, 50)
-    fallout.giq_option(4, 276, fallout.message_str(276, 171) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(276, 172), ChdScout22, 50)
+    fallout.giq_option(4, 276, fallout.message_str(276, 171) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(276, 172), ChdScout22, 50)
     fallout.giq_option(4, 276, 173, ChdScout24, 50)
     fallout.giq_option(4, 276, 174, combat, 50)
 end

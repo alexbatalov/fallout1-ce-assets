@@ -67,7 +67,7 @@ function spatial_p_proc()
                     fallout.script_overrides()
                     v0 = fallout.message_str(613, 100)
                     if fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), 11, 10)) then
-                        v0 = v0 + fallout.message_str(613, 101)
+                        v0 = v0 .. fallout.message_str(613, 101)
                     end
                     fallout.set_local_var(0, 1)
                     fallout.display_msg(v0)

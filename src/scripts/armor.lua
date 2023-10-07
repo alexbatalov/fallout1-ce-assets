@@ -107,7 +107,7 @@ function fixed()
     fallout.display_msg(fallout.message_str(936, 104))
     fallout.create_object_sid(3, 22475, 0, -1)
     temp = 500
-    fallout.display_msg(fallout.message_str(936, 107) + temp + fallout.message_str(936, 108))
+    fallout.display_msg(fallout.message_str(936, 107) .. temp .. fallout.message_str(936, 108))
     fallout.give_exp_points(temp)
     fallout.destroy_object(fallout.self_obj())
 end

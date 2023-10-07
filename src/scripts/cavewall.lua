@@ -70,7 +70,7 @@ function damage_p_proc()
         end
         fallout.set_global_var(28, 2)
         fallout.set_global_var(43, 2)
-        fallout.display_msg(fallout.message_str(766, 188) + " " + fallout.message_str(766, 103) + " " + v1 + " " + fallout.message_str(766, 104))
+        fallout.display_msg(fallout.message_str(766, 188) .. " " .. fallout.message_str(766, 103) .. " " .. v1 .. " " .. fallout.message_str(766, 104))
         fallout.give_exp_points(v1)
         fallout.gfade_in(600)
         if not(fallout.tile_distance(fallout.tile_num(fallout.dude_obj()), 21155) < 15) then

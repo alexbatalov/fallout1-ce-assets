@@ -296,7 +296,7 @@ function Vault03()
                 fallout.float_msg(fallout.self_obj(), fallout.message_str(185, 122), 0)
             else
                 if PICK == 4 then
-                    fallout.float_msg(fallout.self_obj(), fallout.message_str(185, 123) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(0, 124), 0)
+                    fallout.float_msg(fallout.self_obj(), fallout.message_str(185, 123) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(0, 124), 0)
                 end
             end
         end
@@ -317,7 +317,7 @@ function Vault06()
         fallout.float_msg(fallout.self_obj(), fallout.message_str(185, 134), 0)
     else
         if PICK == 2 then
-            fallout.float_msg(fallout.self_obj(), fallout.message_str(185, 135) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(185, 136), 0)
+            fallout.float_msg(fallout.self_obj(), fallout.message_str(185, 135) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(185, 136), 0)
         else
             if PICK == 3 then
                 fallout.float_msg(fallout.self_obj(), fallout.message_str(185, 137), 0)
@@ -345,7 +345,7 @@ end
 function Vault09()
     PICK = fallout.random(1, 5)
     if PICK == 1 then
-        fallout.float_msg(fallout.self_obj(), fallout.message_str(185, 150) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(185, 151), 0)
+        fallout.float_msg(fallout.self_obj(), fallout.message_str(185, 150) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(185, 151), 0)
     else
         if PICK >= 4 then
             fallout.display_msg(fallout.message_str(185, 150 + PICK))

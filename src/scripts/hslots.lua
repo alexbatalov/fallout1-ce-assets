@@ -138,7 +138,7 @@ function use_p_proc()
 end
 
 function Dealer00()
-    Slot_Str = fallout.message_str(697, 202) + fallout.item_caps_total(fallout.dude_obj()) + fallout.message_str(697, 203)
+    Slot_Str = fallout.message_str(697, 202) .. fallout.item_caps_total(fallout.dude_obj()) .. fallout.message_str(697, 203)
     fallout.gsay_reply(697, Slot_Str)
     fallout.giq_option(4, 697, 190, CheckMoney00, 50)
     fallout.giq_option(4, 697, 191, CheckMoney01, 50)
@@ -150,28 +150,28 @@ function Dealer00()
 end
 
 function Dealer01()
-    fallout.gsay_reply(697, fallout.message_str(697, 180) + fallout.message_str(697, 181))
+    fallout.gsay_reply(697, fallout.message_str(697, 180) .. fallout.message_str(697, 181))
 end
 
 function Dealer02()
-    fallout.gsay_reply(697, fallout.message_str(697, 182) + fallout.message_str(697, 204))
+    fallout.gsay_reply(697, fallout.message_str(697, 182) .. fallout.message_str(697, 204))
     fallout.item_caps_adjust(fallout.dude_obj(), Bet * -1)
     Dealer07()
 end
 
 function Dealer03()
-    fallout.gsay_reply(697, fallout.message_str(697, 183) + fallout.message_str(697, 204))
+    fallout.gsay_reply(697, fallout.message_str(697, 183) .. fallout.message_str(697, 204))
     Dealer07()
 end
 
 function Dealer04()
-    fallout.gsay_reply(697, fallout.message_str(697, 184) + fallout.message_str(697, 204))
+    fallout.gsay_reply(697, fallout.message_str(697, 184) .. fallout.message_str(697, 204))
     fallout.item_caps_adjust(fallout.dude_obj(), Bet)
     Dealer07()
 end
 
 function Dealer05()
-    fallout.gsay_reply(697, fallout.message_str(697, 185) + fallout.message_str(697, 204))
+    fallout.gsay_reply(697, fallout.message_str(697, 185) .. fallout.message_str(697, 204))
     fallout.item_caps_adjust(fallout.dude_obj(), Bet * 2)
     Dealer07()
 end

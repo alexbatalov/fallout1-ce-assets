@@ -128,7 +128,7 @@ function use_obj_on_p_proc()
                 fallout.obj_unlock(fallout.self_obj())
                 fallout.set_local_var(3, 1)
                 fallout.display_msg(fallout.message_str(832, 109))
-                fallout.display_msg(fallout.message_str(766, 103) + "55" + fallout.message_str(766, 104))
+                fallout.display_msg(fallout.message_str(766, 103) .. "55" .. fallout.message_str(766, 104))
                 fallout.give_exp_points(55)
             else
                 if fallout.is_critical(v2) then
@@ -210,7 +210,7 @@ function Trapped_And_Locked()
         if fallout.is_success(v0) then
             fallout.display_msg(fallout.message_str(832, 113))
             fallout.set_local_var(2, 1)
-            fallout.display_msg(fallout.message_str(766, 103) + "45" + fallout.message_str(766, 104))
+            fallout.display_msg(fallout.message_str(766, 103) .. "45" .. fallout.message_str(766, 104))
             fallout.give_exp_points(45)
         else
             if fallout.is_critical(v0) then
@@ -237,7 +237,7 @@ function Trapped_And_Locked()
                     fallout.obj_unlock(fallout.self_obj())
                     fallout.set_local_var(3, 1)
                     fallout.display_msg(fallout.message_str(832, 116))
-                    fallout.display_msg(fallout.message_str(766, 103) + "55" + fallout.message_str(766, 104))
+                    fallout.display_msg(fallout.message_str(766, 103) .. "55" .. fallout.message_str(766, 104))
                     fallout.give_exp_points(55)
                 else
                     if fallout.is_critical(v0) then
@@ -324,7 +324,7 @@ function Damage_Dude()
     if fallout.local_var(0) == 1 then
         fallout.display_msg(fallout.message_str(832, 101))
     else
-        fallout.display_msg(fallout.message_str(832, 102) + fallout.local_var(0) + fallout.message_str(832, 103))
+        fallout.display_msg(fallout.message_str(832, 102) .. fallout.local_var(0) .. fallout.message_str(832, 103))
     end
 end
 

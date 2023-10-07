@@ -25,7 +25,7 @@ function start()
                 fallout.set_local_var(3, 1)
                 temp = 100
                 fallout.give_exp_points(temp)
-                fallout.display_msg(fallout.message_str(96, 200) + temp + fallout.message_str(96, 201))
+                fallout.display_msg(fallout.message_str(96, 200) .. temp .. fallout.message_str(96, 201))
             else
                 if fallout.local_var(1) then
                     use_door()

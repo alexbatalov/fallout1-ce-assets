@@ -156,7 +156,7 @@ function talk_p_proc()
     if fallout.local_var(8) == 1 then
         fallout.set_local_var(8, 2)
         temp = 1500
-        fallout.display_msg(fallout.message_str(52, 351) + temp + fallout.message_str(52, 352))
+        fallout.display_msg(fallout.message_str(52, 351) .. temp .. fallout.message_str(52, 352))
         fallout.give_exp_points(temp)
     end
     if Denounce_Player == 1 then

@@ -207,11 +207,11 @@ function child04()
         fallout.gsay_message(41, 111, 50)
     end
     if (hp_injured > 0) or fallout.get_poison(fallout.dude_obj()) then
-        fallout.gsay_reply(41, fallout.message_str(41, 113) + cost + fallout.message_str(41, 114))
+        fallout.gsay_reply(41, fallout.message_str(41, 113) .. cost .. fallout.message_str(41, 114))
         fallout.giq_option(3, 41, 115, child04a, 50)
         fallout.giq_option(3, 41, 116, childend, 50)
         fallout.giq_option(3, 41, 117, child09, 50)
-        fallout.giq_option(3, 41, fallout.message_str(41, 118) + cheat + fallout.message_str(41, 119), child05, 50)
+        fallout.giq_option(3, 41, fallout.message_str(41, 118) .. cheat .. fallout.message_str(41, 119), child05, 50)
     end
 end
 

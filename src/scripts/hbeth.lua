@@ -821,22 +821,22 @@ end
 function Beth64()
     if (fallout.get_critter_stat(fallout.dude_obj(), 3) >= 7) and (fallout.get_critter_stat(fallout.dude_obj(), 34) == 0) then
         if (((fallout.game_time() // (10 * 60 * 60)) - fallout.local_var(11)) <= 1) and (fallout.get_critter_stat(fallout.dude_obj(), 34) == 1) then
-            fallout.gsay_reply(617, fallout.message_str(617, fallout.random(311, 314)) + " " + fallout.message_str(617, 315))
+            fallout.gsay_reply(617, fallout.message_str(617, fallout.random(311, 314)) .. " " .. fallout.message_str(617, 315))
         else
             if ((fallout.game_time() // (10 * 60 * 60)) - fallout.local_var(11)) <= 1 then
-                fallout.gsay_reply(617, fallout.message_str(617, fallout.random(311, 314)) + " " + fallout.message_str(617, 316))
+                fallout.gsay_reply(617, fallout.message_str(617, fallout.random(311, 314)) .. " " .. fallout.message_str(617, 316))
             else
                 if (((fallout.game_time() // (10 * 60 * 60)) - fallout.local_var(11)) > 1) and (((fallout.game_time() // (10 * 60 * 60)) - fallout.local_var(11)) <= 96) then
-                    fallout.gsay_reply(617, fallout.message_str(617, fallout.random(311, 314)) + " " + fallout.message_str(617, 317))
+                    fallout.gsay_reply(617, fallout.message_str(617, fallout.random(311, 314)) .. " " .. fallout.message_str(617, 317))
                 else
                     if (((fallout.game_time() // (10 * 60 * 60)) - fallout.local_var(11)) > 96) and (((fallout.game_time() // (10 * 60 * 60)) - fallout.local_var(11)) <= 168) then
-                        fallout.gsay_reply(617, fallout.message_str(617, fallout.random(311, 314)) + " " + fallout.message_str(617, 318))
+                        fallout.gsay_reply(617, fallout.message_str(617, fallout.random(311, 314)) .. " " .. fallout.message_str(617, 318))
                     else
                         if (((fallout.game_time() // (10 * 60 * 60)) - fallout.local_var(11)) > 168) and (((fallout.game_time() // (10 * 60 * 60)) - fallout.local_var(11)) <= 336) then
-                            fallout.gsay_reply(617, fallout.message_str(617, fallout.random(311, 314)) + " " + fallout.message_str(617, 319))
+                            fallout.gsay_reply(617, fallout.message_str(617, fallout.random(311, 314)) .. " " .. fallout.message_str(617, 319))
                         else
                             if ((fallout.game_time() // (10 * 60 * 60)) - fallout.local_var(11)) > 336 then
-                                fallout.gsay_reply(617, fallout.message_str(617, fallout.random(311, 314)) + " " + fallout.message_str(617, 320))
+                                fallout.gsay_reply(617, fallout.message_str(617, fallout.random(311, 314)) .. " " .. fallout.message_str(617, 320))
                             end
                         end
                     end
@@ -845,22 +845,22 @@ function Beth64()
         end
     else
         if (((fallout.game_time() // (10 * 60 * 60)) - fallout.local_var(11)) <= 1) and (fallout.get_critter_stat(fallout.dude_obj(), 34) == 1) then
-            fallout.gsay_reply(617, fallout.message_str(617, fallout.random(311, 313)) + " " + fallout.message_str(617, 315))
+            fallout.gsay_reply(617, fallout.message_str(617, fallout.random(311, 313)) .. " " .. fallout.message_str(617, 315))
         else
             if ((fallout.game_time() // (10 * 60 * 60)) - fallout.local_var(11)) <= 1 then
-                fallout.gsay_reply(617, fallout.message_str(617, fallout.random(311, 313)) + " " + fallout.message_str(617, 316))
+                fallout.gsay_reply(617, fallout.message_str(617, fallout.random(311, 313)) .. " " .. fallout.message_str(617, 316))
             else
                 if (((fallout.game_time() // (10 * 60 * 60)) - fallout.local_var(11)) > 1) and (((fallout.game_time() // (10 * 60 * 60)) - fallout.local_var(11)) <= 96) then
-                    fallout.gsay_reply(617, fallout.message_str(617, fallout.random(311, 313)) + " " + fallout.message_str(617, 317))
+                    fallout.gsay_reply(617, fallout.message_str(617, fallout.random(311, 313)) .. " " .. fallout.message_str(617, 317))
                 else
                     if (((fallout.game_time() // (10 * 60 * 60)) - fallout.local_var(11)) > 96) and (((fallout.game_time() // (10 * 60 * 60)) - fallout.local_var(11)) <= 168) then
-                        fallout.gsay_reply(617, fallout.message_str(617, fallout.random(311, 313)) + " " + fallout.message_str(617, 318))
+                        fallout.gsay_reply(617, fallout.message_str(617, fallout.random(311, 313)) .. " " .. fallout.message_str(617, 318))
                     else
                         if (((fallout.game_time() // (10 * 60 * 60)) - fallout.local_var(11)) > 168) and (((fallout.game_time() // (10 * 60 * 60)) - fallout.local_var(11)) <= 336) then
-                            fallout.gsay_reply(617, fallout.message_str(617, fallout.random(311, 313)) + " " + fallout.message_str(617, 319))
+                            fallout.gsay_reply(617, fallout.message_str(617, fallout.random(311, 313)) .. " " .. fallout.message_str(617, 319))
                         else
                             if ((fallout.game_time() // (10 * 60 * 60)) - fallout.local_var(11)) > 336 then
-                                fallout.gsay_reply(617, fallout.message_str(617, fallout.random(311, 313)) + " " + fallout.message_str(617, 320))
+                                fallout.gsay_reply(617, fallout.message_str(617, fallout.random(311, 313)) .. " " .. fallout.message_str(617, 320))
                             end
                         end
                     end

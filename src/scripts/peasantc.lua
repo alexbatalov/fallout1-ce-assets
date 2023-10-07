@@ -186,15 +186,15 @@ function PeasantC06()
     v0 = fallout.message_str(438, 116)
     if fallout.global_var(37) == 1 then
         if fallout.global_var(38) == 1 then
-            v0 = v0 + fallout.message_str(438, 120)
+            v0 = v0 .. fallout.message_str(438, 120)
         else
-            v0 = v0 + fallout.message_str(438, 119)
+            v0 = v0 .. fallout.message_str(438, 119)
         end
     else
         if fallout.global_var(38) == 1 then
-            v0 = v0 + fallout.message_str(438, 118)
+            v0 = v0 .. fallout.message_str(438, 118)
         else
-            v0 = v0 + fallout.message_str(438, 117)
+            v0 = v0 .. fallout.message_str(438, 117)
         end
     end
     fallout.gsay_reply(438, v0)

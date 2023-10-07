@@ -296,7 +296,7 @@ function CarvLead00()
     end
     v1 = fallout.item_caps_adjust(fallout.dude_obj(), PaymentAmount)
     beenPaid = 1
-    fallout.gsay_reply(817, fallout.message_str(817, 101) + fallout.message_str(817, v0) + fallout.message_str(817, 102) + fallout.message_str(817, v0) + fallout.message_str(817, 103))
+    fallout.gsay_reply(817, fallout.message_str(817, 101) .. fallout.message_str(817, v0) .. fallout.message_str(817, 102) .. fallout.message_str(817, v0) .. fallout.message_str(817, 103))
     fallout.giq_option(-3, 817, 104, CarvLead01, 50)
     fallout.giq_option(4, 817, 105, CarvLead03, 50)
     if fallout.cur_map_index() == 10 then
@@ -387,7 +387,7 @@ function CarvLead09()
     end
     v1 = fallout.item_caps_adjust(fallout.dude_obj(), PaymentAmount)
     beenPaid = 1
-    fallout.gsay_reply(817, fallout.message_str(817, 137) + fallout.message_str(817, v0) + fallout.message_str(817, 138))
+    fallout.gsay_reply(817, fallout.message_str(817, 137) .. fallout.message_str(817, v0) .. fallout.message_str(817, 138))
     fallout.giq_option(-3, 817, 139, CarvLead11, 50)
     fallout.giq_option(4, 817, 140, CarvLead11, 50)
 end

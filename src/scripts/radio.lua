@@ -182,7 +182,7 @@ function Radio11()
     local v0 = 0
     v0 = fallout.message_str(361, 121)
     if fallout.is_success(fallout.do_check(fallout.dude_obj(), 4, 0)) then
-        v0 = v0 + fallout.message_str(361, 122)
+        v0 = v0 .. fallout.message_str(361, 122)
     end
     fallout.display_msg(v0)
 end
@@ -210,7 +210,7 @@ function Radio14()
     end
     v1 = fallout.message_str(361, 125)
     if fallout.is_success(fallout.do_check(fallout.dude_obj(), v0, 0)) then
-        v1 = v1 + fallout.message_str(361, 126)
+        v1 = v1 .. fallout.message_str(361, 126)
     end
     fallout.display_msg(v1)
 end

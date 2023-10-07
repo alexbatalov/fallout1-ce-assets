@@ -74,13 +74,13 @@ function start()
                     temp = (16 - fallout.global_var(115)) * 50
                     if temp < 500 then
                         temp = 500 - temp
-                        fallout.display_msg(fallout.message_str(238, 100) + temp + fallout.message_str(238, 101))
+                        fallout.display_msg(fallout.message_str(238, 100) .. temp .. fallout.message_str(238, 101))
                         fallout.set_global_var(155, fallout.global_var(155) + 1)
                         fallout.give_exp_points(temp)
                     else
                         temp = 0
                         fallout.set_global_var(155, fallout.global_var(155) + 1)
-                        fallout.display_msg(fallout.message_str(238, 100) + temp + fallout.message_str(238, 101))
+                        fallout.display_msg(fallout.message_str(238, 100) .. temp .. fallout.message_str(238, 101))
                     end
                 end
                 if (fallout.global_var(114) == 1) and (fallout.global_var(115) <= 8) or (fallout.global_var(115) <= 4) then

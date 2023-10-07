@@ -146,7 +146,7 @@ function talk_p_proc()
 end
 
 function Lyle01()
-    fallout.gsay_reply(507, fallout.message_str(507, 103) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(507, 104))
+    fallout.gsay_reply(507, fallout.message_str(507, 103) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(507, 104))
     fallout.giq_option(4, 507, 105, Lyle02, 50)
     fallout.giq_option(-3, 507, 107, LyleEnd, 50)
 end

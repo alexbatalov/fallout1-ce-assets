@@ -58,7 +58,7 @@ function start()
             end
             update_party()
             if (fallout.map_var(0) == 0) and (fallout.elevation(fallout.dude_obj()) == 1) then
-                fallout.display_msg(fallout.message_str(766, 103) + "1000" + fallout.message_str(766, 104))
+                fallout.display_msg(fallout.message_str(766, 103) .. "1000" .. fallout.message_str(766, 104))
                 fallout.give_exp_points(1000)
                 fallout.set_map_var(0, 1)
             end

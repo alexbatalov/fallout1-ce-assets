@@ -297,7 +297,7 @@ end
 function Tycho11()
     fallout.set_global_var(121, 1)
     fallout.gsay_reply(389, 127)
-    fallout.giq_option(4, 389, fallout.message_str(389, 128) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(389, 129), Tycho12, 50)
+    fallout.giq_option(4, 389, fallout.message_str(389, 128) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(389, 129), Tycho12, 50)
     fallout.giq_option(4, 389, 130, Tycho13, 50)
 end
 

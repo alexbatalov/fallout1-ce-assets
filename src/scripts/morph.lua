@@ -243,7 +243,7 @@ function morph02()
     fallout.gsay_reply(53, 101)
     fallout.giq_option(4, 53, 102, morph02_1, 50)
     fallout.giq_option(5, 53, 103, morph02_3, 50)
-    fallout.giq_option(4, 53, fallout.message_str(53, 104) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(53, 105), morph27, 50)
+    fallout.giq_option(4, 53, fallout.message_str(53, 104) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(53, 105), morph27, 50)
     fallout.giq_option(4, 53, 106, morph06, 51)
     fallout.giq_option(-3, 53, 107, morph02a, 50)
 end

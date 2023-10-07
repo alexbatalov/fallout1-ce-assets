@@ -296,13 +296,13 @@ function RecalcDateString()
         end
     end
     if v1 == 8 then
-        DayString = DayString + fallout.message_str(849, 197)
+        DayString = DayString .. fallout.message_str(849, 197)
     else
         if v1 == 18 then
-            DayString = DayString + fallout.message_str(849, 198)
+            DayString = DayString .. fallout.message_str(849, 198)
         else
             if v1 == 28 then
-                DayString = DayString + fallout.message_str(849, 199)
+                DayString = DayString .. fallout.message_str(849, 199)
             end
         end
     end
@@ -345,9 +345,9 @@ function FGTDriver02()
     RecalcDateString()
     v0 = fallout.local_var(5)
     if v0 == fallout.get_day() then
-        fallout.gsay_reply(849, fallout.message_str(849, 106) + fallout.message_str(849, 107))
+        fallout.gsay_reply(849, fallout.message_str(849, 106) .. fallout.message_str(849, 107))
     else
-        fallout.gsay_reply(849, fallout.message_str(849, 106) + fallout.message_str(849, 108) + DayString + fallout.message_str(849, 111))
+        fallout.gsay_reply(849, fallout.message_str(849, 106) .. fallout.message_str(849, 108) .. DayString .. fallout.message_str(849, 111))
     end
     FGTDriver04()
 end
@@ -360,7 +360,7 @@ function FGTDriver03()
         if v0 == fallout.get_day() then
             fallout.gsay_reply(849, fallout.message_str(849, 107))
         else
-            fallout.gsay_reply(849, fallout.message_str(849, 108) + DayString + fallout.message_str(849, 111))
+            fallout.gsay_reply(849, fallout.message_str(849, 108) .. DayString .. fallout.message_str(849, 111))
         end
         FGTDriver04()
     else
@@ -484,7 +484,7 @@ end
 
 function FGTDriver18()
     RecalcDateString()
-    fallout.gsay_reply(849, fallout.message_str(849, 146) + DayString + fallout.message_str(849, 153))
+    fallout.gsay_reply(849, fallout.message_str(849, 146) .. DayString .. fallout.message_str(849, 153))
     fallout.giq_option(4, 849, 154, FGTDriver30, 50)
     fallout.giq_option(4, 849, 155, FGTDriver34, 50)
 end
@@ -644,7 +644,7 @@ function FGTDriver29()
     local v0 = 0
     RecalcDateString()
     v0 = fallout.local_var(5)
-    fallout.gsay_message(849, fallout.message_str(849, 196) + DayString + fallout.message_str(849, 203) + fallout.message_str(849, 195), 50)
+    fallout.gsay_message(849, fallout.message_str(849, 196) .. DayString .. fallout.message_str(849, 203) .. fallout.message_str(849, 195), 50)
 end
 
 function FGTDriver30()

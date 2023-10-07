@@ -303,9 +303,9 @@ function Keri02()
     RecalcDateString()
     v0 = fallout.local_var(9)
     if v0 == fallout.get_day() then
-        fallout.gsay_reply(595, fallout.message_str(595, 107) + fallout.message_str(595, 108))
+        fallout.gsay_reply(595, fallout.message_str(595, 107) .. fallout.message_str(595, 108))
     else
-        fallout.gsay_reply(595, fallout.message_str(595, 107) + fallout.message_str(595, 109) + DayString + fallout.message_str(595, 112))
+        fallout.gsay_reply(595, fallout.message_str(595, 107) .. fallout.message_str(595, 109) .. DayString .. fallout.message_str(595, 112))
     end
     Keri04()
 end
@@ -318,7 +318,7 @@ function Keri03()
         if v0 == fallout.get_day() then
             fallout.gsay_reply(595, fallout.message_str(595, 113))
         else
-            fallout.gsay_reply(595, fallout.message_str(595, 114) + DayString + fallout.message_str(595, 117))
+            fallout.gsay_reply(595, fallout.message_str(595, 114) .. DayString .. fallout.message_str(595, 117))
         end
         Keri04()
     else
@@ -484,7 +484,7 @@ end
 
 function Keri18()
     RecalcDateString()
-    fallout.gsay_reply(595, fallout.message_str(595, 157) + DayString + fallout.message_str(595, 158))
+    fallout.gsay_reply(595, fallout.message_str(595, 157) .. DayString .. fallout.message_str(595, 158))
     fallout.giq_option(4, 595, 159, Keri30, 50)
     fallout.giq_option(4, 595, 160, Keri34, 50)
 end
@@ -668,7 +668,7 @@ function Keri29()
     local v0 = 0
     RecalcDateString()
     v0 = fallout.local_var(9)
-    fallout.gsay_message(595, fallout.message_str(595, 209) + DayString + fallout.message_str(595, 212), 50)
+    fallout.gsay_message(595, fallout.message_str(595, 209) .. DayString .. fallout.message_str(595, 212), 50)
 end
 
 function Keri30()
@@ -790,10 +790,10 @@ function RecalcDateString()
         end
     end
     if v1 == 3 then
-        DayString = DayString + fallout.message_str(595, 210)
+        DayString = DayString .. fallout.message_str(595, 210)
     else
         if v1 == 17 then
-            DayString = DayString + fallout.message_str(595, 211)
+            DayString = DayString .. fallout.message_str(595, 211)
         end
     end
 end

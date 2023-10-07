@@ -275,8 +275,8 @@ end
 
 function tandi01()
     fallout.gsay_reply(57, 106)
-    fallout.giq_option(4, 57, fallout.message_str(57, 107) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(57, 108), tandi02, 50)
-    fallout.giq_option(4, 57, fallout.message_str(57, 109) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(57, 110), tandi01a, 51)
+    fallout.giq_option(4, 57, fallout.message_str(57, 107) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(57, 108), tandi02, 50)
+    fallout.giq_option(4, 57, fallout.message_str(57, 109) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(57, 110), tandi01a, 51)
     fallout.giq_option(-3, 57, 111, tandi29, 50)
 end
 
@@ -436,7 +436,7 @@ end
 
 function tandi37()
     fallout.gsay_reply(57, 163)
-    fallout.giq_option(4, 57, fallout.message_str(57, 164) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(57, 165), tandi38, 50)
+    fallout.giq_option(4, 57, fallout.message_str(57, 164) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(57, 165), tandi38, 50)
     fallout.giq_option(5, 57, 166, tandi42, 50)
     fallout.giq_option(-3, 57, 167, tandi43a, 50)
 end

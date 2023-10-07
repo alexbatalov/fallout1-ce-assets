@@ -330,7 +330,7 @@ function Neal01()
     fallout.gsay_reply(508, 106)
     fallout.giq_option(4, 508, 107, Neal02, 50)
     fallout.giq_option(4, 508, 108, Neal03, 50)
-    fallout.giq_option(4, 508, fallout.message_str(508, 109) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(508, 110), Neal04, 50)
+    fallout.giq_option(4, 508, fallout.message_str(508, 109) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(508, 110), Neal04, 50)
     if fallout.global_var(286) == 0 then
         fallout.giq_option(4, 508, 125, Neal09, 50)
     else

@@ -307,7 +307,7 @@ function reward()
             fallout.display_msg(fallout.message_str(102, 209))
         end
     end
-    fallout.display_msg("$" + cash)
+    fallout.display_msg("$" .. cash)
     if robbed then
         fallout.float_msg(fallout.self_obj(), fallout.message_str(102, 121), 0)
     else

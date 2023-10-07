@@ -105,7 +105,7 @@ end
 
 function gwen00()
     fallout.gsay_reply(141, 101)
-    fallout.giq_option(3, 141, fallout.message_str(141, 102) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(141, 103), gwen01, 50)
+    fallout.giq_option(3, 141, fallout.message_str(141, 102) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(141, 103), gwen01, 50)
     fallout.giq_option(7, 141, 104, gwen02, 50)
     fallout.giq_option(-3, 141, 105, gwen03, 50)
     if fallout.get_critter_stat(fallout.dude_obj(), 34) == 0 then

@@ -106,7 +106,7 @@ end
 
 function petrox00()
     fallout.gsay_reply(139, 101)
-    fallout.giq_option(4, 139, fallout.message_str(139, 102) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(139, 103), petrox01, 50)
+    fallout.giq_option(4, 139, fallout.message_str(139, 102) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(139, 103), petrox01, 50)
     fallout.giq_option(5, 139, 104, petrox02, 50)
     fallout.giq_option(-3, 139, 105, petrox03, 50)
 end

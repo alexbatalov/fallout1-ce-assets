@@ -106,7 +106,7 @@ end
 
 function tolya00()
     fallout.gsay_reply(140, 101)
-    fallout.giq_option(4, 140, fallout.message_str(140, 102) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(140, 103), tolya01, 50)
+    fallout.giq_option(4, 140, fallout.message_str(140, 102) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(140, 103), tolya01, 50)
     fallout.giq_option(5, 140, 104, tolya02, 50)
     fallout.giq_option(-3, 140, 105, tolya03, 50)
 end
@@ -120,7 +120,7 @@ end
 
 function tolya02()
     fallout.gsay_reply(140, 110)
-    fallout.giq_option(4, 140, fallout.message_str(140, 111) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(140, 112), tolya07, 50)
+    fallout.giq_option(4, 140, fallout.message_str(140, 111) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(140, 112), tolya07, 50)
     fallout.giq_option(4, 140, 113, combat, 50)
 end
 

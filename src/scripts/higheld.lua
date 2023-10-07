@@ -158,7 +158,7 @@ function talk_p_proc()
         if fallout.local_var(6) == 0 then
             fallout.set_local_var(6, 1)
             temp = 1500
-            fallout.display_msg(fallout.message_str(942, 166) + temp + fallout.message_str(942, 167))
+            fallout.display_msg(fallout.message_str(942, 166) .. temp .. fallout.message_str(942, 167))
             fallout.give_exp_points(temp)
         end
     end
@@ -187,7 +187,7 @@ function look_at_p_proc()
 end
 
 function Meeting01()
-    fallout.gsay_reply(942, fallout.message_str(942, 134) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(942, 135) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(942, 136))
+    fallout.gsay_reply(942, fallout.message_str(942, 134) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(942, 135) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(942, 136))
     fallout.giq_option(4, 942, 137, Meeting02, 50)
     fallout.giq_option(-3, 942, 138, Meeting13, 51)
 end
@@ -240,7 +240,7 @@ end
 
 function Meeting07()
     fallout.gsay_reply(942, 151)
-    fallout.giq_option(4, 942, fallout.message_str(942, 152) + fallout.message_str(942, 153), Meeting08, 50)
+    fallout.giq_option(4, 942, fallout.message_str(942, 152) .. fallout.message_str(942, 153), Meeting08, 50)
 end
 
 function Meeting08()
@@ -258,7 +258,7 @@ function Meeting09()
 end
 
 function Meeting10()
-    fallout.gsay_reply(942, fallout.message_str(942, 158) + fallout.message_str(942, 159))
+    fallout.gsay_reply(942, fallout.message_str(942, 158) .. fallout.message_str(942, 159))
     fallout.giq_option(4, 942, 160, Meeting09, 50)
     fallout.giq_option(4, 942, 161, Meeting11, 50)
     fallout.giq_option(-3, 942, 138, Meeting13, 51)
@@ -285,7 +285,7 @@ function Elder01()
 end
 
 function Elder02()
-    fallout.gsay_reply(942, fallout.message_str(942, 105) + fallout.message_str(942, 106) + fallout.message_str(942, 107))
+    fallout.gsay_reply(942, fallout.message_str(942, 105) .. fallout.message_str(942, 106) .. fallout.message_str(942, 107))
     fallout.giq_option(4, 942, 108, Elder03, 50)
     fallout.giq_option(4, 942, 109, Elder09, 50)
     if fallout.global_var(78) == 2 then

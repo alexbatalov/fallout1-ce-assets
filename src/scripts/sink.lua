@@ -40,7 +40,7 @@ end
 
 function use_obj_on_p_proc()
     fallout.script_overrides()
-    fallout.display_msg(fallout.message_str(739, 102) + fallout.proto_data(fallout.obj_pid(fallout.obj_being_used_with()), 1) + fallout.message_str(739, 103))
+    fallout.display_msg(fallout.message_str(739, 102) .. fallout.proto_data(fallout.obj_pid(fallout.obj_being_used_with()), 1) .. fallout.message_str(739, 103))
 end
 
 local exports = {}

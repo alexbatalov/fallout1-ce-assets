@@ -170,11 +170,11 @@ function Talius01()
         fallout.gsay_reply(274, 103)
     end
     fallout.giq_option(-3, 274, 104, Talius02, 50)
-    fallout.giq_option(-3, 274, fallout.message_str(274, 105) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(274, 106) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(274, 107), Talius05, 50)
-    fallout.giq_option(4, 274, fallout.message_str(274, 108) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(274, 109), Talius06, 50)
+    fallout.giq_option(-3, 274, fallout.message_str(274, 105) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(274, 106) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(274, 107), Talius05, 50)
+    fallout.giq_option(4, 274, fallout.message_str(274, 108) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(274, 109), Talius06, 50)
     fallout.giq_option(4, 274, 110, combat, 50)
     fallout.giq_option(4, 274, 111, Talius36, 50)
-    fallout.giq_option(6, 274, fallout.message_str(274, 112) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(274, 113), Talius37, 50)
+    fallout.giq_option(6, 274, fallout.message_str(274, 112) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(274, 113), Talius37, 50)
     fallout.giq_option(8, 274, 114, Talius37, 50)
 end
 
@@ -203,7 +203,7 @@ function Talius04()
 end
 
 function Talius05()
-    fallout.gsay_reply(274, fallout.message_str(274, 122) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(274, 123))
+    fallout.gsay_reply(274, fallout.message_str(274, 122) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(274, 123))
     fallout.giq_option(-3, 274, 124, Talius02, 50)
     fallout.giq_option(-3, 274, 125, combat, 50)
 end
@@ -286,7 +286,7 @@ function Talius15()
 end
 
 function Talius16()
-    fallout.gsay_reply(274, fallout.message_str(274, 163) + " " + fallout.message_str(274, 164))
+    fallout.gsay_reply(274, fallout.message_str(274, 163) .. " " .. fallout.message_str(274, 164))
     fallout.giq_option(4, 274, 165, Talius17, 50)
     fallout.giq_option(4, 274, 166, Talius22, 50)
     fallout.giq_option(4, 274, 167, TaliusEnd, 50)

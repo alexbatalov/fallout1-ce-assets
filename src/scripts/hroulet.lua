@@ -126,7 +126,7 @@ function Dealer00()
 end
 
 function Dealer01()
-    fallout.gsay_message(697, fallout.message_str(697, 180) + fallout.message_str(697, 181), 50)
+    fallout.gsay_message(697, fallout.message_str(697, 180) .. fallout.message_str(697, 181), 50)
 end
 
 function Dealer02()
@@ -211,7 +211,7 @@ function GetOdds()
             v0 = v0 + 5
         end
     end
-    fallout.display_msg("dice == " + v0)
+    fallout.display_msg("dice == " .. v0)
     if v0 < 10 then
         Dealer02()
     else

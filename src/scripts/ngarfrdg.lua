@@ -96,7 +96,7 @@ function pick_lock()
         if fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), 9, 0)) then
             fallout.display_msg(fallout.message_str(420, 102))
             fallout.set_local_var(0, 1)
-            fallout.display_msg(fallout.message_str(766, 103) + "25" + fallout.message_str(766, 104))
+            fallout.display_msg(fallout.message_str(766, 103) .. "25" .. fallout.message_str(766, 104))
             fallout.give_exp_points(25)
         else
             fallout.display_msg(fallout.message_str(420, 103))

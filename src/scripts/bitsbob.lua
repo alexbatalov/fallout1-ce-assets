@@ -326,10 +326,10 @@ end
 
 function Bob09()
     fallout.gsay_reply(891, 122)
-    fallout.giq_option(4, 891, fallout.message_str(891, 123) + (fallout.local_var(7) + 25) + fallout.message_str(891, 124), Bob09a, 50)
-    fallout.giq_option(4, 891, fallout.message_str(891, 123) + (fallout.local_var(7) + 50) + fallout.message_str(891, 124), Bob09b, 50)
-    fallout.giq_option(4, 891, fallout.message_str(891, 123) + (fallout.local_var(7) + 75) + fallout.message_str(891, 124), Bob09c, 50)
-    fallout.giq_option(4, 891, fallout.message_str(891, 123) + (fallout.local_var(7) + 100) + fallout.message_str(891, 124), Bob09d, 50)
+    fallout.giq_option(4, 891, fallout.message_str(891, 123) .. (fallout.local_var(7) + 25) .. fallout.message_str(891, 124), Bob09a, 50)
+    fallout.giq_option(4, 891, fallout.message_str(891, 123) .. (fallout.local_var(7) + 50) .. fallout.message_str(891, 124), Bob09b, 50)
+    fallout.giq_option(4, 891, fallout.message_str(891, 123) .. (fallout.local_var(7) + 75) .. fallout.message_str(891, 124), Bob09c, 50)
+    fallout.giq_option(4, 891, fallout.message_str(891, 123) .. (fallout.local_var(7) + 100) .. fallout.message_str(891, 124), Bob09d, 50)
 end
 
 function Bob09a()
@@ -580,11 +580,11 @@ end
 
 function Bob44()
     fallout.gsay_reply(891, 212)
-    fallout.giq_option(4, 891, fallout.message_str(891, 213) + fallout.message_str(891, 214) + fallout.message_str(891, 219), Bob44a, 50)
-    fallout.giq_option(4, 891, fallout.message_str(891, 213) + fallout.message_str(891, 215) + fallout.message_str(891, 219), Bob44b, 50)
-    fallout.giq_option(4, 891, fallout.message_str(891, 213) + fallout.message_str(891, 216) + fallout.message_str(891, 219), Bob44c, 50)
-    fallout.giq_option(4, 891, fallout.message_str(891, 213) + fallout.message_str(891, 217) + fallout.message_str(891, 219), Bob44d, 50)
-    fallout.giq_option(4, 891, fallout.message_str(891, 213) + fallout.message_str(891, 218) + fallout.message_str(891, 219), Bob44e, 50)
+    fallout.giq_option(4, 891, fallout.message_str(891, 213) .. fallout.message_str(891, 214) .. fallout.message_str(891, 219), Bob44a, 50)
+    fallout.giq_option(4, 891, fallout.message_str(891, 213) .. fallout.message_str(891, 215) .. fallout.message_str(891, 219), Bob44b, 50)
+    fallout.giq_option(4, 891, fallout.message_str(891, 213) .. fallout.message_str(891, 216) .. fallout.message_str(891, 219), Bob44c, 50)
+    fallout.giq_option(4, 891, fallout.message_str(891, 213) .. fallout.message_str(891, 217) .. fallout.message_str(891, 219), Bob44d, 50)
+    fallout.giq_option(4, 891, fallout.message_str(891, 213) .. fallout.message_str(891, 218) .. fallout.message_str(891, 219), Bob44e, 50)
     fallout.giq_option(4, 891, 220, Bob48, 50)
 end
 
@@ -640,12 +640,12 @@ end
 function Bob46()
     if fallout.local_var(5) ~= 1 then
         fallout.give_exp_points(500)
-        fallout.display_msg(fallout.message_str(766, 103) + 500 + fallout.message_str(766, 104))
+        fallout.display_msg(fallout.message_str(766, 103) .. 500 .. fallout.message_str(766, 104))
     end
     fallout.set_local_var(5, 1)
     fallout.set_local_var(6, (fallout.game_time() // (10 * 60 * 60 * 24)) + 5)
     fallout.set_global_var(155, fallout.global_var(155) - 2)
-    fallout.gsay_message(891, fallout.message_str(891, 222) + fallout.local_var(7) + fallout.message_str(891, 223), 50)
+    fallout.gsay_message(891, fallout.message_str(891, 222) .. fallout.local_var(7) .. fallout.message_str(891, 223), 50)
 end
 
 function Bob47()

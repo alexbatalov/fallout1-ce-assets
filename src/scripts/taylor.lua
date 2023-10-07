@@ -201,7 +201,7 @@ end
 
 function Tine02()
     if not(fallout.local_var(4)) then
-        fallout.giq_option(4, 256, fallout.message_str(256, 104) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(256, 105), Tine04, 50)
+        fallout.giq_option(4, 256, fallout.message_str(256, 104) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(256, 105), Tine04, 50)
     end
     fallout.giq_option(4, 256, 106, Tine03, 50)
     fallout.giq_option(4, 256, 107, Tine05, 50)

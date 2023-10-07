@@ -195,9 +195,9 @@ end
 
 function Falcon09()
     if First_Water then
-        fallout.gsay_reply(697, fallout.message_str(697, 139) + fallout.message_str(697, 140) + fallout.message_str(697, 141))
+        fallout.gsay_reply(697, fallout.message_str(697, 139) .. fallout.message_str(697, 140) .. fallout.message_str(697, 141))
     else
-        fallout.gsay_reply(697, fallout.message_str(697, 136) + fallout.message_str(697, 137) + fallout.message_str(697, 138))
+        fallout.gsay_reply(697, fallout.message_str(697, 136) .. fallout.message_str(697, 137) .. fallout.message_str(697, 138))
     end
     Money_Pack = fallout.obj_carrying_pid_obj(fallout.dude_obj(), 41)
     Money_Count = fallout.rm_mult_objs_from_inven(fallout.dude_obj(), Money_Pack, 2)
@@ -208,9 +208,9 @@ end
 
 function Falcon11()
     if fallout.random(0, 1) then
-        fallout.gsay_message(697, fallout.message_str(697, 151) + fallout.message_str(697, 152), 50)
+        fallout.gsay_message(697, fallout.message_str(697, 151) .. fallout.message_str(697, 152), 50)
     else
-        fallout.gsay_message(697, fallout.message_str(697, 153) + fallout.message_str(697, 154), 50)
+        fallout.gsay_message(697, fallout.message_str(697, 153) .. fallout.message_str(697, 154), 50)
     end
 end
 
@@ -220,7 +220,7 @@ function Falcon14()
     fallout.destroy_object(Money_Pack)
     item = fallout.create_object_sid(124, 0, 0, -1)
     fallout.add_obj_to_inven(fallout.dude_obj(), item)
-    fallout.gsay_reply(697, fallout.message_str(697, 160) + fallout.message_str(697, 161))
+    fallout.gsay_reply(697, fallout.message_str(697, 160) .. fallout.message_str(697, 161))
     Falcon15()
 end
 
@@ -238,7 +238,7 @@ function Falcon16()
     fallout.destroy_object(Money_Pack)
     item = fallout.create_object_sid(125, 0, 0, -1)
     fallout.add_obj_to_inven(fallout.dude_obj(), item)
-    fallout.gsay_reply(697, fallout.message_str(697, 163) + fallout.message_str(697, 164))
+    fallout.gsay_reply(697, fallout.message_str(697, 163) .. fallout.message_str(697, 164))
     Falcon15()
 end
 

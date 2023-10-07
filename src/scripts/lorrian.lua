@@ -69,7 +69,7 @@ function Lorri01()
         fallout.sayOption(fallout.message_str(174, 103), Lorri02)
     end
     if fallout.get_critter_stat(fallout.dude_obj(), 4) >= 4 then
-        fallout.sayOption(fallout.message_str(174, 104) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(174, 105), Lorri03)
+        fallout.sayOption(fallout.message_str(174, 104) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(174, 105), Lorri03)
     end
     if fallout.get_critter_stat(fallout.dude_obj(), 4) >= -3 then
         fallout.sayOption(fallout.message_str(174, 106), Lorri15)

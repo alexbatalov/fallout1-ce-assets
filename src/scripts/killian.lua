@@ -491,8 +491,8 @@ end
 function Killian02()
     fallout.set_local_var(4, 1)
     fallout.gsay_reply(47, 123)
-    fallout.giq_option(4, 47, fallout.message_str(47, 124) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(47, 125), Killian02b, 50)
-    fallout.giq_option(4, 47, fallout.message_str(47, 126) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(47, 127), Killian03, 50)
+    fallout.giq_option(4, 47, fallout.message_str(47, 124) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(47, 125), Killian02b, 50)
+    fallout.giq_option(4, 47, fallout.message_str(47, 126) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(47, 127), Killian03, 50)
     fallout.giq_option(5, 47, 128, Killian02a, 51)
 end
 

@@ -269,7 +269,7 @@ function WtrThief01()
     local v0 = 0
     v0 = fallout.message_str(461, 107)
     v0 = v0 + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1)
-    v0 = v0 + fallout.message_str(461, 108)
+    v0 = v0 .. fallout.message_str(461, 108)
     fallout.gsay_reply(461, v0)
     fallout.giq_option(4, 461, 109, WtrThief02, 50)
     fallout.giq_option(-3, 461, 110, WtrThiefEnd, 50)

@@ -484,7 +484,7 @@ end
 
 function guard04N()
     fallout.set_local_var(5, 1)
-    fallout.gsay_message(135, fallout.message_str(135, 164) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(135, 165), 50)
+    fallout.gsay_message(135, fallout.message_str(135, 164) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(135, 165), 50)
 end
 
 function guardend()

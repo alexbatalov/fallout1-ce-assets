@@ -15,7 +15,7 @@ function start()
                     fallout.display_msg(fallout.message_str(336, 101))
                     fallout.critter_dmg(fallout.dude_obj(), 1, 0)
                 else
-                    fallout.display_msg(fallout.message_str(336, 102) + Damage + fallout.message_str(336, 103))
+                    fallout.display_msg(fallout.message_str(336, 102) .. Damage .. fallout.message_str(336, 103))
                     fallout.critter_dmg(fallout.dude_obj(), Damage, 0)
                 end
             end

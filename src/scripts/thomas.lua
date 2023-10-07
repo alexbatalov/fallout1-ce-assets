@@ -110,9 +110,9 @@ end
 function give_skill()
     fallout.set_local_var(11, fallout.local_var(11) + 1)
     skill_pts = 1
-    fallout.display_msg(fallout.message_str(766, 116) + skill_pts + fallout.message_str(766, 120))
+    fallout.display_msg(fallout.message_str(766, 116) .. skill_pts .. fallout.message_str(766, 120))
     fallout.critter_mod_skill(fallout.dude_obj(), 3, skill_pts)
-    fallout.display_msg(fallout.message_str(766, 116) + skill_pts + fallout.message_str(766, 121))
+    fallout.display_msg(fallout.message_str(766, 116) .. skill_pts .. fallout.message_str(766, 121))
     fallout.critter_mod_skill(fallout.dude_obj(), 4, skill_pts)
 end
 

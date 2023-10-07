@@ -221,7 +221,7 @@ function SlappyClaw()
     if fallout.local_var(4) == 0 then
         fallout.set_local_var(4, 1)
         fallout.give_exp_points(800)
-        fallout.display_msg(fallout.message_str(766, 103) + 800 + fallout.message_str(766, 104))
+        fallout.display_msg(fallout.message_str(766, 103) .. 800 .. fallout.message_str(766, 104))
     end
     fallout.load_map(37, 0)
 end

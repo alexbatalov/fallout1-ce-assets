@@ -117,7 +117,7 @@ function talk_p_proc()
                                     message = fallout.message_str(618, 108)
                                 else
                                     if Pick == 9 then
-                                        message = fallout.message_str(618, 110) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(618, 111)
+                                        message = fallout.message_str(618, 110) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(618, 111)
                                     end
                                 end
                             end

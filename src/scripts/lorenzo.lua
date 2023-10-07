@@ -277,7 +277,7 @@ function Lorenzo01()
     fallout.giq_option(4, 597, 104, Lorenzo14, 51)
     fallout.giq_option(4, 597, 105, Lorenzo15, 51)
     if (fallout.local_var(6) > 0) == 1 then
-        fallout.giq_option(4, 597, fallout.message_str(597, 106) + v0 + fallout.message_str(597, 107), Lorenzo16, 50)
+        fallout.giq_option(4, 597, fallout.message_str(597, 106) .. v0 .. fallout.message_str(597, 107), Lorenzo16, 50)
     end
     fallout.giq_option(4, 597, 108, Lorenzo15, 51)
     fallout.gsay_end()
@@ -293,7 +293,7 @@ function Lorenzo02()
     fallout.giq_option(4, 597, 110, Lorenzo02a, 50)
     fallout.giq_option(4, 597, 111, Lorenzo08, 50)
     if fallout.local_var(6) > 0 then
-        fallout.giq_option(4, 597, fallout.message_str(597, 106) + v0 + fallout.message_str(597, 107), Lorenzo09, 50)
+        fallout.giq_option(4, 597, fallout.message_str(597, 106) .. v0 .. fallout.message_str(597, 107), Lorenzo09, 50)
     end
     fallout.giq_option(4, 597, 112, Lorenzo12, 50)
     fallout.giq_option(-3, 597, 113, Lorenzo13, 50)
@@ -412,9 +412,9 @@ function Lorenzo15()
         fallout.giq_option(4, 597, 249, Lorenzo15a, 50)
     else
         fallout.giq_option(4, 597, 250, Lorenzo15b, 50)
-        fallout.giq_option(4, 597, fallout.message_str(597, 251) + (v0 * 3 // 4) + fallout.message_str(597, 252), Lorenzo15c, 50)
-        fallout.giq_option(4, 597, fallout.message_str(597, 251) + (v0 // 2) + fallout.message_str(597, 252), Lorenzo15d, 50)
-        fallout.giq_option(4, 597, fallout.message_str(597, 251) + (v0 // 4) + fallout.message_str(597, 252), Lorenzo15e, 50)
+        fallout.giq_option(4, 597, fallout.message_str(597, 251) .. (v0 * 3 // 4) .. fallout.message_str(597, 252), Lorenzo15c, 50)
+        fallout.giq_option(4, 597, fallout.message_str(597, 251) .. (v0 // 2) .. fallout.message_str(597, 252), Lorenzo15d, 50)
+        fallout.giq_option(4, 597, fallout.message_str(597, 251) .. (v0 // 4) .. fallout.message_str(597, 252), Lorenzo15e, 50)
     end
     fallout.giq_option(4, 597, 253, Lorenzo15f, 51)
 end
@@ -451,7 +451,7 @@ function Lorenzo15c()
         fallout.set_map_var(22, 1)
         fallout.set_local_var(6, 0)
         fallout.set_local_var(5, 0)
-        fallout.gsay_message(597, fallout.message_str(597, 255) + (v0 * 3 // 4) + fallout.message_str(597, 256), 50)
+        fallout.gsay_message(597, fallout.message_str(597, 255) .. (v0 * 3 // 4) .. fallout.message_str(597, 256), 50)
         fallout.gsay_message(597, 259, 51)
     else
         fallout.set_map_var(22, 1)
@@ -473,7 +473,7 @@ function Lorenzo15d()
         fallout.set_map_var(22, 1)
         fallout.set_local_var(6, 0)
         fallout.set_local_var(5, 0)
-        fallout.gsay_message(597, fallout.message_str(597, 255) + (v0 // 2) + fallout.message_str(597, 256), 50)
+        fallout.gsay_message(597, fallout.message_str(597, 255) .. (v0 // 2) .. fallout.message_str(597, 256), 50)
         fallout.gsay_message(597, 259, 51)
     else
         fallout.set_map_var(22, 1)
@@ -495,7 +495,7 @@ function Lorenzo15e()
         fallout.set_map_var(22, 1)
         fallout.set_local_var(6, 0)
         fallout.set_local_var(5, 0)
-        fallout.gsay_message(597, fallout.message_str(597, 255) + (v0 // 4) + fallout.message_str(597, 256), 50)
+        fallout.gsay_message(597, fallout.message_str(597, 255) .. (v0 // 4) .. fallout.message_str(597, 256), 50)
         fallout.gsay_message(597, 259, 51)
     else
         fallout.set_map_var(22, 1)
@@ -547,18 +547,18 @@ end
 function Lorenzo19()
     fallout.gsay_reply(597, 143)
     if fallout.local_var(7) >= 800 then
-        fallout.giq_option(4, 597, fallout.message_str(597, 144) + fallout.message_str(597, 145) + fallout.message_str(597, 150), Lorenzo29, 50)
+        fallout.giq_option(4, 597, fallout.message_str(597, 144) .. fallout.message_str(597, 145) .. fallout.message_str(597, 150), Lorenzo29, 50)
     end
     if fallout.local_var(7) >= 600 then
-        fallout.giq_option(4, 597, fallout.message_str(597, 144) + fallout.message_str(597, 146) + fallout.message_str(597, 150), Lorenzo30, 50)
+        fallout.giq_option(4, 597, fallout.message_str(597, 144) .. fallout.message_str(597, 146) .. fallout.message_str(597, 150), Lorenzo30, 50)
     end
     if fallout.local_var(7) >= 400 then
-        fallout.giq_option(4, 597, fallout.message_str(597, 144) + fallout.message_str(597, 147) + fallout.message_str(597, 150), Lorenzo31, 50)
+        fallout.giq_option(4, 597, fallout.message_str(597, 144) .. fallout.message_str(597, 147) .. fallout.message_str(597, 150), Lorenzo31, 50)
     end
     if fallout.local_var(7) >= 200 then
-        fallout.giq_option(4, 597, fallout.message_str(597, 144) + fallout.message_str(597, 148) + fallout.message_str(597, 150), Lorenzo32, 50)
+        fallout.giq_option(4, 597, fallout.message_str(597, 144) .. fallout.message_str(597, 148) .. fallout.message_str(597, 150), Lorenzo32, 50)
     end
-    fallout.giq_option(4, 597, fallout.message_str(597, 144) + fallout.message_str(597, 149) + fallout.message_str(597, 150), Lorenzo33, 50)
+    fallout.giq_option(4, 597, fallout.message_str(597, 144) .. fallout.message_str(597, 149) .. fallout.message_str(597, 150), Lorenzo33, 50)
     fallout.giq_option(4, 597, 151, Lorenzo34, 50)
 end
 

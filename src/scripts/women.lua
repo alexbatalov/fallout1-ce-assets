@@ -43,7 +43,7 @@ function critter_p_proc()
         if fallout.local_var(0) == 0 then
             fallout.set_local_var(0, 1)
             temp = 200
-            fallout.display_msg(fallout.message_str(238, 100) + temp + fallout.message_str(238, 103))
+            fallout.display_msg(fallout.message_str(238, 100) .. temp .. fallout.message_str(238, 103))
             fallout.set_global_var(155, fallout.global_var(155) + 1)
             fallout.give_exp_points(temp)
         end

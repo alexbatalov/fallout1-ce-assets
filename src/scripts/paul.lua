@@ -222,7 +222,7 @@ function Paul13()
 end
 
 function Paul14()
-    fallout.gsay_reply(865, fallout.message_str(865, 147) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(865, 148))
+    fallout.gsay_reply(865, fallout.message_str(865, 147) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(865, 148))
     fallout.giq_option(4, 865, 149, Paul02, 50)
     fallout.giq_option(4, 865, 150, Paul04, 50)
     if fallout.map_var(0) == 1 then

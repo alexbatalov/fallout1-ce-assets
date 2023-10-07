@@ -311,7 +311,7 @@ function Butch05()
 end
 
 function Butch06()
-    fallout.gsay_reply(39, fallout.message_str(39, 123) + fallout.message_str(39, 124))
+    fallout.gsay_reply(39, fallout.message_str(39, 123) .. fallout.message_str(39, 124))
     fallout.giq_option(4, 39, 125, Butch08, 50)
     fallout.giq_option(4, 39, 127, Butch05, 50)
     fallout.giq_option(4, 39, 128, Butch21, 51)

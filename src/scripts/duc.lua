@@ -201,7 +201,7 @@ end
 function Duc06()
     fallout.gsay_reply(243, 113)
     fallout.giq_option(4, 243, 114, Duc04, 51)
-    fallout.giq_option(4, 243, fallout.message_str(243, 115) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(243, 116), Duc08, 50)
+    fallout.giq_option(4, 243, fallout.message_str(243, 115) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(243, 116), Duc08, 50)
     fallout.giq_option(-3, 243, 117, Duc04, 50)
 end
 

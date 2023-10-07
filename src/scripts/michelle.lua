@@ -228,7 +228,7 @@ function Michelle10()
 end
 
 function Michelle11()
-    fallout.gsay_message(283, fallout.message_str(283, 142) + " " + fallout.message_str(283, 143), 50)
+    fallout.gsay_message(283, fallout.message_str(283, 142) .. " " .. fallout.message_str(283, 143), 50)
     MichelleCombat()
 end
 

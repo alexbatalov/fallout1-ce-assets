@@ -189,7 +189,7 @@ function thomas03()
 end
 
 function thomas04()
-    fallout.gsay_message(685, fallout.message_str(685, 111) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(685, 112), 51)
+    fallout.gsay_message(685, fallout.message_str(685, 111) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(685, 112), 51)
 end
 
 function thomas05()

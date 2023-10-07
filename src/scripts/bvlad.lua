@@ -35,7 +35,7 @@ function ladder01()
             if damage < 1 then
                 fallout.display_msg(fallout.message_str(291, 101))
             else
-                fallout.display_msg(fallout.message_str(291, 102) + damage + fallout.message_str(291, 103))
+                fallout.display_msg(fallout.message_str(291, 102) .. damage .. fallout.message_str(291, 103))
                 fallout.critter_dmg(fallout.dude_obj(), damage, 0)
             end
         else

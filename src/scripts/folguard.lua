@@ -155,17 +155,17 @@ end
 function guard0()
     fallout.gsay_reply(264, 110)
     fallout.giq_option(-3, 264, 111, guard1, 50)
-    fallout.giq_option(4, 264, fallout.message_str(264, 112) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(264, 113), guard4, 50)
-    fallout.giq_option(4, 264, fallout.message_str(264, 114) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(264, 115), combat, 50)
+    fallout.giq_option(4, 264, fallout.message_str(264, 112) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(264, 113), guard4, 50)
+    fallout.giq_option(4, 264, fallout.message_str(264, 114) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(264, 115), combat, 50)
     fallout.giq_option(6, 264, 116, guard11, 50)
 end
 
 function guard1()
     fallout.gsay_reply(264, 117)
-    fallout.giq_option(-3, 264, fallout.message_str(264, 118) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(264, 119), combat, 50)
-    fallout.giq_option(-3, 264, fallout.message_str(264, 120) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(264, 121), guard2, 50)
+    fallout.giq_option(-3, 264, fallout.message_str(264, 118) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(264, 119), combat, 50)
+    fallout.giq_option(-3, 264, fallout.message_str(264, 120) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(264, 121), guard2, 50)
     fallout.giq_option(-3, 264, fallout.message_str(264, 122), guard3, 50)
-    fallout.giq_option(-3, 264, fallout.message_str(264, 123) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(264, 124), guard3, 50)
+    fallout.giq_option(-3, 264, fallout.message_str(264, 123) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(264, 124), guard3, 50)
 end
 
 function guard2()

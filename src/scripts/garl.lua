@@ -588,7 +588,7 @@ function garl40()
     TopReact()
     fallout.float_msg(fallout.self_obj(), fallout.message_str(137, 191), 2)
     temp = 500
-    fallout.display_msg(fallout.message_str(238, 100) + temp + fallout.message_str(238, 102))
+    fallout.display_msg(fallout.message_str(238, 100) .. temp .. fallout.message_str(238, 102))
     fallout.give_exp_points(temp)
     fallout.set_global_var(155, fallout.global_var(155) + -2)
     fallout.set_global_var(611, 1)

@@ -256,7 +256,7 @@ end
 function Ian02()
     fallout.gsay_reply(235, 102)
     fallout.giq_option(4, 235, 103, Ian03, 51)
-    fallout.giq_option(4, 235, fallout.message_str(235, 104) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(235, 105), Ian04, 50)
+    fallout.giq_option(4, 235, fallout.message_str(235, 104) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(235, 105), Ian04, 50)
     fallout.giq_option(-3, 235, 106, Ian05, 50)
 end
 
@@ -313,7 +313,7 @@ function Ian11()
 end
 
 function Ian12()
-    fallout.gsay_reply(235, fallout.message_str(235, 131) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(235, 132))
+    fallout.gsay_reply(235, fallout.message_str(235, 131) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(235, 132))
     Ian12a()
 end
 
@@ -348,7 +348,7 @@ function Ian14()
 end
 
 function Ian15()
-    fallout.gsay_reply(235, fallout.message_str(235, 142) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(235, 143))
+    fallout.gsay_reply(235, fallout.message_str(235, 142) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(235, 143))
     fallout.giq_option(4, 235, 145, Ian16, 50)
     fallout.giq_option(4, 235, 146, Ian13, 50)
     fallout.giq_option(4, 235, 200, IanChange, 50)

@@ -470,13 +470,13 @@ function JenniferRandom2()
     end
     v1 = fallout.message_str(462, 211)
     if v0 == 2 then
-        v1 = fallout.message_str(462, 212) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(462, 213)
+        v1 = fallout.message_str(462, 212) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(462, 213)
     else
         if v0 == 3 then
             v1 = fallout.message_str(462, 214)
         else
             if v0 == 4 then
-                v1 = fallout.message_str(462, 215) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(462, 216)
+                v1 = fallout.message_str(462, 215) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(462, 216)
             else
                 if v0 == 5 then
                     v1 = fallout.message_str(462, 217)
@@ -546,7 +546,7 @@ function JenniferBackground1()
                 v1 = fallout.message_str(462, 227)
             else
                 if v0 == 3 then
-                    v1 = fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(462, 228)
+                    v1 = fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(462, 228)
                 else
                     if v0 == 4 then
                         v1 = fallout.message_str(462, 229)

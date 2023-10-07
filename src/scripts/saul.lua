@@ -324,7 +324,7 @@ function Saul07()
     end
     fallout.giq_option(4, 528, 107, Saul08, 50)
     fallout.giq_option(4, 528, 108, Saul09, 51)
-    fallout.giq_option(4, 528, fallout.message_str(528, 109) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(528, 110), Saul09, 50)
+    fallout.giq_option(4, 528, fallout.message_str(528, 109) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(528, 110), Saul09, 50)
 end
 
 function Saul08()
@@ -478,7 +478,7 @@ function Saul20()
         fallout.gsay_reply(528, 169)
     else
         if fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), 14, 0)) then
-            fallout.gsay_reply(528, fallout.message_str(528, 170) + fallout.message_str(528, 171))
+            fallout.gsay_reply(528, fallout.message_str(528, 170) .. fallout.message_str(528, 171))
             if fallout.get_critter_stat(fallout.dude_obj(), 4) >= 6 then
                 fallout.giq_option(6, 528, 172, Saul21, 49)
             else

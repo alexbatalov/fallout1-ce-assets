@@ -205,7 +205,7 @@ end
 function Sherry01()
     fallout.set_local_var(4, 1)
     fallout.gsay_reply(388, 103)
-    fallout.giq_option(4, 388, fallout.message_str(388, 104) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(388, 105), Sherry02, 50)
+    fallout.giq_option(4, 388, fallout.message_str(388, 104) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(388, 105), Sherry02, 50)
     fallout.giq_option(4, 388, 106, Sherry03, 50)
     fallout.giq_option(-3, 388, 107, Sherry04, 50)
 end

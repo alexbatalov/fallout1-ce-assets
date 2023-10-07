@@ -47,9 +47,9 @@ function ScribeCRandom()
     if v0 > 4 then
         v0 = 1
     end
-    v1 = fallout.message_str(381, 101) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(381, 102)
+    v1 = fallout.message_str(381, 101) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(381, 102)
     if v0 == 2 then
-        v1 = fallout.message_str(381, 103) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + fallout.message_str(381, 104)
+        v1 = fallout.message_str(381, 103) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(381, 104)
     else
         if v0 == 3 then
             v1 = fallout.message_str(381, 105)

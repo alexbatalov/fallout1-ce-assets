@@ -221,9 +221,9 @@ function Shark03()
     local v0 = 0
     v0 = fallout.message_str(387, 110)
     if fallout.get_critter_stat(fallout.dude_obj(), 34) == 1 then
-        v0 = v0 + fallout.message_str(387, 111)
+        v0 = v0 .. fallout.message_str(387, 111)
     else
-        v0 = v0 + fallout.message_str(387, 112)
+        v0 = v0 .. fallout.message_str(387, 112)
     end
     fallout.gsay_reply(387, v0)
     fallout.giq_option(4, 387, 113, SharkCombat, 50)

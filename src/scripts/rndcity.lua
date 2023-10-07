@@ -113,7 +113,7 @@ function start()
             if fallout.global_var(295) then
                 Encounter_Num = fallout.global_var(295)
                 fallout.set_global_var(295, 0)
-                fallout.display_msg("City encounter type: " + Encounter_Num)
+                fallout.display_msg("City encounter type: " .. Encounter_Num)
             end
             if Encounter_Num == 1 then
                 City1()

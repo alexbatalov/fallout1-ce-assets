@@ -346,7 +346,7 @@ function Dan11()
     if fallout.get_critter_stat(fallout.dude_obj(), 34) == 0 then
         fallout.gsay_reply(562, 142)
     else
-        fallout.gsay_reply(562, fallout.message_str(562, 142) + " " + fallout.message_str(562, 143))
+        fallout.gsay_reply(562, fallout.message_str(562, 142) .. " " .. fallout.message_str(562, 143))
     end
     fallout.giq_option(7, 562, 144, Dan12, 50)
     fallout.giq_option(4, 562, 145, Dan13, 50)

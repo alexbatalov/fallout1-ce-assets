@@ -26,9 +26,9 @@ function description_p_proc()
     v0 = fallout.message_str(607, 100)
     if fallout.is_success(fallout.do_check(fallout.dude_obj(), 1, fallout.has_trait(0, fallout.dude_obj(), 0))) then
         if fallout.global_var(608) then
-            v0 = v0 + fallout.message_str(607, 101)
+            v0 = v0 .. fallout.message_str(607, 101)
         else
-            v0 = v0 + fallout.message_str(607, 102)
+            v0 = v0 .. fallout.message_str(607, 102)
         end
     end
     fallout.display_msg(v0)

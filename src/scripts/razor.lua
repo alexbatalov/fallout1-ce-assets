@@ -234,7 +234,7 @@ function Razor02()
     fallout.gsay_reply(278, 105)
     fallout.gsay_option(278, 106, Razor03, 50)
     fallout.gsay_option(278, 107, Razor04, 50)
-    fallout.gsay_option(278, fallout.message_str(278, 108) + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) + ".", Razor05, 50)
+    fallout.gsay_option(278, fallout.message_str(278, 108) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. ".", Razor05, 50)
     fallout.gsay_option(278, 109, RazorEnd, 50)
     fallout.set_local_var(4, 1)
 end
@@ -500,14 +500,14 @@ end
 function Razor44()
     fallout.gsay_message(278, 229, 50)
     fallout.set_global_var(155, fallout.global_var(155) + 2)
-    fallout.display_msg(fallout.message_str(766, 103) + 500 + fallout.message_str(766, 104))
+    fallout.display_msg(fallout.message_str(766, 103) .. 500 .. fallout.message_str(766, 104))
     fallout.give_exp_points(500)
 end
 
 function Razor45()
     fallout.gsay_message(278, 230, 50)
     fallout.set_global_var(155, fallout.global_var(155) + 2)
-    fallout.display_msg(fallout.message_str(766, 103) + 500 + fallout.message_str(766, 104))
+    fallout.display_msg(fallout.message_str(766, 103) .. 500 .. fallout.message_str(766, 104))
     fallout.give_exp_points(500)
 end
 
@@ -535,7 +535,7 @@ end
 function Razor48()
     fallout.gsay_message(278, 237, 50)
     fallout.set_global_var(155, fallout.global_var(155) + 2)
-    fallout.display_msg(fallout.message_str(766, 103) + 500 + fallout.message_str(766, 104))
+    fallout.display_msg(fallout.message_str(766, 103) .. 500 .. fallout.message_str(766, 104))
     fallout.give_exp_points(500)
 end
 
