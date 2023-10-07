@@ -28,7 +28,7 @@ end
 function critter_p_proc()
     if hostile then
         hostile = 0
-        fallout.attack_complex(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
     if fallout.global_var(275) == 0 then
         if (fallout.critter_state(fallout.self_obj()) & 64) == 0 then
@@ -53,12 +53,12 @@ function critter_p_proc()
         else
             if fallout.global_var(273) == 1 then
                 if fallout.obj_can_see_obj(fallout.self_obj(), fallout.external_var("valid_target")) then
-                    fallout.attack_complex(fallout.external_var("valid_target"), 0, 1, 0, 0, 30000, 0, 0)
+                    fallout.attack(fallout.external_var("valid_target"), 0, 1, 0, 0, 30000, 0, 0)
                 end
             else
                 if fallout.global_var(273) == 2 then
                     if fallout.obj_can_see_obj(fallout.self_obj(), fallout.external_var("valid_target")) then
-                        fallout.attack_complex(fallout.external_var("valid_target"), 0, 1, 0, 0, 30000, 0, 0)
+                        fallout.attack(fallout.external_var("valid_target"), 0, 1, 0, 0, 30000, 0, 0)
                     end
                 else
                     if fallout.global_var(273) == 3 then
@@ -66,7 +66,7 @@ function critter_p_proc()
                             hostile = 1
                         else
                             if fallout.obj_can_see_obj(fallout.self_obj(), fallout.external_var("valid_target")) then
-                                fallout.attack_complex(fallout.external_var("valid_target"), 0, 1, 0, 0, 30000, 0, 0)
+                                fallout.attack(fallout.external_var("valid_target"), 0, 1, 0, 0, 30000, 0, 0)
                             end
                         end
                     end

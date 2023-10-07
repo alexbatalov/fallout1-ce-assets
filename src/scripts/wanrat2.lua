@@ -35,7 +35,7 @@ function critter_p_proc()
     if not((fallout.game_time_hour() >= 1900) or (fallout.game_time_hour() < 600)) and not(hostile) then
         if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
             if fallout.has_trait(0, fallout.dude_obj(), 44) == 0 then
-                fallout.attack_complex(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+                fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
                 hostile = 1
             end
         end
@@ -47,11 +47,11 @@ function critter_p_proc()
 end
 
 function damage_p_proc()
-    fallout.attack_complex(fallout.self_obj(), 0, 1, 0, 0, 30000, 0, 0)
+    fallout.attack(fallout.self_obj(), 0, 1, 0, 0, 30000, 0, 0)
 end
 
 function timed_event_p_proc()
-    fallout.attack_complex(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+    fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     hostile = 1
 end
 

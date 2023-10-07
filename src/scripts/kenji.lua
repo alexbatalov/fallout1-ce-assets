@@ -37,7 +37,7 @@ function critter_p_proc()
     else
         if fallout.obj_on_screen(fallout.self_obj()) then
             fallout.float_msg(fallout.self_obj(), fallout.message_str(510, 103), 2)
-            fallout.attack_complex(fallout.external_var("Killian_ptr"), 0, 1, 0, 0, 30000, 0, 0)
+            fallout.attack(fallout.external_var("Killian_ptr"), 0, 1, 0, 0, 30000, 0, 0)
         end
     end
 end

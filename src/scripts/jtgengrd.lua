@@ -101,7 +101,7 @@ end
 function critter_p_proc()
     if g1 then
         g1 = 0
-        fallout.attack_complex(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     else
         if (fallout.cur_map_index() == 12) or (fallout.cur_map_index() == 10) then
             if fallout.tile_num(fallout.self_obj()) ~= fallout.local_var(5) then
@@ -175,7 +175,7 @@ function critter_p_proc()
     end
     if fallout.global_var(247) == 1 then
         if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
-            fallout.attack_complex(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+            fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
         end
     end
 end

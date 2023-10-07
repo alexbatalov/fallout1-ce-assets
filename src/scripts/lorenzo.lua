@@ -118,7 +118,7 @@ function critter_p_proc()
     local v0 = 0
     if hostile then
         hostile = 0
-        fallout.attack_complex(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
     if SetDayNight == 0 then
         fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(fallout.random(5, 20)), 1)

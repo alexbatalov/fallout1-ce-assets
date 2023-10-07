@@ -42,7 +42,7 @@ end
 function critter_p_proc()
     if hostile then
         hostile = 0
-        fallout.attack_complex(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     else
         if fallout.external_var("fetch_dude") then
             hostile = 1
@@ -51,7 +51,7 @@ function critter_p_proc()
     end
     if fallout.global_var(346) == 1 then
         if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
-            fallout.attack_complex(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+            fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
         end
     end
 end

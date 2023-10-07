@@ -92,7 +92,7 @@ end
 function critter_p_proc()
     if hostile then
         hostile = 0
-        fallout.attack_complex(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
     if (fallout.game_time_hour() >= 600) and (fallout.game_time_hour() < 700) or ((fallout.game_time_hour() >= 700) and (fallout.game_time_hour() < 1800)) then
         if fallout.tile_num(fallout.self_obj()) ~= 21508 then

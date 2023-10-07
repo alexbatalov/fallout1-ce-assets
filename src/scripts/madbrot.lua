@@ -79,7 +79,7 @@ function do_action()
     if Hostile then
         fallout.set_global_var(250, 1)
         Hostile = 0
-        fallout.attack_complex(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     else
         if fallout.local_var(1) then
             if fallout.random(1, 20) < 2 then

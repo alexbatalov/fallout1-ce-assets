@@ -620,7 +620,7 @@ function critter_p_proc()
     if HOSTILE then
         fallout.set_global_var(250, 1)
         HOSTILE = 0
-        fallout.attack_complex(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     else
         if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) and (ILLEGAL == 0) then
             here = fallout.tile_num(fallout.dude_obj())

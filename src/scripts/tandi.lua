@@ -775,7 +775,7 @@ function critter_p_proc()
         end
         if g12 then
             g12 = 0
-            fallout.attack_complex(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+            fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
         end
         TandiSchedule()
         if fallout.random(1, 20) == 1 then

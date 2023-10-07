@@ -179,7 +179,7 @@ end
 function critter_p_proc()
     if HOSTILE then
         HOSTILE = 0
-        fallout.attack_complex(fallout.dude_obj(), 0, 1, 100, 250, 300, 0, 128)
+        fallout.attack(fallout.dude_obj(), 0, 1, 100, 250, 300, 0, 128)
     else
         if (fallout.global_var(261) == 1) and (fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 12) then
             if fallout.local_var(8) == 0 then

@@ -23,7 +23,7 @@ function start()
                 if fallout.script_action() == 12 then
                     if Hostile then
                         Hostile = 0
-                        fallout.attack_complex(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+                        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
                     else
                         if fallout.global_var(13) == 0 then
                             fallout.set_obj_visibility(fallout.self_obj(), 1)

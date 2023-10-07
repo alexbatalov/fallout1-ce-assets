@@ -75,7 +75,7 @@ end
 function critter_p_proc()
     if hostile then
         hostile = 0
-        fallout.attack_complex(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     else
         if (fallout.cur_map_index() == 11) and (line160flag == 0) then
             fallout.float_msg(fallout.self_obj(), fallout.message_str(385, 160), 2)
@@ -380,7 +380,7 @@ end
 
 function timed_event_p_proc()
     if fallout.fixed_param() == 1 then
-        fallout.attack_complex(fallout.external_var("Neal_ptr"), 0, 1, 0, 0, 30000, 0, 0)
+        fallout.attack(fallout.external_var("Neal_ptr"), 0, 1, 0, 0, 30000, 0, 0)
     end
 end
 

@@ -123,11 +123,11 @@ end
 function critter_p_proc()
     if HOSTILE then
         HOSTILE = 0
-        fallout.attack_complex(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     else
         if fallout.external_var("Killian_ptr") ~= 0 then
             fallout.float_msg(fallout.self_obj(), fallout.message_str(44, 220), 0)
-            fallout.attack_complex(fallout.external_var("Killian_ptr"), 0, 1, 0, 0, 30000, 0, 0)
+            fallout.attack(fallout.external_var("Killian_ptr"), 0, 1, 0, 0, 30000, 0, 0)
         else
             if fallout.obj_is_carrying_obj_pid(fallout.self_obj(), 57) then
                 fallout.set_global_var(41, 1)
@@ -136,7 +136,7 @@ function critter_p_proc()
     end
     if fallout.global_var(347) == 1 then
         if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
-            fallout.attack_complex(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+            fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
         end
     end
 end

@@ -81,7 +81,7 @@ end
 function critter_p_proc()
     if g0 then
         g0 = 0
-        fallout.attack_complex(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     else
         if g2 then
             fallout.critter_dmg(fallout.self_obj(), fallout.random(200, 250), 6)

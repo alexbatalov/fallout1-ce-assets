@@ -94,7 +94,7 @@ function critter_p_proc()
     end
     if HOSTILE then
         HOSTILE = 0
-        fallout.attack_complex(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
 end
 

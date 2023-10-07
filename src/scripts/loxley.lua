@@ -164,7 +164,7 @@ function start()
                 if fallout.script_action() == 12 then
                     if HOSTILE then
                         HOSTILE = 0
-                        fallout.attack_complex(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+                        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
                     end
                 else
                     if fallout.script_action() == 18 then

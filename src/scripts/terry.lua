@@ -112,7 +112,7 @@ function Critter_Action()
     end
     if Hostile > 0 then
         Hostile = 0
-        fallout.attack_complex(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     else
         if (fallout.global_var(306) == 1) and (fallout.tile_num(fallout.self_obj()) ~= 15507) then
             fallout.animate_move_obj_to_tile(fallout.self_obj(), 15507, 0)

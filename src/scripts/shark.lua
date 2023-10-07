@@ -83,7 +83,7 @@ end
 function critter_p_proc()
     if hostile then
         hostile = 0
-        fallout.attack_complex(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     else
         if (fallout.global_var(282) == 1) and (fallout.local_var(6) == 0) then
             fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(3), 3)
@@ -182,7 +182,7 @@ function timed_event_p_proc()
     else
         if fallout.fixed_param() == 2 then
             if fallout.external_var("Trish_ptr") ~= 0 then
-                fallout.attack_complex(fallout.external_var("Trish_ptr"), 0, 1, 0, 0, 30000, 0, 0)
+                fallout.attack(fallout.external_var("Trish_ptr"), 0, 1, 0, 0, 30000, 0, 0)
             end
         else
             if fallout.fixed_param() == 3 then

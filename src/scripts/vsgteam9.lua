@@ -31,10 +31,10 @@ function critter_p_proc()
     if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
         if hostile then
             hostile = 0
-            fallout.attack_complex(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+            fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
         else
             if fallout.global_var(146) == 1 then
-                fallout.attack_complex(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+                fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
             else
                 if not(fallout.obj_pid(fallout.critter_inven_obj(fallout.dude_obj(), 0)) == 113) then
                     hostile = 1

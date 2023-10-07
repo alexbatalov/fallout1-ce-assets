@@ -81,7 +81,7 @@ function critter_p_proc()
             escape()
         else
             if hostile == 1 then
-                fallout.attack_complex(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+                fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
             end
         end
     end

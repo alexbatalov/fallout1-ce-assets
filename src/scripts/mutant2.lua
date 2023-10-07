@@ -48,7 +48,7 @@ function start()
                         if (fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) <= maxsight) and fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
                             if (Hostile > 0) or (fallout.local_var(0) > 0) then
                                 Hostile = 0
-                                fallout.attack_complex(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+                                fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
                             else
                                 do_dialogue()
                             end

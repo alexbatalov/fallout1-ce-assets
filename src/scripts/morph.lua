@@ -180,7 +180,7 @@ function start()
                                 end
                                 if fallout.local_var(5) == 2 then
                                     fallout.set_local_var(5, 1)
-                                    fallout.attack_complex(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+                                    fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
                                 end
                                 if fallout.tile_num(fallout.self_obj()) == 23457 then
                                     fallout.set_obj_visibility(fallout.self_obj(), 1)

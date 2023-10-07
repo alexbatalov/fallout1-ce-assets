@@ -52,7 +52,7 @@ end
 function critter_p_proc()
     if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
         if (fallout.global_var(251) == 1) or (fallout.global_var(616) == 1) then
-            fallout.attack_complex(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+            fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
         end
     end
     if (((fallout.game_time() // 10) - PsstTime) >= 30) and (fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) <= 4) and (fallout.global_var(251) == 0) and (fallout.global_var(616) == 0) then
@@ -100,7 +100,7 @@ function timed_event_p_proc()
         if fallout.local_var(4) == 0 then
             fallout.set_local_var(4, 1)
             fallout.float_msg(fallout.self_obj(), fallout.message_str(252, 139), 2)
-            fallout.attack_complex(fallout.external_var("JonPtr"), 0, 1, 100, 250, 300, 0, 128)
+            fallout.attack(fallout.external_var("JonPtr"), 0, 1, 100, 250, 300, 0, 128)
         end
     else
         fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(fallout.random(1, 3)), 1)

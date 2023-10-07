@@ -48,7 +48,7 @@ end
 function critter_p_proc()
     if hostile then
         hostile = 0
-        fallout.attack_complex(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     else
         if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) or (fallout.tile_distance_objs(fallout.dude_obj(), fallout.self_obj()) <= 4) then
             hostile = 1

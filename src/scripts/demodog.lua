@@ -32,7 +32,7 @@ function start()
             do_dialogue()
         else
             if fallout.script_action() == 4 then
-                fallout.attack_complex(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+                fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
             else
                 if (fallout.script_action() == 21) or (fallout.script_action() == 3) then
                     fallout.script_overrides()

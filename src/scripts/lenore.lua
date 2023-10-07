@@ -47,7 +47,7 @@ function start()
                     fallout.display_msg(fallout.message_str(375, 100))
                 else
                     if fallout.script_action() == 4 then
-                        fallout.attack_complex(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+                        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
                     else
                         if fallout.script_action() == 12 then
                             if fallout.external_var("smartass2") then

@@ -21,7 +21,7 @@ end
 
 function critter_p_proc()
     if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) and (fallout.global_var(224) == 2) and (fallout.global_var(140) == 0) then
-        fallout.attack_complex(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     else
         if fallout.global_var(224) ~= 2 then
             fallout.anim(fallout.self_obj(), 48, 0)

@@ -63,7 +63,7 @@ end
 function critter_p_proc()
     if hostile then
         hostile = 0
-        fallout.attack_complex(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     else
         if (fallout.map_var(1) == 1) and ((fallout.game_time() // (10 * 60 * 60 * 24)) > fallout.map_var(5)) then
             if fallout.external_var("jail_door_ptr") ~= 0 then

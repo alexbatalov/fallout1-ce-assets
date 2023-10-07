@@ -289,7 +289,7 @@ function start()
                         end
                         if g5 then
                             g5 = 0
-                            fallout.attack_complex(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+                            fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
                         end
                     else
                         if fallout.script_action() == 22 then

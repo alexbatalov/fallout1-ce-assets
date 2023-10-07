@@ -34,7 +34,7 @@ end
 
 function damage_p_proc()
     if damage_counter > 2 then
-        fallout.attack_complex(fallout.self_obj(), 0, 1, 0, 0, 30000, 0, 0)
+        fallout.attack(fallout.self_obj(), 0, 1, 0, 0, 30000, 0, 0)
     else
         damage_counter = damage_counter + 1
     end

@@ -154,7 +154,7 @@ function start()
                         if HOSTILE then
                             fallout.set_local_var(5, 1)
                             HOSTILE = 0
-                            fallout.attack_complex(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+                            fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
                         end
                         if fallout.global_var(241) == 2 then
                         else

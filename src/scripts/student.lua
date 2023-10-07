@@ -46,7 +46,7 @@ function start()
                 if hostile then
                     fallout.set_global_var(250, 1)
                     hostile = 0
-                    fallout.attack_complex(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+                    fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
                 else
                     if fallout.global_var(250) == 0 then
                         critter_p_proc()

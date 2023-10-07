@@ -165,7 +165,7 @@ function start()
                             if Hostile then
                                 Hostile = 0
                                 fallout.set_global_var(249, 1)
-                                fallout.attack_complex(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+                                fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
                             else
                                 if fallout.local_var(4) == 0 then
                                     if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) and (fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 6) then

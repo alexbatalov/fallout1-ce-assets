@@ -640,7 +640,7 @@ function City3()
         fallout.add_obj_to_inven(Critter, Item)
     end
     if start_attack == 0 then
-        fallout.attack_complex(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
     start_attack = 1
     stranger()
@@ -682,7 +682,7 @@ function City4()
         Tot_Critter_A = Tot_Critter_A - 1
     end
     if start_attack == 0 then
-        fallout.attack_complex(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
     start_attack = 1
     stranger()
@@ -748,7 +748,7 @@ function City5()
         fallout.add_obj_to_inven(Critter, Item)
     end
     if start_attack == 0 then
-        fallout.attack_complex(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
     start_attack = 1
     stranger()
@@ -773,7 +773,7 @@ function City6()
         Tot_Critter_A = Tot_Critter_A - 1
     end
     if start_attack == 0 then
-        fallout.attack_complex(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
     start_attack = 1
     stranger()

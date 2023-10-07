@@ -16,7 +16,7 @@ function start()
             fallout.set_map_var(4, 0)
             fallout.set_local_var(0, 1)
             fallout.critter_attempt_placement(fallout.self_obj(), 18859, 0)
-            fallout.attack_complex(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+            fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
         end
     else
         if fallout.script_action() == 21 then

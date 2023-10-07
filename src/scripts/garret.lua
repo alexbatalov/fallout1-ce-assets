@@ -84,12 +84,12 @@ function start()
                     else
                         if fallout.script_action() == 12 then
                             if fallout.global_var(249) and fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
-                                fallout.attack_complex(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+                                fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
                             else
                                 my_hex = fallout.tile_num(fallout.self_obj())
                                 if Hostile > 0 then
                                     fallout.set_global_var(249, 1)
-                                    fallout.attack_complex(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+                                    fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
                                 end
                                 if fallout.global_var(60) & 1 then
                                     if fallout.local_var(5) == 0 then

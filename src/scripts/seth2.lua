@@ -24,7 +24,7 @@ function start()
         if fallout.script_action() == 12 then
             if hostile then
                 hostile = 0
-                fallout.attack_complex(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+                fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
             end
             if fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) > 3 then
                 fallout.animate_move_obj_to_tile(fallout.self_obj(), fallout.tile_num_in_direction(fallout.tile_num(fallout.dude_obj()), fallout.random(0, 5), 1), 0)

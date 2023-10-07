@@ -232,7 +232,7 @@ function critter_p_proc()
     end
     if g8 then
         g8 = 0
-        fallout.attack_complex(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
     if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) and (fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 12) and fallout.map_var(2) and (fallout.cur_map_index() == 12) then
         fallout.dialogue_system_enter()

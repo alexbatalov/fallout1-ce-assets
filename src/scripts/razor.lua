@@ -206,7 +206,7 @@ function critter_p_proc()
         fallout.set_local_var(4, 1)
     end
     if fallout.local_var(5) == 1 then
-        fallout.attack_complex(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
         fallout.set_local_var(5, 0)
         fallout.set_global_var(253, 1)
     end

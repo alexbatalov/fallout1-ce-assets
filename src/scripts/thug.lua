@@ -15,7 +15,7 @@ function start()
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 29)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 11)
         if fallout.cur_map_index() ~= 29 then
-            fallout.attack_complex(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+            fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
             my_script_mode = 1
         else
             if fallout.global_var(123) == 3 then
@@ -52,7 +52,7 @@ end
 function critter_p_proc()
     if hostile then
         hostile = 0
-        fallout.attack_complex(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
 end
 

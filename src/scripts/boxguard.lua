@@ -32,7 +32,7 @@ end
 function critter_p_proc()
     if hostile then
         hostile = 0
-        fallout.attack_complex(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     else
         if fallout.external_var("Saul_loses") then
             if (fallout.obj_pid(fallout.external_var("challenger_ptr")) == 16777227) or (fallout.obj_pid(fallout.external_var("challenger_ptr")) == 16777226) then

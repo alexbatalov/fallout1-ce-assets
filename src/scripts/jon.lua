@@ -181,16 +181,16 @@ function critter_p_proc()
         if (fallout.global_var(613) == 9103) and (fallout.global_var(612) ~= 9003) then
             fallout.critter_add_trait(fallout.self_obj(), 1, 6, 89)
             fallout.float_msg(fallout.self_obj(), fallout.message_str(288, 174), 2)
-            fallout.attack_complex(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+            fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
         else
             if fallout.global_var(251) == 1 then
-                fallout.attack_complex(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+                fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
             end
         end
     end
     if fallout.global_var(616) == 1 then
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 89)
-        fallout.attack_complex(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
 end
 
