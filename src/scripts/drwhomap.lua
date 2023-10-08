@@ -5,7 +5,7 @@ local map_enter_p_proc
 local map_update_p_proc
 local lighting
 
-fallout.create_external_var("local Tardis_ptr")
+fallout.create_external_var("Tardis_ptr")
 
 local Darkness
 local Invasion

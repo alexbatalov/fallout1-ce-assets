@@ -3,16 +3,16 @@ local fallout = require("fallout")
 local HEREBEFORE = 0
 local Player_Elevation = 0
 
-fallout.create_external_var("local term1_ptr")
-fallout.create_external_var("local term2_ptr")
-fallout.create_external_var("local term3_ptr")
-fallout.create_external_var("local term4_ptr")
-fallout.create_external_var("local term5_ptr")
-fallout.create_external_var("local term6_ptr")
-fallout.create_external_var("local term7_ptr")
-fallout.create_external_var("local term8_ptr")
-fallout.create_external_var("local Vree_ptr")
-fallout.create_external_var("local table_ptr")
+fallout.create_external_var("term1_ptr")
+fallout.create_external_var("term2_ptr")
+fallout.create_external_var("term3_ptr")
+fallout.create_external_var("term4_ptr")
+fallout.create_external_var("term5_ptr")
+fallout.create_external_var("term6_ptr")
+fallout.create_external_var("term7_ptr")
+fallout.create_external_var("term8_ptr")
+fallout.create_external_var("Vree_ptr")
+fallout.create_external_var("table_ptr")
 
 local start
 local add_party
@@ -22,11 +22,11 @@ local remove_party
 local party_elevation = 0
 local dude_start_hex = 0
 
-fallout.create_external_var("local Ian_ptr")
-fallout.create_external_var("local Dog_ptr")
-fallout.create_external_var("local Tycho_ptr")
-fallout.create_external_var("local Katja_ptr")
-fallout.create_external_var("local Tandi_ptr")
+fallout.create_external_var("Ian_ptr")
+fallout.create_external_var("Dog_ptr")
+fallout.create_external_var("Tycho_ptr")
+fallout.create_external_var("Katja_ptr")
+fallout.create_external_var("Tandi_ptr")
 
 function start()
     if fallout.script_action() == 15 then

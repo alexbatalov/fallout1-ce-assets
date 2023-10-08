@@ -2,8 +2,8 @@ local fallout = require("fallout")
 
 local HEREBEFORE = 0
 
-fallout.create_external_var("local Door_ptr")
-fallout.create_external_var("local Cabbot_ptr")
+fallout.create_external_var("Door_ptr")
+fallout.create_external_var("Cabbot_ptr")
 
 local start
 local lighting
@@ -14,11 +14,11 @@ local remove_party
 local party_elevation = 0
 local dude_start_hex = 0
 
-fallout.create_external_var("local Ian_ptr")
-fallout.create_external_var("local Dog_ptr")
-fallout.create_external_var("local Tycho_ptr")
-fallout.create_external_var("local Katja_ptr")
-fallout.create_external_var("local Tandi_ptr")
+fallout.create_external_var("Ian_ptr")
+fallout.create_external_var("Dog_ptr")
+fallout.create_external_var("Tycho_ptr")
+fallout.create_external_var("Katja_ptr")
+fallout.create_external_var("Tandi_ptr")
 
 local Darkness
 local Invasion

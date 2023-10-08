@@ -4,13 +4,13 @@ local start
 local Lighting
 local Darkness
 
-fallout.create_external_var("local Team9_Count")
+fallout.create_external_var("Team9_Count")
 fallout.set_external_var("Team9_Count", 4)
-fallout.create_external_var("local radio_trick")
-fallout.create_external_var("local ignoring_dude")
-fallout.create_external_var("local removal_ptr")
-fallout.create_external_var("local know_door_code")
-fallout.create_external_var("local comptroller_status")
+fallout.create_external_var("radio_trick")
+fallout.create_external_var("ignoring_dude")
+fallout.create_external_var("removal_ptr")
+fallout.create_external_var("know_door_code")
+fallout.create_external_var("comptroller_status")
 
 local add_party
 local update_party
@@ -19,11 +19,11 @@ local remove_party
 local party_elevation = 0
 local dude_start_hex = 0
 
-fallout.create_external_var("local Ian_ptr")
-fallout.create_external_var("local Dog_ptr")
-fallout.create_external_var("local Tycho_ptr")
-fallout.create_external_var("local Katja_ptr")
-fallout.create_external_var("local Tandi_ptr")
+fallout.create_external_var("Ian_ptr")
+fallout.create_external_var("Dog_ptr")
+fallout.create_external_var("Tycho_ptr")
+fallout.create_external_var("Katja_ptr")
+fallout.create_external_var("Tandi_ptr")
 
 local Invasion
 local radio_kludge

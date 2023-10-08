@@ -52,7 +52,7 @@ local hostile = 0
 local initialized = 0
 local known = 0
 
-fallout.create_external_var("local dude_enemy")
+fallout.create_external_var("dude_enemy")
 
 local get_reaction
 local ReactToLevel

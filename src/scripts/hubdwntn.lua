@@ -4,19 +4,19 @@ local start
 local Lighting
 local Darkness
 
-fallout.create_external_var("local Sid_Ptr")
-fallout.create_external_var("local Beth_Ptr")
-fallout.create_external_var("local Leon_Ptr")
-fallout.create_external_var("local Guido_Ptr")
-fallout.create_external_var("local Vault_Ptr")
-fallout.create_external_var("local Richie_Ptr")
-fallout.create_external_var("local Kane_Ptr")
-fallout.create_external_var("local Lorenzo_Safe_Ptr")
-fallout.create_external_var("local Decker_Ptr")
-fallout.create_external_var("local Justin_Ptr")
-fallout.create_external_var("local Beth_Box_Ptr")
-fallout.create_external_var("local Mitch_Box_Ptr")
-fallout.create_external_var("local Fry_Stub_Ptr")
+fallout.create_external_var("Sid_Ptr")
+fallout.create_external_var("Beth_Ptr")
+fallout.create_external_var("Leon_Ptr")
+fallout.create_external_var("Guido_Ptr")
+fallout.create_external_var("Vault_Ptr")
+fallout.create_external_var("Richie_Ptr")
+fallout.create_external_var("Kane_Ptr")
+fallout.create_external_var("Lorenzo_Safe_Ptr")
+fallout.create_external_var("Decker_Ptr")
+fallout.create_external_var("Justin_Ptr")
+fallout.create_external_var("Beth_Box_Ptr")
+fallout.create_external_var("Mitch_Box_Ptr")
+fallout.create_external_var("Fry_Stub_Ptr")
 
 local add_party
 local update_party
@@ -25,11 +25,11 @@ local remove_party
 local party_elevation = 0
 local dude_start_hex = 0
 
-fallout.create_external_var("local Ian_ptr")
-fallout.create_external_var("local Dog_ptr")
-fallout.create_external_var("local Tycho_ptr")
-fallout.create_external_var("local Katja_ptr")
-fallout.create_external_var("local Tandi_ptr")
+fallout.create_external_var("Ian_ptr")
+fallout.create_external_var("Dog_ptr")
+fallout.create_external_var("Tycho_ptr")
+fallout.create_external_var("Katja_ptr")
+fallout.create_external_var("Tandi_ptr")
 
 local Invasion
 

@@ -1,11 +1,11 @@
 local fallout = require("fallout")
 
-fallout.create_external_var("local Use_Manhole_Top")
-fallout.create_external_var("local Use_Manhole_Bottom")
-fallout.create_external_var("local Use_Manhole_Middle")
-fallout.create_external_var("local Manhole_Pointer_Top")
-fallout.create_external_var("local Manhole_Pointer_Middle")
-fallout.create_external_var("local Manhole_Pointer_Bottom")
+fallout.create_external_var("Use_Manhole_Top")
+fallout.create_external_var("Use_Manhole_Bottom")
+fallout.create_external_var("Use_Manhole_Middle")
+fallout.create_external_var("Manhole_Pointer_Top")
+fallout.create_external_var("Manhole_Pointer_Middle")
+fallout.create_external_var("Manhole_Pointer_Bottom")
 
 local fugee_ptr = 0
 local fugee_hex = 0
@@ -20,11 +20,11 @@ local remove_party
 local party_elevation = 0
 local dude_start_hex = 0
 
-fallout.create_external_var("local Ian_ptr")
-fallout.create_external_var("local Dog_ptr")
-fallout.create_external_var("local Tycho_ptr")
-fallout.create_external_var("local Katja_ptr")
-fallout.create_external_var("local Tandi_ptr")
+fallout.create_external_var("Ian_ptr")
+fallout.create_external_var("Dog_ptr")
+fallout.create_external_var("Tycho_ptr")
+fallout.create_external_var("Katja_ptr")
+fallout.create_external_var("Tandi_ptr")
 
 local Invasion
 

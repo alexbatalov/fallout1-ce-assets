@@ -9,26 +9,26 @@ local remove_party
 local party_elevation = 0
 local dude_start_hex = 0
 
-fallout.create_external_var("local Ian_ptr")
-fallout.create_external_var("local Dog_ptr")
-fallout.create_external_var("local Tycho_ptr")
-fallout.create_external_var("local Katja_ptr")
-fallout.create_external_var("local Tandi_ptr")
+fallout.create_external_var("Ian_ptr")
+fallout.create_external_var("Dog_ptr")
+fallout.create_external_var("Tycho_ptr")
+fallout.create_external_var("Katja_ptr")
+fallout.create_external_var("Tandi_ptr")
 
 local gear = 0
 
-fallout.create_external_var("local recipient")
-fallout.create_external_var("local getting_ration")
-fallout.create_external_var("local armory_access")
-fallout.create_external_var("local revolting")
+fallout.create_external_var("recipient")
+fallout.create_external_var("getting_ration")
+fallout.create_external_var("armory_access")
+fallout.create_external_var("revolting")
 fallout.set_external_var("revolting", 1)
-fallout.create_external_var("local traitor")
-fallout.create_external_var("local removal_ptr")
-fallout.create_external_var("local SecDoor_ptr")
-fallout.create_external_var("local Officer_ptr")
-fallout.create_external_var("local VaultBox_ptr")
-fallout.create_external_var("local WtrGrd_ptr")
-fallout.create_external_var("local WtrThief_ptr")
+fallout.create_external_var("traitor")
+fallout.create_external_var("removal_ptr")
+fallout.create_external_var("SecDoor_ptr")
+fallout.create_external_var("Officer_ptr")
+fallout.create_external_var("VaultBox_ptr")
+fallout.create_external_var("WtrGrd_ptr")
+fallout.create_external_var("WtrThief_ptr")
 
 function start()
     if fallout.script_action() == 15 then

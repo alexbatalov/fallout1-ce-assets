@@ -6,12 +6,12 @@ local map_update_p_proc
 local map_exit_p_proc
 local Lighting
 
-fallout.create_external_var("local InBladePtr1")
-fallout.create_external_var("local InBladePtr2")
-fallout.create_external_var("local InBladePtr3")
-fallout.create_external_var("local InBladePtr4")
-fallout.create_external_var("local InBladePtr5")
-fallout.create_external_var("local RazorPtr")
+fallout.create_external_var("InBladePtr1")
+fallout.create_external_var("InBladePtr2")
+fallout.create_external_var("InBladePtr3")
+fallout.create_external_var("InBladePtr4")
+fallout.create_external_var("InBladePtr5")
+fallout.create_external_var("RazorPtr")
 
 local add_party
 local update_party
@@ -20,11 +20,11 @@ local remove_party
 local party_elevation = 0
 local dude_start_hex = 0
 
-fallout.create_external_var("local Ian_ptr")
-fallout.create_external_var("local Dog_ptr")
-fallout.create_external_var("local Tycho_ptr")
-fallout.create_external_var("local Katja_ptr")
-fallout.create_external_var("local Tandi_ptr")
+fallout.create_external_var("Ian_ptr")
+fallout.create_external_var("Dog_ptr")
+fallout.create_external_var("Tycho_ptr")
+fallout.create_external_var("Katja_ptr")
+fallout.create_external_var("Tandi_ptr")
 
 local Darkness
 local Invasion

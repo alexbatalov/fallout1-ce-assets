@@ -25,8 +25,8 @@ local PeasantD04
 -- ?import? variable initialized
 -- ?import? variable growling
 
-fallout.create_external_var("local smartass")
-fallout.create_external_var("local smartass2")
+fallout.create_external_var("smartass")
+fallout.create_external_var("smartass2")
 
 function start()
     if not(g2) then

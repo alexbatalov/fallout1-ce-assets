@@ -4,12 +4,12 @@ local start
 local Lighting
 local Darkness
 
-fallout.create_external_var("local Master_Ptr")
-fallout.create_external_var("local Red_Door_Ptr")
-fallout.create_external_var("local Black_Door_Ptr")
-fallout.create_external_var("local Laura_Ptr")
-fallout.create_external_var("local Shop_Ptr")
-fallout.create_external_var("local Shopkepper_Ptr")
+fallout.create_external_var("Master_Ptr")
+fallout.create_external_var("Red_Door_Ptr")
+fallout.create_external_var("Black_Door_Ptr")
+fallout.create_external_var("Laura_Ptr")
+fallout.create_external_var("Shop_Ptr")
+fallout.create_external_var("Shopkepper_Ptr")
 
 local add_party
 local update_party
@@ -18,11 +18,11 @@ local remove_party
 local party_elevation = 0
 local dude_start_hex = 0
 
-fallout.create_external_var("local Ian_ptr")
-fallout.create_external_var("local Dog_ptr")
-fallout.create_external_var("local Tycho_ptr")
-fallout.create_external_var("local Katja_ptr")
-fallout.create_external_var("local Tandi_ptr")
+fallout.create_external_var("Ian_ptr")
+fallout.create_external_var("Dog_ptr")
+fallout.create_external_var("Tycho_ptr")
+fallout.create_external_var("Katja_ptr")
+fallout.create_external_var("Tandi_ptr")
 
 local Player_Elevation = 0
 local cur_count = 0

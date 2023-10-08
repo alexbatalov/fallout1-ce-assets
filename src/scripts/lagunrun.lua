@@ -9,15 +9,15 @@ local remove_party
 local party_elevation = 0
 local dude_start_hex = 0
 
-fallout.create_external_var("local Ian_ptr")
-fallout.create_external_var("local Dog_ptr")
-fallout.create_external_var("local Tycho_ptr")
-fallout.create_external_var("local Katja_ptr")
-fallout.create_external_var("local Tandi_ptr")
-fallout.create_external_var("local get_Gabriel")
-fallout.create_external_var("local peaceful")
-fallout.create_external_var("local Locker_Ptr")
-fallout.create_external_var("local Being_Looted")
+fallout.create_external_var("Ian_ptr")
+fallout.create_external_var("Dog_ptr")
+fallout.create_external_var("Tycho_ptr")
+fallout.create_external_var("Katja_ptr")
+fallout.create_external_var("Tandi_ptr")
+fallout.create_external_var("get_Gabriel")
+fallout.create_external_var("peaceful")
+fallout.create_external_var("Locker_Ptr")
+fallout.create_external_var("Being_Looted")
 
 local Darkness
 local Invasion

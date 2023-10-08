@@ -11,25 +11,25 @@ local remove_party
 local party_elevation = 0
 local dude_start_hex = 0
 
-fallout.create_external_var("local Ian_ptr")
-fallout.create_external_var("local Dog_ptr")
-fallout.create_external_var("local Tycho_ptr")
-fallout.create_external_var("local Katja_ptr")
-fallout.create_external_var("local Tandi_ptr")
+fallout.create_external_var("Ian_ptr")
+fallout.create_external_var("Dog_ptr")
+fallout.create_external_var("Tycho_ptr")
+fallout.create_external_var("Katja_ptr")
+fallout.create_external_var("Tandi_ptr")
 
 local Player_Elevation = 0
 
-fallout.create_external_var("local Lt_ptr")
-fallout.create_external_var("local Team9_Count")
-fallout.create_external_var("local ignoring_dude")
-fallout.create_external_var("local VWeapLocker_ptr")
-fallout.create_external_var("local valid_target")
-fallout.create_external_var("local field_change")
-fallout.create_external_var("local removal_ptr")
-fallout.create_external_var("local Field1c_Ptr")
-fallout.create_external_var("local Field1d_Ptr")
-fallout.create_external_var("local Field2c_Ptr")
-fallout.create_external_var("local FieldH_Ptr")
+fallout.create_external_var("Lt_ptr")
+fallout.create_external_var("Team9_Count")
+fallout.create_external_var("ignoring_dude")
+fallout.create_external_var("VWeapLocker_ptr")
+fallout.create_external_var("valid_target")
+fallout.create_external_var("field_change")
+fallout.create_external_var("removal_ptr")
+fallout.create_external_var("Field1c_Ptr")
+fallout.create_external_var("Field1d_Ptr")
+fallout.create_external_var("Field2c_Ptr")
+fallout.create_external_var("FieldH_Ptr")
 
 local Invasion
 

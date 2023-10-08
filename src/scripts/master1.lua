@@ -10,16 +10,16 @@ local remove_party
 local party_elevation = 0
 local dude_start_hex = 0
 
-fallout.create_external_var("local Ian_ptr")
-fallout.create_external_var("local Dog_ptr")
-fallout.create_external_var("local Tycho_ptr")
-fallout.create_external_var("local Katja_ptr")
-fallout.create_external_var("local Tandi_ptr")
-fallout.create_external_var("local patient")
-fallout.create_external_var("local lets_go")
-fallout.create_external_var("local contpan")
-fallout.create_external_var("local J_Door_Ptr")
-fallout.create_external_var("local Psy_Field_Ptr")
+fallout.create_external_var("Ian_ptr")
+fallout.create_external_var("Dog_ptr")
+fallout.create_external_var("Tycho_ptr")
+fallout.create_external_var("Katja_ptr")
+fallout.create_external_var("Tandi_ptr")
+fallout.create_external_var("patient")
+fallout.create_external_var("lets_go")
+fallout.create_external_var("contpan")
+fallout.create_external_var("J_Door_Ptr")
+fallout.create_external_var("Psy_Field_Ptr")
 
 local Player_Elevation = 0
 local monstr_ptr = 0

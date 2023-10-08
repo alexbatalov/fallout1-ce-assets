@@ -3,18 +3,18 @@ local fallout = require("fallout")
 local start
 local Lighting
 
-fallout.create_external_var("local weapon_checked")
-fallout.create_external_var("local sneak_checked")
-fallout.create_external_var("local times_caught_sneaking")
-fallout.create_external_var("local fetch_dude")
-fallout.create_external_var("local ladder_down")
-fallout.create_external_var("local ladder_up")
-fallout.create_external_var("local Gretch_call")
-fallout.create_external_var("local helped_Killian")
-fallout.create_external_var("local messing_with_Morbid_stuff")
-fallout.create_external_var("local jail_door_ptr")
-fallout.create_external_var("local Morbid_ptr")
-fallout.create_external_var("local removal_ptr")
+fallout.create_external_var("weapon_checked")
+fallout.create_external_var("sneak_checked")
+fallout.create_external_var("times_caught_sneaking")
+fallout.create_external_var("fetch_dude")
+fallout.create_external_var("ladder_down")
+fallout.create_external_var("ladder_up")
+fallout.create_external_var("Gretch_call")
+fallout.create_external_var("helped_Killian")
+fallout.create_external_var("messing_with_Morbid_stuff")
+fallout.create_external_var("jail_door_ptr")
+fallout.create_external_var("Morbid_ptr")
+fallout.create_external_var("removal_ptr")
 
 local add_party
 local update_party
@@ -23,11 +23,11 @@ local remove_party
 local party_elevation = 0
 local dude_start_hex = 0
 
-fallout.create_external_var("local Ian_ptr")
-fallout.create_external_var("local Dog_ptr")
-fallout.create_external_var("local Tycho_ptr")
-fallout.create_external_var("local Katja_ptr")
-fallout.create_external_var("local Tandi_ptr")
+fallout.create_external_var("Ian_ptr")
+fallout.create_external_var("Dog_ptr")
+fallout.create_external_var("Tycho_ptr")
+fallout.create_external_var("Katja_ptr")
+fallout.create_external_var("Tandi_ptr")
 
 local Darkness
 local Invasion

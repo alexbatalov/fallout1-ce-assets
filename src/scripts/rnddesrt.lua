@@ -98,11 +98,11 @@ local remove_party
 local party_elevation = 0
 local dude_start_hex = 0
 
-fallout.create_external_var("local Ian_ptr")
-fallout.create_external_var("local Dog_ptr")
-fallout.create_external_var("local Tycho_ptr")
-fallout.create_external_var("local Katja_ptr")
-fallout.create_external_var("local Tandi_ptr")
+fallout.create_external_var("Ian_ptr")
+fallout.create_external_var("Dog_ptr")
+fallout.create_external_var("Tycho_ptr")
+fallout.create_external_var("Katja_ptr")
+fallout.create_external_var("Tandi_ptr")
 
 local Dude_tile = 0
 local Place_Holder = 0
@@ -127,9 +127,9 @@ local dude_rot = 0
 local group_angle = 0
 local Range = 0
 
-fallout.create_external_var("local random_seed_1")
-fallout.create_external_var("local random_seed_2")
-fallout.create_external_var("local random_seed_3")
+fallout.create_external_var("random_seed_1")
+fallout.create_external_var("random_seed_2")
+fallout.create_external_var("random_seed_3")
 
 local Darkness
 local Invasion

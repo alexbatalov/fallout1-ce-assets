@@ -8,22 +8,22 @@ local time = 0
 local know_Tycho = 0
 local item = 0
 
-fallout.create_external_var("local Trish_ptr")
-fallout.create_external_var("local Killian_ptr")
-fallout.create_external_var("local Gizmo_ptr")
-fallout.create_external_var("local growling")
-fallout.create_external_var("local dog_is_angry")
+fallout.create_external_var("Trish_ptr")
+fallout.create_external_var("Killian_ptr")
+fallout.create_external_var("Gizmo_ptr")
+fallout.create_external_var("growling")
+fallout.create_external_var("dog_is_angry")
 fallout.set_external_var("dog_is_angry", 1)
-fallout.create_external_var("local smartass")
-fallout.create_external_var("local smartass2")
-fallout.create_external_var("local Phil_approaches")
-fallout.create_external_var("local weapon_checked")
-fallout.create_external_var("local sneak_checked")
-fallout.create_external_var("local times_caught_sneaking")
-fallout.create_external_var("local Gizmo_is_angry")
-fallout.create_external_var("local show_to_door")
-fallout.create_external_var("local removal_ptr")
-fallout.create_external_var("local payment")
+fallout.create_external_var("smartass")
+fallout.create_external_var("smartass2")
+fallout.create_external_var("Phil_approaches")
+fallout.create_external_var("weapon_checked")
+fallout.create_external_var("sneak_checked")
+fallout.create_external_var("times_caught_sneaking")
+fallout.create_external_var("Gizmo_is_angry")
+fallout.create_external_var("show_to_door")
+fallout.create_external_var("removal_ptr")
+fallout.create_external_var("payment")
 
 local add_party
 local update_party
@@ -32,10 +32,10 @@ local remove_party
 local party_elevation = 0
 local dude_start_hex = 0
 
-fallout.create_external_var("local Ian_ptr")
-fallout.create_external_var("local Dog_ptr")
-fallout.create_external_var("local Tycho_ptr")
-fallout.create_external_var("local Katja_ptr")
+fallout.create_external_var("Ian_ptr")
+fallout.create_external_var("Dog_ptr")
+fallout.create_external_var("Tycho_ptr")
+fallout.create_external_var("Katja_ptr")
 
 local Darkness
 local Invasion

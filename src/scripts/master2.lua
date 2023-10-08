@@ -10,18 +10,18 @@ local remove_party
 local party_elevation = 0
 local dude_start_hex = 0
 
-fallout.create_external_var("local Ian_ptr")
-fallout.create_external_var("local Dog_ptr")
-fallout.create_external_var("local Tycho_ptr")
-fallout.create_external_var("local Katja_ptr")
-fallout.create_external_var("local Tandi_ptr")
-fallout.create_external_var("local Skill_Used")
-fallout.create_external_var("local Key_Used")
-fallout.create_external_var("local Master_Has_Armed")
-fallout.create_external_var("local Bomb_Armed")
-fallout.create_external_var("local Master_ptr")
-fallout.create_external_var("local signal_mutants")
-fallout.create_external_var("local Master_Has_Activated")
+fallout.create_external_var("Ian_ptr")
+fallout.create_external_var("Dog_ptr")
+fallout.create_external_var("Tycho_ptr")
+fallout.create_external_var("Katja_ptr")
+fallout.create_external_var("Tandi_ptr")
+fallout.create_external_var("Skill_Used")
+fallout.create_external_var("Key_Used")
+fallout.create_external_var("Master_Has_Armed")
+fallout.create_external_var("Bomb_Armed")
+fallout.create_external_var("Master_ptr")
+fallout.create_external_var("signal_mutants")
+fallout.create_external_var("Master_Has_Activated")
 
 local Player_Elevation = 0
 local mutan1_ptr = 0

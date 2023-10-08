@@ -1,10 +1,10 @@
 local fallout = require("fallout")
 
-fallout.create_external_var("local women_killed")
-fallout.create_external_var("local signal_women")
-fallout.create_external_var("local killing_women")
-fallout.create_external_var("local Garls_Inven_Ptr")
-fallout.create_external_var("local Cell_Door_Ptr")
+fallout.create_external_var("women_killed")
+fallout.create_external_var("signal_women")
+fallout.create_external_var("killing_women")
+fallout.create_external_var("Garls_Inven_Ptr")
+fallout.create_external_var("Cell_Door_Ptr")
 
 local rndx = 0
 local Tandi_hex = 0
@@ -19,11 +19,11 @@ local remove_party
 local party_elevation = 0
 local dude_start_hex = 0
 
-fallout.create_external_var("local Ian_ptr")
-fallout.create_external_var("local Dog_ptr")
-fallout.create_external_var("local Tycho_ptr")
-fallout.create_external_var("local Katja_ptr")
-fallout.create_external_var("local Tandi_ptr")
+fallout.create_external_var("Ian_ptr")
+fallout.create_external_var("Dog_ptr")
+fallout.create_external_var("Tycho_ptr")
+fallout.create_external_var("Katja_ptr")
+fallout.create_external_var("Tandi_ptr")
 
 local Darkness
 local Invasion

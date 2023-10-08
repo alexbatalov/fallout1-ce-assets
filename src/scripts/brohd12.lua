@@ -3,9 +3,9 @@ local fallout = require("fallout")
 local HEREBEFORE = 0
 local PLayer_Elevation = 0
 
-fallout.create_external_var("local Student_ptr")
-fallout.create_external_var("local student_num")
-fallout.create_external_var("local locker_ptr")
+fallout.create_external_var("Student_ptr")
+fallout.create_external_var("student_num")
+fallout.create_external_var("locker_ptr")
 
 local start
 local add_party
@@ -15,11 +15,11 @@ local remove_party
 local party_elevation = 0
 local dude_start_hex = 0
 
-fallout.create_external_var("local Ian_ptr")
-fallout.create_external_var("local Dog_ptr")
-fallout.create_external_var("local Tycho_ptr")
-fallout.create_external_var("local Katja_ptr")
-fallout.create_external_var("local Tandi_ptr")
+fallout.create_external_var("Ian_ptr")
+fallout.create_external_var("Dog_ptr")
+fallout.create_external_var("Tycho_ptr")
+fallout.create_external_var("Katja_ptr")
+fallout.create_external_var("Tandi_ptr")
 
 function start()
     if fallout.script_action() == 15 then

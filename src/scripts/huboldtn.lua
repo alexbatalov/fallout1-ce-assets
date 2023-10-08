@@ -4,9 +4,9 @@ local start
 local Lighting
 local Darkness
 
-fallout.create_external_var("local Jake_Door_Ptr")
-fallout.create_external_var("local Jake_Desk_Ptr")
-fallout.create_external_var("local Vance_Box_Ptr")
+fallout.create_external_var("Jake_Door_Ptr")
+fallout.create_external_var("Jake_Desk_Ptr")
+fallout.create_external_var("Vance_Box_Ptr")
 
 local add_party
 local update_party
@@ -15,11 +15,11 @@ local remove_party
 local party_elevation = 0
 local dude_start_hex = 0
 
-fallout.create_external_var("local Ian_ptr")
-fallout.create_external_var("local Dog_ptr")
-fallout.create_external_var("local Tycho_ptr")
-fallout.create_external_var("local Katja_ptr")
-fallout.create_external_var("local Tandi_ptr")
+fallout.create_external_var("Ian_ptr")
+fallout.create_external_var("Dog_ptr")
+fallout.create_external_var("Tycho_ptr")
+fallout.create_external_var("Katja_ptr")
+fallout.create_external_var("Tandi_ptr")
 
 local Invasion
 
