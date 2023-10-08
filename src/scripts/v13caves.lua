@@ -38,8 +38,6 @@ fallout.create_external_var("Dog_ptr")
 fallout.create_external_var("Tycho_ptr")
 fallout.create_external_var("Katja_ptr")
 
-local Invasion
-
 function start()
     local v0 = 0
     local v1 = 0
@@ -208,32 +206,6 @@ function remove_party()
     if fallout.global_var(244) == 2 then
         fallout.destroy_object(fallout.external_var("Katja_ptr"))
         fallout.set_global_var(244, 2)
-    end
-end
-
-function Invasion()
-    if not(fallout.global_var(18) == 2) then
-        if fallout.global_var(149) > time.game_time_in_days() then
-            fallout.set_global_var(13, 1)
-        end
-        if fallout.global_var(150) > time.game_time_in_days() then
-            fallout.set_global_var(14, 1)
-        end
-        if fallout.global_var(151) > time.game_time_in_days() then
-            fallout.set_global_var(16, 1)
-        end
-        if fallout.global_var(152) > time.game_time_in_days() then
-            fallout.set_global_var(15, 1)
-        end
-        if fallout.global_var(153) > time.game_time_in_days() then
-            fallout.set_global_var(12, 1)
-        end
-        if fallout.global_var(154) > time.game_time_in_days() then
-            fallout.set_global_var(11, 1)
-        end
-        if fallout.global_var(148) > time.game_time_in_days() then
-            fallout.set_global_var(7, 1)
-        end
     end
 end
 

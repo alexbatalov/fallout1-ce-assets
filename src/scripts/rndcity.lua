@@ -44,8 +44,6 @@ local start_attack = 0
 local victim = 0
 local Critter_tile = 0
 
-local Invasion
-
 function start()
     if fallout.script_action() == 15 then
         if fallout.metarule(14, 0) then
@@ -824,32 +822,6 @@ function remove_party()
         fallout.set_global_var(244, 2)
     end
     if fallout.global_var(26) == 5 then
-    end
-end
-
-function Invasion()
-    if not(fallout.global_var(18) == 2) then
-        if fallout.global_var(149) > time.game_time_in_days() then
-            fallout.set_global_var(13, 1)
-        end
-        if fallout.global_var(150) > time.game_time_in_days() then
-            fallout.set_global_var(14, 1)
-        end
-        if fallout.global_var(151) > time.game_time_in_days() then
-            fallout.set_global_var(16, 1)
-        end
-        if fallout.global_var(152) > time.game_time_in_days() then
-            fallout.set_global_var(15, 1)
-        end
-        if fallout.global_var(153) > time.game_time_in_days() then
-            fallout.set_global_var(12, 1)
-        end
-        if fallout.global_var(154) <= 0 then
-            fallout.set_global_var(11, 1)
-        end
-        if fallout.global_var(148) > time.game_time_in_days() then
-            fallout.set_global_var(7, 1)
-        end
     end
 end
 

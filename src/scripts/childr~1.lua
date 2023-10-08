@@ -14,8 +14,6 @@ fallout.create_external_var("Tycho_ptr")
 
 local Player_Elevation = 0
 
-local Invasion
-
 function start()
     if fallout.script_action() == 15 then
         fallout.set_light_level(75)
@@ -131,32 +129,6 @@ function remove_party()
     if fallout.global_var(121) == 2 then
         fallout.destroy_object(fallout.external_var("Tycho_ptr"))
         fallout.set_global_var(121, 2)
-    end
-end
-
-function Invasion()
-    if not(fallout.global_var(18) == 2) then
-        if fallout.global_var(149) > time.game_time_in_days() then
-            fallout.set_global_var(13, 1)
-        end
-        if fallout.global_var(150) > time.game_time_in_days() then
-            fallout.set_global_var(14, 1)
-        end
-        if fallout.global_var(151) > time.game_time_in_days() then
-            fallout.set_global_var(16, 1)
-        end
-        if fallout.global_var(152) > time.game_time_in_days() then
-            fallout.set_global_var(15, 1)
-        end
-        if fallout.global_var(153) > time.game_time_in_days() then
-            fallout.set_global_var(12, 1)
-        end
-        if fallout.global_var(154) > time.game_time_in_days() then
-            fallout.set_global_var(11, 1)
-        end
-        if fallout.global_var(148) > time.game_time_in_days() then
-            fallout.set_global_var(7, 1)
-        end
     end
 end
 

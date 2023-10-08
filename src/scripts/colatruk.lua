@@ -1,10 +1,8 @@
 local fallout = require("fallout")
 local light = require("lib.light")
-local time = require("lib.time")
 
 local start
 local add_caps
-local Invasion
 
 function start()
     if fallout.script_action() == 15 then
@@ -68,32 +66,6 @@ function add_caps()
     end
     v2 = v2 * (fallout.has_trait(0, fallout.dude_obj(), 20) + 1)
     fallout.add_mult_objs_to_inven(v0, v1, v2)
-end
-
-function Invasion()
-    if not(fallout.global_var(18) == 2) then
-        if fallout.global_var(149) > time.game_time_in_days() then
-            fallout.set_global_var(13, 1)
-        end
-        if fallout.global_var(150) > time.game_time_in_days() then
-            fallout.set_global_var(14, 1)
-        end
-        if fallout.global_var(151) > time.game_time_in_days() then
-            fallout.set_global_var(16, 1)
-        end
-        if fallout.global_var(152) > time.game_time_in_days() then
-            fallout.set_global_var(15, 1)
-        end
-        if fallout.global_var(153) > time.game_time_in_days() then
-            fallout.set_global_var(12, 1)
-        end
-        if fallout.global_var(154) <= 0 then
-            fallout.set_global_var(11, 1)
-        end
-        if fallout.global_var(148) > time.game_time_in_days() then
-            fallout.set_global_var(7, 1)
-        end
-    end
 end
 
 local exports = {}

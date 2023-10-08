@@ -1,6 +1,5 @@
 local fallout = require("fallout")
 local light = require("lib.light")
-local time = require("lib.time")
 
 local start
 local map_enter_p_proc
@@ -33,8 +32,6 @@ fallout.create_external_var("vault_door_ptr")
 
 local new_obj = 0
 local Overseer_ptr = 0
-
-local Invasion
 
 function start()
     if fallout.script_action() == 15 then
@@ -361,32 +358,6 @@ function remove_party()
         fallout.set_global_var(244, 2)
     end
     if fallout.global_var(26) == 5 then
-    end
-end
-
-function Invasion()
-    if not(fallout.global_var(18) == 2) then
-        if fallout.global_var(149) > time.game_time_in_days() then
-            fallout.set_global_var(13, 1)
-        end
-        if fallout.global_var(150) > time.game_time_in_days() then
-            fallout.set_global_var(14, 1)
-        end
-        if fallout.global_var(151) > time.game_time_in_days() then
-            fallout.set_global_var(16, 1)
-        end
-        if fallout.global_var(152) > time.game_time_in_days() then
-            fallout.set_global_var(15, 1)
-        end
-        if fallout.global_var(153) > time.game_time_in_days() then
-            fallout.set_global_var(12, 1)
-        end
-        if fallout.global_var(154) <= 0 then
-            fallout.set_global_var(11, 1)
-        end
-        if fallout.global_var(148) > time.game_time_in_days() then
-            fallout.set_global_var(7, 1)
-        end
     end
 end
 
