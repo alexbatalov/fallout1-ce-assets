@@ -1,9 +1,9 @@
 local fallout = require("fallout")
+local light = require("lib.light")
 local time = require("lib.time")
 
 local start
 local stranger
-local Lighting
 local choose_start
 local North_table
 local South_table
@@ -132,7 +132,6 @@ fallout.create_external_var("random_seed_1")
 fallout.create_external_var("random_seed_2")
 fallout.create_external_var("random_seed_3")
 
-local Darkness
 local Invasion
 
 function start()
@@ -254,10 +253,10 @@ function start()
                 end
             end
         end
-        Lighting()
+        light.lighting()
     else
         if fallout.script_action() == 23 then
-            Lighting()
+            light.lighting()
         else
             if fallout.script_action() == 16 then
                 Skill_roll = fallout.roll_vs_skill(fallout.dude_obj(), 17, 0)
@@ -317,24 +316,6 @@ function stranger()
                 Item = fallout.create_object_sid(17, 0, 0, -1)
                 fallout.add_obj_to_inven(Critter, Item)
                 fallout.set_global_var(288, 15)
-            end
-        end
-    end
-end
-
-function Lighting()
-    local v0 = 0
-    v0 = fallout.game_time_hour()
-    if (v0 >= 600) and (v0 < 700) then
-        fallout.set_light_level(v0 - 600 + 40)
-    else
-        if (v0 >= 700) and (v0 < 1800) then
-            fallout.set_light_level(100)
-        else
-            if (v0 >= 1800) and (v0 < 1900) then
-                fallout.set_light_level(100 - (v0 - 1800))
-            else
-                fallout.set_light_level(40)
             end
         end
     end
@@ -5408,10 +5389,6 @@ function remove_party()
     end
     if fallout.global_var(26) == 5 then
     end
-end
-
-function Darkness()
-    fallout.set_light_level(40)
 end
 
 function Invasion()

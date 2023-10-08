@@ -1,11 +1,11 @@
 local fallout = require("fallout")
+local light = require("lib.light")
 local time = require("lib.time")
 
 local start
 local map_enter_p_proc
 local map_update_p_proc
 local map_exit_p_proc
-local Lighting
 
 fallout.create_external_var("InBladePtr1")
 fallout.create_external_var("InBladePtr2")
@@ -27,7 +27,6 @@ fallout.create_external_var("Tycho_ptr")
 fallout.create_external_var("Katja_ptr")
 fallout.create_external_var("Tandi_ptr")
 
-local Darkness
 local Invasion
 
 function start()
@@ -52,12 +51,12 @@ function map_enter_p_proc()
     if time.game_time_in_days() >= fallout.global_var(148) then
         fallout.set_global_var(7, 1)
     end
-    Lighting()
+    light.lighting()
     add_party()
 end
 
 function map_update_p_proc()
-    Lighting()
+    light.lighting()
     update_party()
     if fallout.global_var(613) == 9104 then
         fallout.kill_critter(fallout.external_var("RazorPtr"), 0)
@@ -69,24 +68,6 @@ function map_exit_p_proc()
     remove_party()
     if (fallout.global_var(613) == 9103) or (fallout.global_var(613) == 9102) then
         fallout.kill_critter(fallout.external_var("RazorPtr"), 0)
-    end
-end
-
-function Lighting()
-    local v0 = 0
-    v0 = fallout.game_time_hour()
-    if (v0 >= 600) and (v0 < 700) then
-        fallout.set_light_level(v0 - 600 + 40)
-    else
-        if (v0 >= 700) and (v0 < 1800) then
-            fallout.set_light_level(100)
-        else
-            if (v0 >= 1800) and (v0 < 1900) then
-                fallout.set_light_level(100 - (v0 - 1800))
-            else
-                fallout.set_light_level(40)
-            end
-        end
     end
 end
 
@@ -154,10 +135,6 @@ function remove_party()
     end
     if fallout.global_var(26) == 5 then
     end
-end
-
-function Darkness()
-    fallout.set_light_level(40)
 end
 
 function Invasion()

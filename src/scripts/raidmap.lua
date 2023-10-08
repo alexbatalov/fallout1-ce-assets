@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local light = require("lib.light")
 local time = require("lib.time")
 
 fallout.create_external_var("women_killed")
@@ -12,7 +13,6 @@ local Tandi_hex = 0
 local temp = 0
 
 local start
-local Lighting
 local add_party
 local update_party
 local remove_party
@@ -26,12 +26,11 @@ fallout.create_external_var("Tycho_ptr")
 fallout.create_external_var("Katja_ptr")
 fallout.create_external_var("Tandi_ptr")
 
-local Darkness
 local Invasion
 
 function start()
     if fallout.script_action() == 15 then
-        Lighting()
+        light.lighting()
         fallout.set_global_var(69, 2)
         if fallout.metarule(14, 0) then
             fallout.display_msg(fallout.message_str(194, 103))
@@ -65,7 +64,7 @@ function start()
         add_party()
     else
         if fallout.script_action() == 23 then
-            Lighting()
+            light.lighting()
         else
             if fallout.script_action() == 16 then
                 if (fallout.global_var(26) == 5) and (fallout.map_var(1) ~= 1) then
@@ -97,24 +96,6 @@ function start()
                     fallout.kill_critter_type(16777253, 0)
                     fallout.kill_critter_type(16777218, 0)
                 end
-            end
-        end
-    end
-end
-
-function Lighting()
-    local v0 = 0
-    v0 = fallout.game_time_hour()
-    if (v0 >= 600) and (v0 < 700) then
-        fallout.set_light_level(v0 - 600 + 40)
-    else
-        if (v0 >= 700) and (v0 < 1800) then
-            fallout.set_light_level(100)
-        else
-            if (v0 >= 1800) and (v0 < 1900) then
-                fallout.set_light_level(100 - (v0 - 1800))
-            else
-                fallout.set_light_level(40)
             end
         end
     end
@@ -184,10 +165,6 @@ function remove_party()
     end
     if fallout.global_var(26) == 5 then
     end
-end
-
-function Darkness()
-    fallout.set_light_level(40)
 end
 
 function Invasion()

@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local light = require("lib.light")
 local time = require("lib.time")
 
 fallout.create_external_var("Use_Manhole_Top")
@@ -12,8 +13,6 @@ local fugee_ptr = 0
 local fugee_hex = 0
 
 local start
-local Lighting
-local Darkness
 local add_party
 local update_party
 local remove_party
@@ -31,7 +30,7 @@ local Invasion
 
 function start()
     if fallout.script_action() == 15 then
-        Lighting()
+        light.lighting()
         if fallout.global_var(32) == 3 then
             fallout.override_map_start(94, 136, 1, 5)
         else
@@ -88,9 +87,9 @@ function start()
     else
         if fallout.script_action() == 23 then
             if fallout.elevation(fallout.dude_obj()) == 0 then
-                Darkness()
+                light.darkness()
             else
-                Lighting()
+                light.lighting()
             end
             if fallout.external_var("Use_Manhole_Top") then
                 fallout.animate_stand_reverse_obj(fallout.external_var("Manhole_Pointer_Top"))
@@ -108,28 +107,6 @@ function start()
             end
         end
     end
-end
-
-function Lighting()
-    local v0 = 0
-    v0 = fallout.game_time_hour()
-    if (v0 >= 600) and (v0 < 700) then
-        fallout.set_light_level(v0 - 600 + 40)
-    else
-        if (v0 >= 700) and (v0 < 1800) then
-            fallout.set_light_level(100)
-        else
-            if (v0 >= 1800) and (v0 < 1900) then
-                fallout.set_light_level(100 - (v0 - 1800))
-            else
-                fallout.set_light_level(40)
-            end
-        end
-    end
-end
-
-function Darkness()
-    fallout.set_light_level(40)
 end
 
 function add_party()

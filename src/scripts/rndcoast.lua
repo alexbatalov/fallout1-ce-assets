@@ -1,9 +1,9 @@
 local fallout = require("fallout")
+local light = require("lib.light")
 local time = require("lib.time")
 
 local start
 local stranger
-local Lighting
 local Place_critter
 local hunters
 local Coast1
@@ -47,7 +47,6 @@ local Critter_tile = 0
 local MapX = 0
 local MapY = 0
 
-local Darkness
 local Invasion
 
 function start()
@@ -147,10 +146,10 @@ function start()
                 end
             end
         end
-        Lighting()
+        light.lighting()
     else
         if fallout.script_action() == 23 then
-            Lighting()
+            light.lighting()
         end
     end
 end
@@ -177,24 +176,6 @@ function stranger()
         fallout.add_obj_to_inven(Critter, Item)
         Item = fallout.item_caps_adjust(Critter, fallout.random(7, 30) * ((2 * fallout.has_trait(0, fallout.dude_obj(), 20)) + 1))
         fallout.set_global_var(288, 12)
-    end
-end
-
-function Lighting()
-    local v0 = 0
-    v0 = fallout.game_time_hour()
-    if (v0 >= 600) and (v0 < 700) then
-        fallout.set_light_level(v0 - 600 + 40)
-    else
-        if (v0 >= 700) and (v0 < 1800) then
-            fallout.set_light_level(100)
-        else
-            if (v0 >= 1800) and (v0 < 1900) then
-                fallout.set_light_level(100 - (v0 - 1800))
-            else
-                fallout.set_light_level(40)
-            end
-        end
     end
 end
 
@@ -925,10 +906,6 @@ function remove_party()
     end
     if fallout.global_var(26) == 5 then
     end
-end
-
-function Darkness()
-    fallout.set_light_level(40)
 end
 
 function Invasion()

@@ -1,9 +1,8 @@
 local fallout = require("fallout")
+local light = require("lib.light")
 local time = require("lib.time")
 
 local start
-local Lighting
-local Darkness
 local addrats
 local add_party
 local update_party
@@ -31,7 +30,7 @@ local Invasion
 
 function start()
     if fallout.script_action() == 15 then
-        Darkness()
+        light.darkness()
         if fallout.global_var(30) == 1 then
             if (time.game_time_in_days() - fallout.global_var(552)) > 7 then
                 if fallout.global_var(31) ~= 2 then
@@ -40,7 +39,7 @@ function start()
                 end
             end
         end
-        Lighting()
+        light.lighting()
         Player_Elevation = fallout.elevation(fallout.dude_obj())
         if fallout.global_var(32) == 12 then
             fallout.override_map_start(104, 135, 0, 5)
@@ -62,32 +61,10 @@ function start()
         add_party()
     else
         if fallout.script_action() == 23 then
-            Darkness()
+            light.darkness()
             update_party()
         end
     end
-end
-
-function Lighting()
-    local v0 = 0
-    v0 = fallout.game_time_hour()
-    if (v0 >= 600) and (v0 < 700) then
-        fallout.set_light_level(v0 - 600 + 40)
-    else
-        if (v0 >= 700) and (v0 < 1800) then
-            fallout.set_light_level(100)
-        else
-            if (v0 >= 1800) and (v0 < 1900) then
-                fallout.set_light_level(100 - (v0 - 1800))
-            else
-                fallout.set_light_level(40)
-            end
-        end
-    end
-end
-
-function Darkness()
-    fallout.set_light_level(40)
 end
 
 function addrats()

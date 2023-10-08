@@ -1,9 +1,8 @@
 local fallout = require("fallout")
+local light = require("lib.light")
 local time = require("lib.time")
 
 local start
-local Lighting
-local Darkness
 local add_party
 local update_party
 local remove_party
@@ -118,11 +117,11 @@ function start()
                 end
             end
         end
-        Darkness()
+        light.darkness()
         add_party()
     end
     if fallout.script_action() == 23 then
-        Darkness()
+        light.darkness()
         if fallout.global_var(55) ~= 0 then
             cur_count = 240 - (time.game_time_in_seconds() - fallout.global_var(55))
             if cur_count ~= prev_count then
@@ -141,28 +140,6 @@ function start()
         fallout.kill_critter_type(16777408, 0)
         remove_party()
     end
-end
-
-function Lighting()
-    local v0 = 0
-    v0 = fallout.game_time_hour()
-    if (v0 >= 600) and (v0 < 700) then
-        fallout.set_light_level(v0 - 600 + 40)
-    else
-        if (v0 >= 700) and (v0 < 1800) then
-            fallout.set_light_level(100)
-        else
-            if (v0 >= 1800) and (v0 < 1900) then
-                fallout.set_light_level(100 - (v0 - 1800))
-            else
-                fallout.set_light_level(40)
-            end
-        end
-    end
-end
-
-function Darkness()
-    fallout.set_light_level(40)
 end
 
 function add_party()

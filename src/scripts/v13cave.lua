@@ -1,11 +1,11 @@
 local fallout = require("fallout")
+local light = require("lib.light")
 local time = require("lib.time")
 
 local start
 local map_enter_p_proc
 local map_update_p_proc
 local map_exit_p_proc
-local Darkness
 local cheat_mode
 local cheat2
 local TagInven
@@ -34,7 +34,6 @@ fallout.create_external_var("vault_door_ptr")
 local new_obj = 0
 local Overseer_ptr = 0
 
-local Lighting
 local Invasion
 
 function start()
@@ -56,7 +55,7 @@ function map_enter_p_proc()
         fallout.override_map_start(90, 88, 0, 2)
         base_inventory()
         TagInven()
-        Darkness()
+        light.darkness()
     else
         if fallout.global_var(18) and fallout.global_var(17) and (endgame_running == 0) then
             endgame_part1()
@@ -65,7 +64,7 @@ function map_enter_p_proc()
             if fallout.global_var(154) <= 0 then
                 fallout.set_global_var(11, 1)
             end
-            Darkness()
+            light.darkness()
         end
     end
     add_party()
@@ -83,10 +82,6 @@ end
 
 function map_exit_p_proc()
     remove_party()
-end
-
-function Darkness()
-    fallout.set_light_level(40)
 end
 
 function cheat_mode()
@@ -366,24 +361,6 @@ function remove_party()
         fallout.set_global_var(244, 2)
     end
     if fallout.global_var(26) == 5 then
-    end
-end
-
-function Lighting()
-    local v0 = 0
-    v0 = fallout.game_time_hour()
-    if (v0 >= 600) and (v0 < 700) then
-        fallout.set_light_level(v0 - 600 + 40)
-    else
-        if (v0 >= 700) and (v0 < 1800) then
-            fallout.set_light_level(100)
-        else
-            if (v0 >= 1800) and (v0 < 1900) then
-                fallout.set_light_level(100 - (v0 - 1800))
-            else
-                fallout.set_light_level(40)
-            end
-        end
     end
 end
 

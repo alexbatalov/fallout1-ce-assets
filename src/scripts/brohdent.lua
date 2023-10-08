@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local light = require("lib.light")
 local time = require("lib.time")
 
 local HEREBEFORE = 0
@@ -7,7 +8,6 @@ fallout.create_external_var("Door_ptr")
 fallout.create_external_var("Cabbot_ptr")
 
 local start
-local lighting
 local add_party
 local update_party
 local remove_party
@@ -21,7 +21,6 @@ fallout.create_external_var("Tycho_ptr")
 fallout.create_external_var("Katja_ptr")
 fallout.create_external_var("Tandi_ptr")
 
-local Darkness
 local Invasion
 
 function start()
@@ -33,33 +32,15 @@ function start()
         if time.game_time_in_days() >= fallout.global_var(151) then
             fallout.set_global_var(16, 1)
         end
-        lighting()
+        light.lighting()
         add_party()
     end
     if fallout.script_action() == 23 then
-        lighting()
+        light.lighting()
         update_party()
     else
         if fallout.script_action() == 16 then
             remove_party()
-        end
-    end
-end
-
-function lighting()
-    local v0 = 0
-    v0 = fallout.game_time_hour()
-    if (v0 >= 600) and (v0 < 700) then
-        fallout.set_light_level(v0 - 600 + 40)
-    else
-        if (v0 >= 700) and (v0 < 1800) then
-            fallout.set_light_level(100)
-        else
-            if (v0 >= 1800) and (v0 < 1900) then
-                fallout.set_light_level(100 - (v0 - 1800))
-            else
-                fallout.set_light_level(40)
-            end
         end
     end
 end
@@ -128,10 +109,6 @@ function remove_party()
     end
     if fallout.global_var(26) == 5 then
     end
-end
-
-function Darkness()
-    fallout.set_light_level(40)
 end
 
 function Invasion()

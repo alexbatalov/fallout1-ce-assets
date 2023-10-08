@@ -1,8 +1,8 @@
 local fallout = require("fallout")
+local light = require("lib.light")
 local time = require("lib.time")
 
 local start
-local lighting
 
 local HEREBEFORE = 0
 local time = 0
@@ -38,7 +38,6 @@ fallout.create_external_var("Dog_ptr")
 fallout.create_external_var("Tycho_ptr")
 fallout.create_external_var("Katja_ptr")
 
-local Darkness
 local Invasion
 
 function start()
@@ -50,7 +49,7 @@ function start()
         if time.game_time_in_days() >= fallout.global_var(152) then
             fallout.set_global_var(15, 1)
         end
-        lighting()
+        light.lighting()
         if fallout.global_var(32) == 1 then
             fallout.override_map_start(99, 94, 0, 3)
         else
@@ -85,7 +84,7 @@ function start()
     else
         if fallout.script_action() == 23 then
             update_party()
-            lighting()
+            light.lighting()
             if fallout.map_var(2) == 1 then
                 fallout.display_msg(fallout.message_str(527, 101))
                 fallout.give_exp_points(150)
@@ -116,24 +115,6 @@ function start()
                 if v1 then
                     fallout.destroy_object(v1)
                 end
-            end
-        end
-    end
-end
-
-function lighting()
-    local v0 = 0
-    v0 = fallout.game_time_hour()
-    if (v0 >= 600) and (v0 < 700) then
-        fallout.set_light_level(v0 - 600 + 40)
-    else
-        if (v0 >= 700) and (v0 < 1800) then
-            fallout.set_light_level(100)
-        else
-            if (v0 >= 1800) and (v0 < 1900) then
-                fallout.set_light_level(100 - (v0 - 1800))
-            else
-                fallout.set_light_level(40)
             end
         end
     end
@@ -228,10 +209,6 @@ function remove_party()
         fallout.destroy_object(fallout.external_var("Katja_ptr"))
         fallout.set_global_var(244, 2)
     end
-end
-
-function Darkness()
-    fallout.set_light_level(40)
 end
 
 function Invasion()

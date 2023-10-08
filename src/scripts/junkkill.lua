@@ -1,8 +1,8 @@
 local fallout = require("fallout")
+local light = require("lib.light")
 local time = require("lib.time")
 
 local start
-local Lighting
 local add_party
 local update_party
 local remove_party
@@ -40,14 +40,13 @@ fallout.create_external_var("Trish_ptr")
 local item = 0
 local Kenji_ptr = 0
 
-local Darkness
 local Invasion
 
 function start()
     local v0 = 0
     if fallout.script_action() == 15 then
         fallout.set_global_var(570, 1)
-        Lighting()
+        light.lighting()
         fallout.override_map_start(99, 113, 0, 0)
         add_party()
         if fallout.map_var(7) == 1 then
@@ -55,7 +54,7 @@ function start()
         end
     else
         if fallout.script_action() == 23 then
-            Lighting()
+            light.lighting()
             if fallout.external_var("award") and not(fallout.map_var(4)) and (fallout.global_var(143) == 2) then
                 fallout.display_msg(fallout.message_str(338, 175) .. fallout.external_var("award") .. fallout.message_str(338, 176))
                 fallout.give_exp_points(fallout.external_var("award"))
@@ -74,24 +73,6 @@ function start()
         else
             if fallout.script_action() == 16 then
                 remove_party()
-            end
-        end
-    end
-end
-
-function Lighting()
-    local v0 = 0
-    v0 = fallout.game_time_hour()
-    if (v0 >= 600) and (v0 < 700) then
-        fallout.set_light_level(v0 - 600 + 40)
-    else
-        if (v0 >= 700) and (v0 < 1800) then
-            fallout.set_light_level(100)
-        else
-            if (v0 >= 1800) and (v0 < 1900) then
-                fallout.set_light_level(100 - (v0 - 1800))
-            else
-                fallout.set_light_level(40)
             end
         end
     end
@@ -161,10 +142,6 @@ function remove_party()
     end
     if fallout.global_var(26) == 5 then
     end
-end
-
-function Darkness()
-    fallout.set_light_level(40)
 end
 
 function Invasion()

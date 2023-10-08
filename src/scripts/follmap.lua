@@ -1,11 +1,11 @@
 local fallout = require("fallout")
+local light = require("lib.light")
 local time = require("lib.time")
 
 local start
 local map_enter_p_proc
 local map_update_p_proc
 local map_exit_p_proc
-local Lighting
 local add_party
 local update_party
 local remove_party
@@ -24,7 +24,6 @@ local dude_carrying_bomb = 0
 
 fallout.create_external_var("removal_ptr")
 
-local Darkness
 local Invasion
 
 function start()
@@ -53,7 +52,7 @@ function map_enter_p_proc()
         end
     end
     fallout.set_global_var(595, 1)
-    Lighting()
+    light.lighting()
     if time.game_time_in_days() >= fallout.global_var(148) then
         fallout.set_global_var(7, 1)
     end
@@ -64,7 +63,7 @@ function map_enter_p_proc()
 end
 
 function map_update_p_proc()
-    Lighting()
+    light.lighting()
     update_party()
     if fallout.external_var("removal_ptr") then
         fallout.destroy_object(fallout.external_var("removal_ptr"))
@@ -76,24 +75,6 @@ function map_exit_p_proc()
     if dude_carrying_bomb == 1 then
         if fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 72) == 0 then
             fallout.set_global_var(129, 2)
-        end
-    end
-end
-
-function Lighting()
-    local v0 = 0
-    v0 = fallout.game_time_hour()
-    if (v0 >= 600) and (v0 < 700) then
-        fallout.set_light_level(v0 - 600 + 40)
-    else
-        if (v0 >= 700) and (v0 < 1800) then
-            fallout.set_light_level(100)
-        else
-            if (v0 >= 1800) and (v0 < 1900) then
-                fallout.set_light_level(100 - (v0 - 1800))
-            else
-                fallout.set_light_level(40)
-            end
         end
     end
 end
@@ -162,10 +143,6 @@ function remove_party()
     end
     if fallout.global_var(26) == 5 then
     end
-end
-
-function Darkness()
-    fallout.set_light_level(40)
 end
 
 function Invasion()

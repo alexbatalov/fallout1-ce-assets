@@ -1,9 +1,8 @@
 local fallout = require("fallout")
+local light = require("lib.light")
 local time = require("lib.time")
 
 local start
-local Lighting
-local Darkness
 
 fallout.create_external_var("Team9_Count")
 fallout.set_external_var("Team9_Count", 4)
@@ -37,7 +36,7 @@ function start()
         end
         fallout.set_external_var("radio_trick", fallout.map_var(0))
         fallout.set_external_var("know_door_code", fallout.map_var(1))
-        Lighting()
+        light.lighting()
         if fallout.global_var(32) == 0 then
             fallout.override_map_start(133, 111, 0, 5)
         else
@@ -50,7 +49,7 @@ function start()
         add_party()
     else
         if fallout.script_action() == 23 then
-            Lighting()
+            light.lighting()
             if fallout.global_var(147) ~= 0 then
                 fallout.display_msg(fallout.message_str(443, 103) .. (300 - (time.game_time_in_seconds() - fallout.global_var(147))) .. fallout.message_str(443, 104))
                 if (time.game_time_in_seconds() - fallout.global_var(147)) >= 300 then
@@ -69,28 +68,6 @@ function start()
             end
         end
     end
-end
-
-function Lighting()
-    local v0 = 0
-    v0 = fallout.game_time_hour()
-    if (v0 >= 600) and (v0 < 700) then
-        fallout.set_light_level(v0 - 600 + 40)
-    else
-        if (v0 >= 700) and (v0 < 1800) then
-            fallout.set_light_level(100)
-        else
-            if (v0 >= 1800) and (v0 < 1900) then
-                fallout.set_light_level(100 - (v0 - 1800))
-            else
-                fallout.set_light_level(40)
-            end
-        end
-    end
-end
-
-function Darkness()
-    fallout.set_light_level(40)
 end
 
 function add_party()

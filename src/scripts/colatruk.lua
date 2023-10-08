@@ -1,15 +1,14 @@
 local fallout = require("fallout")
+local light = require("lib.light")
 local time = require("lib.time")
 
 local start
-local Lighting
 local add_caps
-local Darkness
 local Invasion
 
 function start()
     if fallout.script_action() == 15 then
-        Lighting()
+        light.lighting()
         add_caps()
         if fallout.metarule(14, 0) then
             fallout.override_map_start(130, 107, 0, 0)
@@ -17,25 +16,7 @@ function start()
         end
     else
         if fallout.script_action() == 23 then
-            Lighting()
-        end
-    end
-end
-
-function Lighting()
-    local v0 = 0
-    v0 = fallout.game_time_hour()
-    if (v0 >= 600) and (v0 < 700) then
-        fallout.set_light_level(v0 - 600 + 40)
-    else
-        if (v0 >= 700) and (v0 < 1800) then
-            fallout.set_light_level(100)
-        else
-            if (v0 >= 1800) and (v0 < 1900) then
-                fallout.set_light_level(100 - (v0 - 1800))
-            else
-                fallout.set_light_level(40)
-            end
+            light.lighting()
         end
     end
 end
@@ -87,10 +68,6 @@ function add_caps()
     end
     v2 = v2 * (fallout.has_trait(0, fallout.dude_obj(), 20) + 1)
     fallout.add_mult_objs_to_inven(v0, v1, v2)
-end
-
-function Darkness()
-    fallout.set_light_level(40)
 end
 
 function Invasion()

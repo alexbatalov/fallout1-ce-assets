@@ -1,9 +1,8 @@
 local fallout = require("fallout")
+local light = require("lib.light")
 local time = require("lib.time")
 
 local start
-local Lighting
-local Darkness
 
 fallout.create_external_var("Master_Ptr")
 
@@ -28,7 +27,7 @@ local Invasion
 
 function start()
     if fallout.script_action() == 15 then
-        Lighting()
+        light.lighting()
         Player_Elevation = fallout.elevation(fallout.dude_obj())
         if fallout.global_var(32) == 0 then
             fallout.override_map_start(101, 95, 0, 2)
@@ -46,7 +45,7 @@ function start()
         add_party()
     end
     if fallout.script_action() == 23 then
-        Lighting()
+        light.lighting()
         if fallout.global_var(55) ~= 0 then
             cur_count = 240 - (time.game_time_in_seconds() - fallout.global_var(55))
             if cur_count ~= prev_count then
@@ -64,28 +63,6 @@ function start()
     if fallout.script_action() == 16 then
         remove_party()
     end
-end
-
-function Lighting()
-    local v0 = 0
-    v0 = fallout.game_time_hour()
-    if (v0 >= 600) and (v0 < 700) then
-        fallout.set_light_level(v0 - 600 + 40)
-    else
-        if (v0 >= 700) and (v0 < 1800) then
-            fallout.set_light_level(100)
-        else
-            if (v0 >= 1800) and (v0 < 1900) then
-                fallout.set_light_level(100 - (v0 - 1800))
-            else
-                fallout.set_light_level(40)
-            end
-        end
-    end
-end
-
-function Darkness()
-    fallout.set_light_level(40)
 end
 
 function add_party()

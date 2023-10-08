@@ -3,8 +3,6 @@ local time = require("lib.time")
 
 local start
 local combat_p_proc
-local Lighting
-local Darkness
 local add_party
 local update_party
 local remove_party
@@ -114,28 +112,6 @@ function combat_p_proc()
         fallout.set_global_var(57, 3)
         fallout.load_map(32, 5)
     end
-end
-
-function Lighting()
-    local v0 = 0
-    v0 = fallout.game_time_hour()
-    if (v0 >= 600) and (v0 < 700) then
-        fallout.set_light_level(v0 - 600 + 40)
-    else
-        if (v0 >= 700) and (v0 < 1800) then
-            fallout.set_light_level(100)
-        else
-            if (v0 >= 1800) and (v0 < 1900) then
-                fallout.set_light_level(100 - (v0 - 1800))
-            else
-                fallout.set_light_level(40)
-            end
-        end
-    end
-end
-
-function Darkness()
-    fallout.set_light_level(40)
 end
 
 function add_party()

@@ -1,11 +1,10 @@
 local fallout = require("fallout")
+local light = require("lib.light")
 local time = require("lib.time")
 
 local start
 local map_enter_p_proc
 local map_update_p_proc
-local lighting
-local Darkness
 local Invasion
 
 function start()
@@ -19,7 +18,7 @@ function start()
 end
 
 function map_enter_p_proc()
-    lighting()
+    light.lighting()
     if fallout.metarule(14, 0) then
         fallout.override_map_start(111, 96, 0, 5)
         fallout.display_msg(fallout.message_str(112, 318))
@@ -27,29 +26,7 @@ function map_enter_p_proc()
 end
 
 function map_update_p_proc()
-    lighting()
-end
-
-function lighting()
-    local v0 = 0
-    v0 = fallout.game_time_hour()
-    if (v0 >= 600) and (v0 < 700) then
-        fallout.set_light_level(v0 - 600 + 40)
-    else
-        if (v0 >= 700) and (v0 < 1800) then
-            fallout.set_light_level(100)
-        else
-            if (v0 >= 1800) and (v0 < 1900) then
-                fallout.set_light_level(100 - (v0 - 1800))
-            else
-                fallout.set_light_level(40)
-            end
-        end
-    end
-end
-
-function Darkness()
-    fallout.set_light_level(40)
+    light.lighting()
 end
 
 function Invasion()

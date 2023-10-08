@@ -1,8 +1,8 @@
 local fallout = require("fallout")
+local light = require("lib.light")
 local time = require("lib.time")
 
 local start
-local Lighting
 
 fallout.create_external_var("weapon_checked")
 fallout.create_external_var("sneak_checked")
@@ -30,7 +30,6 @@ fallout.create_external_var("Tycho_ptr")
 fallout.create_external_var("Katja_ptr")
 fallout.create_external_var("Tandi_ptr")
 
-local Darkness
 local Invasion
 
 function start()
@@ -38,7 +37,7 @@ function start()
         if fallout.metarule(14, 0) then
             fallout.display_msg(fallout.message_str(194, 104))
         end
-        Lighting()
+        light.lighting()
         fallout.set_global_var(569, 1)
         if fallout.metarule(22, 0) == 0 then
             if fallout.global_var(32) == 3 then
@@ -71,29 +70,11 @@ function start()
             if fallout.elevation(fallout.dude_obj()) == 1 then
                 fallout.set_light_level(40)
             else
-                Lighting()
+                light.lighting()
             end
             if fallout.external_var("removal_ptr") ~= 0 then
                 fallout.destroy_object(fallout.external_var("removal_ptr"))
                 fallout.set_external_var("removal_ptr", 0)
-            end
-        end
-    end
-end
-
-function Lighting()
-    local v0 = 0
-    v0 = fallout.game_time_hour()
-    if (v0 >= 600) and (v0 < 700) then
-        fallout.set_light_level(v0 - 600 + 40)
-    else
-        if (v0 >= 700) and (v0 < 1800) then
-            fallout.set_light_level(100)
-        else
-            if (v0 >= 1800) and (v0 < 1900) then
-                fallout.set_light_level(100 - (v0 - 1800))
-            else
-                fallout.set_light_level(40)
             end
         end
     end
@@ -163,10 +144,6 @@ function remove_party()
     end
     if fallout.global_var(26) == 5 then
     end
-end
-
-function Darkness()
-    fallout.set_light_level(40)
 end
 
 function Invasion()

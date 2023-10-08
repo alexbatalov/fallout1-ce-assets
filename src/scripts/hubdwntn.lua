@@ -1,9 +1,8 @@
 local fallout = require("fallout")
+local light = require("lib.light")
 local time = require("lib.time")
 
 local start
-local Lighting
-local Darkness
 
 fallout.create_external_var("Sid_Ptr")
 fallout.create_external_var("Beth_Ptr")
@@ -44,13 +43,13 @@ function start()
             fallout.override_map_start(99, 59, 0, 2)
         end
         add_party()
-        Lighting()
+        light.lighting()
     else
         if fallout.script_action() == 23 then
             if fallout.elevation(fallout.dude_obj()) == 1 then
-                Darkness()
+                light.darkness()
             else
-                Lighting()
+                light.lighting()
             end
             update_party()
             if (fallout.combat_is_initialized() == 0) and (fallout.global_var(202) == 1) and (fallout.map_var(52) == 1) and (fallout.metarule(22, 0) == 0) then
@@ -75,28 +74,6 @@ function start()
             end
         end
     end
-end
-
-function Lighting()
-    local v0 = 0
-    v0 = fallout.game_time_hour()
-    if (v0 >= 600) and (v0 < 700) then
-        fallout.set_light_level(v0 - 600 + 40)
-    else
-        if (v0 >= 700) and (v0 < 1800) then
-            fallout.set_light_level(100)
-        else
-            if (v0 >= 1800) and (v0 < 1900) then
-                fallout.set_light_level(100 - (v0 - 1800))
-            else
-                fallout.set_light_level(40)
-            end
-        end
-    end
-end
-
-function Darkness()
-    fallout.set_light_level(40)
 end
 
 function add_party()

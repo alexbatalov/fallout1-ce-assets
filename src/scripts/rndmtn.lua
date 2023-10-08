@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local light = require("lib.light")
 local time = require("lib.time")
 
 local start
@@ -27,7 +28,6 @@ local Vault3
 local Vault4
 local Vault5
 local Vault6
-local Lighting
 local hunters
 local add_party
 local update_party
@@ -61,7 +61,6 @@ local group_angle = 0
 local CritterXpos = 0
 local CritterYpos = 0
 
-local Darkness
 local Invasion
 
 function start()
@@ -133,11 +132,11 @@ function start()
                 end
             end
         end
-        Lighting()
+        light.lighting()
         add_party()
     else
         if fallout.script_action() == 23 then
-            Lighting()
+            light.lighting()
         else
             if fallout.script_action() == 16 then
                 remove_party()
@@ -1042,24 +1041,6 @@ function Vault6()
     stranger()
 end
 
-function Lighting()
-    local v0 = 0
-    v0 = fallout.game_time_hour()
-    if (v0 >= 600) and (v0 < 700) then
-        fallout.set_light_level(v0 - 600 + 40)
-    else
-        if (v0 >= 700) and (v0 < 1800) then
-            fallout.set_light_level(100)
-        else
-            if (v0 >= 1800) and (v0 < 1900) then
-                fallout.set_light_level(100 - (v0 - 1800))
-            else
-                fallout.set_light_level(40)
-            end
-        end
-    end
-end
-
 function hunters()
     Inner_ring = 8
     Outer_ring = 5
@@ -1211,10 +1192,6 @@ function remove_party()
     end
     if fallout.global_var(26) == 5 then
     end
-end
-
-function Darkness()
-    fallout.set_light_level(40)
 end
 
 function Invasion()

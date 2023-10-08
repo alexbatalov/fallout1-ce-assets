@@ -1,12 +1,11 @@
 local fallout = require("fallout")
+local light = require("lib.light")
 local time = require("lib.time")
 
 local start
 local map_enter_p_proc
 local map_update_p_proc
 local map_exit_p_proc
-local Lighting
-local Darkness
 local AddInBlades
 local add_party
 local update_party
@@ -58,16 +57,16 @@ function map_enter_p_proc()
         fallout.display_msg(fallout.message_str(194, 115))
     end
     fallout.set_global_var(594, 1)
-    Lighting()
+    light.lighting()
     fallout.override_map_start(100, 53, 0, 2)
     add_party()
 end
 
 function map_update_p_proc()
     if fallout.elevation(fallout.dude_obj()) == 1 then
-        Darkness()
+        light.darkness()
     else
-        Lighting()
+        light.lighting()
     end
     add_party()
     if (fallout.global_var(613) == 9103) and (fallout.map_var(2) == 0) and (fallout.global_var(266) == 1) then
@@ -130,28 +129,6 @@ end
 
 function map_exit_p_proc()
     remove_party()
-end
-
-function Lighting()
-    local v0 = 0
-    v0 = fallout.game_time_hour()
-    if (v0 >= 600) and (v0 < 700) then
-        fallout.set_light_level(v0 - 600 + 40)
-    else
-        if (v0 >= 700) and (v0 < 1800) then
-            fallout.set_light_level(100)
-        else
-            if (v0 >= 1800) and (v0 < 1900) then
-                fallout.set_light_level(100 - (v0 - 1800))
-            else
-                fallout.set_light_level(40)
-            end
-        end
-    end
-end
-
-function Darkness()
-    fallout.set_light_level(40)
 end
 
 function AddInBlades()

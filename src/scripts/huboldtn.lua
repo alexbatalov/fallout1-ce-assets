@@ -1,9 +1,8 @@
 local fallout = require("fallout")
+local light = require("lib.light")
 local time = require("lib.time")
 
 local start
-local Lighting
-local Darkness
 
 fallout.create_external_var("Jake_Door_Ptr")
 fallout.create_external_var("Jake_Desk_Ptr")
@@ -30,15 +29,15 @@ function start()
         if time.game_time_in_days() >= fallout.global_var(150) then
             fallout.set_global_var(14, 1)
         end
-        Lighting()
+        light.lighting()
         add_party()
         fallout.override_map_start(125, 85, 0, 1)
     else
         if fallout.script_action() == 23 then
             if fallout.elevation(fallout.dude_obj()) == 1 then
-                Darkness()
+                light.darkness()
             else
-                Lighting()
+                light.lighting()
             end
             update_party()
         else
@@ -47,28 +46,6 @@ function start()
             end
         end
     end
-end
-
-function Lighting()
-    local v0 = 0
-    v0 = fallout.game_time_hour()
-    if (v0 >= 600) and (v0 < 700) then
-        fallout.set_light_level(v0 - 600 + 40)
-    else
-        if (v0 >= 700) and (v0 < 1800) then
-            fallout.set_light_level(100)
-        else
-            if (v0 >= 1800) and (v0 < 1900) then
-                fallout.set_light_level(100 - (v0 - 1800))
-            else
-                fallout.set_light_level(40)
-            end
-        end
-    end
-end
-
-function Darkness()
-    fallout.set_light_level(40)
 end
 
 function add_party()
