@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local reputation = require("lib.reputation")
 
 local start
 local lasher00
@@ -77,20 +78,7 @@ function start()
             Hostile = 1
         else
             if fallout.script_action() == 18 then
-                if fallout.source_obj() == fallout.dude_obj() then
-                    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
-                        fallout.set_global_var(156, 1)
-                        fallout.set_global_var(157, 0)
-                    end
-                    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(160) > (3 * fallout.global_var(159))) or (fallout.global_var(157) == 1)) then
-                        fallout.set_global_var(157, 1)
-                        fallout.set_global_var(156, 0)
-                    end
-                    fallout.set_global_var(160, fallout.global_var(160) + 1)
-                    if (fallout.global_var(160) % 6) == 0 then
-                        fallout.set_global_var(155, fallout.global_var(155) + 1)
-                    end
-                end
+                reputation.inc_evil_critter()
             else
                 if fallout.script_action() == 12 then
                     if (fallout.local_var(1) == 0) and fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then

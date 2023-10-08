@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local reputation = require("lib.reputation")
 
 local start
 local timeforwhat
@@ -37,20 +38,7 @@ function start()
                 else
                     if fallout.script_action() == 18 then
                         fallout.set_global_var(35, fallout.global_var(35) + 1)
-                        if fallout.source_obj() == fallout.dude_obj() then
-                            if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
-                                fallout.set_global_var(156, 1)
-                                fallout.set_global_var(157, 0)
-                            end
-                            if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(160) > (3 * fallout.global_var(159))) or (fallout.global_var(157) == 1)) then
-                                fallout.set_global_var(157, 1)
-                                fallout.set_global_var(156, 0)
-                            end
-                            fallout.set_global_var(160, fallout.global_var(160) + 1)
-                            if (fallout.global_var(160) % 6) == 0 then
-                                fallout.set_global_var(155, fallout.global_var(155) + 1)
-                            end
-                        end
+                        reputation.inc_evil_critter()
                     else
                         if fallout.script_action() == 21 then
                             fallout.display_msg(fallout.message_str(232, 100))

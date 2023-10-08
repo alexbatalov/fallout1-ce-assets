@@ -1,5 +1,6 @@
 local fallout = require("fallout")
 local reaction = require("lib.reaction")
+local reputation = require("lib.reputation")
 
 local start
 local do_dialogue
@@ -50,20 +51,7 @@ function start()
                         damage_p_proc()
                     else
                         if fallout.script_action() == 18 then
-                            if fallout.source_obj() == fallout.dude_obj() then
-                                if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
-                                    fallout.set_global_var(156, 1)
-                                    fallout.set_global_var(157, 0)
-                                end
-                                if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(160) > (3 * fallout.global_var(159))) or (fallout.global_var(157) == 1)) then
-                                    fallout.set_global_var(157, 1)
-                                    fallout.set_global_var(156, 0)
-                                end
-                                fallout.set_global_var(160, fallout.global_var(160) + 1)
-                                if (fallout.global_var(160) % 6) == 0 then
-                                    fallout.set_global_var(155, fallout.global_var(155) + 1)
-                                end
-                            end
+                            reputation.inc_evil_critter()
                             fallout.set_global_var(254, 1)
                             fallout.set_global_var(611, 0)
                             fallout.set_global_var(115, fallout.global_var(115) - 1)
