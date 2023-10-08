@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local start
 local critter_p_proc
@@ -179,7 +180,7 @@ function gambler5()
     local v0 = 0
     v0 = fallout.random(1, 6)
     if v0 == 1 then
-        if (fallout.game_time_hour() >= 700) and (fallout.game_time_hour() < 1800) then
+        if time.is_day() then
             fallout.float_msg(fallout.self_obj(), fallout.message_str(351, 114), 0)
         else
             fallout.float_msg(fallout.self_obj(), fallout.message_str(351, 115), 0)

@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local start
 local combat
@@ -559,7 +560,7 @@ function Harold43()
     if fallout.global_var(226) == 2 then
         fallout.giq_option(4, 45, 225, Harold45, 50)
     end
-    if ((fallout.global_var(150) - (fallout.game_time() // (10 * 60 * 60 * 24))) < 10) or (fallout.global_var(109) == 1) then
+    if ((fallout.global_var(150) - time.game_time_in_days()) < 10) or (fallout.global_var(109) == 1) then
         fallout.giq_option(4, 45, 224, Harold43b, 50)
     end
     if fallout.local_var(5) == 0 then
@@ -577,7 +578,7 @@ function Harold43b()
     if fallout.global_var(109) == 1 then
         Harold53()
     else
-        if (fallout.global_var(150) - (fallout.game_time() // (10 * 60 * 60 * 24))) < 10 then
+        if (fallout.global_var(150) - time.game_time_in_days()) < 10 then
             Harold54()
         end
     end

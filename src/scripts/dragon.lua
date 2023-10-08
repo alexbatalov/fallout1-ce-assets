@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local start
 local critter_p_proc
@@ -51,10 +52,10 @@ function start()
 end
 
 function critter_p_proc()
-    if (fallout.game_time_hour() >= 700) and (fallout.game_time_hour() < 1800) and (fallout.tile_num(fallout.self_obj()) ~= 26746) then
+    if time.is_day() and (fallout.tile_num(fallout.self_obj()) ~= 26746) then
         fallout.animate_move_obj_to_tile(fallout.self_obj(), 26746, 0)
     else
-        if (fallout.game_time_hour() >= 1900) or (fallout.game_time_hour() < 600) and (fallout.tile_num(fallout.self_obj()) ~= 23938) then
+        if time.is_night() and (fallout.tile_num(fallout.self_obj()) ~= 23938) then
             fallout.animate_move_obj_to_tile(fallout.self_obj(), 23938, 0)
         end
     end
@@ -116,7 +117,7 @@ function talk_p_proc()
         fallout.start_gdialog(284, fallout.self_obj(), 4, -1, -1)
         fallout.gsay_start()
         fallout.set_local_var(0, 1)
-        if (fallout.game_time_hour() >= 700) and (fallout.game_time_hour() < 1800) then
+        if time.is_day() then
             Dragon00()
         else
             if fallout.global_var(135) == 1 then

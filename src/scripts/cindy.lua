@@ -1,4 +1,6 @@
 local fallout = require("fallout")
+local time = require("lib.time")
+local time = require("lib.time")
 
 local start
 local critter_p_proc
@@ -105,7 +107,7 @@ function critter_p_proc()
                     end
                 end
             end
-            if not((fallout.game_time_hour() >= 700) and (fallout.game_time_hour() < 1800)) then
+            if not time.is_day() then
                 fallout.set_local_var(7, 0)
             end
             if sleeping_disabled == 0 then
@@ -161,7 +163,7 @@ function map_enter_p_proc()
 end
 
 function pickup_p_proc()
-    if (fallout.game_time() // (10 * 60 * 60 * 24)) >= 30 then
+    if time.game_time_in_days() >= 30 then
         fallout.float_msg(fallout.self_obj(), fallout.message_str(168, 122), 2)
     end
     hostile = 1
@@ -208,7 +210,7 @@ function Cindy03()
 end
 
 function Cindy04()
-    if (fallout.game_time() // (10 * 60 * 60 * 24)) < 30 then
+    if time.game_time_in_days() < 30 then
         fallout.gsay_reply(168, 126)
         fallout.giq_option(4, 168, 127, CindyEnd, 49)
         fallout.giq_option(4, 168, 128, CindyEnd, 51)

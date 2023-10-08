@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local start
 local critter_p_proc
@@ -102,7 +103,7 @@ function critter_p_proc()
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     else
         if fallout.global_var(556) == 1 then
-            if ((fallout.game_time() // (10 * 60 * 60 * 24)) - fallout.local_var(6)) > 1 then
+            if (time.game_time_in_days() - fallout.local_var(6)) > 1 then
                 fallout.critter_add_trait(fallout.self_obj(), 1, 6, 26)
                 fallout.set_global_var(556, 2)
                 fallout.set_local_var(6, 0)
@@ -341,7 +342,7 @@ function Sherry20()
 end
 
 function Sherry21()
-    fallout.set_local_var(6, fallout.game_time() // (10 * 60 * 60 * 24))
+    fallout.set_local_var(6, time.game_time_in_days())
     fallout.set_global_var(556, 1)
     fallout.gsay_message(388, 149, 50)
 end

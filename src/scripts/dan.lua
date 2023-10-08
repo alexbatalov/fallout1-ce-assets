@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local start
 local combat
@@ -110,7 +111,7 @@ function critter_p_proc()
         hostile = 0
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
-    if (fallout.game_time_hour() >= 600) and (fallout.game_time_hour() < 700) then
+    if time.is_morning() then
         if SetDayNight == 0 then
             fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(30), 3)
             SetDayNight = 1
@@ -144,7 +145,7 @@ end
 
 function talk_p_proc()
     get_reaction()
-    if (fallout.game_time_hour() >= 1900) or (fallout.game_time_hour() < 600) then
+    if time.is_night() then
         DanAtNight()
     else
         if fallout.local_var(4) == 1 then
@@ -213,7 +214,7 @@ function look_at_p_proc()
 end
 
 function timed_event_p_proc()
-    if (fallout.game_time_hour() >= 600) and (fallout.game_time_hour() < 700) or ((fallout.game_time_hour() >= 700) and (fallout.game_time_hour() < 1800)) then
+    if time.is_morning() or time.is_day() then
         if Sleeping == 1 then
             fallout.reg_anim_func(2, fallout.self_obj())
             fallout.reg_anim_func(1, 1)

@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local start
 local goto0
@@ -505,7 +506,7 @@ end
 
 function goto51()
     fallout.gsay_message(0, fallout.message_str(320, 194), 50)
-    fallout.set_local_var(5, fallout.game_time() // (10 * 60 * 60))
+    fallout.set_local_var(5, time.game_time_in_hours())
     fallout.set_map_var(6, 1)
     item = fallout.create_object_sid(27, 0, 0, -1)
     fallout.add_obj_to_inven(fallout.dude_obj(), item)
@@ -661,10 +662,10 @@ function Do_Dialogue()
         if fallout.map_var(7) then
             goto56()
         else
-            if fallout.map_var(6) and (((fallout.game_time() // (10 * 60 * 60)) - fallout.local_var(5)) < 48) then
+            if fallout.map_var(6) and ((time.game_time_in_hours() - fallout.local_var(5)) < 48) then
                 goto52()
             else
-                if fallout.map_var(6) and (((fallout.game_time() // (10 * 60 * 60)) - fallout.local_var(5)) >= 48) then
+                if fallout.map_var(6) and ((time.game_time_in_hours() - fallout.local_var(5)) >= 48) then
                     goto58()
                 else
                     if Herebefore then

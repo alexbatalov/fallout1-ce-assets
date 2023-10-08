@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local start
 local combat
@@ -128,8 +129,8 @@ function critter_p_proc()
         SetDayNight = 1
     end
     if fallout.local_var(6) == 0 then
-        if (((fallout.game_time() // 10) - lastPsst) >= 10) and (fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) <= 6) then
-            lastPsst = fallout.game_time() // 10
+        if ((time.game_time_in_seconds() - lastPsst) >= 10) and (fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) <= 6) then
+            lastPsst = time.game_time_in_seconds()
             fallout.float_msg(fallout.self_obj(), fallout.message_str(846, 101), 2)
         end
     end

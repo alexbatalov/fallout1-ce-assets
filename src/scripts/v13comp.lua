@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local start
 local description_p_proc
@@ -20,7 +21,7 @@ end
 
 function use_p_proc()
     fallout.script_overrides()
-    if (fallout.game_time() // (10 * 60 * 60 * 24)) == 0 then
+    if time.game_time_in_days() == 0 then
         if fallout.local_var(0) then
             fallout.display_msg(fallout.message_str(344, 101))
             fallout.float_msg(fallout.self_obj(), fallout.message_str(344, 102), 0)

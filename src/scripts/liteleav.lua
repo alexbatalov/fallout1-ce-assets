@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local start
 local map_enter_p_proc
@@ -24,13 +25,13 @@ function map_update_p_proc()
 end
 
 function lighting()
-    if (fallout.game_time_hour() >= 600) and (fallout.game_time_hour() < 700) then
+    if time.is_morning() then
         fallout.obj_set_light_level(fallout.self_obj(), fallout.game_time_hour() - 600 + 40, 8)
     else
-        if (fallout.game_time_hour() >= 1800) and (fallout.game_time_hour() < 1900) then
+        if time.is_evening() then
             fallout.obj_set_light_level(fallout.self_obj(), 100 - (fallout.game_time_hour() - 1800), 8)
         else
-            if (fallout.game_time_hour() >= 700) and (fallout.game_time_hour() < 1800) then
+            if time.is_day() then
                 fallout.obj_set_light_level(fallout.self_obj(), 100, 8)
             else
                 fallout.obj_set_light_level(fallout.self_obj(), 40, 8)

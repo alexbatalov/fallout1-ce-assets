@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local start
 local critter_p_proc
@@ -121,7 +122,7 @@ function map_enter_p_proc()
     end
     home_tile = fallout.local_var(6)
     sleep_tile = 15275
-    if (fallout.game_time() // (10 * 60 * 60 * 24)) < 80 then
+    if time.game_time_in_days() < 80 then
         fallout.set_obj_visibility(fallout.self_obj(), 1)
     else
         fallout.set_obj_visibility(fallout.self_obj(), 0)
@@ -129,7 +130,7 @@ function map_enter_p_proc()
 end
 
 function map_update_p_proc()
-    if (fallout.game_time() // (10 * 60 * 60 * 24)) < 80 then
+    if time.game_time_in_days() < 80 then
         fallout.set_obj_visibility(fallout.self_obj(), 1)
     else
         fallout.set_obj_visibility(fallout.self_obj(), 0)

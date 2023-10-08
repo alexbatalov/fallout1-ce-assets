@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local start
 local combat
@@ -85,7 +86,7 @@ function pickup_p_proc()
 end
 
 function talk_p_proc()
-    if (fallout.game_time_hour() >= 600) and (fallout.game_time_hour() < 700) or ((fallout.game_time_hour() >= 700) and (fallout.game_time_hour() < 1800)) then
+    if time.is_morning() or time.is_day() then
         get_reaction()
         if fallout.map_var(2) == 1 then
             Caravan02()
@@ -118,7 +119,7 @@ function look_at_p_proc()
 end
 
 function timed_event_p_proc()
-    if (fallout.game_time_hour() >= 600) and (fallout.game_time_hour() < 700) or ((fallout.game_time_hour() >= 700) and (fallout.game_time_hour() < 1800)) then
+    if time.is_morning() or time.is_day() then
         SendToWork()
     end
 end

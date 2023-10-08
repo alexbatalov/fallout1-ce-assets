@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local start
 local destroy_p_proc
@@ -97,7 +98,7 @@ function talk_p_proc()
         if fallout.global_var(127 == 3) then
             Romero15()
         else
-            if (fallout.game_time_hour() >= 1900) or (fallout.game_time_hour() < 600) then
+            if time.is_night() then
                 Romero06()
             else
                 if fallout.global_var(127) == 2 then

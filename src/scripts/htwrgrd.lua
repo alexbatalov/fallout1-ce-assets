@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local start
 local combat
@@ -88,7 +89,7 @@ function critter_p_proc()
                 combat()
             end
         else
-            if (fallout.game_time_hour() >= 1900) or (fallout.game_time_hour() < 600) then
+            if time.is_night() then
                 if (fallout.obj_can_hear_obj(fallout.self_obj(), fallout.dude_obj()) == 1) or (fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) == 1) and (threatened == 0) then
                     fallout.dialogue_system_enter()
                 end

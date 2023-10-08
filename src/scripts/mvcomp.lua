@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local start
 local skills
@@ -106,7 +107,7 @@ end
 function armit()
     fallout.display_msg(fallout.message_str(448, 102))
     if fallout.global_var(55) == 0 then
-        fallout.set_global_var(55, fallout.game_time() // 10)
+        fallout.set_global_var(55, time.game_time_in_seconds())
     end
     fallout.set_global_var(18, 1)
     if fallout.global_var(17) == 0 then
@@ -115,7 +116,7 @@ function armit()
 end
 
 function disarmit()
-    if (((fallout.game_time() // 10) - fallout.global_var(55)) > 30) or (fallout.external_var("SKILL_USED") == 1) then
+    if ((time.game_time_in_seconds() - fallout.global_var(55)) > 30) or (fallout.external_var("SKILL_USED") == 1) then
         reset()
     else
         fallout.set_external_var("KEY_USED", 1)

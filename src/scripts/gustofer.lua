@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local start
 local combat_p_proc
@@ -92,7 +93,7 @@ function critter_p_proc()
         flee_dude()
     else
         if fallout.game_time_hour() == 1400 then
-            if (line148flag == 0) and ((fallout.game_time() // (10 * 60 * 60 * 24) % 3) == 0) then
+            if (line148flag == 0) and ((time.game_time_in_days() % 3) == 0) then
                 line148flag = 1
                 fallout.set_external_var("fight", 1)
                 fallout.float_msg(fallout.self_obj(), fallout.message_str(529, 148), 0)
@@ -151,7 +152,7 @@ function pickup_p_proc()
 end
 
 function talk_p_proc()
-    if not(robbed) and (fallout.local_var(2) == 1) and ((fallout.game_time() // (10 * 60 * 60 * 24) % 3) ~= 0) then
+    if not(robbed) and (fallout.local_var(2) == 1) and ((time.game_time_in_days() % 3) ~= 0) then
         Gustofer05()
     else
         fallout.start_gdialog(529, fallout.self_obj(), 4, -1, -1)
@@ -173,7 +174,7 @@ function talk_p_proc()
                 if robbed then
                     Gustofer13()
                 else
-                    if (fallout.game_time() // (10 * 60 * 60 * 24) % 3) == 0 then
+                    if (time.game_time_in_days() % 3) == 0 then
                         if fallout.game_time_hour() < 1400 then
                             if dude_bet == 0 then
                                 Gustofer06()
@@ -208,7 +209,7 @@ function Gustofer00()
 end
 
 function Gustofer00a()
-    if (fallout.game_time() // (10 * 60 * 60 * 24) % 3) == 1 then
+    if (time.game_time_in_days() % 3) == 1 then
         Gustofer03()
     else
         Gustofer02()
@@ -238,10 +239,10 @@ end
 function Gustofer05()
     local v0 = 0
     v0 = fallout.message_str(529, 110)
-    if (fallout.game_time() // (10 * 60 * 60 * 24) % 3) == 1 then
+    if (time.game_time_in_days() % 3) == 1 then
         v0 = v0 .. fallout.message_str(529, 112)
     else
-        if (fallout.game_time() // (10 * 60 * 60 * 24) % 3) == 2 then
+        if (time.game_time_in_days() % 3) == 2 then
             v0 = v0 .. fallout.message_str(529, 111)
         end
     end

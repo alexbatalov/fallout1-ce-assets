@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local start
 local description_p_proc
@@ -34,7 +35,7 @@ function look_at_p_proc()
 end
 
 function use_p_proc()
-    if fallout.global_var(168) < (fallout.game_time() // (10 * 60 * 60 * 24)) then
+    if fallout.global_var(168) < time.game_time_in_days() then
         fallout.set_external_var("messing_with_fridge", 1)
     end
 end
@@ -42,7 +43,7 @@ end
 function use_skill_on_p_proc()
     if fallout.action_being_used() == 10 then
         if not(fallout.is_success(fallout.roll_vs_skill(fallout.source_obj(), fallout.action_being_used(), 0))) then
-            if fallout.global_var(168) < (fallout.game_time() // (10 * 60 * 60 * 24)) then
+            if fallout.global_var(168) < time.game_time_in_days() then
                 fallout.set_external_var("messing_with_fridge", 1)
             end
         end

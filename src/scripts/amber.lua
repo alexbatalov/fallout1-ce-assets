@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local start
 local critter_p_proc
@@ -85,7 +86,7 @@ function talk_p_proc()
     if fallout.global_var(132) == 1 then
         Amber18()
     else
-        if (fallout.game_time_hour() >= 700) and (fallout.game_time_hour() < 1800) then
+        if time.is_day() then
             Amber0()
         else
             fallout.set_local_var(0, fallout.local_var(0) + 1)

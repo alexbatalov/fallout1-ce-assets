@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local Start
 local look_at_p_proc
@@ -64,13 +65,13 @@ end
 function critter_p_proc()
     local v0 = 0
     v0 = fallout.global_var(344)
-    if (((fallout.game_time() // 10) - v0) >= 10) and (fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) <= 4) and (fallout.global_var(256) == 0) then
+    if ((time.game_time_in_seconds() - v0) >= 10) and (fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) <= 4) and (fallout.global_var(256) == 0) then
         if fallout.global_var(18) == 1 then
             fallout.float_msg(fallout.self_obj(), fallout.message_str(258, fallout.random(115, 119)), 0)
         else
             fallout.float_msg(fallout.self_obj(), fallout.message_str(258, fallout.random(101, 114)), 0)
         end
-        v0 = fallout.game_time() // 10
+        v0 = time.game_time_in_seconds()
         fallout.set_global_var(344, v0)
     else
         if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then

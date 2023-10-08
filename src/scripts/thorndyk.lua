@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local start
 local combat
@@ -142,7 +143,7 @@ function talk_p_proc()
     end
     if HealPlayer == 1 then
         HealPlayer = 0
-        fallout.set_local_var(6, fallout.game_time() // (10 * 60 * 60))
+        fallout.set_local_var(6, time.game_time_in_hours())
         if PlayerYellsOuch == 1 then
             PlayerYellsOuch = 0
             fallout.float_msg(fallout.dude_obj(), 168, 9)
@@ -225,7 +226,7 @@ function Thorn02()
         fallout.giq_option(4, 603, 109, Thorn08, 51)
         fallout.giq_option(-3, 603, 110, Thorn09, 51)
     else
-        if (v0 < v1) and (((fallout.game_time() // (10 * 60 * 60)) - fallout.local_var(6)) < 24) then
+        if (v0 < v1) and ((time.game_time_in_hours() - fallout.local_var(6)) < 24) then
             if fallout.get_critter_stat(fallout.dude_obj(), 34) == 0 then
                 fallout.gsay_reply(603, 111)
             else
@@ -238,7 +239,7 @@ function Thorn02()
             fallout.giq_option(4, 603, 117, Thorn08, 51)
             fallout.giq_option(-3, 603, 118, Thorn09, 50)
         else
-            if (v0 > (v1 // 2)) and (((fallout.game_time() // (10 * 60 * 60)) - fallout.local_var(6)) > 24) then
+            if (v0 > (v1 // 2)) and ((time.game_time_in_hours() - fallout.local_var(6)) > 24) then
                 if fallout.get_critter_stat(fallout.dude_obj(), 34) == 0 then
                     fallout.gsay_reply(603, 119)
                 else
@@ -253,7 +254,7 @@ function Thorn02()
                 fallout.giq_option(-3, 603, 127, Thorn15, 50)
                 fallout.giq_option(-3, 603, 128, Thorn16, 50)
             else
-                if (v0 < (v1 // 2)) and (((fallout.game_time() // (10 * 60 * 60)) - fallout.local_var(6)) > 24) then
+                if (v0 < (v1 // 2)) and ((time.game_time_in_hours() - fallout.local_var(6)) > 24) then
                     if fallout.get_critter_stat(fallout.dude_obj(), 34) == 0 then
                         fallout.gsay_reply(603, 129)
                     else

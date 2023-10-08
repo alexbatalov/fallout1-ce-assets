@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local start
 local do_dialogue
@@ -44,7 +45,7 @@ function start()
 end
 
 function do_dialogue()
-    if (fallout.game_time_hour() >= 1900) or (fallout.game_time_hour() < 600) then
+    if time.is_night() then
         Wife00n()
     else
         fallout.start_gdialog(119, fallout.self_obj(), 4, -1, -1)

@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local start
 local combat
@@ -157,7 +158,7 @@ function talk_p_proc()
     local v0 = 0
     get_reaction()
     if fallout.local_var(13) == 1 then
-        if fallout.local_var(11) < (fallout.game_time() // (10 * 60 * 60 * 24 * 365)) then
+        if fallout.local_var(11) < time.game_time_in_years() then
             fallout.set_local_var(13, 0)
         else
             if (fallout.local_var(10) < fallout.get_month()) or (fallout.local_var(10) == 12) and (fallout.get_month() == 1) and ((fallout.local_var(10) ~= 1) or (fallout.get_month() ~= 12)) then
@@ -711,22 +712,22 @@ function RecalcDate()
     if v0 <= 3 then
         v0 = 3
         v1 = fallout.get_month()
-        v2 = fallout.game_time() // (10 * 60 * 60 * 24 * 365)
+        v2 = time.game_time_in_years()
     else
         if (v0 > 3) and (v0 <= 17) then
             v0 = 17
             v1 = fallout.get_month()
-            v2 = fallout.game_time() // (10 * 60 * 60 * 24 * 365)
+            v2 = time.game_time_in_years()
         else
             if v0 > 17 then
                 v0 = 3
                 v1 = fallout.get_month()
                 if v1 == 12 then
                     v1 = 1
-                    v2 = (fallout.game_time() // (10 * 60 * 60 * 24 * 365)) + 1
+                    v2 = time.game_time_in_years() + 1
                 else
                     v1 = v1 + 1
-                    v2 = fallout.game_time() // (10 * 60 * 60 * 24 * 365)
+                    v2 = time.game_time_in_years()
                 end
             end
         end

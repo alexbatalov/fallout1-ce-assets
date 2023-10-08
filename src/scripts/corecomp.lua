@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local start
 local description_p_proc
@@ -33,7 +34,7 @@ function use_skill_on_p_proc()
     if fallout.action_being_used() == 12 then
         fallout.script_overrides()
         if fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), fallout.action_being_used(), 0)) then
-            if (fallout.game_time() // (10 * 60 * 60 * 24)) >= 90 then
+            if time.game_time_in_days() >= 90 then
                 fallout.display_msg(fallout.message_str(133, 101))
             else
                 fallout.display_msg(fallout.message_str(133, 102))

@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local start
 local destroy_p_proc
@@ -79,7 +80,7 @@ function talk_p_proc()
         if fallout.global_var(133) == 2 then
             peter10()
         else
-            if (fallout.game_time_hour() >= 700) and (fallout.game_time_hour() < 1800) then
+            if time.is_day() then
                 fallout.start_gdialog(267, fallout.self_obj(), 4, -1, -1)
                 fallout.gsay_start()
                 peter0()

@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local start
 local Lighting
@@ -35,8 +36,8 @@ function start()
             end
         end
         if fallout.global_var(55) ~= 0 then
-            fallout.display_msg(fallout.message_str(446, 100) .. (240 - ((fallout.game_time() // 10) - fallout.global_var(55))) .. fallout.message_str(446, 101))
-            if ((fallout.game_time() // 10) - fallout.global_var(55)) > 240 then
+            fallout.display_msg(fallout.message_str(446, 100) .. (240 - (time.game_time_in_seconds() - fallout.global_var(55))) .. fallout.message_str(446, 101))
+            if (time.game_time_in_seconds() - fallout.global_var(55)) > 240 then
                 fallout.display_msg(fallout.message_str(446, 102))
                 fallout.play_gmovie(6)
                 fallout.metarule(13, 0)
@@ -47,8 +48,8 @@ function start()
     if fallout.script_action() == 23 then
         fallout.set_light_level(75)
         if fallout.global_var(55) ~= 0 then
-            fallout.display_msg(fallout.message_str(446, 104) .. (240 - ((fallout.game_time() // 10) - fallout.global_var(55))) .. fallout.message_str(446, 105))
-            if ((fallout.game_time() // 10) - fallout.global_var(55)) > 240 then
+            fallout.display_msg(fallout.message_str(446, 104) .. (240 - (time.game_time_in_seconds() - fallout.global_var(55))) .. fallout.message_str(446, 105))
+            if (time.game_time_in_seconds() - fallout.global_var(55)) > 240 then
                 fallout.display_msg(fallout.message_str(446, 106))
                 fallout.play_gmovie(6)
                 fallout.metarule(13, 0)
@@ -58,8 +59,8 @@ function start()
     end
     if fallout.script_action() == 16 then
         if fallout.global_var(55) ~= 0 then
-            fallout.display_msg(fallout.message_str(446, 108) .. (240 - ((fallout.game_time() // 10) - fallout.global_var(55))) .. fallout.message_str(446, 109))
-            if ((fallout.game_time() // 10) - fallout.global_var(55)) > 240 then
+            fallout.display_msg(fallout.message_str(446, 108) .. (240 - (time.game_time_in_seconds() - fallout.global_var(55))) .. fallout.message_str(446, 109))
+            if (time.game_time_in_seconds() - fallout.global_var(55)) > 240 then
                 fallout.display_msg(fallout.message_str(446, 110))
                 fallout.play_gmovie(6)
                 fallout.metarule(13, 0)
@@ -159,25 +160,25 @@ end
 
 function Invasion()
     if not(fallout.global_var(18) == 2) then
-        if fallout.global_var(149) > (fallout.game_time() // (10 * 60 * 60 * 24)) then
+        if fallout.global_var(149) > time.game_time_in_days() then
             fallout.set_global_var(13, 1)
         end
-        if fallout.global_var(150) > (fallout.game_time() // (10 * 60 * 60 * 24)) then
+        if fallout.global_var(150) > time.game_time_in_days() then
             fallout.set_global_var(14, 1)
         end
-        if fallout.global_var(151) > (fallout.game_time() // (10 * 60 * 60 * 24)) then
+        if fallout.global_var(151) > time.game_time_in_days() then
             fallout.set_global_var(16, 1)
         end
-        if fallout.global_var(152) > (fallout.game_time() // (10 * 60 * 60 * 24)) then
+        if fallout.global_var(152) > time.game_time_in_days() then
             fallout.set_global_var(15, 1)
         end
-        if fallout.global_var(153) > (fallout.game_time() // (10 * 60 * 60 * 24)) then
+        if fallout.global_var(153) > time.game_time_in_days() then
             fallout.set_global_var(12, 1)
         end
-        if fallout.global_var(154) > (fallout.game_time() // (10 * 60 * 60 * 24)) then
+        if fallout.global_var(154) > time.game_time_in_days() then
             fallout.set_global_var(11, 1)
         end
-        if fallout.global_var(148) > (fallout.game_time() // (10 * 60 * 60 * 24)) then
+        if fallout.global_var(148) > time.game_time_in_days() then
             fallout.set_global_var(7, 1)
         end
     end

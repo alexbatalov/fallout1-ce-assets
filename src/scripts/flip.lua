@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local start
 local combat_p_proc
@@ -103,7 +104,7 @@ function critter_p_proc()
                 end
             end
         end
-        if (fallout.game_time_hour() >= 1900) or (fallout.game_time_hour() < 600) then
+        if time.is_night() then
             fallout.animate_move_obj_to_tile(fallout.self_obj(), cell_tile, 0)
         else
             fallout.animate_move_obj_to_tile(fallout.self_obj(), home_tile, 0)

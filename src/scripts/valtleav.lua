@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local start
 local spatial_p_proc
@@ -12,7 +13,7 @@ end
 function spatial_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
         if not(fallout.local_var(0)) then
-            if (fallout.game_time_hour() >= 1900) or (fallout.game_time_hour() < 600) then
+            if time.is_night() then
                 fallout.display_msg(fallout.message_str(208, 101))
             else
                 fallout.display_msg(fallout.message_str(208, 100))

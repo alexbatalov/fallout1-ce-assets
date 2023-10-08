@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local start
 local do_dialogue
@@ -204,7 +205,7 @@ function do_dialogue()
         if moving then
             fallout.display_msg(fallout.message_str(102, 200))
         else
-            if (fallout.game_time_hour() >= 700) and (fallout.game_time_hour() < 1800) then
+            if time.is_day() then
                 get_reaction()
                 if fallout.local_var(4) then
                     garret02a()

@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local start
 local combat
@@ -98,8 +99,8 @@ function talk_p_proc()
     local v0 = 0
     Get_Stuff()
     get_reaction()
-    if (((fallout.game_time() // (10 * 60 * 60 * 24)) - fallout.local_var(6)) >= 1) or (fallout.local_var(6) == 0) then
-        fallout.set_local_var(6, fallout.game_time() // (10 * 60 * 60 * 24))
+    if ((time.game_time_in_days() - fallout.local_var(6)) >= 1) or (fallout.local_var(6) == 0) then
+        fallout.set_local_var(6, time.game_time_in_days())
         fallout.set_local_var(7, 2000 + fallout.random(0, 1000))
         v0 = fallout.item_caps_adjust(fallout.self_obj(), fallout.local_var(7))
     else

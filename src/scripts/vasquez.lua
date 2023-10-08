@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local start
 local do_dialogue
@@ -53,7 +54,7 @@ function start()
             else
                 if fallout.script_action() == 12 then
                     if following then
-                        if ((fallout.game_time() // (10 * 60 * 60 * 24)) - hire_date) > 7 then
+                        if (time.game_time_in_days() - hire_date) > 7 then
                             end_employment()
                         else
                             follow_player()
@@ -145,7 +146,7 @@ end
 function vasquez05()
     fallout.gsay_message(436, 113, 50)
     following = 1
-    hire_date = fallout.game_time() // (10 * 60 * 60 * 24)
+    hire_date = time.game_time_in_days()
 end
 
 function vasquez06()

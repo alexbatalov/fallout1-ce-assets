@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local start
 local combat
@@ -154,7 +155,7 @@ function talk_p_proc()
         end
     else
         if fallout.local_var(5) == 1 then
-            if fallout.local_var(6) <= (fallout.game_time() // (10 * 60 * 60 * 24)) then
+            if fallout.local_var(6) <= time.game_time_in_days() then
                 if fallout.do_check(fallout.dude_obj(), 0, 0) or fallout.do_check(fallout.dude_obj(), 3, 0) then
                     fallout.start_gdialog(891, fallout.self_obj(), 4, -1, -1)
                     fallout.gsay_start()
@@ -261,7 +262,7 @@ end
 function Bob00()
     local v0 = 0
     v0 = fallout.item_caps_adjust(fallout.dude_obj(), fallout.local_var(7))
-    fallout.set_local_var(6, (fallout.game_time() // (10 * 60 * 60 * 24)) + 5)
+    fallout.set_local_var(6, time.game_time_in_days() + 5)
     fallout.gsay_reply(891, 101)
     BobBlackmailQuestions()
 end
@@ -385,7 +386,7 @@ end
 function Bob12()
     local v0 = 0
     v0 = fallout.item_caps_adjust(fallout.dude_obj(), fallout.local_var(7))
-    fallout.set_local_var(6, (fallout.game_time() // (10 * 60 * 60 * 24)) + 5)
+    fallout.set_local_var(6, time.game_time_in_days() + 5)
     fallout.gsay_message(891, 134, 51)
 end
 
@@ -643,7 +644,7 @@ function Bob46()
         fallout.display_msg(fallout.message_str(766, 103) .. 500 .. fallout.message_str(766, 104))
     end
     fallout.set_local_var(5, 1)
-    fallout.set_local_var(6, (fallout.game_time() // (10 * 60 * 60 * 24)) + 5)
+    fallout.set_local_var(6, time.game_time_in_days() + 5)
     fallout.set_global_var(155, fallout.global_var(155) - 2)
     fallout.gsay_message(891, fallout.message_str(891, 222) .. fallout.local_var(7) .. fallout.message_str(891, 223), 50)
 end

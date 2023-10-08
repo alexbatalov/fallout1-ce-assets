@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local start
 local combat_p_proc
@@ -65,7 +66,7 @@ function critter_p_proc()
         hostile = 0
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     else
-        if (fallout.map_var(1) == 1) and ((fallout.game_time() // (10 * 60 * 60 * 24)) > fallout.map_var(5)) then
+        if (fallout.map_var(1) == 1) and (time.game_time_in_days() > fallout.map_var(5)) then
             if fallout.external_var("jail_door_ptr") ~= 0 then
                 fallout.obj_unlock(fallout.external_var("jail_door_ptr"))
                 fallout.use_obj(fallout.external_var("jail_door_ptr"))

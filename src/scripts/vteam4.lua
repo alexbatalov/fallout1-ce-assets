@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 --
 -- Some unreferenced imported varables found.
@@ -65,7 +66,7 @@ function start()
         if fallout.global_var(146) then
             fallout.move_to(fallout.self_obj(), g4, 1)
         else
-            if (fallout.game_time_hour() >= 1900) or (fallout.game_time_hour() < 600) then
+            if time.is_night() then
                 fallout.move_to(fallout.self_obj(), g5, 1)
             end
         end
@@ -142,7 +143,7 @@ function critter_p_proc()
                 end
             end
         else
-            if (fallout.game_time_hour() >= 1900) or (fallout.game_time_hour() < 600) then
+            if time.is_night() then
                 if fallout.elevation(fallout.self_obj()) == 0 then
                     if fallout.tile_num(fallout.self_obj()) ~= 14520 then
                         fallout.animate_move_obj_to_tile(fallout.self_obj(), 14520, 0)

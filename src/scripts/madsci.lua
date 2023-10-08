@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local start
 local combat
@@ -111,7 +112,7 @@ function critter_p_proc()
         hostile = 0
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     else
-        if (fallout.game_time_hour() >= 700) and (fallout.game_time_hour() < 1800) then
+        if time.is_day() then
             if fallout.local_var(6) then
                 fallout.set_local_var(6, 0)
                 fallout.animate_move_obj_to_tile(fallout.self_obj(), home_tile, 0)

@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local start
 local look_at_p_proc
@@ -66,7 +67,7 @@ function use_obj_on_p_proc()
 end
 
 function map_update_p_proc()
-    if not((fallout.game_time_hour() >= 1900) or (fallout.game_time_hour() < 600)) then
+    if not time.is_night() then
         fallout.set_local_var(0, 1)
     end
     if fallout.local_var(0) == 0 then

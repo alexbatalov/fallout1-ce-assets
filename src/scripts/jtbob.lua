@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local start
 local Do_Dialogue
@@ -54,7 +55,7 @@ function start()
                 Do_Dialogue()
             else
                 if fallout.script_action() == 15 then
-                    if ((fallout.game_time() // (10 * 60 * 60 * 24)) - Days) >= 7 then
+                    if (time.game_time_in_days() - Days) >= 7 then
                         fallout.kill_critter(fallout.self_obj(), 0)
                     end
                 end
@@ -83,7 +84,7 @@ function Do_Dialogue()
                 fallout.end_dialogue()
             else
                 Herebefore = 1
-                Days = fallout.game_time() // (10 * 60 * 60 * 24)
+                Days = time.game_time_in_days()
                 fallout.start_gdialog(341, fallout.self_obj(), 4, -1, -1)
                 fallout.gsay_start()
                 bob10()

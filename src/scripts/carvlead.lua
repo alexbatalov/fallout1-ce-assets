@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local start
 local combat
@@ -50,7 +51,7 @@ function start()
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 64)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 50)
         if fallout.local_var(5) == 1 then
-            if ((fallout.game_time() // (10 * 60 * 60)) - fallout.local_var(6)) < 2 then
+            if (time.game_time_in_hours() - fallout.local_var(6)) < 2 then
                 WaitForTwoHours = 1
                 fallout.set_obj_visibility(fallout.self_obj(), 0)
             else
@@ -132,10 +133,10 @@ function critter_p_proc()
     end
     if spawnDialogue == 1 then
         spawnDialogue = 0
-        fallout.set_local_var(6, fallout.game_time() // (10 * 60 * 60))
+        fallout.set_local_var(6, time.game_time_in_hours())
         fallout.dialogue_system_enter()
     else
-        if (WaitForTwoHours == 1) and (((fallout.game_time() // (10 * 60 * 60)) - fallout.local_var(6)) >= 2) then
+        if (WaitForTwoHours == 1) and ((time.game_time_in_hours() - fallout.local_var(6)) >= 2) then
             WaitForTwoHours = 0
             if fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) >= 24 then
                 fallout.set_obj_visibility(fallout.self_obj(), 1)

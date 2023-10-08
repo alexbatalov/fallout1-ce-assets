@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 --
 -- Some unreferenced imported varables found.
@@ -289,7 +290,7 @@ function Lars00()
     if fallout.global_var(104) == 1 then
         fallout.giq_option(4, 518, 161, Lars22, 49)
     end
-    if fallout.global_var(283) > (fallout.game_time() // (10 * 60 * 60 * 24)) then
+    if fallout.global_var(283) > time.game_time_in_days() then
         fallout.giq_option(4, 518, 166, Lars24, 49)
     end
 end
@@ -383,7 +384,7 @@ function Lars12()
     if fallout.global_var(257) and (fallout.global_var(555) == 1) then
         fallout.giq_option(4, 518, 139, Lars14, 50)
     end
-    if fallout.global_var(283) > (fallout.game_time() // (10 * 60 * 60 * 24)) then
+    if fallout.global_var(283) > time.game_time_in_days() then
         fallout.giq_option(4, 518, 166, Lars24, 49)
     end
 end

@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local HEREBEFORE = 0
 local PLayer_Elevation = 0
@@ -24,7 +25,7 @@ fallout.create_external_var("Tandi_ptr")
 function start()
     if fallout.script_action() == 15 then
         PLayer_Elevation = fallout.elevation(fallout.dude_obj())
-        if (fallout.game_time() // (10 * 60 * 60 * 24)) >= fallout.global_var(151) then
+        if time.game_time_in_days() >= fallout.global_var(151) then
             fallout.set_global_var(16, 1)
         end
         if fallout.global_var(32) == 2 then

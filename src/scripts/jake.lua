@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local start
 local critter_p_proc
@@ -125,7 +126,7 @@ function talk_p_proc()
         fallout.start_gdialog(268, fallout.self_obj(), 4, -1, -1)
         fallout.gsay_start()
         fallout.set_local_var(4, 1)
-        if (fallout.game_time_hour() >= 1900) or (fallout.game_time_hour() < 600) then
+        if time.is_night() then
             Jake14()
         else
             if fallout.global_var(132) then

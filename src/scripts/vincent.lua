@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local start
 local combat
@@ -101,7 +102,7 @@ function critter_p_proc()
                 end
             end
         else
-            if (fallout.game_time_hour() >= 700) and (fallout.game_time_hour() < 1800) then
+            if time.is_day() then
                 if fallout.local_var(6) then
                     fallout.set_local_var(6, 0)
                     fallout.animate_move_obj_to_tile(fallout.self_obj(), home_tile, 0)
@@ -163,7 +164,7 @@ end
 
 function look_at_p_proc()
     fallout.script_overrides()
-    if (fallout.game_time_hour() >= 700) and (fallout.game_time_hour() < 1800) then
+    if time.is_day() then
         fallout.display_msg(fallout.message_str(679, 400))
     else
         fallout.display_msg(fallout.message_str(679, 200))

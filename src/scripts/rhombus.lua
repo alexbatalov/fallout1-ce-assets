@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local start
 local do_dialogue
@@ -674,7 +675,7 @@ function critter_p_proc()
                             end
                         end
                     else
-                        if (fallout.game_time_hour() >= 1900) or (fallout.game_time_hour() < 600) then
+                        if time.is_night() then
                             if fallout.local_var(8) == 0 then
                                 fallout.set_local_var(8, 1)
                                 fallout.set_local_var(7, 3)
@@ -725,7 +726,7 @@ function look_at_p_proc()
 end
 
 function timeforwhat()
-    if (fallout.game_time_hour() >= 1900) or (fallout.game_time_hour() < 600) then
+    if time.is_night() then
         if fallout.local_var(7) == 2 then
             fallout.set_local_var(7, 3)
         end

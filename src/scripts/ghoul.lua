@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local start
 local timeforwhat
@@ -42,10 +43,10 @@ function start()
                             Hostile = 0
                             fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
                         else
-                            if (fallout.game_time_hour() >= 1900) or (fallout.game_time_hour() < 600) and (fallout.tile_num(fallout.self_obj()) ~= 22531) then
+                            if time.is_night() and (fallout.tile_num(fallout.self_obj()) ~= 22531) then
                                 fallout.animate_move_obj_to_tile(fallout.self_obj(), 22531, 0)
                             end
-                            if (fallout.game_time_hour() >= 700) and (fallout.game_time_hour() < 1800) and (fallout.tile_num(fallout.self_obj()) ~= 24730) then
+                            if time.is_day() and (fallout.tile_num(fallout.self_obj()) ~= 24730) then
                                 fallout.animate_move_obj_to_tile(fallout.self_obj(), 24730, 0)
                             end
                             loopcount = loopcount + 1

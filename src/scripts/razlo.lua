@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local start
 local combat_p_proc
@@ -174,7 +175,7 @@ function talk_p_proc()
     if fallout.local_var(9) == 1 then
         fallout.float_msg(fallout.self_obj(), fallout.message_str(185, 166), 0)
     else
-        if (fallout.game_time_hour() >= 1900) or (fallout.game_time_hour() < 600) then
+        if time.is_night() then
             fallout.set_local_var(6, 1)
             fallout.start_gdialog(129, fallout.self_obj(), 4, -1, -1)
             fallout.gsay_start()

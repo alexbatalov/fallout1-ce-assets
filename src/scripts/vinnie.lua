@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local start
 local critter_p_proc
@@ -160,14 +161,14 @@ function talk_p_proc()
         fallout.set_global_var(155, fallout.global_var(155) - 1)
         fallout.set_local_var(1, 2)
         if fallout.global_var(284) == 0 then
-            fallout.set_global_var(283, (fallout.game_time() // (10 * 60 * 60 * 24)) + 2)
+            fallout.set_global_var(283, time.game_time_in_days() + 2)
         end
     end
     if Vinnie_kill_Neal then
         Vinnie_kill_Neal = 0
         fallout.load_map(11, 7)
     end
-    if (fallout.global_var(283) > (fallout.game_time() // (10 * 60 * 60 * 24))) and (fallout.global_var(284) == 0) then
+    if (fallout.global_var(283) > time.game_time_in_days()) and (fallout.global_var(284) == 0) then
         fallout.float_msg(fallout.self_obj(), fallout.message_str(385, 159), 4)
     end
 end
@@ -322,7 +323,7 @@ function Vinnie20()
     if fallout.global_var(284) == 1 then
         Vinnie22()
     else
-        fallout.set_global_var(283, (fallout.game_time() // (10 * 60 * 60 * 24)) + 2)
+        fallout.set_global_var(283, time.game_time_in_days() + 2)
         fallout.gsay_reply(385, 152)
         fallout.giq_option(4, 385, 153, Vinnie06, 51)
         fallout.giq_option(4, 385, 154, VinnieKillNeal, 49)

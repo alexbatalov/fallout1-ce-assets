@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local start
 local Lighting
@@ -31,7 +32,7 @@ function start()
             fallout.display_msg(fallout.message_str(194, 108))
         end
         fallout.set_global_var(592, 1)
-        First_Time = fallout.game_time() // 10
+        First_Time = time.game_time_in_seconds()
         Lighting()
         if fallout.global_var(32) == 0 then
             fallout.override_map_start(107, 130, 0, 5)
@@ -45,11 +46,11 @@ function start()
     else
         if fallout.script_action() == 23 then
             update_party()
-            Next_Time = fallout.game_time() // 10
+            Next_Time = time.game_time_in_seconds()
             if (Next_Time - First_Time) > 30 then
                 Rads = (Next_Time - First_Time) // 30 * 15
                 fallout.radiation_inc(fallout.dude_obj(), Rads)
-                First_Time = fallout.game_time() // 10
+                First_Time = time.game_time_in_seconds()
                 Rads = 0
             else
                 fallout.radiation_inc(fallout.dude_obj(), 15)
@@ -153,25 +154,25 @@ end
 
 function Invasion()
     if not(fallout.global_var(18) == 2) then
-        if fallout.global_var(149) > (fallout.game_time() // (10 * 60 * 60 * 24)) then
+        if fallout.global_var(149) > time.game_time_in_days() then
             fallout.set_global_var(13, 1)
         end
-        if fallout.global_var(150) > (fallout.game_time() // (10 * 60 * 60 * 24)) then
+        if fallout.global_var(150) > time.game_time_in_days() then
             fallout.set_global_var(14, 1)
         end
-        if fallout.global_var(151) > (fallout.game_time() // (10 * 60 * 60 * 24)) then
+        if fallout.global_var(151) > time.game_time_in_days() then
             fallout.set_global_var(16, 1)
         end
-        if fallout.global_var(152) > (fallout.game_time() // (10 * 60 * 60 * 24)) then
+        if fallout.global_var(152) > time.game_time_in_days() then
             fallout.set_global_var(15, 1)
         end
-        if fallout.global_var(153) > (fallout.game_time() // (10 * 60 * 60 * 24)) then
+        if fallout.global_var(153) > time.game_time_in_days() then
             fallout.set_global_var(12, 1)
         end
         if fallout.global_var(154) <= 0 then
             fallout.set_global_var(11, 1)
         end
-        if fallout.global_var(148) > (fallout.game_time() // (10 * 60 * 60 * 24)) then
+        if fallout.global_var(148) > time.game_time_in_days() then
             fallout.set_global_var(7, 1)
         end
     end

@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local start
 local spatial_p_proc
@@ -20,7 +21,7 @@ function start()
 end
 
 function spatial_p_proc()
-    if (fallout.source_obj() == fallout.dude_obj()) and (fallout.global_var(168) > (fallout.game_time() // (10 * 60 * 60 * 24))) then
+    if (fallout.source_obj() == fallout.dude_obj()) and (fallout.global_var(168) > time.game_time_in_days()) then
         fallout.dialogue_system_enter()
     end
 end

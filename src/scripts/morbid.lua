@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 --
 -- Some unreferenced imported varables found.
@@ -254,14 +255,14 @@ function talk_p_proc()
                         Morbid01L()
                     end
                 else
-                    if (fallout.game_time() // (10 * 60 * 60 * 24)) >= 80 then
+                    if time.game_time_in_days() >= 80 then
                         if not(fallout.local_var(7)) then
                             Morbid17()
                         else
                             Morbid21()
                         end
                     else
-                        if (fallout.game_time_hour() >= 1900) or (fallout.game_time_hour() < 600) then
+                        if time.is_night() then
                             if fallout.local_var(4) then
                                 Morbid04N()
                             else
@@ -470,7 +471,7 @@ function Morbid09()
             g7 = g7 + 75
         end
     end
-    if (fallout.game_time_hour() >= 1900) or (fallout.game_time_hour() < 600) then
+    if time.is_night() then
         g7 = g7 * (3 // 2)
     end
     fallout.gsay_message(104, g9, 50)

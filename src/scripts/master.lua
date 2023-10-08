@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local start
 local gameover
@@ -134,7 +135,7 @@ function start()
             end
             fallout.set_global_var(309, 2)
             if fallout.global_var(55) == 0 then
-                fallout.set_global_var(55, fallout.game_time() // 10)
+                fallout.set_global_var(55, time.game_time_in_seconds())
             end
         else
             if fallout.script_action() == 21 then
@@ -366,7 +367,7 @@ function master19()
     fallout.gsay_message(51, 153, 50)
     fallout.set_external_var("MASTER_HAS_ARMED", 1)
     if fallout.global_var(55) == 0 then
-        fallout.set_global_var(55, fallout.game_time() // 10)
+        fallout.set_global_var(55, time.game_time_in_seconds())
         fallout.set_global_var(18, 1)
         if fallout.global_var(17) == 0 then
             fallout.set_global_var(51, 1)

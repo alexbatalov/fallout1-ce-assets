@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local start
 local critter_p_proc
@@ -99,7 +100,7 @@ function pickup_p_proc()
 end
 
 function talk_p_proc()
-    if (fallout.game_time_hour() >= 700) and (fallout.game_time_hour() < 1800) then
+    if time.is_day() then
         if not(fallout.local_var(0)) then
             Flash00()
         else

@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local start
 local critter_p_proc
@@ -103,7 +104,7 @@ function critter_p_proc()
                 end
             end
         end
-        if not((fallout.game_time_hour() >= 700) and (fallout.game_time_hour() < 1800)) then
+        if not time.is_day() then
             sleeping_disabled = 0
             fallout.set_local_var(5, 0)
         end

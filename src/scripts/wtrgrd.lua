@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local start
 local critter_p_proc
@@ -85,12 +86,12 @@ function critter_p_proc()
                 end
             end
         end
-        if (fallout.game_time_hour() >= 700) and (fallout.game_time_hour() < 1800) then
+        if time.is_day() then
             if fallout.tile_num(fallout.self_obj()) ~= dest_tile then
                 fallout.animate_move_obj_to_tile(fallout.self_obj(), dest_tile, 0)
             end
         end
-        if not((fallout.game_time_hour() >= 700) and (fallout.game_time_hour() < 1800)) then
+        if not time.is_day() then
             on_rounds = 0
         end
         if (fallout.game_time_hour() > 700) and (fallout.game_time_hour() < 900) and not(on_rounds) then
@@ -98,7 +99,7 @@ function critter_p_proc()
             on_rounds = 1
             fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(300), 1)
         end
-        if not((fallout.game_time_hour() >= 700) and (fallout.game_time_hour() < 1800)) then
+        if not time.is_day() then
             if not(asleep) then
                 if (fallout.game_time_hour() > 1905) and (fallout.game_time_hour() < 1915) then
                     fallout.animate_move_obj_to_tile(fallout.self_obj(), 16912, 0)
@@ -187,7 +188,7 @@ function map_enter_p_proc()
     dest_tile = fallout.local_var(5)
     fallout.set_external_var("WtrGrd_ptr", fallout.self_obj())
     fallout.set_external_var("recipient", 0)
-    if not((fallout.game_time_hour() >= 700) and (fallout.game_time_hour() < 1800)) then
+    if not time.is_day() then
         fallout.move_to(fallout.self_obj(), 7000, 2)
         asleep = 1
     end
@@ -210,7 +211,7 @@ function talk_p_proc()
             else
                 fallout.start_gdialog(163, fallout.self_obj(), 4, -1, -1)
                 fallout.gsay_start()
-                if (fallout.game_time() // (10 * 60 * 60 * 24)) < 30 then
+                if time.game_time_in_days() < 30 then
                     WtrGrd05()
                 else
                     WtrGrd01()

@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local start
 local stranger
@@ -1733,7 +1734,7 @@ function Shady5()
     Item = fallout.item_caps_adjust(Critter, fallout.random(8, 44) * (fallout.has_trait(0, fallout.dude_obj(), 20) + 1))
     fallout.kill_critter(Critter, 61)
     Tot_Critter_A = fallout.random(4, 6)
-    if (fallout.game_time_hour() >= 700) and (fallout.game_time_hour() < 1800) then
+    if time.is_day() then
         Outer_ring = 6
         Inner_ring = 4
     else
@@ -1819,7 +1820,7 @@ function Raider1()
     Item = fallout.create_object_sid(33554499, fallout.tile_num_in_direction(v0, 1, 3), 0, -1)
     Item = fallout.create_object_sid(33554499, fallout.tile_num_in_direction(v0, 1, 4), 0, -1)
     Item = fallout.create_object_sid(33554499, fallout.tile_num_in_direction(v0, 1, 5), 0, -1)
-    if (fallout.game_time_hour() >= 1900) or (fallout.game_time_hour() < 600) then
+    if time.is_night() then
         Critter = fallout.create_object_sid(33554433, 0, 0, -1)
         Critter_tile = fallout.tile_num_in_direction(Dude_tile, group_angle, 5)
         fallout.critter_attempt_placement(Critter, Critter_tile, 0)
@@ -3547,7 +3548,7 @@ function Steel5()
     Item = fallout.create_object_sid(33554499, fallout.tile_num_in_direction(v0, 1, 3), 0, -1)
     Item = fallout.create_object_sid(33554499, fallout.tile_num_in_direction(v0, 1, 4), 0, -1)
     Item = fallout.create_object_sid(33554499, fallout.tile_num_in_direction(v0, 1, 5), 0, -1)
-    if (fallout.game_time_hour() >= 1900) or (fallout.game_time_hour() < 600) then
+    if time.is_night() then
         Critter = fallout.create_object_sid(33554433, 0, 0, -1)
         Critter_tile = fallout.tile_num_in_direction(Dude_tile, fallout.random(0, 5), 5)
         fallout.critter_attempt_placement(Critter, Critter_tile, 0)
@@ -4069,7 +4070,7 @@ function Vats6()
     Item = fallout.create_object_sid(33554654, fallout.tile_num_in_direction(Dude_tile + fallout.random(0, 8) - 4, fallout.random(0, 5), fallout.random(5, 9)), 0, -1)
     Item = fallout.create_object_sid(33554747, fallout.tile_num_in_direction(Dude_tile + fallout.random(0, 8) - 4, fallout.random(0, 5), fallout.random(5, 9)), 0, -1)
     Item = fallout.create_object_sid(33555207, fallout.tile_num_in_direction(Dude_tile + fallout.random(0, 8) - 4, fallout.random(0, 5), fallout.random(5, 9)), 0, -1)
-    if (fallout.game_time_hour() >= 1900) or (fallout.game_time_hour() < 600) then
+    if time.is_night() then
         Item = fallout.create_object_sid(33554433, fallout.tile_num_in_direction(Dude_tile + fallout.random(0, 8) - 4, fallout.random(0, 5), fallout.random(8, 10)), 0, -1)
         if fallout.random(0, 1) then
             Item = fallout.create_object_sid(33554433, fallout.tile_num_in_direction(Dude_tile + fallout.random(0, 8) - 4, fallout.random(0, 5), fallout.random(8, 10)), 0, -1)
@@ -4629,7 +4630,7 @@ function Bone2()
     local v0 = 0
     fallout.display_msg(fallout.message_str(112, 308))
     group_angle = fallout.random(0, 5)
-    if (fallout.game_time_hour() >= 1900) or (fallout.game_time_hour() < 600) and fallout.random(0, 1) then
+    if time.is_night() and fallout.random(0, 1) then
         Critter = fallout.create_object_sid(33555044, 0, 0, -1)
         Critter_tile = fallout.tile_num_in_direction(Dude_tile, group_angle, 4)
         fallout.critter_attempt_placement(Critter, Critter_tile, 0)
@@ -5013,7 +5014,7 @@ end
 function Bone6()
     fallout.display_msg(fallout.message_str(112, 313))
     Tot_Critter_A = fallout.random(4, 6)
-    if (fallout.game_time_hour() >= 700) and (fallout.game_time_hour() < 1800) then
+    if time.is_day() then
         Outer_ring = 6
         Inner_ring = 3
     else
@@ -5415,25 +5416,25 @@ end
 
 function Invasion()
     if not(fallout.global_var(18) == 2) then
-        if fallout.global_var(149) > (fallout.game_time() // (10 * 60 * 60 * 24)) then
+        if fallout.global_var(149) > time.game_time_in_days() then
             fallout.set_global_var(13, 1)
         end
-        if fallout.global_var(150) > (fallout.game_time() // (10 * 60 * 60 * 24)) then
+        if fallout.global_var(150) > time.game_time_in_days() then
             fallout.set_global_var(14, 1)
         end
-        if fallout.global_var(151) > (fallout.game_time() // (10 * 60 * 60 * 24)) then
+        if fallout.global_var(151) > time.game_time_in_days() then
             fallout.set_global_var(16, 1)
         end
-        if fallout.global_var(152) > (fallout.game_time() // (10 * 60 * 60 * 24)) then
+        if fallout.global_var(152) > time.game_time_in_days() then
             fallout.set_global_var(15, 1)
         end
-        if fallout.global_var(153) > (fallout.game_time() // (10 * 60 * 60 * 24)) then
+        if fallout.global_var(153) > time.game_time_in_days() then
             fallout.set_global_var(12, 1)
         end
         if fallout.global_var(154) <= 0 then
             fallout.set_global_var(11, 1)
         end
-        if fallout.global_var(148) > (fallout.game_time() // (10 * 60 * 60 * 24)) then
+        if fallout.global_var(148) > time.game_time_in_days() then
             fallout.set_global_var(7, 1)
         end
     end

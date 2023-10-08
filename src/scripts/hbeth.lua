@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 --
 -- Some unreferenced imported varables found.
@@ -173,8 +174,8 @@ function talk_p_proc()
     local v0 = 0
     Get_Stuff()
     get_reaction()
-    if (((fallout.game_time() // (10 * 60 * 60 * 24)) - fallout.local_var(16)) >= 1) or (fallout.local_var(16) == 0) then
-        fallout.set_local_var(16, fallout.game_time() // (10 * 60 * 60 * 24))
+    if ((time.game_time_in_days() - fallout.local_var(16)) >= 1) or (fallout.local_var(16) == 0) then
+        fallout.set_local_var(16, time.game_time_in_days())
         fallout.set_local_var(17, 1000 + fallout.random(0, 1000))
         v0 = fallout.item_caps_adjust(fallout.self_obj(), fallout.local_var(17))
     else
@@ -187,9 +188,9 @@ function talk_p_proc()
     end
     fallout.set_map_var(33, 1)
     if fallout.local_var(11) == 0 then
-        fallout.set_local_var(11, fallout.game_time() // (10 * 60 * 60))
+        fallout.set_local_var(11, time.game_time_in_hours())
     end
-    if (fallout.game_time_hour() >= 1900) or (fallout.game_time_hour() < 600) then
+    if time.is_night() then
         fallout.float_msg(fallout.self_obj(), fallout.message_str(617, 361), 2)
     else
         if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) and (fallout.local_var(14) == 0) then
@@ -219,7 +220,7 @@ function talk_p_proc()
             end
         end
     end
-    fallout.set_local_var(11, fallout.game_time() // (10 * 60 * 60))
+    fallout.set_local_var(11, time.game_time_in_hours())
     v0 = fallout.item_caps_adjust(fallout.self_obj(), -1 * fallout.item_caps_total(fallout.self_obj()))
     Put_Stuff()
 end
@@ -820,22 +821,22 @@ end
 
 function Beth64()
     if (fallout.get_critter_stat(fallout.dude_obj(), 3) >= 7) and (fallout.get_critter_stat(fallout.dude_obj(), 34) == 0) then
-        if (((fallout.game_time() // (10 * 60 * 60)) - fallout.local_var(11)) <= 1) and (fallout.get_critter_stat(fallout.dude_obj(), 34) == 1) then
+        if ((time.game_time_in_hours() - fallout.local_var(11)) <= 1) and (fallout.get_critter_stat(fallout.dude_obj(), 34) == 1) then
             fallout.gsay_reply(617, fallout.message_str(617, fallout.random(311, 314)) .. " " .. fallout.message_str(617, 315))
         else
-            if ((fallout.game_time() // (10 * 60 * 60)) - fallout.local_var(11)) <= 1 then
+            if (time.game_time_in_hours() - fallout.local_var(11)) <= 1 then
                 fallout.gsay_reply(617, fallout.message_str(617, fallout.random(311, 314)) .. " " .. fallout.message_str(617, 316))
             else
-                if (((fallout.game_time() // (10 * 60 * 60)) - fallout.local_var(11)) > 1) and (((fallout.game_time() // (10 * 60 * 60)) - fallout.local_var(11)) <= 96) then
+                if ((time.game_time_in_hours() - fallout.local_var(11)) > 1) and ((time.game_time_in_hours() - fallout.local_var(11)) <= 96) then
                     fallout.gsay_reply(617, fallout.message_str(617, fallout.random(311, 314)) .. " " .. fallout.message_str(617, 317))
                 else
-                    if (((fallout.game_time() // (10 * 60 * 60)) - fallout.local_var(11)) > 96) and (((fallout.game_time() // (10 * 60 * 60)) - fallout.local_var(11)) <= 168) then
+                    if ((time.game_time_in_hours() - fallout.local_var(11)) > 96) and ((time.game_time_in_hours() - fallout.local_var(11)) <= 168) then
                         fallout.gsay_reply(617, fallout.message_str(617, fallout.random(311, 314)) .. " " .. fallout.message_str(617, 318))
                     else
-                        if (((fallout.game_time() // (10 * 60 * 60)) - fallout.local_var(11)) > 168) and (((fallout.game_time() // (10 * 60 * 60)) - fallout.local_var(11)) <= 336) then
+                        if ((time.game_time_in_hours() - fallout.local_var(11)) > 168) and ((time.game_time_in_hours() - fallout.local_var(11)) <= 336) then
                             fallout.gsay_reply(617, fallout.message_str(617, fallout.random(311, 314)) .. " " .. fallout.message_str(617, 319))
                         else
-                            if ((fallout.game_time() // (10 * 60 * 60)) - fallout.local_var(11)) > 336 then
+                            if (time.game_time_in_hours() - fallout.local_var(11)) > 336 then
                                 fallout.gsay_reply(617, fallout.message_str(617, fallout.random(311, 314)) .. " " .. fallout.message_str(617, 320))
                             end
                         end
@@ -844,22 +845,22 @@ function Beth64()
             end
         end
     else
-        if (((fallout.game_time() // (10 * 60 * 60)) - fallout.local_var(11)) <= 1) and (fallout.get_critter_stat(fallout.dude_obj(), 34) == 1) then
+        if ((time.game_time_in_hours() - fallout.local_var(11)) <= 1) and (fallout.get_critter_stat(fallout.dude_obj(), 34) == 1) then
             fallout.gsay_reply(617, fallout.message_str(617, fallout.random(311, 313)) .. " " .. fallout.message_str(617, 315))
         else
-            if ((fallout.game_time() // (10 * 60 * 60)) - fallout.local_var(11)) <= 1 then
+            if (time.game_time_in_hours() - fallout.local_var(11)) <= 1 then
                 fallout.gsay_reply(617, fallout.message_str(617, fallout.random(311, 313)) .. " " .. fallout.message_str(617, 316))
             else
-                if (((fallout.game_time() // (10 * 60 * 60)) - fallout.local_var(11)) > 1) and (((fallout.game_time() // (10 * 60 * 60)) - fallout.local_var(11)) <= 96) then
+                if ((time.game_time_in_hours() - fallout.local_var(11)) > 1) and ((time.game_time_in_hours() - fallout.local_var(11)) <= 96) then
                     fallout.gsay_reply(617, fallout.message_str(617, fallout.random(311, 313)) .. " " .. fallout.message_str(617, 317))
                 else
-                    if (((fallout.game_time() // (10 * 60 * 60)) - fallout.local_var(11)) > 96) and (((fallout.game_time() // (10 * 60 * 60)) - fallout.local_var(11)) <= 168) then
+                    if ((time.game_time_in_hours() - fallout.local_var(11)) > 96) and ((time.game_time_in_hours() - fallout.local_var(11)) <= 168) then
                         fallout.gsay_reply(617, fallout.message_str(617, fallout.random(311, 313)) .. " " .. fallout.message_str(617, 318))
                     else
-                        if (((fallout.game_time() // (10 * 60 * 60)) - fallout.local_var(11)) > 168) and (((fallout.game_time() // (10 * 60 * 60)) - fallout.local_var(11)) <= 336) then
+                        if ((time.game_time_in_hours() - fallout.local_var(11)) > 168) and ((time.game_time_in_hours() - fallout.local_var(11)) <= 336) then
                             fallout.gsay_reply(617, fallout.message_str(617, fallout.random(311, 313)) .. " " .. fallout.message_str(617, 319))
                         else
-                            if ((fallout.game_time() // (10 * 60 * 60)) - fallout.local_var(11)) > 336 then
+                            if (time.game_time_in_hours() - fallout.local_var(11)) > 336 then
                                 fallout.gsay_reply(617, fallout.message_str(617, fallout.random(311, 313)) .. " " .. fallout.message_str(617, 320))
                             end
                         end

@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local start
 local stranger
@@ -260,7 +261,7 @@ function Patrick()
     fallout.add_mult_objs_to_inven(Critter, Item, fallout.random(1, 2))
     Critter = fallout.create_object_sid(33554744, 0, 0, -1)
     fallout.critter_attempt_placement(Critter, ((CritterYpos - 1) * 200) + (CritterXpos - 5), 0)
-    if (fallout.game_time_hour() >= 1900) or (fallout.game_time_hour() < 600) then
+    if time.is_night() then
         Critter = fallout.create_object_sid(33555044, 0, 0, -1)
         fallout.critter_attempt_placement(Critter, ((CritterYpos + 4) * 200) + (CritterXpos - 2), 0)
         Critter = fallout.create_object_sid(33554640, 0, 0, -1)
@@ -462,7 +463,7 @@ end
 function North2()
     fallout.display_msg(fallout.message_str(246, 105))
     Tot_Critter_A = fallout.random(2, 3)
-    if (fallout.game_time_hour() >= 1900) or (fallout.game_time_hour() < 600) then
+    if time.is_night() then
         Outer_ring = 5
         Inner_ring = 3
     else
@@ -1029,7 +1030,7 @@ function Vault6()
         Tot_Critter_A = Tot_Critter_A - 1
     end
     victim = Critter
-    if (fallout.game_time_hour() >= 1900) or (fallout.game_time_hour() < 600) then
+    if time.is_night() then
         Critter_type = 16777227
         Critter_script = 12
         Outer_ring = 10
@@ -1218,25 +1219,25 @@ end
 
 function Invasion()
     if not(fallout.global_var(18) == 2) then
-        if fallout.global_var(149) > (fallout.game_time() // (10 * 60 * 60 * 24)) then
+        if fallout.global_var(149) > time.game_time_in_days() then
             fallout.set_global_var(13, 1)
         end
-        if fallout.global_var(150) > (fallout.game_time() // (10 * 60 * 60 * 24)) then
+        if fallout.global_var(150) > time.game_time_in_days() then
             fallout.set_global_var(14, 1)
         end
-        if fallout.global_var(151) > (fallout.game_time() // (10 * 60 * 60 * 24)) then
+        if fallout.global_var(151) > time.game_time_in_days() then
             fallout.set_global_var(16, 1)
         end
-        if fallout.global_var(152) > (fallout.game_time() // (10 * 60 * 60 * 24)) then
+        if fallout.global_var(152) > time.game_time_in_days() then
             fallout.set_global_var(15, 1)
         end
-        if fallout.global_var(153) > (fallout.game_time() // (10 * 60 * 60 * 24)) then
+        if fallout.global_var(153) > time.game_time_in_days() then
             fallout.set_global_var(12, 1)
         end
         if fallout.global_var(154) <= 0 then
             fallout.set_global_var(11, 1)
         end
-        if fallout.global_var(148) > (fallout.game_time() // (10 * 60 * 60 * 24)) then
+        if fallout.global_var(148) > time.game_time_in_days() then
             fallout.set_global_var(7, 1)
         end
     end

@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local start
 local critter_p_proc
@@ -124,7 +125,7 @@ end
 function show_true_name()
     fallout.script_overrides()
     if fallout.local_var(0) then
-        if (fallout.game_time_hour() >= 1900) or (fallout.game_time_hour() < 600) then
+        if time.is_night() then
             fallout.display_msg(fallout.message_str(282, 100))
         else
             fallout.display_msg(fallout.message_str(282, 101))

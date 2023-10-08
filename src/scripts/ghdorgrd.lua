@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local start
 local do_dialogue
@@ -95,7 +96,7 @@ function do_dialogue()
     if fallout.local_var(4) then
         ghoul02()
     end
-    if (fallout.game_time_hour() >= 1900) or (fallout.game_time_hour() < 600) then
+    if time.is_night() then
         if fallout.local_var(1) >= 3 then
             ghoul00b()
         else

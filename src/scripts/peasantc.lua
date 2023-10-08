@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local start
 local damage_p_proc
@@ -81,7 +82,7 @@ function map_enter_p_proc()
     else
         sleep_time = fallout.random(2215, 2230)
         wake_time = fallout.random(715, 730)
-        if (fallout.game_time() // (10 * 60 * 60 * 24)) < 80 then
+        if time.game_time_in_days() < 80 then
             sleep_tile = 15275
             home_tile = 14267
         else
@@ -107,7 +108,7 @@ function talk_p_proc()
         if fallout.local_var(1) == 1 then
             fallout.float_msg(fallout.self_obj(), fallout.message_str(438, 124), 2)
         else
-            if (fallout.game_time() // (10 * 60 * 60 * 24)) < 80 then
+            if time.game_time_in_days() < 80 then
                 fallout.set_local_var(0, 1)
                 if fallout.global_var(247) == 1 then
                     fallout.float_msg(fallout.self_obj(), fallout.message_str(438, 100), 2)

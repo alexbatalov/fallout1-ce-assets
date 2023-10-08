@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local start
 local critter_p_proc
@@ -13,7 +14,7 @@ function start()
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 12)
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 9)
         initialized = 1
-        if (fallout.game_time_hour() >= 1900) or (fallout.game_time_hour() < 600) then
+        if time.is_night() then
             fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(fallout.random(30, 40)), 0)
         end
     else
@@ -32,7 +33,7 @@ function start()
 end
 
 function critter_p_proc()
-    if not((fallout.game_time_hour() >= 1900) or (fallout.game_time_hour() < 600)) and not(hostile) then
+    if not time.is_night() and not(hostile) then
         if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
             if fallout.has_trait(0, fallout.dude_obj(), 44) == 0 then
                 fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)

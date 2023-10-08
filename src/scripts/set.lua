@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local start
 local do_dialogue
@@ -227,7 +228,7 @@ function do_dialogue()
                 if fallout.global_var(18) and (fallout.local_var(7) == 0) then
                     set52()
                 else
-                    if (fallout.game_time_hour() >= 700) and (fallout.game_time_hour() < 1800) then
+                    if time.is_day() then
                         set207()
                     else
                         if fallout.global_var(29) >= 1 then

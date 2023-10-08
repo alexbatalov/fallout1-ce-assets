@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local start
 local critter_p_proc
@@ -106,7 +107,7 @@ function critter_p_proc()
         hostile = 0
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     else
-        if ((fallout.game_time() // (10 * 60 * 60 * 24)) > fallout.map_var(5)) and (fallout.global_var(238) ~= 2) then
+        if (time.game_time_in_days() > fallout.map_var(5)) and (fallout.global_var(238) ~= 2) then
             fallout.destroy_object(fallout.self_obj())
         end
         if (fallout.game_time_hour() >= 1700) and (fallout.game_time_hour() < 1710) then
@@ -166,7 +167,7 @@ end
 
 function talk_p_proc()
     if fallout.map_var(5) == 250 then
-        fallout.set_map_var(5, (fallout.game_time() // (10 * 60 * 60 * 24)) + 3)
+        fallout.set_map_var(5, time.game_time_in_days() + 3)
     end
     get_reaction()
     if fallout.local_var(5) == 1 then

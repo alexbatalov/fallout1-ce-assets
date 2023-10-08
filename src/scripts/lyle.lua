@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local start
 local critter_p_proc
@@ -114,7 +115,7 @@ function map_enter_p_proc()
 end
 
 function pickup_p_proc()
-    if (fallout.game_time() // (10 * 60 * 60 * 24)) >= 30 then
+    if time.game_time_in_days() >= 30 then
         fallout.float_msg(fallout.self_obj(), fallout.message_str(507, 101), 0)
     end
     fallout.set_global_var(261, 1)
@@ -152,7 +153,7 @@ function Lyle01()
 end
 
 function Lyle02()
-    if (fallout.game_time() // (10 * 60 * 60 * 24)) < 30 then
+    if time.game_time_in_days() < 30 then
         fallout.gsay_message(507, 106, 50)
     else
         fallout.gsay_reply(507, 108)

@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local start
 local combat
@@ -95,7 +96,7 @@ function critter_p_proc()
                 combat()
             end
         else
-            if (fallout.game_time_hour() >= 600) and (fallout.game_time_hour() < 700) or ((fallout.game_time_hour() >= 700) and (fallout.game_time_hour() < 1800)) then
+            if time.is_morning() or time.is_day() then
                 if fallout.tile_num(fallout.self_obj()) ~= 25125 then
                     fallout.animate_move_obj_to_tile(fallout.self_obj(), 25125, 0)
                 else
@@ -120,7 +121,7 @@ end
 
 function talk_p_proc()
     get_reaction()
-    if (fallout.game_time_hour() >= 1900) or (fallout.game_time_hour() < 600) then
+    if time.is_night() then
         fallout.float_msg(fallout.self_obj(), fallout.message_str(582, 127), 2)
         combat()
     else

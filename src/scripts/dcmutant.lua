@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local start
 local combat
@@ -84,8 +85,8 @@ function critter_p_proc()
         hostile = 0
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
-    if (fallout.local_var(5) == 0) and (((fallout.game_time() // 10) - lastBabble) >= 10) and (fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) <= 15) then
-        lastBabble = fallout.game_time() // 10
+    if (fallout.local_var(5) == 0) and ((time.game_time_in_seconds() - lastBabble) >= 10) and (fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) <= 15) then
+        lastBabble = time.game_time_in_seconds()
         fallout.float_msg(fallout.self_obj(), fallout.message_str(848, fallout.random(111, 113)), 2)
     end
 end

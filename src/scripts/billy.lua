@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local start
 local combat
@@ -115,7 +116,7 @@ function critter_p_proc()
         if fallout.global_var(280) == 1 then
             BillyRunAway()
         end
-        if (fallout.game_time_hour() >= 600) and (fallout.game_time_hour() < 700) then
+        if time.is_morning() then
             if SetDayNight ~= 1 then
                 fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(10), 1)
                 SetDayNight = 1
@@ -196,7 +197,7 @@ end
 
 function timed_event_p_proc()
     if Runaway == 0 then
-        if (fallout.game_time_hour() >= 600) and (fallout.game_time_hour() < 700) or ((fallout.game_time_hour() >= 700) and (fallout.game_time_hour() < 1800)) then
+        if time.is_morning() or time.is_day() then
             if Sleeping == 1 then
                 fallout.reg_anim_func(2, fallout.self_obj())
                 fallout.reg_anim_func(1, 1)

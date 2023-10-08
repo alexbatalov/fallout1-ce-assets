@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local start
 local damage_p_proc
@@ -84,7 +85,7 @@ end
 
 function damage_p_proc()
     if fallout.global_var(17) == 0 then
-        fallout.set_global_var(147, fallout.game_time() // 10)
+        fallout.set_global_var(147, time.game_time_in_seconds())
         fallout.set_global_var(155, fallout.global_var(155) + 5)
         fallout.set_global_var(17, 1)
         fallout.set_global_var(308, 2)
@@ -191,7 +192,7 @@ end
 
 function VConComp03()
     fallout.gsay_message(371, 114, 50)
-    fallout.set_global_var(147, (fallout.game_time() // 10) - 240)
+    fallout.set_global_var(147, time.game_time_in_seconds() - 240)
     fallout.set_global_var(155, fallout.global_var(155) + 5)
     fallout.set_global_var(17, 1)
     fallout.set_global_var(308, 2)
@@ -200,7 +201,7 @@ end
 function VConComp04()
     fallout.gsay_message(371, 115, 50)
     fallout.set_global_var(155, fallout.global_var(155) + 5)
-    fallout.set_global_var(147, (fallout.game_time() // 10) - 30)
+    fallout.set_global_var(147, time.game_time_in_seconds() - 30)
     fallout.set_global_var(17, 1)
     fallout.set_global_var(308, 2)
 end
@@ -212,7 +213,7 @@ end
 
 function VConComp06()
     fallout.gsay_message(371, 117, 50)
-    fallout.set_global_var(147, fallout.game_time() // 10)
+    fallout.set_global_var(147, time.game_time_in_seconds())
     fallout.set_global_var(155, fallout.global_var(155) + 5)
     fallout.set_global_var(17, 1)
     fallout.set_global_var(308, 2)
@@ -220,7 +221,7 @@ end
 
 function VConComp07()
     fallout.gsay_message(371, 118, 50)
-    fallout.set_global_var(147, fallout.game_time() // 10)
+    fallout.set_global_var(147, time.game_time_in_seconds())
     fallout.set_global_var(155, fallout.global_var(155) + 5)
     fallout.set_global_var(17, 1)
     fallout.set_global_var(308, 2)
@@ -228,7 +229,7 @@ end
 
 function VConComp08()
     fallout.gsay_message(371, 119, 50)
-    fallout.set_global_var(147, (fallout.game_time() // 10) - 299)
+    fallout.set_global_var(147, time.game_time_in_seconds() - 299)
     fallout.set_global_var(155, fallout.global_var(155) + 5)
     fallout.set_global_var(17, 1)
     fallout.set_global_var(308, 2)
@@ -438,11 +439,11 @@ function Update_Invasion()
     local v2 = 0
     local v3 = 0
     local v4 = 0
-    v0 = fallout.global_var(150) - ((fallout.global_var(150) - (fallout.game_time() // (10 * 60 * 60 * 24))) // 2)
-    v1 = fallout.global_var(151) - ((fallout.global_var(151) - (fallout.game_time() // (10 * 60 * 60 * 24))) // 2)
-    v2 = fallout.global_var(152) - ((fallout.global_var(152) - (fallout.game_time() // (10 * 60 * 60 * 24))) // 2)
-    v3 = fallout.global_var(153) - ((fallout.global_var(153) - (fallout.game_time() // (10 * 60 * 60 * 24))) // 2)
-    v4 = fallout.global_var(154) - ((fallout.global_var(154) - (fallout.game_time() // (10 * 60 * 60 * 24))) // 2)
+    v0 = fallout.global_var(150) - ((fallout.global_var(150) - time.game_time_in_days()) // 2)
+    v1 = fallout.global_var(151) - ((fallout.global_var(151) - time.game_time_in_days()) // 2)
+    v2 = fallout.global_var(152) - ((fallout.global_var(152) - time.game_time_in_days()) // 2)
+    v3 = fallout.global_var(153) - ((fallout.global_var(153) - time.game_time_in_days()) // 2)
+    v4 = fallout.global_var(154) - ((fallout.global_var(154) - time.game_time_in_days()) // 2)
     fallout.set_global_var(150, v0)
     fallout.set_global_var(151, v1)
     fallout.set_global_var(152, v2)

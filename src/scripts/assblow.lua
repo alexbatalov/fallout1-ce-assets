@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local start
 local critter_p_proc
@@ -132,7 +133,7 @@ function critter_p_proc()
                 end
             end
         end
-        if (fallout.game_time_hour() >= 1900) or (fallout.game_time_hour() < 600) then
+        if time.is_night() then
             if fallout.tile_distance(fallout.tile_num(fallout.dude_obj()), 27106) > fallout.tile_distance(fallout.tile_num(fallout.dude_obj()), 25905) then
                 if fallout.local_var(5) == 0 then
                     if fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 12 then
@@ -203,7 +204,7 @@ function timed_event_p_proc()
                 hostile = 1
             else
                 if fallout.fixed_param() == 4 then
-                    if (fallout.game_time_hour() >= 1900) or (fallout.game_time_hour() < 600) then
+                    if time.is_night() then
                         if fallout.tile_distance(fallout.tile_num(fallout.dude_obj()), 27106) > fallout.tile_distance(fallout.tile_num(fallout.dude_obj()), 25905) then
                             if fallout.local_var(5) == 0 then
                                 if not(fallout.using_skill(fallout.dude_obj(), 8)) then
@@ -222,7 +223,7 @@ end
 
 function do_dialogue()
     get_reaction()
-    if (fallout.game_time_hour() >= 1900) or (fallout.game_time_hour() < 600) and (fallout.local_var(7) == 1) then
+    if time.is_night() and (fallout.local_var(7) == 1) then
         if fallout.local_var(5) == 1 then
             fallout.float_msg(fallout.self_obj(), fallout.message_str(135, 167), 0)
         else
@@ -237,7 +238,7 @@ function do_dialogue()
             if sneaking then
                 guard06()
             else
-                if (fallout.game_time_hour() >= 1900) or (fallout.game_time_hour() < 600) then
+                if time.is_night() then
                     guard00N()
                 else
                     if fallout.local_var(8) == 0 then
@@ -261,7 +262,7 @@ function pre_dialogue()
             if sneaking then
                 do_dialogue()
             else
-                if (fallout.game_time_hour() >= 1900) or (fallout.game_time_hour() < 600) then
+                if time.is_night() then
                     do_dialogue()
                 else
                     if fallout.local_var(8) == 0 then

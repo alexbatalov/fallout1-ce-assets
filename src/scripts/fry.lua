@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local start
 local combat
@@ -94,7 +95,7 @@ function critter_p_proc()
         hostile = 0
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
-    if (fallout.game_time_hour() >= 600) and (fallout.game_time_hour() < 700) or ((fallout.game_time_hour() >= 700) and (fallout.game_time_hour() < 1800)) then
+    if time.is_morning() or time.is_day() then
         if fallout.tile_num(fallout.self_obj()) ~= 21508 then
             fallout.animate_move_obj_to_tile(fallout.self_obj(), 21508, 0)
         else
@@ -152,7 +153,7 @@ function damage_p_proc()
 end
 
 function FryDialog()
-    if (fallout.game_time_hour() >= 1800) and (fallout.game_time_hour() < 1900) or ((fallout.game_time_hour() >= 1900) or (fallout.game_time_hour() < 600)) then
+    if time.is_evening() or time.is_night() then
         fallout.float_msg(fallout.self_obj(), fallout.message_str(567, 146), 3)
     else
         fallout.start_gdialog(567, fallout.self_obj(), 4, -1, -1)

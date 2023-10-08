@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 --
 -- Some unreferenced imported varables found.
@@ -213,7 +214,7 @@ function start()
 end
 
 function critter_p_proc()
-    if (fallout.game_time_hour() >= 1900) or (fallout.game_time_hour() < 600) and (fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 12) and fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) and (fallout.cur_map_index() == 12) then
+    if time.is_night() and (fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 12) and fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) and (fallout.cur_map_index() == 12) then
         g5 = 1
         g7 = 1
         fallout.dialogue_system_enter()

@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local start
 local critter_p_proc
@@ -133,7 +134,7 @@ end
 function talk_p_proc()
     fallout.script_overrides()
     get_reaction()
-    if (fallout.game_time_hour() >= 700) and (fallout.game_time_hour() < 1800) then
+    if time.is_day() then
         fallout.start_gdialog(266, fallout.self_obj(), 4, -1, -1)
         fallout.gsay_start()
         heather0()

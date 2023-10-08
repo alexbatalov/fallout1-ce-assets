@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 --
 -- Some unreferenced imported varables found.
@@ -110,11 +111,11 @@ function talk_p_proc()
 end
 
 function critter_p_proc()
-    if (((fallout.game_time() // 10) - g1) >= 30) and (fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) <= 4) and (fallout.global_var(253) == 0) then
+    if ((time.game_time_in_seconds() - g1) >= 30) and (fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) <= 4) and (fallout.global_var(253) == 0) then
         if fallout.global_var(613) == 2 then
             fallout.float_msg(fallout.self_obj(), fallout.message_str(279, fallout.random(101, 115)), 0)
         end
-        g1 = fallout.game_time() // 10
+        g1 = time.game_time_in_seconds()
     end
     if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
         if fallout.global_var(253) == 1 then

@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 --
 -- Some unreferenced imported varables found.
@@ -50,7 +51,7 @@ function damage_p_proc()
 end
 
 function map_enter_p_proc()
-    if (fallout.game_time_hour() >= 1900) or (fallout.game_time_hour() < 600) then
+    if time.is_night() then
         fallout.obj_close(fallout.self_obj())
         fallout.obj_lock(fallout.self_obj())
     else
@@ -61,7 +62,7 @@ function map_enter_p_proc()
 end
 
 function map_update_p_proc()
-    if (fallout.game_time_hour() >= 1900) or (fallout.game_time_hour() < 600) and (fallout.local_var(0) == 0) then
+    if time.is_night() and (fallout.local_var(0) == 0) then
         fallout.obj_close(fallout.self_obj())
         fallout.obj_lock(fallout.self_obj())
     else
@@ -74,7 +75,7 @@ function use_p_proc()
         fallout.script_overrides()
         fallout.display_msg(fallout.message_str(873, 100))
     else
-        if (fallout.game_time_hour() >= 1900) or (fallout.game_time_hour() < 600) then
+        if time.is_night() then
             fallout.set_map_var(8, 1)
         end
     end

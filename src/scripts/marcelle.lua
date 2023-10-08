@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local start
 local critter_p_proc
@@ -392,8 +393,8 @@ end
 
 function Marcelles05()
     fallout.gsay_message(339, 114, 50)
-    if fallout.global_var(168) < (fallout.game_time() // (10 * 60 * 60 * 24)) then
-        fallout.set_global_var(168, (fallout.game_time() // (10 * 60 * 60 * 24)) + 1)
+    if fallout.global_var(168) < time.game_time_in_days() then
+        fallout.set_global_var(168, time.game_time_in_days() + 1)
     else
         fallout.set_global_var(168, fallout.global_var(168) + 1)
     end
@@ -428,8 +429,8 @@ end
 function Marcelles08a()
     if fallout.item_caps_total(fallout.dude_obj()) >= 25 then
         fallout.item_caps_adjust(fallout.dude_obj(), -25)
-        if fallout.global_var(168) < (fallout.game_time() // (10 * 60 * 60 * 24)) then
-            fallout.set_global_var(168, (fallout.game_time() // (10 * 60 * 60 * 24)) + 1)
+        if fallout.global_var(168) < time.game_time_in_days() then
+            fallout.set_global_var(168, time.game_time_in_days() + 1)
         else
             fallout.set_global_var(168, fallout.global_var(168) + 1)
         end
@@ -442,8 +443,8 @@ end
 function Marcelles08b()
     if fallout.item_caps_total(fallout.dude_obj()) >= 150 then
         fallout.item_caps_adjust(fallout.dude_obj(), -150)
-        if fallout.global_var(168) < (fallout.game_time() // (10 * 60 * 60 * 24)) then
-            fallout.set_global_var(168, (fallout.game_time() // (10 * 60 * 60 * 24)) + 7)
+        if fallout.global_var(168) < time.game_time_in_days() then
+            fallout.set_global_var(168, time.game_time_in_days() + 7)
         else
             fallout.set_global_var(168, fallout.global_var(168) + 7)
         end
@@ -510,7 +511,7 @@ function Marcelles17()
 end
 
 function Marcelles17a()
-    if fallout.global_var(168) > (fallout.game_time() // (10 * 60 * 60 * 24)) then
+    if fallout.global_var(168) > time.game_time_in_days() then
         Marcelles18()
     else
         Marcelles20()
@@ -541,8 +542,8 @@ end
 function Marcelles19a()
     if fallout.item_caps_total(fallout.dude_obj()) >= 25 then
         fallout.item_caps_adjust(fallout.dude_obj(), -25)
-        if fallout.global_var(168) < (fallout.game_time() // (10 * 60 * 60 * 24)) then
-            fallout.set_global_var(168, (fallout.game_time() // (10 * 60 * 60 * 24)) + 1)
+        if fallout.global_var(168) < time.game_time_in_days() then
+            fallout.set_global_var(168, time.game_time_in_days() + 1)
         else
             fallout.set_global_var(168, fallout.global_var(168) + 1)
         end
@@ -555,8 +556,8 @@ end
 function Marcelles19b()
     if fallout.item_caps_total(fallout.dude_obj()) >= 150 then
         fallout.item_caps_adjust(fallout.dude_obj(), -150)
-        if fallout.global_var(168) < (fallout.game_time() // (10 * 60 * 60 * 24)) then
-            fallout.set_global_var(168, (fallout.game_time() // (10 * 60 * 60 * 24)) + 7)
+        if fallout.global_var(168) < time.game_time_in_days() then
+            fallout.set_global_var(168, time.game_time_in_days() + 7)
         else
             fallout.set_global_var(168, fallout.global_var(168) + 7)
         end
@@ -615,8 +616,8 @@ end
 function Marcelles26a()
     if fallout.item_caps_total(fallout.dude_obj()) >= 100 then
         fallout.item_caps_adjust(fallout.dude_obj(), -100)
-        if fallout.global_var(168) < (fallout.game_time() // (10 * 60 * 60 * 24)) then
-            fallout.set_global_var(168, (fallout.game_time() // (10 * 60 * 60 * 24)) + 1)
+        if fallout.global_var(168) < time.game_time_in_days() then
+            fallout.set_global_var(168, time.game_time_in_days() + 1)
         else
             fallout.set_global_var(168, fallout.global_var(168) + 1)
         end
@@ -669,7 +670,7 @@ end
 
 function Marcelles33()
     fallout.set_external_var("messing_with_fridge", 0)
-    if fallout.global_var(168) <= (fallout.game_time() // (10 * 60 * 60 * 24)) then
+    if fallout.global_var(168) <= time.game_time_in_days() then
         fallout.float_msg(fallout.self_obj(), fallout.message_str(339, 181), 2)
         if fallout.local_var(6) == 1 then
             hostile = 1

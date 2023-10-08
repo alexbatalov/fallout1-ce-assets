@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local start
 local do_dialogue
@@ -28,10 +29,10 @@ function start()
                     if fallout.global_var(13) == 0 then
                         fallout.set_obj_visibility(fallout.self_obj(), 1)
                     else
-                        if (fallout.game_time_hour() >= 1900) or (fallout.game_time_hour() < 600) and (fallout.tile_num(fallout.self_obj()) ~= 24929) then
+                        if time.is_night() and (fallout.tile_num(fallout.self_obj()) ~= 24929) then
                             fallout.animate_move_obj_to_tile(fallout.self_obj(), 24929, 0)
                         end
-                        if (fallout.game_time_hour() >= 700) and (fallout.game_time_hour() < 1800) and (fallout.tile_num(fallout.self_obj()) ~= 25915) then
+                        if time.is_day() and (fallout.tile_num(fallout.self_obj()) ~= 25915) then
                             fallout.animate_move_obj_to_tile(fallout.self_obj(), 25915, 0)
                         end
                     end

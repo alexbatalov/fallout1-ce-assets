@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local start
 local combat
@@ -219,7 +220,7 @@ end
 
 function Meeting05()
     fallout.gsay_reply(942, 146)
-    if (fallout.global_var(149) < (fallout.game_time() // (10 * 60 * 60 * 24))) and (fallout.global_var(72) == 2) then
+    if (fallout.global_var(149) < time.game_time_in_days()) and (fallout.global_var(72) == 2) then
         fallout.giq_option(4, 942, 147, Meeting06, 50)
     end
     fallout.giq_option(4, 942, 148, Meeting05a, 50)

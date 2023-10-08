@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local start
 local damage_p_proc
@@ -42,7 +43,7 @@ end
 
 function map_enter_p_proc()
     fallout.obj_close(fallout.self_obj())
-    if (fallout.game_time_hour() >= 1900) or (fallout.game_time_hour() < 600) then
+    if time.is_night() then
         fallout.obj_lock(fallout.self_obj())
     else
         fallout.obj_unlock(fallout.self_obj())
@@ -51,7 +52,7 @@ function map_enter_p_proc()
 end
 
 function map_update_p_proc()
-    if (fallout.game_time_hour() >= 1900) or (fallout.game_time_hour() < 600) and (fallout.local_var(0) == 0) then
+    if time.is_night() and (fallout.local_var(0) == 0) then
         fallout.obj_close(fallout.self_obj())
         fallout.obj_lock(fallout.self_obj())
     else
@@ -64,7 +65,7 @@ function use_p_proc()
         fallout.script_overrides()
         fallout.display_msg(fallout.message_str(873, 100))
     else
-        if (fallout.game_time_hour() >= 700) and (fallout.game_time_hour() < 1800) and fallout.obj_can_see_obj(fallout.dude_obj(), fallout.external_var("Killian_ptr")) then
+        if time.is_day() and fallout.obj_can_see_obj(fallout.dude_obj(), fallout.external_var("Killian_ptr")) then
             fallout.script_overrides()
         end
     end
@@ -74,7 +75,7 @@ end
 function use_obj_on_p_proc()
     if fallout.obj_pid(fallout.obj_being_used_with()) == 84 then
         fallout.script_overrides()
-        if not((fallout.game_time_hour() >= 700) and (fallout.game_time_hour() < 1800)) and (fallout.obj_can_see_obj(fallout.external_var("Killian_ptr"), fallout.dude_obj()) == 0) then
+        if not time.is_day() and (fallout.obj_can_see_obj(fallout.external_var("Killian_ptr"), fallout.dude_obj()) == 0) then
             if not(fallout.obj_is_locked(fallout.self_obj())) then
                 fallout.display_msg(fallout.message_str(873, 104))
             else
@@ -100,7 +101,7 @@ end
 function use_skill_on_p_proc()
     if fallout.action_being_used() == 9 then
         fallout.script_overrides()
-        if not((fallout.game_time_hour() >= 700) and (fallout.game_time_hour() < 1800)) and (fallout.obj_can_see_obj(fallout.external_var("Killian_ptr"), fallout.dude_obj()) == 0) then
+        if not time.is_day() and (fallout.obj_can_see_obj(fallout.external_var("Killian_ptr"), fallout.dude_obj()) == 0) then
             if not(fallout.obj_is_locked(fallout.self_obj())) then
                 fallout.display_msg(fallout.message_str(873, 104))
             else

@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local start
 local do_dialogue
@@ -48,7 +49,7 @@ function start()
                         if fallout.global_var(35) > fallout.global_var(551) then
                             fallout.set_global_var(155, fallout.global_var(155) + 3)
                             fallout.set_global_var(29, 2)
-                            fallout.set_global_var(225, fallout.game_time() // (10 * 60 * 60 * 24))
+                            fallout.set_global_var(225, time.game_time_in_days())
                         end
                         if fallout.source_obj() == fallout.dude_obj() then
                             if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then

@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 local start
 local search
@@ -88,7 +89,7 @@ function removal()
             end
             fallout.add_obj_to_inven(fallout.dude_obj(), fallout.create_object_sid(55, 0, 0, -1))
             fallout.set_global_var(30, 1)
-            fallout.set_global_var(552, fallout.game_time() // (10 * 60 * 60 * 24))
+            fallout.set_global_var(552, time.game_time_in_days())
             if fallout.local_var(2) < 1 then
                 fallout.set_local_var(2, 1)
                 temp = 2500 - (fallout.global_var(35) * 250)

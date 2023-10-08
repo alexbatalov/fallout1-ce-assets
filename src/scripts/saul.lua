@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local time = require("lib.time")
 
 --
 -- Some unreferenced imported varables found.
@@ -216,7 +217,7 @@ function map_enter_p_proc()
     g1 = 700
     if fallout.cur_map_index() == 11 then
         g4 = 7000
-        if (fallout.game_time() // (10 * 60 * 60 * 24) % 3) == 0 then
+        if (time.game_time_in_days() % 3) == 0 then
             g3 = 15094
         else
             g3 = 16892
@@ -230,7 +231,7 @@ end
 
 function map_update_p_proc()
     if not(fallout.combat_is_initialized()) then
-        if (fallout.game_time() // (10 * 60 * 60 * 24) % 3) == 0 then
+        if (time.game_time_in_days() % 3) == 0 then
             g3 = 15094
         else
             g3 = 16892
