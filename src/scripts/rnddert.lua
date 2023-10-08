@@ -92,9 +92,6 @@ local Bone6
 local Scenes
 local Place_critter
 local hunters
-local add_party
-local update_party
-local remove_party
 
 local party_elevation = 0
 local dude_start_hex = 0
@@ -5321,72 +5318,6 @@ function hunters()
         Item = fallout.item_caps_adjust(Critter, fallout.random(5, 30) * ((2 * fallout.has_trait(0, fallout.dude_obj(), 20)) + 1))
     end
     stranger()
-end
-
-function add_party()
-    local v0 = 0
-    local v1 = 0
-    party_elevation = fallout.elevation(fallout.dude_obj())
-    if fallout.global_var(26) == 5 then
-        if fallout.external_var("Tandi_ptr") == 0 then
-        end
-        fallout.critter_add_trait(fallout.external_var("Tandi_ptr"), 1, 6, 0)
-    end
-end
-
-function update_party()
-    local v0 = 0
-    local v1 = 0
-    if fallout.elevation(fallout.dude_obj()) ~= party_elevation then
-        party_elevation = fallout.elevation(fallout.dude_obj())
-        if fallout.global_var(118) == 2 then
-            if fallout.external_var("Ian_ptr") == 0 then
-            else
-                fallout.move_to(fallout.external_var("Ian_ptr"), fallout.tile_num_in_direction(fallout.tile_num(fallout.dude_obj()), 1, 2), fallout.elevation(fallout.dude_obj()))
-            end
-        end
-        if fallout.global_var(5) then
-            if fallout.external_var("Dog_ptr") == 0 then
-            else
-                fallout.move_to(fallout.external_var("Dog_ptr"), fallout.tile_num_in_direction(fallout.tile_num(fallout.dude_obj()), 2, 1), fallout.elevation(fallout.dude_obj()))
-            end
-        end
-        if fallout.global_var(121) == 2 then
-            if fallout.external_var("Tycho_ptr") == 0 then
-            else
-                fallout.move_to(fallout.external_var("Tycho_ptr"), fallout.tile_num_in_direction(fallout.tile_num(fallout.dude_obj()), 3, 2), fallout.elevation(fallout.dude_obj()))
-            end
-        end
-        if fallout.global_var(244) == 2 then
-            if fallout.external_var("Katja_ptr") == 0 then
-            else
-                fallout.move_to(fallout.external_var("Katja_ptr"), fallout.tile_num_in_direction(fallout.tile_num(fallout.dude_obj()), 4, 2), fallout.elevation(fallout.dude_obj()))
-            end
-        end
-        if fallout.global_var(26) == 5 then
-            if fallout.external_var("Tandi_ptr") == 0 then
-            else
-                fallout.move_to(fallout.external_var("Tandi_ptr"), fallout.tile_num_in_direction(fallout.tile_num(fallout.dude_obj()), 4, 4), fallout.elevation(fallout.dude_obj()))
-            end
-        end
-    end
-end
-
-function remove_party()
-    if fallout.global_var(118) == 2 then
-        fallout.set_global_var(118, 2)
-    end
-    if fallout.global_var(5) then
-        fallout.set_global_var(5, 1)
-    end
-    if fallout.global_var(121) == 2 then
-        fallout.set_global_var(121, 2)
-    end
-    if fallout.global_var(244) == 2 then
-        fallout.set_global_var(244, 2)
-    end
-    if fallout.global_var(26) == 5 then
-    end
 end
 
 local exports = {}
