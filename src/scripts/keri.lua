@@ -54,7 +54,7 @@ local RecalcDateString
 local SendAroundHouse
 
 local hostile = 0
-local Only_Once = 1
+local initialized = false
 local days = 0
 local DayString = "None"
 local SetDayNight = 0
@@ -64,8 +64,8 @@ local LastMove = 0
 local exit_line = 0
 
 function start()
-    if Only_Once then
-        Only_Once = 0
+    if not initialized then
+        initialized = true
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 36)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 50)
         LastMove = 12127

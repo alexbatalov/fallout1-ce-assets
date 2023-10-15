@@ -20,11 +20,11 @@ local gotoend
 
 local rndx = 0
 local Hostile = 0
-local ONLY_ONCE = 1
+local initialized = false
 
 function start()
-    if ONLY_ONCE then
-        ONLY_ONCE = 0
+    if not initialized then
+        initialized = true
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 34)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 49)
     else

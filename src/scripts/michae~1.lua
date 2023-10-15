@@ -84,7 +84,7 @@ local destroy_p_proc
 local look_at_p_proc
 
 local hostile = 0
-local Only_Once = 1
+local initialized = false
 local Open_Door = 0
 local Herebefore = 0
 local item = 0
@@ -110,7 +110,7 @@ local Goodbyes
 local exit_line = 0
 
 function start()
-    if Only_Once then
+    if not initialized then
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 44)
     end
     if fallout.script_action() == 21 then

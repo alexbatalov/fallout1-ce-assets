@@ -7,11 +7,11 @@ local rndy = 0
 local critter_tile = 0
 local Herebefore = 0
 local Talked_Once = 0
-local only_once = 1
+local initialized = false
 
 function start()
-    if only_once then
-        only_once = 0
+    if not initialized then
+        initialized = true
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 8)
         if (fallout.cur_map_index() == 26) or (fallout.cur_map_index() == 25) then
             fallout.critter_add_trait(fallout.self_obj(), 1, 6, 2)

@@ -13,7 +13,7 @@ local look_at_p_proc
 local damage_p_proc
 
 local hostile = 0
-local Only_Once = 1
+local initialized = false
 local guardNumber = 0
 local threatened = 0
 local visible = 1
@@ -21,8 +21,8 @@ local visible = 1
 local exit_line = 0
 
 function start()
-    if Only_Once then
-        Only_Once = 0
+    if not initialized then
+        initialized = true
         if fallout.tile_num(fallout.self_obj()) == 19511 then
             guardNumber = 1
         end

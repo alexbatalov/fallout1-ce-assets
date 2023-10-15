@@ -25,7 +25,7 @@ local George08
 local GeorgeEnd
 
 local hostile = 0
-local Only_Once = 1
+local initialized = false
 local lastTraverse = 0
 local currentLocation = 0
 local hereBefore = 0
@@ -34,8 +34,8 @@ local visible = 1
 local exit_line = 0
 
 function start()
-    if Only_Once then
-        Only_Once = 0
+    if not initialized then
+        initialized = true
         fallout.set_map_var(3, 0)
         if fallout.global_var(111) == 5 then
             fallout.set_obj_visibility(fallout.self_obj(), 1)

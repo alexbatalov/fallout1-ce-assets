@@ -48,7 +48,7 @@ local SendToSleep
 local BillyEnd
 
 local hostile = 0
-local Only_Once = 1
+local initialized = false
 local Once_Which_One = 0
 local Runaway = 0
 local Sleeping = 0
@@ -57,8 +57,8 @@ local SetDayNight = 0
 local exit_line = 0
 
 function start()
-    if Only_Once then
-        Only_Once = 0
+    if not initialized then
+        initialized = true
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 62)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 51)
         fallout.set_external_var("Billy_ptr", fallout.self_obj())

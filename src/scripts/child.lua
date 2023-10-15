@@ -19,14 +19,14 @@ local timed_event_p_proc
 
 local rndx = 0
 local rndy = 0
-local Only_Once = 1
+local initialized = false
 local hostile = 0
 local item = 0
 local Start_Moving = 0
 
 function start()
-    if Only_Once then
-        Only_Once = 0
+    if not initialized then
+        initialized = true
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 2)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 68)
         item = fallout.create_object_sid(19, 0, 0, -1)

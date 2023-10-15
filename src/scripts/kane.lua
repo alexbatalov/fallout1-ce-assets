@@ -136,14 +136,14 @@ local KaneTravel
 local GoToDecker
 
 local hostile = 0
-local Only_Once = 1
+local initialized = false
 local travel = 0
 
 local exit_line = 0
 
 function start()
-    if Only_Once then
-        Only_Once = 0
+    if not initialized then
+        initialized = true
         fallout.set_external_var("Kane_Ptr", fallout.self_obj())
         if fallout.map_var(49) == 1 then
             fallout.set_obj_visibility(fallout.self_obj(), 1)

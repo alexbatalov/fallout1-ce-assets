@@ -13,13 +13,13 @@ local escape
 local dialog_end
 
 local hostile = 0
-local Only_Once = 1
+local initialized = false
 local temp = 0
 local target_hex = 0
 
 function start()
-    if Only_Once then
-        Only_Once = 0
+    if not initialized then
+        initialized = true
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 2)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 6)
     end

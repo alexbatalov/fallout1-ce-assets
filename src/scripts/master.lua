@@ -74,7 +74,7 @@ local map_enter_p_proc
 local MALE = 0
 local HOSTILE = 0
 local DISARM = 0
-local Only_ONce = 1
+local initialized = false
 local LIEUTENANTS = 0
 local everyother = 1
 local wimpyother = 1
@@ -83,8 +83,8 @@ local so_long = 0
 local exit_line = 0
 
 function start()
-    if Only_ONce then
-        Only_ONce = 0
+    if not initialized then
+        initialized = true
         fallout.set_external_var("Master_Ptr", fallout.self_obj())
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 55)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 70)

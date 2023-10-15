@@ -11,13 +11,13 @@ local look_at_p_proc
 local dialog_end
 
 local hostile = 0
-local Only_Once = 1
+local initialized = false
 
 local gotonull
 
 function start()
-    if Only_Once then
-        Only_Once = 0
+    if not initialized then
+        initialized = true
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 34)
     end
     if fallout.script_action() == 21 then

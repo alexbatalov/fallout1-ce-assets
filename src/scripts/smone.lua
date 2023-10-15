@@ -17,14 +17,14 @@ local goto03
 local my_tile = 0
 local lesson_ptr = 0
 local hostile = 0
-local Only_Once = 1
+local initialized = false
 local DISGUISED = 0
 local ARMED = 0
 local PICK = 0
 
 function start()
-    if Only_Once then
-        Only_Once = 0
+    if not initialized then
+        initialized = true
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 34)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 48)
     end

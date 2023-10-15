@@ -20,7 +20,7 @@ local Display_Armed_And_Locked
 local Display_Locked
 local Display_Trapped
 
-local Only_Once = 0
+local initialized = false
 local Locks = 0
 local Traps = 0
 local Per = 0

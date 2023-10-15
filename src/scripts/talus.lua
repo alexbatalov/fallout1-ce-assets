@@ -80,7 +80,7 @@ local who_vree = 0
 local who_rhombus = 0
 local who_maxson = 0
 local line16flag = 0
-local Only_Once = 1
+local initialized = false
 local Hostile = 0
 local drugs = 0
 local awardex = 0
@@ -90,8 +90,8 @@ local exit_line = 0
 local Talus36
 
 function start()
-    if Only_Once then
-        Only_Once = 0
+    if not initialized then
+        initialized = true
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 44)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 65)
         fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(30), 2)

@@ -9,12 +9,12 @@ local talk_p_proc
 local destroy_p_proc
 local look_at_p_proc
 
-local only_once = 1
+local initialized = false
 local hostile = 0
 
 function start()
-    if only_once then
-        only_once = 0
+    if not initialized then
+        initialized = true
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 44)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 65)
     end

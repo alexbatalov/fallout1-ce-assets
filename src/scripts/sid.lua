@@ -13,14 +13,14 @@ local look_at_p_proc
 local Sid00
 
 local hostile = 0
-local Only_Once = 1
+local initialized = false
 
 local exit_line = 0
 
 function start()
-    if Only_Once then
+    if not initialized then
         fallout.set_external_var("Sid_Ptr", fallout.self_obj())
-        Only_Once = 0
+        initialized = true
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 37)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 4)
     end

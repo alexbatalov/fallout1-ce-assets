@@ -4,13 +4,13 @@ local start
 local critter_p_proc
 
 local Hostile = 0
-local Only_Once = 1
+local initialized = false
 
 function start()
-    if Only_Once == 1 then
+    if not initialized then
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 44)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 65)
-        Only_Once = 0
+        initialized = true
     end
     if fallout.script_action() == 12 then
         critter_p_proc()

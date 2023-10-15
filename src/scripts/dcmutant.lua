@@ -19,15 +19,15 @@ local Mutant02
 local Mutant03
 
 local hostile = 0
-local Only_Once = 1
+local initialized = false
 local lastBabble = 0
 local kill_me = 0
 
 local exit_line = 0
 
 function start()
-    if Only_Once then
-        Only_Once = 0
+    if not initialized then
+        initialized = true
         fallout.anim(fallout.self_obj(), 48, 0)
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 34)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 47)

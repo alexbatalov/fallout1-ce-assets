@@ -3,13 +3,13 @@ local reputation = require("lib.reputation")
 
 local start
 
-local only_once = 1
+local initialized = false
 
 function start()
-    if only_once then
+    if not initialized then
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 55)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 66)
-        only_once = 0
+        initialized = true
         fallout.move_to(fallout.self_obj(), 0, 0)
     end
     if fallout.local_var(0) == 0 then

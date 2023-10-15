@@ -5,11 +5,11 @@ local start
 
 local HOSTILE = 0
 local DISGUISED = 0
-local only_once = 1
+local initialized = false
 
 function start()
-    if only_once then
-        only_once = 0
+    if not initialized then
+        initialized = true
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 34)
         fallout.anim(fallout.self_obj(), 1000, fallout.rotation_to_tile(fallout.tile_num(fallout.self_obj()), 28113))
     else

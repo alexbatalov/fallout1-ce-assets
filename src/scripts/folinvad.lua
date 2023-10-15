@@ -6,11 +6,11 @@ local Initialize_p_proc
 local critter_p_proc
 local map_enter_p_proc
 
-local Only_Once = 1
+local initialized = false
 local Hex_Number = 0
 
 function start()
-    if Only_Once then
+    if not initialized then
         Initialize_p_proc()
     else
         if fallout.script_action() == 11 then
@@ -36,7 +36,7 @@ end
 function Initialize_p_proc()
     fallout.critter_add_trait(fallout.self_obj(), 1, 6, 0)
     fallout.critter_add_trait(fallout.self_obj(), 1, 5, 65)
-    Only_Once = 0
+    initialized = true
 end
 
 function critter_p_proc()

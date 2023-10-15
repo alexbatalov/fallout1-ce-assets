@@ -95,15 +95,15 @@ local MALE = 0
 local SEXY = 0
 local HOSTILE = 0
 local ILLEGAL = 0
-local Only_Once = 1
+local initialized = false
 local awardex = 0
 local temp = 0
 
 local exit_line = 0
 
 function start()
-    if Only_Once then
-        Only_Once = 0
+    if not initialized then
+        initialized = true
         fallout.set_external_var("Cabbot_Ptr", fallout.self_obj())
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 44)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 64)

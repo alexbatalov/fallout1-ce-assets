@@ -12,13 +12,13 @@ local ChantEnd
 local Combat
 
 local Hostile = 0
-local Only_Once = 1
+local initialized = false
 
 function start()
-    if Only_Once then
+    if not initialized then
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 20)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 69)
-        Only_Once = 0
+        initialized = true
     end
     if (fallout.script_action() == 21) or (fallout.script_action() == 3) then
         fallout.script_overrides()

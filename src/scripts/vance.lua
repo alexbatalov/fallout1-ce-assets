@@ -32,7 +32,7 @@ local Get_Stuff
 local Put_Stuff
 
 local hostile = 0
-local Only_Once = 1
+local initialized = false
 local kickOut = 0
 local initiateDialogue = 1
 
@@ -41,8 +41,8 @@ local exit_line = 0
 function start()
     local v0 = 0
     fallout.gdialog_set_barter_mod(-20)
-    if Only_Once then
-        Only_Once = 0
+    if not initialized then
+        initialized = true
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 81)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 4)
     end

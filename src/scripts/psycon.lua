@@ -5,7 +5,7 @@ local look_at_p_proc
 local map_enter_p_proc
 local map_update_p_proc
 
-local Only_Once = 1
+local initialized = false
 local spot1 = 17120
 local field1 = 0
 local swtch = 0

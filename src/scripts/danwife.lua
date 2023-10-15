@@ -14,14 +14,14 @@ local timed_event_p_proc
 local damage_p_proc
 
 local hostile = 0
-local Only_Once = 1
+local initialized = false
 local Sleeping = 0
 local SetDayNight = 0
 
 local exit_line = 0
 
 function start()
-    if Only_Once then
+    if not initialized then
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 62)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 51)
     end

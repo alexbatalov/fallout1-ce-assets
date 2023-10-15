@@ -6,10 +6,10 @@ local critter_p_proc
 local destroy_p_proc
 local initialize_p_proc
 
-local Only_Once = 0
+local initialized = false
 
 function start()
-    if Only_Once == 0 then
+    if not initialized then
         initialize_p_proc()
     else
         if fallout.script_action() == 12 then
@@ -35,7 +35,7 @@ function destroy_p_proc()
 end
 
 function initialize_p_proc()
-    Only_Once = 1
+    initialized = true
     fallout.critter_add_trait(fallout.self_obj(), 1, 6, 0)
     fallout.critter_add_trait(fallout.self_obj(), 1, 5, 1)
 end

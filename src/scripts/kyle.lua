@@ -45,7 +45,7 @@ local smalltalk
 local pre_dialogue
 
 local known = 0
-local only_once = 1
+local initialized = false
 local hostile = 0
 local radx = 0
 local ccount = 0
@@ -55,8 +55,8 @@ local stuff = 0
 local exit_line = 0
 
 function start()
-    if only_once then
-        only_once = 0
+    if not initialized then
+        initialized = true
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 44)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 64)
     end

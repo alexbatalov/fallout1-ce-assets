@@ -8,13 +8,13 @@ local PalGuard01
 local PalGuard02
 
 local line = 0
-local Only_Once = 0
+local initialized = false
 
 local exit_line = 0
 
 function start()
-    if Only_Once == 0 then
-        Only_Once = 1
+    if not initialized then
+        initialized = true
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 44)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 65)
     end

@@ -3,7 +3,7 @@ local fallout = require("fallout")
 local start
 local look_at_p_proc
 
-local Only_Once = 1
+local initialized = false
 local spot1 = 27096
 local spot2 = 27104
 local spot3 = 26312

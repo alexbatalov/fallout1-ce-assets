@@ -58,7 +58,7 @@ local LemmyEnd
 local LemmyCombat
 
 local hostile = 0
-local Only_Once = 1
+local initialized = false
 local lastPsst = 0
 local Destination = 0
 local LastMove = 0
@@ -68,8 +68,8 @@ local exit_line = 0
 
 function start()
     local v0 = 0
-    if Only_Once then
-        Only_Once = 0
+    if not initialized then
+        initialized = true
         if fallout.local_var(7) == 0 then
             fallout.set_local_var(7, 1)
             v0 = fallout.item_caps_adjust(fallout.self_obj(), 500)

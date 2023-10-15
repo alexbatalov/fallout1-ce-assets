@@ -21,7 +21,7 @@ local gotocbt
 local gotoret
 
 local HOSTILE = 0
-local only_once = 1
+local initialized = false
 local DISGUISED = 0
 local ARMED = 0
 local moving = 1
@@ -37,8 +37,8 @@ function start()
         fallout.set_local_var(6, 0)
         fallout.set_local_var(7, 22091)
     end
-    if only_once then
-        only_once = 0
+    if not initialized then
+        initialized = true
         home_tile = 23488
         smoke_tile = 21299
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 34)

@@ -92,7 +92,7 @@ local VATS = 0
 local MALE = 0
 local HOSTILE = 0
 local ILLEGAL = 0
-local Only_Once = 1
+local initialized = false
 local here = 0
 local conmod = 0
 local loot = 0
@@ -108,8 +108,8 @@ local rhombus39_1
 local rhombus49
 
 function start()
-    if Only_Once then
-        Only_Once = 0
+    if not initialized then
+        initialized = true
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 44)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 81)
     end
