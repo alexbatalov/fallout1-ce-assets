@@ -77,18 +77,18 @@ local pickup_p_proc
 local harryxxx
 
 local Hostile = 0
-local init_teams = 0
+local initialized = false
 local noevent = 0
 local loopcount = 0
 
 local exit_line = 0
 
 function start()
-    if not(init_teams) then
+    if not initialized then
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 34)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 79)
         fallout.set_local_var(5, 0)
-        init_teams = 1
+        initialized = true
     end
     if fallout.script_action() == 11 then
         if fallout.global_var(306) == 0 then

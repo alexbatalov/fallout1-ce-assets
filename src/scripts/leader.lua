@@ -50,7 +50,7 @@ local leader30
 local leader31
 
 local Hostile = 0
-local init_teams = 0
+local initialized = false
 local has_parts = 0
 local repair_skill = 0
 local stuff = 0
@@ -58,10 +58,10 @@ local stuff = 0
 local exit_line = 0
 
 function start()
-    if not(init_teams) then
+    if not initialized then
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 31)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 41)
-        init_teams = 1
+        initialized = true
     end
     if fallout.script_action() == 11 then
         do_dialogue()

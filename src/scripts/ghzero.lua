@@ -8,13 +8,13 @@ local ghoulcbt
 local ghoul00
 
 local Hostile = 0
-local init_teams = 0
+local initialized = false
 
 function start()
-    if not(init_teams) then
+    if not initialized then
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 30)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 42)
-        init_teams = 1
+        initialized = true
     end
     if fallout.script_action() == 11 then
         do_dialogue()

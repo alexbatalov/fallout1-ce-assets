@@ -2,15 +2,15 @@ local fallout = require("fallout")
 local reputation = require("lib.reputation")
 
 local Hostile = 0
-local init_teams = 0
+local initialized = false
 local Times = 0
 
 local start
 
 function start()
-    if not(init_teams) then
+    if not initialized then
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 34)
-        init_teams = 1
+        initialized = true
     else
         if fallout.script_action() == 4 then
             Hostile = 1

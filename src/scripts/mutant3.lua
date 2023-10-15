@@ -7,13 +7,13 @@ local supercbt
 local superx
 
 local Hostile = 0
-local init_teams = 0
+local initialized = false
 local couple_of_minutes = 0
 
 function start()
-    if not(init_teams) then
+    if not initialized then
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 34)
-        init_teams = 1
+        initialized = true
     else
         if fallout.script_action() == 22 then
             timeforwhat()

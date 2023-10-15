@@ -5,15 +5,15 @@ local start
 local do_dialogue
 
 local Hostile = 0
-local init_teams = 0
+local initialized = false
 local rndx = 0
 
 function start()
     local v0 = 0
-    if not(init_teams) then
+    if not initialized then
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 31)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 93)
-        init_teams = 1
+        initialized = true
     end
     if fallout.script_action() == 11 then
         fallout.script_overrides()

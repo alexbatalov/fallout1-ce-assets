@@ -30,7 +30,7 @@ local child14
 local child15
 local child16
 
-local init_teams = 0
+local initialized = false
 local hostile = 0
 local max_hp = 0
 local current_hp = 0
@@ -44,10 +44,10 @@ local RADCOUNT = 0
 local exit_line = 0
 
 function start()
-    if not(init_teams) then
+    if not initialized then
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 20)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 67)
-        init_teams = 1
+        initialized = true
     end
     max_hp = fallout.get_critter_stat(fallout.dude_obj(), 7)
     current_hp = fallout.get_critter_stat(fallout.dude_obj(), 35)

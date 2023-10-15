@@ -7,13 +7,13 @@ local guilt
 local talk_p_proc
 
 local Hostile = 0
-local init_teams = 0
+local initialized = false
 
 function start()
-    if not(init_teams) then
+    if not initialized then
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 31)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 41)
-        init_teams = 1
+        initialized = true
     end
     if fallout.script_action() == 11 then
         talk_p_proc()

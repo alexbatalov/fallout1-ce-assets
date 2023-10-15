@@ -4,12 +4,12 @@ local reputation = require("lib.reputation")
 local start
 
 local count = 0
-local init_teams = 0
+local initialized = false
 
 function start()
-    if not(init_teams) then
+    if not initialized then
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 8)
-        init_teams = 1
+        initialized = true
     end
     if fallout.script_action() == 12 then
         if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) ~= 0 then

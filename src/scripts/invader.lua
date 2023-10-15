@@ -8,7 +8,7 @@ local timetomove
 local Critter_Action
 
 local hostile = 0
-local init_teams = 0
+local initialized = false
 local loopcount = 0
 local noevent = 0
 local new_tile = 0
@@ -16,13 +16,13 @@ local maxleash = 9
 local rndx = 0
 
 function start()
-    if not(init_teams) then
+    if not initialized then
         if fallout.local_var(0) == 0 then
             fallout.set_local_var(0, fallout.tile_num(fallout.self_obj()))
         end
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 34)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 79)
-        init_teams = 1
+        initialized = true
     else
         if fallout.script_action() == 22 then
             timetomove()

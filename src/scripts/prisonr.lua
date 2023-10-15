@@ -18,15 +18,15 @@ local prisonr08
 local leave_map
 
 local Hostile = 0
-local init_teams = 0
+local initialized = false
 local rndx = 0
 local rndy = 0
 local rndz = 0
 local my_hex = 0
 
 function start()
-    if not(init_teams) then
-        init_teams = 1
+    if not initialized then
+        initialized = true
         if fallout.local_var(3) > 9 then
             fallout.set_obj_visibility(fallout.self_obj(), 1)
         end
