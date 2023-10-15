@@ -11,14 +11,14 @@ local damage_p_proc
 local destroy_p_proc
 local pickup_p_proc
 
-local Initialize = 1
+local initialized = false
 local PsstTime = 0
 local Hostile = 0
 
 local timed_event_p_proc
 
 function start()
-    if Initialize then
+    if not initialized then
         if fallout.obj_is_carrying_obj_pid(fallout.self_obj(), 41) == 0 then
             fallout.item_caps_adjust(fallout.self_obj(), fallout.random(1, 10))
         end
@@ -29,7 +29,7 @@ function start()
             fallout.set_map_var(1, fallout.map_var(1) + 1)
             fallout.set_local_var(5, 1)
         end
-        Initialize = 0
+        initialized = true
     end
 end
 

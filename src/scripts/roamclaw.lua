@@ -4,16 +4,16 @@ local start
 local destroy_p_proc
 local timed_event_p_proc
 
-local Initialize = 1
+local initialized = false
 
 local exit_line = 0
 
 local critter_p_proc
 
 function start()
-    if Initialize then
+    if not initialized then
         fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(fallout.random(3, 5)), 1)
-        Initialize = 0
+        initialized = true
     end
 end
 

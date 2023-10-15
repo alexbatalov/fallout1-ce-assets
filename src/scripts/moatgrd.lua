@@ -21,13 +21,13 @@ local Moat05
 local MoatCombat
 local MoatEnd
 
-local Initialize = 1
+local initialized = false
 local DestTile = 0
 
 local exit_line = 0
 
 function start()
-    if Initialize then
+    if not initialized then
         if fallout.obj_is_carrying_obj_pid(fallout.self_obj(), 41) == 0 then
             fallout.item_caps_adjust(fallout.self_obj(), fallout.random(2, 20))
         end
@@ -37,7 +37,7 @@ function start()
             DestTile = fallout.tile_num(fallout.self_obj())
             fallout.set_local_var(4, DestTile)
         end
-        Initialize = 0
+        initialized = true
     end
 end
 

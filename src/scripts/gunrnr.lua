@@ -12,19 +12,19 @@ local destroy_p_proc
 local timed_event_p_proc
 local pickup_p_proc
 
-local Initialize = 1
+local initialized = false
 local PsstTime = 0
 
 local exit_line = 0
 
 function start()
-    if Initialize then
+    if not initialized then
         if fallout.obj_is_carrying_obj_pid(fallout.self_obj(), 41) == 0 then
             fallout.item_caps_adjust(fallout.self_obj(), fallout.random(2, 20))
         end
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 48)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 28)
-        Initialize = 0
+        initialized = true
     end
 end
 

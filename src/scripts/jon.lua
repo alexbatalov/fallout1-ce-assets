@@ -42,13 +42,13 @@ local Zim26
 local Zim27
 local ZimEnd
 
-local Initialize = 1
+local initialized = false
 local DisplayMessage = 0
 
 local exit_line = 0
 
 function start()
-    if Initialize then
+    if not initialized then
         if fallout.obj_is_carrying_obj_pid(fallout.self_obj(), 41) == 0 then
             fallout.item_caps_adjust(fallout.self_obj(), fallout.random(50, 150))
         end
@@ -63,7 +63,7 @@ function start()
         end
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 6)
         fallout.set_external_var("JonPtr", fallout.self_obj())
-        Initialize = 0
+        initialized = true
     end
 end
 

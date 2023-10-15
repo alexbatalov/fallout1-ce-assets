@@ -3,13 +3,13 @@ local fallout = require("fallout")
 local start
 local destroy_p_proc
 
-local Initialize = 1
+local initialized = false
 
 local exit_line = 0
 
 function start()
-    if Initialize then
-        Initialize = 0
+    if not initialized then
+        initialized = true
     end
 end
 

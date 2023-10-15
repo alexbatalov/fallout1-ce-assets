@@ -29,7 +29,7 @@ local DialogMain11
 local DialogMain12
 local DialogMain13
 
-local Initialize = 1
+local initialized = false
 local Hostile = 0
 local DisplayMessage = 100
 
@@ -37,7 +37,7 @@ local exit_line = 0
 
 function start()
     local v0 = 0
-    if Initialize then
+    if not initialized then
         if fallout.obj_is_carrying_obj_pid(fallout.self_obj(), 41) == 0 then
             fallout.item_caps_adjust(fallout.self_obj(), fallout.random(10, 100))
         end
@@ -48,7 +48,7 @@ function start()
             fallout.set_local_var(7, 1)
             fallout.set_global_var(351, 1)
         end
-        Initialize = 0
+        initialized = true
     end
 end
 

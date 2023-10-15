@@ -6,11 +6,11 @@ local talk_p_proc
 local critter_p_proc
 local destroy_p_proc
 
-local Initialize = 1
+local initialized = false
 local PsstTime = 0
 
 function start()
-    if Initialize then
+    if not initialized then
         if fallout.obj_is_carrying_obj_pid(fallout.self_obj(), 41) == 0 then
             fallout.item_caps_adjust(fallout.self_obj(), fallout.random(1, 10))
         end
@@ -20,7 +20,7 @@ function start()
             fallout.set_global_var(269, fallout.global_var(269) + 1)
             fallout.set_local_var(4, 1)
         end
-        Initialize = 0
+        initialized = true
     end
 end
 

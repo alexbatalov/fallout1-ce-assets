@@ -18,17 +18,17 @@ local BYGreg06
 local BYGreg07
 local BYGregEnd
 
-local Initialize = 1
+local initialized = false
 local PsstTime = 0
 local DisplayMessage = 100
 
 local exit_line = 0
 
 function start()
-    if Initialize then
+    if not initialized then
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 47)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 27)
-        Initialize = 0
+        initialized = true
     end
 end
 

@@ -34,7 +34,7 @@ local DialogSpecial2
 local DialogSpecial3
 local DialogSpecial4
 
-local Initialize = 1
+local initialized = false
 local Hostile = 0
 local DisplayMessage = 0
 local Hurt = 0
@@ -50,10 +50,10 @@ local Vaulted = 0
 local exit_line = 0
 
 function start()
-    if Initialize == 1 then
+    if not initialized then
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 2)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 6)
-        Initialize = 0
+        initialized = true
     end
 end
 

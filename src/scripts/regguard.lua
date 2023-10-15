@@ -21,14 +21,14 @@ local DialogMain4
 local DialogMain5
 local DialogMain6
 
-local Initialize = 1
+local initialized = false
 local Hostile = 0
 
 local exit_line = 0
 
 function start()
     local v0 = 0
-    if Initialize then
+    if not initialized then
         if fallout.obj_is_carrying_obj_pid(fallout.self_obj(), 41) == 0 then
             fallout.item_caps_adjust(fallout.self_obj(), fallout.random(2, 20))
         end
@@ -53,7 +53,7 @@ function start()
             fallout.set_external_var("RegGuard1", 0)
             fallout.set_external_var("RegGuard2", 0)
         end
-        Initialize = 0
+        initialized = true
     end
 end
 

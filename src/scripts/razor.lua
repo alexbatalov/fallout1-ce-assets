@@ -66,20 +66,20 @@ local RazorReg
 local RazorEnd
 local RemoveBlades
 
-local Initialize = 1
+local initialized = false
 local DisplayMessage = 100
 
 local exit_line = 0
 
 function start()
-    if Initialize then
+    if not initialized then
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 47)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 27)
         fallout.set_external_var("RazorPtr", fallout.self_obj())
         if fallout.global_var(352) == 1 then
             fallout.set_local_var(4, 1)
         end
-        Initialize = 0
+        initialized = true
     end
 end
 

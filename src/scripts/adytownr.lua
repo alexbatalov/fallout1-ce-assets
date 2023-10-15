@@ -11,7 +11,7 @@ local damage_p_proc
 local destroy_p_proc
 local timed_event_p_proc
 
-local Initialize = 1
+local initialized = false
 
 local exit_line = 0
 
@@ -19,7 +19,7 @@ local pickup_p_proc
 local FleeDude
 
 function start()
-    if Initialize then
+    if not initialized then
         if fallout.obj_is_carrying_obj_pid(fallout.self_obj(), 41) == 0 then
             fallout.item_caps_adjust(fallout.self_obj(), fallout.random(1, 10))
         end
@@ -33,7 +33,7 @@ function start()
         if fallout.local_var(4) == 0 then
             fallout.set_local_var(4, fallout.tile_num(fallout.self_obj()))
         end
-        Initialize = 0
+        initialized = true
     end
 end
 
