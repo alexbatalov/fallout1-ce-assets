@@ -2,7 +2,7 @@ local fallout = require("fallout")
 local reputation = require("lib.reputation")
 local time = require("lib.time")
 
-local Start
+local start
 local look_at_p_proc
 local description_p_proc
 local talk_p_proc
@@ -17,7 +17,7 @@ local Hostile = 0
 
 local timed_event_p_proc
 
-function Start()
+function start()
     if Initialize then
         if fallout.obj_is_carrying_obj_pid(fallout.self_obj(), 41) == 0 then
             fallout.item_caps_adjust(fallout.self_obj(), fallout.random(1, 10))
@@ -97,6 +97,7 @@ function timed_event_p_proc()
 end
 
 local exports = {}
+exports.start = start
 exports.look_at_p_proc = look_at_p_proc
 exports.description_p_proc = description_p_proc
 exports.talk_p_proc = talk_p_proc

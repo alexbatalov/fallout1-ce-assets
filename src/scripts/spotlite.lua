@@ -1,11 +1,11 @@
 local fallout = require("fallout")
 local light = require("lib.light")
 
-local Start
+local start
 local map_enter_p_proc
 local map_update_p_proc
 
-function Start()
+function start()
     if fallout.script_action() == 15 then
         map_enter_p_proc()
     else
@@ -40,6 +40,7 @@ function map_update_p_proc()
 end
 
 local exports = {}
+exports.start = start
 exports.map_enter_p_proc = map_enter_p_proc
 exports.map_update_p_proc = map_update_p_proc
 return exports

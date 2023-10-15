@@ -1,7 +1,7 @@
 local fallout = require("fallout")
 local time = require("lib.time")
 
-local Start
+local start
 local talk_p_proc
 local critter_p_proc
 local destroy_p_proc
@@ -9,7 +9,7 @@ local destroy_p_proc
 local Initialize = 1
 local PsstTime = 0
 
-function Start()
+function start()
     if Initialize then
         if fallout.obj_is_carrying_obj_pid(fallout.self_obj(), 41) == 0 then
             fallout.item_caps_adjust(fallout.self_obj(), fallout.random(1, 10))
@@ -46,6 +46,7 @@ function destroy_p_proc()
 end
 
 local exports = {}
+exports.start = start
 exports.talk_p_proc = talk_p_proc
 exports.critter_p_proc = critter_p_proc
 exports.destroy_p_proc = destroy_p_proc

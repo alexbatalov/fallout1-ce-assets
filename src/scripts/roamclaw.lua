@@ -1,6 +1,6 @@
 local fallout = require("fallout")
 
-local Start
+local start
 local destroy_p_proc
 local timed_event_p_proc
 
@@ -10,7 +10,7 @@ local exit_line = 0
 
 local critter_p_proc
 
-function Start()
+function start()
     if Initialize then
         fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(fallout.random(3, 5)), 1)
         Initialize = 0
@@ -33,6 +33,7 @@ function critter_p_proc()
 end
 
 local exports = {}
+exports.start = start
 exports.destroy_p_proc = destroy_p_proc
 exports.timed_event_p_proc = timed_event_p_proc
 exports.critter_p_proc = critter_p_proc

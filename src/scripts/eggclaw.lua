@@ -1,13 +1,13 @@
 local fallout = require("fallout")
 
-local Start
+local start
 local destroy_p_proc
 
 local Initialize = 1
 
 local exit_line = 0
 
-function Start()
+function start()
     if Initialize then
         Initialize = 0
     end
@@ -18,5 +18,6 @@ function destroy_p_proc()
 end
 
 local exports = {}
+exports.start = start
 exports.destroy_p_proc = destroy_p_proc
 return exports

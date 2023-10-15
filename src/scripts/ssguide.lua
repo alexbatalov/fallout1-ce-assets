@@ -2,7 +2,7 @@ local fallout = require("fallout")
 local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
 
-local Start
+local start
 local look_at_p_proc
 local description_p_proc
 local talk_p_proc
@@ -49,7 +49,7 @@ local Vaulted = 0
 
 local exit_line = 0
 
-function Start()
+function start()
     if Initialize == 1 then
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 2)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 6)
@@ -311,6 +311,7 @@ function DialogSpecial4()
 end
 
 local exports = {}
+exports.start = start
 exports.look_at_p_proc = look_at_p_proc
 exports.description_p_proc = description_p_proc
 exports.talk_p_proc = talk_p_proc

@@ -3,7 +3,7 @@ local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
 local time = require("lib.time")
 
-local Start
+local start
 local look_at_p_proc
 local description_p_proc
 local talk_p_proc
@@ -24,7 +24,7 @@ local DisplayMessage = 100
 
 local exit_line = 0
 
-function Start()
+function start()
     if Initialize then
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 47)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 27)
@@ -137,6 +137,7 @@ function BYGregEnd()
 end
 
 local exports = {}
+exports.start = start
 exports.look_at_p_proc = look_at_p_proc
 exports.description_p_proc = description_p_proc
 exports.talk_p_proc = talk_p_proc

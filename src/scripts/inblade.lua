@@ -12,7 +12,7 @@ local g0 = 1
 local g1 = 0
 local g2 = 0
 
-local Start
+local start
 local look_at_p_proc
 local description_p_proc
 local talk_p_proc
@@ -41,7 +41,7 @@ local Goodbyes
 
 -- ?import? variable exit_line
 
-function Start()
+function start()
     local v0 = 0
     if g0 then
         if fallout.obj_is_carrying_obj_pid(fallout.self_obj(), 41) == 0 then
@@ -252,6 +252,7 @@ function Goodbyes()
 end
 
 local exports = {}
+exports.start = start
 exports.look_at_p_proc = look_at_p_proc
 exports.description_p_proc = description_p_proc
 exports.talk_p_proc = talk_p_proc
