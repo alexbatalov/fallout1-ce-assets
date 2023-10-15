@@ -4,14 +4,14 @@ local start
 local use_skill_on_p_proc
 local timed_event_p_proc
 
-local initialized = 0
+local initialized = false
 
 function start()
-    if not(initialized) then
+    if not initialized then
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 21)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 8)
         fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(fallout.random(3, 30)), 0)
-        initialized = 1
+        initialized = true
     else
         if fallout.script_action() == 8 then
             use_skill_on_p_proc()

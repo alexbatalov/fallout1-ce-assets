@@ -81,7 +81,7 @@ local HEREBEFORE = 0
 local go_to_cell = 0
 local DESTROYED = 0
 local KILLEDANY = 0
-local initialized = 0
+local initialized = false
 local hit_dude = 0
 local torture_setting = 0
 local End_The_Game = 0
@@ -109,7 +109,7 @@ local Lt66
 
 function start()
     local v0 = 0
-    if not(initialized) then
+    if not initialized then
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 34)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 49)
         fallout.set_external_var("Lt_ptr", fallout.self_obj())
@@ -118,7 +118,7 @@ function start()
             fallout.add_obj_to_inven(fallout.self_obj(), v0)
             fallout.set_local_var(6, 1)
         end
-        initialized = 1
+        initialized = true
     else
         if fallout.script_action() == 12 then
             critter_p_proc()

@@ -5,7 +5,7 @@ local description_p_proc
 local map_enter_p_proc
 local use_p_proc
 
-local initialized = 0
+local initialized = false
 
 function start()
     if fallout.script_action() == 3 then

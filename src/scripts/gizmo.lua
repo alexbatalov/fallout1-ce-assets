@@ -75,7 +75,7 @@ local HOSTILE = 0
 local INSISTS = 0
 local CRIME = 0
 local stealing = 0
-local initialized = 0
+local initialized = false
 
 local exit_line = 0
 

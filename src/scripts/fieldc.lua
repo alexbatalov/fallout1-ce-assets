@@ -7,11 +7,11 @@ local turn_field_off
 local turn_field_on
 local toggle_field
 
-local initialized = 0
+local initialized = false
 local on_tile = 0
 
 function start()
-    if not(initialized) then
+    if not initialized then
         if fallout.tile_num(fallout.self_obj()) == 21068 then
             if fallout.obj_pid(fallout.self_obj()) == 33554923 then
                 if fallout.external_var("field_change") == "off" then
@@ -31,7 +31,7 @@ function start()
                 end
             end
         end
-        initialized = 1
+        initialized = true
     else
         if fallout.script_action() == 6 then
             use_p_proc()

@@ -20,7 +20,7 @@ local VFenceMt08
 local VFenceMtAlert
 local VFenceMtxx
 
-local initialized = 0
+local initialized = false
 local hostile = 0
 local round_count = 0
 local home_tile = 7000
@@ -31,10 +31,10 @@ local waypoint = 0
 local exit_line = 0
 
 function start()
-    if not(initialized) then
+    if not initialized then
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 34)
         fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(30), 1)
-        initialized = 1
+        initialized = true
     else
         if fallout.script_action() == 13 then
             combat_p_proc()

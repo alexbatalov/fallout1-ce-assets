@@ -7,12 +7,12 @@ local pickup_p_proc
 local talk_p_proc
 local destroy_p_proc
 
-local initialized = 0
+local initialized = false
 local hostile = 0
 local my_script_mode = 0
 
 function start()
-    if not(initialized) then
+    if not initialized then
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 29)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 11)
         if fallout.cur_map_index() ~= 29 then
@@ -24,7 +24,7 @@ function start()
                 fallout.set_obj_visibility(fallout.self_obj(), 1)
             end
         end
-        initialized = 1
+        initialized = true
     else
         if not(my_script_mode) then
             if fallout.script_action() == 18 then

@@ -20,7 +20,7 @@ local GenSuprAlert
 local GenSuprxx
 local set_alert_tile
 
-local initialized = 0
+local initialized = false
 local hostile = 0
 local round_counter = 0
 local home_tile = 0
@@ -29,14 +29,14 @@ local alert_tile = 0
 local exit_line = 0
 
 function start()
-    if not(initialized) then
+    if not initialized then
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 34)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 48)
         set_alert_tile()
         if fallout.global_var(146) then
             fallout.move_to(fallout.self_obj(), alert_tile, 0)
         end
-        initialized = 1
+        initialized = true
     else
         if fallout.script_action() == 13 then
             combat_p_proc()

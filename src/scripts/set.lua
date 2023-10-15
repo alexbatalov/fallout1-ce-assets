@@ -120,17 +120,17 @@ local pickup_p_proc
 local travel
 
 local Hostile = 0
-local initialized = 0
+local initialized = false
 local chip = 0
 local setgone = 0
 
 local exit_line = 0
 
 function start()
-    if not(initialized) then
+    if not initialized then
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 30)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 78)
-        initialized = 1
+        initialized = true
     else
         if fallout.script_action() == 22 then
             if fallout.fixed_param() == 1 then

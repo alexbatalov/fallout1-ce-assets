@@ -113,7 +113,7 @@ local Visits_with_caravans = 1
 local Visits_master_alive = 1
 local Visits_with_chip = 1
 local Visits_vats_blown = 1
-local initialized = 0
+local initialized = false
 
 local exit_line = 0
 

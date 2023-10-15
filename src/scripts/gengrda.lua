@@ -11,7 +11,7 @@ local timed_event_p_proc
 local flee_dude
 
 local hostile = 0
-local initialized = 0
+local initialized = false
 local scared = 0
 
 function start()
@@ -59,12 +59,12 @@ function destroy_p_proc()
 end
 
 function map_update_p_proc()
-    if not(initialized) then
+    if not initialized then
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 2)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 15 + fallout.random(0, 4))
         fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(fallout.random(1, 3)), 1)
         hostile = fallout.global_var(334)
-        initialized = 1
+        initialized = true
     end
 end
 

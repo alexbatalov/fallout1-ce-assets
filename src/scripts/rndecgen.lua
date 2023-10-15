@@ -6,12 +6,12 @@ local critter_p_proc
 local destroy_p_proc
 
 local hostile = 0
-local initialized = 0
+local initialized = false
 local creation_pid = 0
 local critter_tile = 0
 
 function start()
-    if not(initialized) and fallout.metarule(14, 0) then
+    if not initialized and fallout.metarule(14, 0) then
         creation_pid = fallout.obj_pid(fallout.self_obj())
         if creation_pid == 16777261 then
             fallout.critter_add_trait(fallout.self_obj(), 1, 5, 73)
@@ -34,7 +34,7 @@ function start()
                 end
             end
         end
-        initialized = 1
+        initialized = true
     else
         if fallout.script_action() == 12 then
             critter_p_proc()

@@ -9,14 +9,14 @@ local turn_field_off
 local turn_field_on
 local toggle_field
 
-local initialized = 0
+local initialized = false
 
 function start()
-    if not(initialized) then
+    if not initialized then
         fallout.set_external_var("fieldH_Ptr", fallout.self_obj())
         fallout.set_local_var(1, fallout.tile_num(fallout.self_obj()))
         use_p_proc()
-        initialized = 1
+        initialized = true
     else
         if fallout.script_action() == 6 then
             use_p_proc()

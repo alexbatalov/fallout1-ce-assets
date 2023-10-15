@@ -23,7 +23,7 @@ local timed_event_p_proc
 local map_exit_p_proc
 
 local use_skill = 0
-local initialized = 0
+local initialized = false
 local hostile = 0
 
 function start()

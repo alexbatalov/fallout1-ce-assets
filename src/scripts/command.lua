@@ -11,14 +11,14 @@ local use_all_fields_off
 
 local skill_roll = 0
 local stat_roll = 0
-local initialized = 0
+local initialized = false
 
 function start()
-    if not(initialized) then
+    if not initialized then
         if fallout.global_var(146) then
             fallout.set_local_var(0, 1)
         end
-        initialized = 1
+        initialized = true
     else
         if fallout.script_action() == 3 then
             description_p_proc()

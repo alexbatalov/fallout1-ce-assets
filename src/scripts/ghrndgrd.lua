@@ -5,14 +5,14 @@ local start
 local do_dialogue
 
 local Hostile = 0
-local initialized = 0
+local initialized = false
 local rndx = 0
 
 function start()
-    if not(initialized) then
+    if not initialized then
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 30)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 41)
-        initialized = 1
+        initialized = true
     end
     if fallout.script_action() == 11 then
         if fallout.global_var(249) then

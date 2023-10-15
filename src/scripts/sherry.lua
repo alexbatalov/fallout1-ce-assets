@@ -47,7 +47,7 @@ local SherryCook
 local SherryEnd
 
 local hostile = 0
-local initialized = 0
+local initialized = false
 local feed_dude = 0
 
 local sleeping

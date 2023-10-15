@@ -38,21 +38,21 @@ local sleep_time = 0
 local home_tile = 0
 local sleep_tile = 0
 local hostile = 0
-local initialized = 0
+local initialized = false
 local round_counter = 0
 local Warned_Tile = 0
 
 local exit_line = 0
 
 function start()
-    if not(initialized) then
+    if not initialized then
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 2)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 4)
         if fallout.local_var(10) == 0 then
             fallout.set_local_var(10, fallout.tile_num(fallout.self_obj()))
         end
         home_tile = fallout.local_var(10)
-        initialized = 1
+        initialized = true
     else
         if fallout.script_action() == 13 then
             combat_p_proc()

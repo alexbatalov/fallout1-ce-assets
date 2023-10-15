@@ -4,14 +4,14 @@ local start
 local critter_p_proc
 local damage_p_proc
 
-local initialized = 0
+local initialized = false
 local damage_counter = 0
 
 function start()
-    if not(initialized) then
+    if not initialized then
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 3)
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 4)
-        initialized = 1
+        initialized = true
     else
         if fallout.script_action() == 12 then
             critter_p_proc()

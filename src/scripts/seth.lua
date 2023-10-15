@@ -42,7 +42,7 @@ local sleep_time = 0
 local home_tile = 0
 local sleep_tile = 0
 local hostile = 0
-local initialized = 0
+local initialized = false
 local round_counter = 0
 
 local exit_line = 0
@@ -107,14 +107,14 @@ function combat_p_proc()
 end
 
 function map_update_p_proc()
-    if not(initialized) then
+    if not initialized then
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 2)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 4)
         home_tile = 14108
         sleep_tile = 15925
         wake_time = 600
         sleep_time = 2100
-        initialized = 1
+        initialized = true
     end
 end
 

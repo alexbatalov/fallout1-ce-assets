@@ -9,15 +9,15 @@ local pickup_p_proc
 local talk_p_proc
 local flee_dude
 
-local initialized = 0
+local initialized = false
 local dude_enemy = 0
 local cap_count = 0
 
 function start()
-    if not(initialized) and fallout.metarule(14, 0) then
+    if not initialized and fallout.metarule(14, 0) then
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, fallout.global_var(288))
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 2)
-        initialized = 1
+        initialized = true
         fallout.float_msg(fallout.self_obj(), fallout.message_str(352, fallout.random(128, 129)), 0)
     else
         if fallout.script_action() == 12 then

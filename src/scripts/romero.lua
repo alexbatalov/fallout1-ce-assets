@@ -31,17 +31,17 @@ local GiveLocket
 
 local name = 0
 local asked = 0
-local initialized = 0
+local initialized = false
 local hostile = 0
 
 local damage_p_proc
 
 function start()
-    if not(initialized) then
+    if not initialized then
         name = fallout.message_str(285, 100)
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 47)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 27)
-        initialized = 1
+        initialized = true
     end
 end
 

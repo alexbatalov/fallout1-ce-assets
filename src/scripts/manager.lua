@@ -20,14 +20,14 @@ local ghoul10
 local ghoul11
 
 local Hostile = 0
-local initialized = 0
+local initialized = false
 local noevent = 0
 local loopcount = 0
 
 function start()
-    if not(initialized) then
+    if not initialized then
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 32)
-        initialized = 1
+        initialized = true
     end
     if fallout.script_action() == 22 then
         timeforwhat()

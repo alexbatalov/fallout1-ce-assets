@@ -38,7 +38,7 @@ local show_true_name
 local show_false_name
 
 local hostile = 0
-local initialized = 0
+local initialized = false
 local prev_tile = 7000
 local dest_tile = 7000
 local name = 0
@@ -108,7 +108,7 @@ function look_at_p_proc()
 end
 
 function map_update_p_proc()
-    if not(initialized) then
+    if not initialized then
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 27)
         if fallout.cur_map_index() == 44 then
             fallout.critter_add_trait(fallout.self_obj(), 1, 6, 47)
@@ -128,7 +128,7 @@ function map_update_p_proc()
                 end
             end
         end
-        initialized = 1
+        initialized = true
     end
     if (fallout.elevation(fallout.self_obj()) ~= fallout.elevation(fallout.dude_obj())) and (fallout.global_var(131) == 1) then
         fallout.move_to(fallout.self_obj(), fallout.tile_num_in_direction(fallout.tile_num(fallout.dude_obj()), fallout.random(4, 5), 1), fallout.elevation(fallout.dude_obj()))

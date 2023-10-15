@@ -32,14 +32,14 @@ local Agatha19
 local Agatha20
 local AgathaEnd
 
-local initialized = 0
+local initialized = false
 
 local exit_line = 0
 
 function start()
-    if not(initialized) then
+    if not initialized then
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 2)
-        initialized = 1
+        initialized = true
     else
         if fallout.script_action() == 12 then
             critter_p_proc()

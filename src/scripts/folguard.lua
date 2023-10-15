@@ -36,10 +36,10 @@ local combat
 local guardend
 
 local hostile = 0
-local initialized = 0
+local initialized = false
 
 function start()
-    if not(initialized) then
+    if not initialized then
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 46)
         if fallout.local_var(0) == 0 then
             if fallout.get_critter_stat(fallout.self_obj(), 34) == 1 then
@@ -55,7 +55,7 @@ function start()
                 fallout.kill_critter(fallout.self_obj(), 57)
             end
         end
-        initialized = 1
+        initialized = true
     else
         if fallout.script_action() == 12 then
             critter_p_proc()

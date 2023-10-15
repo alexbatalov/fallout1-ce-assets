@@ -55,13 +55,13 @@ local TaliusEnd
 local combat
 
 local hostile = 0
-local initialized = 0
+local initialized = false
 
 function start()
-    if not(initialized) then
+    if not initialized then
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 46)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 33)
-        initialized = 1
+        initialized = true
         if fallout.global_var(129) == 2 then
             if fallout.random(0, 1) then
                 fallout.kill_critter(fallout.self_obj(), 59)

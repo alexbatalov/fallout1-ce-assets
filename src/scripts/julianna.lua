@@ -29,13 +29,13 @@ local wake_time = 0
 local sleep_time = 0
 local home_tile = 0
 local sleep_tile = 0
-local initialized = 0
+local initialized = false
 local round_counter = 0
 
 local exit_line = 0
 
 function start()
-    if not(initialized) then
+    if not initialized then
         if (fallout.global_var(613) == 9103) or (fallout.global_var(613) == 9102) then
             fallout.critter_add_trait(fallout.self_obj(), 1, 6, 0)
         else
@@ -45,7 +45,7 @@ function start()
         wake_time = 830
         sleep_tile = 23151
         home_tile = 22749
-        initialized = 1
+        initialized = true
     else
         if fallout.script_action() == 12 then
             critter_p_proc()

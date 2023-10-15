@@ -24,7 +24,7 @@ local sleep_time = 0
 local home_tile = 0
 local sleep_tile = 0
 local hostile = 0
-local initialized = 0
+local initialized = false
 
 function start()
     if fallout.script_action() == 12 then

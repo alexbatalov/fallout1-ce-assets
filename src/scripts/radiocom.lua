@@ -4,12 +4,12 @@ local start
 local description_p_proc
 local use_p_proc
 
-local initialized = 0
+local initialized = false
 
 function start()
-    if not(initialized) then
+    if not initialized then
         fallout.set_external_var("radio_computer", fallout.self_obj())
-        initialized = 1
+        initialized = true
     else
         if fallout.script_action() == 3 then
             description_p_proc()

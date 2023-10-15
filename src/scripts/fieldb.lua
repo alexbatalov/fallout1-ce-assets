@@ -6,10 +6,10 @@ local turn_field_off
 local turn_field_on
 local toggle_field
 
-local initialized = 0
+local initialized = false
 
 function start()
-    if not(initialized) then
+    if not initialized then
         if fallout.cur_map_index() == 31 then
             if fallout.tile_num(fallout.self_obj()) == 15520 then
                 fallout.set_map_var(4, fallout.self_obj())
@@ -33,7 +33,7 @@ function start()
         end
         fallout.set_local_var(1, fallout.tile_num(fallout.self_obj()))
         use_p_proc()
-        initialized = 1
+        initialized = true
     else
         if fallout.script_action() == 6 then
             use_p_proc()

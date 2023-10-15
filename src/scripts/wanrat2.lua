@@ -6,14 +6,14 @@ local critter_p_proc
 local damage_p_proc
 local timed_event_p_proc
 
-local initialized = 0
+local initialized = false
 local hostile = 0
 
 function start()
-    if not(initialized) then
+    if not initialized then
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 12)
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 9)
-        initialized = 1
+        initialized = true
         if time.is_night() then
             fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(fallout.random(30, 40)), 0)
         end

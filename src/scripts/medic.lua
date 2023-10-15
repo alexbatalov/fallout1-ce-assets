@@ -45,7 +45,7 @@ local intensity = 0
 local removal = 0
 local rndx = 0
 local rads = 0
-local initialized = 0
+local initialized = false
 local player_hits = 0
 local player_max_hits = 0
 local home_tile = 13881
@@ -53,9 +53,9 @@ local home_tile = 13881
 local exit_line = 0
 
 function start()
-    if not(initialized) then
+    if not initialized then
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 1)
-        initialized = 1
+        initialized = true
     else
         if fallout.script_action() == 12 then
             critter_p_proc()

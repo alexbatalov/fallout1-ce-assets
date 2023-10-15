@@ -4,11 +4,11 @@ local start
 local look_at_p_proc
 local talk_p_proc
 
-local initialized = 0
+local initialized = false
 
 function start()
-    if not(initialized) then
-        initialized = 1
+    if not initialized then
+        initialized = true
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 34)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 48)
     end

@@ -7,13 +7,13 @@ local start
 local destroy_p_proc
 local critter_p_proc
 
-local initialized = 0
+local initialized = false
 local my_knife = 0
 local home_face = 2
 local temp = 0
 
 function start()
-    if not(initialized) then
+    if not initialized then
         if fallout.local_var(3) == 0 then
             fallout.set_local_var(3, fallout.tile_num(fallout.self_obj()))
         end
@@ -32,7 +32,7 @@ function start()
             fallout.set_external_var("Student_ptr", fallout.self_obj())
             fallout.set_map_var(0, 1)
         end
-        initialized = 1
+        initialized = true
     else
         if fallout.script_action() == 18 then
             destroy_p_proc()

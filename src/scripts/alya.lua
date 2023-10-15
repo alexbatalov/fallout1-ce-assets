@@ -22,15 +22,15 @@ local Critter_Action
 local damage_p_proc
 
 local HOSTILE = 0
-local initialized = 0
+local initialized = false
 
 local exit_line = 0
 
 function start()
-    if not(initialized) then
+    if not initialized then
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 6)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 21)
-        initialized = 1
+        initialized = true
     end
     if fallout.script_action() == 11 then
         talk_p_proc()

@@ -15,11 +15,11 @@ local wake_time = 0
 local sleep_time = 0
 local home_tile = 0
 local sleep_tile = 0
-local initialized = 0
+local initialized = false
 
 function start()
     local v0 = 0
-    if not(initialized) then
+    if not initialized then
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 24)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 6)
         if fallout.obj_is_carrying_obj_pid(fallout.self_obj(), 41) == 0 then
@@ -32,7 +32,7 @@ function start()
         sleep_tile = 7000
         wake_time = fallout.random(610, 650)
         sleep_time = fallout.random(1710, 1750)
-        initialized = 1
+        initialized = true
     else
         if fallout.script_action() == 12 then
             critter_p_proc()

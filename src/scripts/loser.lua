@@ -14,17 +14,17 @@ local timed_event_p_proc
 local flee_dude
 
 local hostile = 0
-local initialized = 0
+local initialized = false
 local round_counter = 0
 local PsstTime = 0
 
 function start()
-    if not(initialized) then
+    if not initialized then
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 2)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 6)
         fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(fallout.random(15, 60)), 1)
         fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(fallout.random(3, 5)), 1)
-        initialized = 1
+        initialized = true
     else
         if fallout.script_action() == 13 then
             combat_p_proc()

@@ -7,16 +7,16 @@ local turn_field_on
 local turn_field_off
 local toggle_field
 
-local initialized = 0
+local initialized = false
 local on_tile = 0
 
 function start()
-    if not(initialized) then
+    if not initialized then
         if fallout.obj_pid(fallout.self_obj()) == 33554923 then
             fallout.set_map_var(0, fallout.self_obj())
         end
         use_p_proc()
-        initialized = 1
+        initialized = true
     else
         if fallout.script_action() == 6 then
             use_p_proc()

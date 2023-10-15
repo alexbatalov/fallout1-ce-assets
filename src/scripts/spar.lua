@@ -6,7 +6,7 @@ local prepare_for_combat
 local do_combat
 local recover_from_combat
 
-local initialized = 0
+local initialized = false
 local armed = 0
 local v = 0
 local x = 0
@@ -25,10 +25,10 @@ local who = 0
 local fall = 0
 
 function start()
-    if not(initialized) then
+    if not initialized then
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 30)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 62)
-        initialized = 1
+        initialized = true
         prepare_for_combat()
     end
     if fallout.script_action() == 22 then

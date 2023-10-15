@@ -5,14 +5,14 @@ local critter_p_proc
 local timed_event_p_proc
 
 local hostile = 0
-local initialized = 0
+local initialized = false
 
 function start()
-    if not(initialized) then
+    if not initialized then
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 13)
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 8)
         fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(fallout.random(1, 5)), 0)
-        initialized = 1
+        initialized = true
     else
         if fallout.script_action() == 12 then
             critter_p_proc()

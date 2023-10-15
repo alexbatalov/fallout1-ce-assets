@@ -16,19 +16,19 @@ local Dealer07
 local Dealer08
 local DealerEnd
 
-local initialized = 0
+local initialized = false
 local said_hi = 0
 
 function start()
     local v0 = 0
-    if not(initialized) then
+    if not initialized then
         if fallout.metarule(14, 0) then
             v0 = fallout.create_object_sid(41, 0, 0, -1)
             fallout.add_mult_objs_to_inven(fallout.self_obj(), v0, fallout.random(0, 100))
             fallout.critter_add_trait(fallout.self_obj(), 1, 6, 24)
             fallout.set_global_var(289, 0)
         end
-        initialized = 1
+        initialized = true
     else
         if fallout.script_action() == 18 then
             destroy_p_proc()

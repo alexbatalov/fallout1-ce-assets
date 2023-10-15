@@ -19,15 +19,15 @@ local Abel08
 local AbelCombat
 
 local hostile = 0
-local initialized = 0
+local initialized = false
 
 local exit_line = 0
 
 function start()
-    if not(initialized) then
+    if not initialized then
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 34)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 48)
-        initialized = 1
+        initialized = true
     end
     if fallout.script_action() == 12 then
         critter_p_proc()

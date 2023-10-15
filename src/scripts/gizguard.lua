@@ -21,7 +21,7 @@ local GizGuard08
 local GizGuardEnd
 
 local hostile = 0
-local initialized = 0
+local initialized = false
 local sneak_checked = 0
 
 function start()

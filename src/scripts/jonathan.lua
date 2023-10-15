@@ -5,16 +5,16 @@ local start
 local spar
 local weapon_check
 
-local initialized = 0
+local initialized = false
 local armed = 0
 local round = 0
 local v = 0
 
 function start()
-    if not(initialized) then
+    if not initialized then
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 44)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 64)
-        initialized = 1
+        initialized = true
     end
     if (fallout.script_action() == 22) and (round < 7) then
         spar()

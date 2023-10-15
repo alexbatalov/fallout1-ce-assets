@@ -9,11 +9,11 @@ local deallocate
 local detonate
 local plasma_death
 
-local initialized = 0
+local initialized = false
 
 function start()
-    if not(initialized) then
-        initialized = 1
+    if not initialized then
+        initialized = true
     else
         if fallout.script_action() == 3 then
             description_p_proc()

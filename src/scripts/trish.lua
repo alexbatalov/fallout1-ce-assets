@@ -52,7 +52,7 @@ local wake_time = 0
 local sleep_time = 0
 local home_tile = 0
 local sleep_tile = 0
-local initialized = 0
+local initialized = false
 local item = 0
 
 local exit_line = 0

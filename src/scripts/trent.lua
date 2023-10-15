@@ -38,7 +38,7 @@ local flee_dude
 local give_money
 
 local calm = 0
-local initialized = 0
+local initialized = false
 local known = 0
 local scared = 0
 local close2dude = 0
@@ -49,10 +49,10 @@ local prev_dist = 0
 local exit_line = 0
 
 function start()
-    if not(initialized) and fallout.metarule(14, 0) then
+    if not initialized and fallout.metarule(14, 0) then
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 35)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 2)
-        initialized = 1
+        initialized = true
     else
         if fallout.script_action() == 12 then
             critter_p_proc()

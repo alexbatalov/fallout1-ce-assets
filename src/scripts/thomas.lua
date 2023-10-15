@@ -13,7 +13,7 @@ local lesson1
 local destroy_p_proc
 local critter_p_proc
 
-local initialized = 0
+local initialized = false
 local armed = 0
 local x = 0
 local student_armed = 0
@@ -47,7 +47,7 @@ local skill_pts = 0
 local do_round
 
 function start()
-    if not(initialized) then
+    if not initialized then
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 44)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 64)
         my_hex = fallout.tile_num(fallout.self_obj())
@@ -67,7 +67,7 @@ function start()
         prepare_for_combat()
         fallout.set_external_var("Student_ptr", 0)
         valid = 1
-        initialized = 1
+        initialized = true
     end
     if fallout.script_action() == 18 then
         destroy_p_proc()

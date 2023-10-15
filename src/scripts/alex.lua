@@ -21,10 +21,10 @@ local sleep_time = 0
 local home_tile = 0
 local sleep_tile = 0
 local hostile = 0
-local initialized = 0
+local initialized = false
 
 function start()
-    if not(initialized) then
+    if not initialized then
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 49)
         sleep_tile = 14275
         home_tile = 11300
@@ -34,7 +34,7 @@ function start()
         if fallout.obj_is_carrying_obj_pid(fallout.self_obj(), 41) == 0 then
             fallout.item_caps_adjust(fallout.self_obj(), fallout.random(0, 20))
         end
-        initialized = 1
+        initialized = true
     else
         if fallout.script_action() == 12 then
             critter_p_proc()

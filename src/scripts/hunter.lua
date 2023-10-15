@@ -15,12 +15,12 @@ local Hunter05
 
 local mad = 0
 local hostile = 0
-local initialized = 0
+local initialized = false
 local my_script_mode = 0
 local pre_fight = 0
 
 function start()
-    if not(initialized) then
+    if not initialized then
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 29)
         if fallout.cur_map_index() ~= 29 then
             Hunter05()
@@ -32,7 +32,7 @@ function start()
                 fallout.set_external_var("removal_ptr", fallout.self_obj())
             end
         end
-        initialized = 1
+        initialized = true
     else
         if not(my_script_mode) then
             if fallout.script_action() == 12 then

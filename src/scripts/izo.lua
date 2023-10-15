@@ -8,17 +8,17 @@ local description_p_proc
 local pickup_p_proc
 local talk_p_proc
 
-local initialized = 0
+local initialized = false
 local hostile = 0
 local line103flag = 0
 
 function start()
-    if not(initialized) then
+    if not initialized then
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 13)
         if fallout.global_var(104) == 2 then
             fallout.kill_critter(fallout.self_obj(), 62)
         end
-        initialized = 1
+        initialized = true
     else
         if fallout.script_action() == 12 then
             critter_p_proc()

@@ -24,18 +24,18 @@ local DucBarter
 local DucEnd
 
 local known = 0
-local initialized = 0
+local initialized = false
 local Tandi_seed = 0
 local Tandi_rescued = 0
 
 local exit_line = 0
 
 function start()
-    if not(initialized) then
+    if not initialized then
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 2)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 6)
         known = fallout.global_var(333)
-        initialized = 1
+        initialized = true
     else
         if fallout.script_action() == 12 then
             critter_p_proc()

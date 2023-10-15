@@ -11,7 +11,7 @@ local damage_p_proc
 local destroy_p_proc
 
 local critter_tile = 0
-local initialized = 0
+local initialized = false
 
 function start()
     if fallout.script_action() == 12 then
@@ -40,9 +40,9 @@ function start()
 end
 
 function critter_p_proc()
-    if not(initialized) then
+    if not initialized then
         fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(fallout.random(1, 5)), 1)
-        initialized = 1
+        initialized = true
     end
 end
 

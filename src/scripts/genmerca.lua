@@ -15,20 +15,20 @@ local GenMercAEnd
 local flee_dude
 
 local hostile = 0
-local initialized = 0
+local initialized = false
 local scared = 0
 local name_index = 0
 local job_index = 0
 
 function start()
-    if not(initialized) then
+    if not initialized then
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 2)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 50)
         name_index = 105 + fallout.global_var(335)
         job_index = 109 + fallout.global_var(335)
         hostile = fallout.global_var(334)
         fallout.set_global_var(335, fallout.global_var(335) + 1)
-        initialized = 1
+        initialized = true
     end
     if fallout.script_action() == 12 then
         critter_p_proc()

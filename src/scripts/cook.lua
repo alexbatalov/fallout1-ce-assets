@@ -13,14 +13,14 @@ local pickup_p_proc
 local Cook01
 
 local hostile = 0
-local initialized = 0
+local initialized = false
 local round_counter = 0
 
 function start()
-    if not(initialized) then
+    if not initialized then
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 2)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 6)
-        initialized = 1
+        initialized = true
     else
         if fallout.script_action() == 13 then
             combat_p_proc()

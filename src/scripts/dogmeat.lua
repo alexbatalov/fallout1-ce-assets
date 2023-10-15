@@ -5,14 +5,14 @@ local critter_p_proc
 local destroy_p_proc
 local use_skill_on_p_proc
 
-local initialized = 0
+local initialized = false
 
 function start()
-    if not(initialized) and fallout.metarule(14, 0) then
+    if not initialized and fallout.metarule(14, 0) then
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 0)
         fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(1), 1)
         fallout.move_to(fallout.self_obj(), fallout.tile_num_in_direction(fallout.tile_num(fallout.dude_obj()), (fallout.has_trait(1, fallout.dude_obj(), 10) + 3) % 6, 2), fallout.elevation(fallout.dude_obj()))
-        initialized = 1
+        initialized = true
     else
         if fallout.script_action() == 12 then
             critter_p_proc()

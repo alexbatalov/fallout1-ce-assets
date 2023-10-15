@@ -30,7 +30,7 @@ local Critter_Action
 local damage_p_proc
 
 local hostile = 0
-local initialized = 0
+local initialized = false
 local Weapons = 0
 local rndq = 0
 local rndr = 0
@@ -42,10 +42,10 @@ local first
 local notfirst
 
 function start()
-    if not(initialized) then
+    if not initialized then
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 6)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 21)
-        initialized = 1
+        initialized = true
     end
     if fallout.script_action() == 22 then
         if fallout.fixed_param() == 1 then

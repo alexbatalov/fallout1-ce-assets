@@ -69,7 +69,7 @@ local LanceEnd
 local LanceLoot
 
 local hostile = 0
-local initialized = 0
+local initialized = false
 local known = 0
 local go_to_Shady = 0
 local go_to_Raiders = 0
@@ -77,11 +77,11 @@ local go_to_Raiders = 0
 local exit_line = 0
 
 function start()
-    if not(initialized) then
+    if not initialized then
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 2)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 4)
         hostile = fallout.global_var(334)
-        initialized = 1
+        initialized = true
     else
         if fallout.script_action() == 12 then
             critter_p_proc()

@@ -26,15 +26,15 @@ local SET = 0
 local MUTANTS = 0
 local MAXLEASH = 9
 local DAY = 0
-local initialized = 0
+local initialized = false
 
 function start()
-    if not(initialized) then
+    if not initialized then
         if fallout.local_var(0) == 0 then
             fallout.set_local_var(0, 1)
         end
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 32)
-        initialized = 1
+        initialized = true
     end
     curtime = DAY
     if prevtime ~= curtime then
