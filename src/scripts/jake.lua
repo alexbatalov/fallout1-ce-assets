@@ -117,7 +117,7 @@ function talk_p_proc()
         if time.is_night() then
             Jake14()
         else
-            if fallout.global_var(132) then
+            if fallout.global_var(132) ~= 0 then
                 Jake17()
             else
                 if fallout.global_var(133) == 2 then

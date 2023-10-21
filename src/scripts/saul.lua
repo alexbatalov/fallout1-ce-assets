@@ -241,7 +241,7 @@ function talk_p_proc()
         if fallout.critter_state(fallout.self_obj()) & 1 then
             fallout.display_msg(fallout.message_str(528, 115))
         else
-            if fallout.global_var(247) then
+            if fallout.global_var(247) ~= 0 then
                 fallout.float_msg(fallout.self_obj(), fallout.message_str(669, 104), 2)
             else
                 if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) then
@@ -249,7 +249,7 @@ function talk_p_proc()
                 else
                     fallout.start_gdialog(528, fallout.self_obj(), 4, -1, -1)
                     fallout.gsay_start()
-                    if fallout.global_var(169) then
+                    if fallout.global_var(169) ~= 0 then
                         Saul23()
                     else
                         Saul07()

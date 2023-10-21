@@ -381,7 +381,7 @@ function Lars13()
     fallout.set_local_var(4, 1)
     fallout.gsay_reply(518, 140)
     fallout.giq_option(4, 518, 141, Lars17, 50)
-    if fallout.global_var(257) then
+    if fallout.global_var(257) ~= 0 then
         fallout.giq_option(4, 518, 142, Lars16, 50)
     end
 end
@@ -389,7 +389,7 @@ end
 function Lars14()
     fallout.gsay_reply(518, 143)
     fallout.giq_option(4, 518, 144, Lars15, 50)
-    if fallout.global_var(257) then
+    if fallout.global_var(257) ~= 0 then
         fallout.giq_option(4, 518, 145, Lars16, 50)
     end
 end
@@ -397,7 +397,7 @@ end
 function Lars15()
     fallout.gsay_reply(518, 146)
     fallout.giq_option(4, 518, 147, LarsEnd, 50)
-    if fallout.global_var(257) then
+    if fallout.global_var(257) ~= 0 then
         fallout.giq_option(4, 518, 148, Lars16, 50)
     end
 end

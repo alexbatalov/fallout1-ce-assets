@@ -300,7 +300,7 @@ function Tycho15()
     fallout.gsay_reply(389, 139)
     fallout.giq_option(4, 389, 137, Tycho08, 50)
     fallout.giq_option(4, 389, 138, Tycho16, 50)
-    if fallout.global_var(36) then
+    if fallout.global_var(36) ~= 0 then
         fallout.giq_option(4, 389, 140, Tycho18, 50)
     end
 end

@@ -60,7 +60,7 @@ end
 
 function search()
     test = fallout.do_check(fallout.dude_obj(), 1, 0)
-    if fallout.global_var(30) then
+    if fallout.global_var(30) ~= 0 then
         fallout.display_msg(fallout.message_str(86, 100))
     else
         if fallout.is_success(test) then
@@ -112,7 +112,7 @@ end
 
 function skills()
     if use_skill == 12 then
-        if fallout.global_var(30) then
+        if fallout.global_var(30) ~= 0 then
             fallout.display_msg(fallout.message_str(86, 116))
         else
             test = fallout.roll_vs_skill(fallout.dude_obj(), 12, 20)

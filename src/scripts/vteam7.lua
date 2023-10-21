@@ -33,7 +33,7 @@ function start()
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 34)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 48)
         set_alert_tile()
-        if fallout.global_var(146) then
+        if fallout.global_var(146) ~= 0 then
             fallout.move_to(fallout.self_obj(), alert_tile, 0)
         end
         initialized = true
@@ -68,7 +68,7 @@ function combat_p_proc()
         GenSuprAlert()
     end
     if fallout.fixed_param() == 2 then
-        if fallout.global_var(276) then
+        if fallout.global_var(276) ~= 0 then
             if fallout.random(0, 3) == 3 then
                 fallout.critter_injure(fallout.dude_obj(), 1)
             end
@@ -82,7 +82,7 @@ function critter_p_proc()
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     else
         if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
-            if fallout.global_var(146) then
+            if fallout.global_var(146) ~= 0 then
                 hostile = 1
             else
                 if not(fallout.external_var("ignoring_dude")) then
@@ -92,7 +92,7 @@ function critter_p_proc()
                 end
             end
         end
-        if fallout.global_var(146) then
+        if fallout.global_var(146) ~= 0 then
             if fallout.tile_num(fallout.self_obj()) ~= alert_tile then
                 fallout.animate_move_obj_to_tile(fallout.self_obj(), alert_tile, 0)
             end
@@ -116,7 +116,7 @@ function pickup_p_proc()
 end
 
 function talk_p_proc()
-    if fallout.global_var(54) then
+    if fallout.global_var(54) ~= 0 then
         GenSupr08()
     else
         if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) and not(hostile) then

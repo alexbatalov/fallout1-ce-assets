@@ -786,11 +786,11 @@ end
 
 function Killian56()
     fallout.gsay_reply(47, 223)
-    if fallout.global_var(41) then
+    if fallout.global_var(41) ~= 0 then
         fallout.giq_option(4, 47, 224, Killian57, 50)
         fallout.giq_option(-3, 47, 108, Killian57, 50)
     end
-    if fallout.global_var(42) then
+    if fallout.global_var(42) ~= 0 then
         fallout.giq_option(4, 47, 225, Killian58, 50)
     end
 end

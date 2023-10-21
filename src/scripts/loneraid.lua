@@ -97,13 +97,13 @@ function talk_p_proc()
                 fallout.start_gdialog(700, fallout.self_obj(), 4, -1, -1)
                 fallout.gsay_start()
                 known = 1
-                if fallout.global_var(12) then
+                if fallout.global_var(12) ~= 0 then
                     LoneRaid06()
                 else
                     if (fallout.global_var(26) == 2) or fallout.global_var(254) then
                         LoneRaid05()
                     else
-                        if fallout.global_var(611) then
+                        if fallout.global_var(611) ~= 0 then
                             LoneRaid04()
                         else
                             LoneRaid03()

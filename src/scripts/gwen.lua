@@ -159,7 +159,7 @@ function Critter_Action()
     if fallout.global_var(26) == 2 then
         fallout.set_global_var(254, 1)
     else
-        if fallout.global_var(116) then
+        if fallout.global_var(116) ~= 0 then
             fallout.set_global_var(254, 0)
             if fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 3 then
                 v0 = fallout.tile_num_in_direction(fallout.tile_num(fallout.self_obj()), fallout.random(0, 5), 3)
@@ -171,11 +171,11 @@ function Critter_Action()
                 end
             end
         else
-            if fallout.global_var(213) then
+            if fallout.global_var(213) ~= 0 then
                 fallout.set_global_var(254, 1)
             end
             if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
-                if fallout.global_var(214) then
+                if fallout.global_var(214) ~= 0 then
                     fallout.set_global_var(254, 1)
                 end
             end

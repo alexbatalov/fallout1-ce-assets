@@ -27,7 +27,7 @@ end
 function do_dialogue()
     fallout.start_gdialog(309, fallout.self_obj(), 4, -1, -1)
     fallout.gsay_start()
-    if fallout.global_var(140) then
+    if fallout.global_var(140) ~= 0 then
         tylier01()
     else
         tylier09()
@@ -69,7 +69,7 @@ end
 
 function tylier06()
     fallout.gsay_reply(309, 118)
-    if fallout.global_var(141) then
+    if fallout.global_var(141) ~= 0 then
         fallout.giq_option(5, 309, 119, tylier07, 50)
     end
     fallout.giq_option(5, 309, 120, tylier06, 50)

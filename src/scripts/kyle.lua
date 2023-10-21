@@ -99,7 +99,7 @@ function do_dialogue()
                 if fallout.obj_carrying_pid_obj(fallout.dude_obj(), 229) then
                     goto23()
                 else
-                    if fallout.global_var(304) then
+                    if fallout.global_var(304) ~= 0 then
                         goto17()
                     else
                         goto27()
@@ -306,7 +306,7 @@ function combat()
 end
 
 function critter_p_proc()
-    if fallout.global_var(250) then
+    if fallout.global_var(250) ~= 0 then
         hostile = 1
     end
     if fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) > 12 then
@@ -349,7 +349,7 @@ function talk_p_proc()
                         if fallout.obj_carrying_pid_obj(fallout.dude_obj(), 229) then
                             goto23()
                         else
-                            if fallout.global_var(304) then
+                            if fallout.global_var(304) ~= 0 then
                                 goto17()
                             else
                                 goto27()

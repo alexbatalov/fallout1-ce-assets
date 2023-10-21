@@ -278,7 +278,7 @@ end
 function Sinthia04()
     fallout.gsay_reply(338, 109)
     fallout.giq_option(6, 338, 110, Sinthia05, 50)
-    if fallout.global_var(5) then
+    if fallout.global_var(5) ~= 0 then
         fallout.giq_option(6, 338, 111, Sinthia06, 50)
     end
 end

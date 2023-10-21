@@ -171,7 +171,7 @@ function do_dialogue()
         master203()
     else
         if fallout.local_var(4) ~= 0 then
-            if fallout.global_var(56) then
+            if fallout.global_var(56) ~= 0 then
                 master46()
             else
                 if fallout.is_success(fallout.do_check(fallout.dude_obj(), 3, -1)) then

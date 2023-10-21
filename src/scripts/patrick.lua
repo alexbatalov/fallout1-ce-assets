@@ -238,8 +238,8 @@ function Patrick11()
     if fallout.global_var(13) == 1 then
         fallout.gsay_reply(667, 141)
     else
-        if fallout.global_var(37) then
-            if fallout.global_var(38) then
+        if fallout.global_var(37) ~= 0 then
+            if fallout.global_var(38) ~= 0 then
                 fallout.gsay_reply(667, 138)
             else
                 fallout.gsay_reply(667, 137)

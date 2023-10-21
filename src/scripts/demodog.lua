@@ -36,7 +36,7 @@ function start()
             else
                 if (fallout.script_action() == 21) or (fallout.script_action() == 3) then
                     fallout.script_overrides()
-                    if fallout.global_var(5) then
+                    if fallout.global_var(5) ~= 0 then
                         fallout.display_msg(fallout.message_str(374, 100))
                     else
                         fallout.display_msg(fallout.message_str(374, 101))

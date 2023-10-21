@@ -81,7 +81,7 @@ function add_party()
         v0 = fallout.create_object_sid(8, 0, 0, -1)
         fallout.add_obj_to_inven(fallout.external_var("Ian_ptr"), v0)
     end
-    if fallout.global_var(5) then
+    if fallout.global_var(5) ~= 0 then
         if not(fallout.external_var("Dog_ptr")) then
             fallout.set_external_var("Dog_ptr", fallout.create_object_sid(16777252, 0, 0, 229))
             fallout.critter_attempt_placement(fallout.external_var("Dog_ptr"), fallout.tile_num_in_direction(fallout.tile_num(fallout.dude_obj()), 2, 2), fallout.elevation(fallout.dude_obj()))
@@ -108,7 +108,7 @@ function update_party()
         if fallout.global_var(118) == 2 then
             fallout.move_to(fallout.external_var("Ian_ptr"), fallout.tile_num_in_direction(fallout.tile_num(fallout.dude_obj()), 1, 2), fallout.elevation(fallout.dude_obj()))
         end
-        if fallout.global_var(5) then
+        if fallout.global_var(5) ~= 0 then
             fallout.move_to(fallout.external_var("Dog_ptr"), fallout.tile_num_in_direction(fallout.tile_num(fallout.dude_obj()), 2, 1), fallout.elevation(fallout.dude_obj()))
         end
         if fallout.global_var(121) == 2 then
@@ -122,7 +122,7 @@ function remove_party()
         fallout.destroy_object(fallout.external_var("Ian_ptr"))
         fallout.set_global_var(118, 2)
     end
-    if fallout.global_var(5) then
+    if fallout.global_var(5) ~= 0 then
         fallout.destroy_object(fallout.external_var("Dog_ptr"))
         fallout.set_global_var(5, 1)
     end

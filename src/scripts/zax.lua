@@ -307,7 +307,7 @@ function Zax25()
 end
 
 function ZaxClearance()
-    if fallout.global_var(140) then
+    if fallout.global_var(140) ~= 0 then
         fallout.gsay_message(312, 210, 50)
         fallout.gsay_message(312, 211, 50)
         fallout.set_global_var(140, 0)

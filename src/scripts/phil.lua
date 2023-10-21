@@ -116,7 +116,7 @@ function pickup_p_proc()
 end
 
 function talk_p_proc()
-    if fallout.global_var(5) then
+    if fallout.global_var(5) ~= 0 then
         Phil01()
     else
         if not(fallout.map_var(5)) then

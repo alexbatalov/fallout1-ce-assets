@@ -215,7 +215,7 @@ end
 function Vinnie08()
     fallout.gsay_reply(385, 120)
     fallout.giq_option(4, 385, 121, VinnieEnd, 50)
-    if fallout.global_var(39) then
+    if fallout.global_var(39) ~= 0 then
         fallout.giq_option(6, 385, 122, Vinnie09, 50)
     end
 end

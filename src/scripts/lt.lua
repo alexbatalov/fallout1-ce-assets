@@ -144,7 +144,7 @@ end
 
 function combat_p_proc()
     if fallout.fixed_param() == 2 then
-        if fallout.global_var(276) then
+        if fallout.global_var(276) ~= 0 then
             if fallout.random(0, 3) == 3 then
                 fallout.critter_injure(fallout.dude_obj(), 1)
             end

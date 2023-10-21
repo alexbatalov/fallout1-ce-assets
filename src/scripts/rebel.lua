@@ -136,7 +136,7 @@ function talk_p_proc()
         if fallout.local_var(6) ~= 0 then
             fallout.float_msg(fallout.self_obj(), fallout.message_str(669, fallout.random(100, 105)), 2)
         else
-            if fallout.global_var(261) then
+            if fallout.global_var(261) ~= 0 then
                 fallout.float_msg(fallout.self_obj(), fallout.message_str(379, 139), 2)
             else
                 if fallout.global_var(101) ~= 0 then

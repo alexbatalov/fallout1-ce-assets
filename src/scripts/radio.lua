@@ -304,13 +304,13 @@ function RadioEnt()
 end
 
 function RadioStrg1()
-    if fallout.global_var(608) then
+    if fallout.global_var(608) ~= 0 then
         Radio14()
     else
-        if fallout.global_var(610) then
+        if fallout.global_var(610) ~= 0 then
             Radio12()
         else
-            if fallout.global_var(146) then
+            if fallout.global_var(146) ~= 0 then
                 if fallout.map_var(12) == 3 then
                     Radio13()
                 else
@@ -322,13 +322,13 @@ function RadioStrg1()
 end
 
 function RadioStrg2()
-    if fallout.global_var(608) then
+    if fallout.global_var(608) ~= 0 then
         Radio14()
     else
-        if fallout.global_var(610) then
+        if fallout.global_var(610) ~= 0 then
             Radio21()
         else
-            if fallout.global_var(146) then
+            if fallout.global_var(146) ~= 0 then
                 Radio22()
             else
                 Radio23()
@@ -338,16 +338,16 @@ function RadioStrg2()
 end
 
 function RadioVats1()
-    if fallout.global_var(608) then
+    if fallout.global_var(608) ~= 0 then
         Radio12()
     else
         if fallout.map_var(6) and fallout.map_var(7) and not(fallout.local_var(0)) then
             Radio36()
         else
-            if fallout.global_var(610) then
+            if fallout.global_var(610) ~= 0 then
                 Radio31()
             else
-                if fallout.global_var(146) then
+                if fallout.global_var(146) ~= 0 then
                     Radio22()
                 else
                     Radio23()

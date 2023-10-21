@@ -105,7 +105,7 @@ function start()
                     Ranger_rerolls = Ranger_rerolls - 1
                 end
             end
-            if fallout.global_var(295) then
+            if fallout.global_var(295) ~= 0 then
                 Encounter_Num = fallout.global_var(295)
                 fallout.set_global_var(295, 0)
                 fallout.display_msg("City encounter type: " .. Encounter_Num)

@@ -382,7 +382,7 @@ function North_table()
             Encounter_Num = 0
         end
     end
-    if fallout.global_var(295) then
+    if fallout.global_var(295) ~= 0 then
         Encounter_Num = fallout.global_var(295)
         fallout.set_global_var(295, 0)
         fallout.debug_msg("Northern Desert encounter type: " .. Encounter_Num)
@@ -424,7 +424,7 @@ function South_table()
             Encounter_Num = 0
         end
     end
-    if fallout.global_var(295) then
+    if fallout.global_var(295) ~= 0 then
         Encounter_Num = fallout.global_var(295)
         fallout.set_global_var(295, 0)
         fallout.debug_msg("Southern Desert encounter type: " .. Encounter_Num)
@@ -466,7 +466,7 @@ function Shady_table()
             Encounter_Num = 0
         end
     end
-    if fallout.global_var(295) then
+    if fallout.global_var(295) ~= 0 then
         Encounter_Num = fallout.global_var(295)
         fallout.set_global_var(295, 0)
         fallout.debug_msg("Shady Sands Desert encounter type: " .. Encounter_Num)
@@ -508,7 +508,7 @@ function Raider_table()
             Encounter_Num = 0
         end
     end
-    if fallout.global_var(295) then
+    if fallout.global_var(295) ~= 0 then
         Encounter_Num = fallout.global_var(295)
         fallout.set_global_var(295, 0)
         fallout.debug_msg("Raiders Desert encounter type: " .. Encounter_Num)
@@ -550,7 +550,7 @@ function Junk_table()
             Encounter_Num = 0
         end
     end
-    if fallout.global_var(295) then
+    if fallout.global_var(295) ~= 0 then
         Encounter_Num = fallout.global_var(295)
         fallout.set_global_var(295, 0)
         fallout.debug_msg("Junk Town Desert encounter type: " .. Encounter_Num)
@@ -592,7 +592,7 @@ function Hub_table()
             Encounter_Num = 0
         end
     end
-    if fallout.global_var(295) then
+    if fallout.global_var(295) ~= 0 then
         Encounter_Num = fallout.global_var(295)
         fallout.set_global_var(295, 0)
         fallout.debug_msg("Hub Desert encounter type: " .. Encounter_Num)
@@ -634,7 +634,7 @@ function Necrop_table()
             Encounter_Num = 0
         end
     end
-    if fallout.global_var(295) then
+    if fallout.global_var(295) ~= 0 then
         Encounter_Num = fallout.global_var(295)
         fallout.set_global_var(295, 0)
         fallout.debug_msg("Necropolis Desert encounter type: " .. Encounter_Num)
@@ -676,7 +676,7 @@ function Steel_table()
             Encounter_Num = 0
         end
     end
-    if fallout.global_var(295) then
+    if fallout.global_var(295) ~= 0 then
         Encounter_Num = fallout.global_var(295)
         fallout.set_global_var(295, 0)
         fallout.debug_msg("Brotherhood of Steel Desert encounter type: " .. Encounter_Num)
@@ -718,7 +718,7 @@ function Vats_table()
             Encounter_Num = 0
         end
     end
-    if fallout.global_var(295) then
+    if fallout.global_var(295) ~= 0 then
         Encounter_Num = fallout.global_var(295)
         fallout.set_global_var(295, 0)
         fallout.debug_msg("Vats Desert encounter type: " .. Encounter_Num)
@@ -760,7 +760,7 @@ function Glow_table()
             Encounter_Num = 0
         end
     end
-    if fallout.global_var(295) then
+    if fallout.global_var(295) ~= 0 then
         Encounter_Num = fallout.global_var(295)
         fallout.set_global_var(295, 0)
         fallout.debug_msg("Glow Desert encounter type: " .. Encounter_Num)
@@ -802,7 +802,7 @@ function Bone_table()
             Encounter_Num = 0
         end
     end
-    if fallout.global_var(295) then
+    if fallout.global_var(295) ~= 0 then
         Encounter_Num = fallout.global_var(295)
         fallout.set_global_var(295, 0)
         fallout.debug_msg("Bone Desert encounter type: " .. Encounter_Num)
@@ -844,7 +844,7 @@ function Death_table()
             Encounter_Num = 0
         end
     end
-    if fallout.global_var(295) then
+    if fallout.global_var(295) ~= 0 then
         Encounter_Num = fallout.global_var(295)
         fallout.set_global_var(295, 0)
         fallout.debug_msg("Death Claw encounter type: " .. Encounter_Num)

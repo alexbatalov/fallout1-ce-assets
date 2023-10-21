@@ -212,7 +212,7 @@ function talk_p_proc()
     if fallout.global_var(17) and fallout.global_var(18) then
         over81()
     else
-        if fallout.global_var(261) then
+        if fallout.global_var(261) ~= 0 then
             over72()
         else
             if stealing then
@@ -251,7 +251,7 @@ function talk_p_proc()
                         Visits_with_caravans = Visits_with_caravans + 1
                     else
                         if not(fallout.global_var(17)) then
-                            if fallout.global_var(18) then
+                            if fallout.global_var(18) ~= 0 then
                                 over54()
                             else
                                 if Visits_master_alive == 1 then
@@ -262,7 +262,7 @@ function talk_p_proc()
                             end
                             Visits_master_alive = Visits_master_alive + 1
                         else
-                            if fallout.global_var(18) then
+                            if fallout.global_var(18) ~= 0 then
                                 over81()
                             else
                                 if Visits_vats_blown == 1 then

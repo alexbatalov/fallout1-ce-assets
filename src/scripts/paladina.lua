@@ -104,7 +104,7 @@ function PaladinABackground()
 end
 
 function critter_p_proc()
-    if fallout.global_var(250) then
+    if fallout.global_var(250) ~= 0 then
         hostile = 1
     end
     if fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) > 12 then

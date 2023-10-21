@@ -158,7 +158,7 @@ function do_dialogue()
         end
     else
         fallout.set_local_var(4, 1)
-        if fallout.global_var(17) then
+        if fallout.global_var(17) ~= 0 then
             harry26()
         else
             if fallout.global_var(59) == 1 then

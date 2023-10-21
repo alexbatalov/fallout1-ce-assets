@@ -41,10 +41,10 @@ function do_dialogue()
         fallout.set_global_var(0, 1)
         fallout.set_global_var(1, 1)
     end
-    if fallout.global_var(0) then
+    if fallout.global_var(0) ~= 0 then
         elder07()
     else
-        if fallout.global_var(1) then
+        if fallout.global_var(1) ~= 0 then
             elder06()
         else
             fallout.gsay_reply(2, 101)

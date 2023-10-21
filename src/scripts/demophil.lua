@@ -100,7 +100,7 @@ end
 
 function do_dialogue()
     weapon_check()
-    if fallout.global_var(5) then
+    if fallout.global_var(5) ~= 0 then
         Phil01()
     else
         if not(fallout.external_var("dog_is_angry")) then

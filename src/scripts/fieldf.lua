@@ -29,7 +29,7 @@ function start()
 end
 
 function use_p_proc()
-    if fallout.global_var(609) then
+    if fallout.global_var(609) ~= 0 then
         fallout.set_external_var("field_change", "off")
     end
     if fallout.source_obj() ~= fallout.dude_obj() then

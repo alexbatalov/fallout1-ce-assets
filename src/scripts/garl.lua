@@ -167,7 +167,7 @@ function do_dialogue()
             if fallout.external_var("women_killed") > 1 then
                 garl11()
             else
-                if fallout.global_var(116) then
+                if fallout.global_var(116) ~= 0 then
                     garl01()
                 else
                     if fallout.local_var(4) < 1 then
@@ -659,14 +659,14 @@ function Critter_Action()
     if fallout.global_var(26) == 2 then
         fallout.set_global_var(254, 1)
     else
-        if fallout.global_var(116) then
+        if fallout.global_var(116) ~= 0 then
             fallout.set_global_var(254, 0)
         else
-            if fallout.global_var(213) then
+            if fallout.global_var(213) ~= 0 then
                 fallout.set_global_var(254, 1)
             end
             if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
-                if fallout.global_var(214) then
+                if fallout.global_var(214) ~= 0 then
                     fallout.set_global_var(254, 1)
                 end
             end

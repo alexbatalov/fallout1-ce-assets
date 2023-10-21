@@ -35,7 +35,7 @@ function start()
         else
             light.lighting()
         end
-        if fallout.global_var(227) then
+        if fallout.global_var(227) ~= 0 then
             fallout.override_map_start(57, 62, 1, 0)
         else
             if fallout.global_var(32) == 1 then

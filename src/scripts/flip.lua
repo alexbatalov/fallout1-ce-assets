@@ -85,7 +85,7 @@ function critter_p_proc()
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     else
         if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) and (fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 12) then
-            if fallout.global_var(54) then
+            if fallout.global_var(54) ~= 0 then
                 Flip00()
             else
                 if (fallout.obj_pid(fallout.critter_inven_obj(fallout.dude_obj(), 0)) ~= 113) and (fallout.local_var(4) == 0) then

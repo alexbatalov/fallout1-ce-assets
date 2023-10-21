@@ -15,7 +15,7 @@ local initialized = false
 
 function start()
     if not initialized then
-        if fallout.global_var(146) then
+        if fallout.global_var(146) ~= 0 then
             fallout.set_local_var(0, 1)
         end
         initialized = true

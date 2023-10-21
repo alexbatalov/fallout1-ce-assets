@@ -124,7 +124,7 @@ end
 
 function talk_p_proc()
     reaction.get_reaction()
-    if fallout.global_var(12) then
+    if fallout.global_var(12) ~= 0 then
         if known then
             Lance52()
         else

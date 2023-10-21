@@ -43,10 +43,10 @@ function start()
             if fallout.metarule(14, 0) then
                 fallout.set_external_var("field_change", "off")
             end
-            if fallout.global_var(146) then
+            if fallout.global_var(146) ~= 0 then
                 fallout.set_external_var("field_change", "on")
             end
-            if fallout.global_var(609) then
+            if fallout.global_var(609) ~= 0 then
                 fallout.set_external_var("field_change", "off")
             end
             if fallout.global_var(32) == 0 then
@@ -102,7 +102,7 @@ function start()
 end
 
 function combat_p_proc()
-    if fallout.global_var(276) then
+    if fallout.global_var(276) ~= 0 then
         fallout.script_overrides()
         fallout.set_global_var(276, 0)
         fallout.set_global_var(57, 3)

@@ -77,7 +77,7 @@ function critter_p_proc()
         hostile = 0
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     else
-        if fallout.global_var(261) then
+        if fallout.global_var(261) ~= 0 then
             if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
                 fallout.dialogue_system_enter()
             end
@@ -128,7 +128,7 @@ function talk_p_proc()
     reaction.get_reaction()
     fallout.start_gdialog(178, fallout.self_obj(), 4, -1, -1)
     fallout.gsay_start()
-    if fallout.global_var(261) then
+    if fallout.global_var(261) ~= 0 then
         Officer00()
     else
         if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) then

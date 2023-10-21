@@ -36,10 +36,10 @@ function start()
             if fallout.metarule(14, 0) then
                 fallout.set_external_var("field_change", "off")
             end
-            if fallout.global_var(146) then
+            if fallout.global_var(146) ~= 0 then
                 fallout.set_external_var("field_change", "on")
             end
-            if fallout.global_var(609) then
+            if fallout.global_var(609) ~= 0 then
                 fallout.set_external_var("field_change", "off")
             end
             Player_Elevation = fallout.elevation(fallout.dude_obj())

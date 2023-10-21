@@ -112,7 +112,7 @@ function critter_p_proc()
                     guard11()
                 end
             end
-            if fallout.global_var(246) then
+            if fallout.global_var(246) ~= 0 then
                 hostile = 1
             end
         end
@@ -154,7 +154,7 @@ function talk_p_proc()
     if fallout.local_var(9) == 1 then
         fallout.float_msg(fallout.self_obj(), fallout.message_str(185, 166), 0)
     else
-        if fallout.global_var(246) then
+        if fallout.global_var(246) ~= 0 then
             fallout.set_local_var(4, 1)
             guard00()
         else

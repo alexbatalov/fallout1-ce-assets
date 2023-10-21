@@ -25,7 +25,7 @@ function description_p_proc()
     local v0 = 0
     v0 = fallout.message_str(607, 100)
     if fallout.is_success(fallout.do_check(fallout.dude_obj(), 1, fallout.has_trait(0, fallout.dude_obj(), 0))) then
-        if fallout.global_var(608) then
+        if fallout.global_var(608) ~= 0 then
             v0 = v0 .. fallout.message_str(607, 101)
         else
             v0 = v0 .. fallout.message_str(607, 102)
@@ -37,7 +37,7 @@ end
 function use_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
         if fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), 12, 0)) then
-            if fallout.global_var(608) then
+            if fallout.global_var(608) ~= 0 then
                 fallout.display_msg(fallout.message_str(607, 103))
                 fallout.set_global_var(608, 0)
             else

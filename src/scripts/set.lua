@@ -191,7 +191,7 @@ function do_dialogue()
     reaction.get_reaction()
     fallout.start_gdialog(15, fallout.self_obj(), 4, 15, 4)
     fallout.gsay_start()
-    if fallout.global_var(249) then
+    if fallout.global_var(249) ~= 0 then
         Hostile = 1
     end
     if Hostile then

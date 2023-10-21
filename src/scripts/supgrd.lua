@@ -26,7 +26,7 @@ function critter_p_proc()
     if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
         Hostile = 1
     end
-    if fallout.global_var(250) then
+    if fallout.global_var(250) ~= 0 then
         Hostile = 1
     end
     if fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) > 12 then

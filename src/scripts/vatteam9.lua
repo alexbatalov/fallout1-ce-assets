@@ -35,7 +35,7 @@ end
 
 function critter_p_proc()
     if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
-        if fallout.global_var(146) then
+        if fallout.global_var(146) ~= 0 then
             hostile = 1
         else
             if not(fallout.obj_pid(fallout.critter_inven_obj(fallout.dude_obj(), 0)) == 113) then
