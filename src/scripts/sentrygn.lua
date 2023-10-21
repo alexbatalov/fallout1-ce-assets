@@ -21,11 +21,11 @@ function start()
             v1 = fallout.do_check(fallout.source_obj(), 5, 0)
             if fallout.is_success(v1) then
                 if fallout.is_critical(v1) then
-                    if fallout.obj_type(fallout.source_obj()) == fallout.dude_obj() then
+                    if fallout.source_obj() == fallout.dude_obj() then
                         fallout.display_msg(fallout.message_str(304, 102))
                     end
                 else
-                    if fallout.obj_type(fallout.source_obj()) == fallout.dude_obj() then
+                    if fallout.source_obj() == fallout.dude_obj() then
                         fallout.display_msg(fallout.message_str(304, 103))
                     end
                     fallout.critter_dmg(fallout.source_obj(), v0, 0)
@@ -33,13 +33,13 @@ function start()
                 end
             else
                 if fallout.is_critical(v1) then
-                    if fallout.obj_type(fallout.source_obj()) == fallout.dude_obj() then
+                    if fallout.source_obj() == fallout.dude_obj() then
                         fallout.display_msg(fallout.message_str(304, 106))
                     end
                     fallout.critter_dmg(fallout.source_obj(), v0, 0)
                     fallout.display_msg(fallout.message_str(304, 107) .. v0 .. fallout.message_str(304, 108))
                 else
-                    if fallout.obj_type(fallout.source_obj()) == fallout.dude_obj() then
+                    if fallout.source_obj() == fallout.dude_obj() then
                         fallout.display_msg(fallout.message_str(304, 109))
                     end
                     fallout.critter_dmg(fallout.source_obj(), v0, 0)

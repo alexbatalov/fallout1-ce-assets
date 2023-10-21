@@ -4,7 +4,7 @@ local start
 
 function start()
     if fallout.script_action() == 2 then
-        if fallout.obj_type(fallout.source_obj()) == fallout.dude_obj() then
+        if fallout.source_obj() == fallout.dude_obj() then
             if fallout.local_var(0) == 0 then
                 fallout.set_local_var(0, 1)
                 fallout.display_msg(fallout.message_str(303, 100))

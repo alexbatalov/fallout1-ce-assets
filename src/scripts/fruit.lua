@@ -10,7 +10,7 @@ function start()
 end
 
 function spatial_p_proc()
-    if fallout.obj_type(fallout.source_obj()) == fallout.dude_obj() then
+    if fallout.source_obj() == fallout.dude_obj() then
         if fallout.local_var(0) == 0 then
             fallout.set_local_var(0, 1)
             if fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), 17, 0)) then
