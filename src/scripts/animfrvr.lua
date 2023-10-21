@@ -5,12 +5,11 @@ local map_enter_p_proc
 local map_update_p_proc
 
 function start()
-    if fallout.script_action() == 23 then
+    local script_action = fallout.script_action()
+    if script_action == 23 then
         map_update_p_proc()
-    else
-        if fallout.script_action() == 15 then
-            map_enter_p_proc()
-        end
+    elseif script_action == 15 then
+        map_enter_p_proc()
     end
 end
 
@@ -21,7 +20,7 @@ function map_enter_p_proc()
 end
 
 function map_update_p_proc()
-    if fallout.combat_is_initialized() == 0 then
+    if fallout.combat_is_initialized() then
         fallout.reg_anim_func(1, 1)
         fallout.reg_anim_animate_forever(fallout.self_obj(), 0)
         fallout.reg_anim_func(3, 0)
