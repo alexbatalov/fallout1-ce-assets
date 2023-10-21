@@ -3,7 +3,6 @@ local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
 
 local start
-local combat
 local critter_p_proc
 local pickup_p_proc
 local talk_p_proc
@@ -18,52 +17,54 @@ local Merchant05
 local Get_Stuff
 local Put_Stuff
 
-local hostile = 0
+local hostile = false
 local initialized = false
 
-local exit_line = 0
+local STUFF <const> = {
+    [32] = 5,
+    [14] = 5,
+    [25] = 6,
+    [11] = 2,
+    [10] = 2,
+    [23] = 1,
+    [27] = 6,
+    [13] = 1,
+    [9] = 2,
+    [143] = 1,
+}
 
 function start()
     if not initialized then
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 41)
+        fallout.critter_add_trait(self_obj, 1, 5, 50)
         initialized = true
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 41)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 50)
     end
-    if fallout.script_action() == 21 then
-        look_at_p_proc()
-    else
-        if fallout.script_action() == 4 then
-            pickup_p_proc()
-        else
-            if fallout.script_action() == 11 then
-                talk_p_proc()
-            else
-                if fallout.script_action() == 12 then
-                    critter_p_proc()
-                else
-                    if fallout.script_action() == 18 then
-                        destroy_p_proc()
-                    end
-                end
-            end
-        end
-    end
-end
 
-function combat()
-    hostile = 1
+    local script_action = fallout.script_action()
+    if script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    end
 end
 
 function critter_p_proc()
     if hostile then
-        hostile = 0
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
 end
 
 function pickup_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
-        hostile = 1
+        hostile = true
     end
 end
 
@@ -119,62 +120,22 @@ function Merchant05()
 end
 
 function Get_Stuff()
-    local v0 = 0
-    v0 = fallout.create_object_sid(32, 0, 0, -1)
-    fallout.add_mult_objs_to_inven(fallout.self_obj(), v0, 5)
-    v0 = fallout.create_object_sid(14, 0, 0, -1)
-    fallout.add_mult_objs_to_inven(fallout.self_obj(), v0, 5)
-    v0 = fallout.create_object_sid(25, 0, 0, -1)
-    fallout.add_mult_objs_to_inven(fallout.self_obj(), v0, 6)
-    v0 = fallout.create_object_sid(11, 0, 0, -1)
-    fallout.add_mult_objs_to_inven(fallout.self_obj(), v0, 2)
-    v0 = fallout.create_object_sid(10, 0, 0, -1)
-    fallout.add_mult_objs_to_inven(fallout.self_obj(), v0, 2)
-    v0 = fallout.create_object_sid(23, 0, 0, -1)
-    fallout.add_mult_objs_to_inven(fallout.self_obj(), v0, 1)
-    v0 = fallout.create_object_sid(27, 0, 0, -1)
-    fallout.add_mult_objs_to_inven(fallout.self_obj(), v0, 6)
-    v0 = fallout.create_object_sid(13, 0, 0, -1)
-    fallout.add_mult_objs_to_inven(fallout.self_obj(), v0, 1)
-    v0 = fallout.create_object_sid(9, 0, 0, -1)
-    fallout.add_mult_objs_to_inven(fallout.self_obj(), v0, 2)
-    v0 = fallout.create_object_sid(143, 0, 0, -1)
-    fallout.add_mult_objs_to_inven(fallout.self_obj(), v0, 1)
+    local self_obj = fallout.self_obj()
+    for pid, qty in ipairs(STUFF) do
+        local item_obj = fallout.create_object_sid(pid, 0, 0, -1)
+        fallout.add_mult_objs_to_inven(self_obj, item_obj, qty)
+    end
 end
 
 function Put_Stuff()
-    local v0 = 0
-    local v1 = 0
-    v0 = fallout.obj_carrying_pid_obj(fallout.self_obj(), 32)
-    v1 = fallout.rm_mult_objs_from_inven(fallout.self_obj(), v0, 5)
-    fallout.destroy_object(v0)
-    v0 = fallout.obj_carrying_pid_obj(fallout.self_obj(), 14)
-    v1 = fallout.rm_mult_objs_from_inven(fallout.self_obj(), v0, 5)
-    fallout.destroy_object(v0)
-    v0 = fallout.obj_carrying_pid_obj(fallout.self_obj(), 25)
-    v1 = fallout.rm_mult_objs_from_inven(fallout.self_obj(), v0, 6)
-    fallout.destroy_object(v0)
-    v0 = fallout.obj_carrying_pid_obj(fallout.self_obj(), 11)
-    v1 = fallout.rm_mult_objs_from_inven(fallout.self_obj(), v0, 2)
-    fallout.destroy_object(v0)
-    v0 = fallout.obj_carrying_pid_obj(fallout.self_obj(), 10)
-    v1 = fallout.rm_mult_objs_from_inven(fallout.self_obj(), v0, 2)
-    fallout.destroy_object(v0)
-    v0 = fallout.obj_carrying_pid_obj(fallout.self_obj(), 23)
-    v1 = fallout.rm_mult_objs_from_inven(fallout.self_obj(), v0, 1)
-    fallout.destroy_object(v0)
-    v0 = fallout.obj_carrying_pid_obj(fallout.self_obj(), 27)
-    v1 = fallout.rm_mult_objs_from_inven(fallout.self_obj(), v0, 6)
-    fallout.destroy_object(v0)
-    v0 = fallout.obj_carrying_pid_obj(fallout.self_obj(), 13)
-    v1 = fallout.rm_mult_objs_from_inven(fallout.self_obj(), v0, 1)
-    fallout.destroy_object(v0)
-    v0 = fallout.obj_carrying_pid_obj(fallout.self_obj(), 9)
-    v1 = fallout.rm_mult_objs_from_inven(fallout.self_obj(), v0, 2)
-    fallout.destroy_object(v0)
-    v0 = fallout.obj_carrying_pid_obj(fallout.self_obj(), 143)
-    v1 = fallout.rm_mult_objs_from_inven(fallout.self_obj(), v0, 1)
-    fallout.destroy_object(v0)
+    local self_obj = fallout.self_obj()
+    for pid, qty in ipairs(STUFF) do
+        local item_obj = fallout.obj_carrying_pid_obj(self_obj, pid)
+        if item_obj ~= nil then
+            fallout.rm_mult_objs_from_inven(self_obj, item_obj, qty)
+            fallout.destroy_object(item_obj)
+        end
+    end
 end
 
 local exports = {}
