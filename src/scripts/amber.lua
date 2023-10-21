@@ -35,22 +35,17 @@ function start()
     if not initialized then
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 46)
         initialized = true
-    else
-        if fallout.script_action() == 12 then
-            critter_p_proc()
-        else
-            if fallout.script_action() == 18 then
-                destroy_p_proc()
-            else
-                if fallout.script_action() == 21 then
-                    look_at_p_proc()
-                else
-                    if fallout.script_action() == 11 then
-                        talk_p_proc()
-                    end
-                end
-            end
-        end
+    end
+
+    local script_action = fallout.script_action()
+    if script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
     end
 end
 
@@ -104,7 +99,7 @@ end
 
 function Amber3()
     fallout.gsay_reply(272, 107)
-    if not(fallout.local_var(1)) then
+    if fallout.local_var(1) == 0 then
         fallout.giq_option(4, 272, 108, Amber4, 50)
     end
     fallout.giq_option(4, 272, 109, AmberEnd, 50)
@@ -117,12 +112,10 @@ end
 function Amber3a()
     if fallout.local_var(0) < 6 then
         Amber9()
+    elseif fallout.local_var(0) == 6 then
+        Amber10()
     else
-        if fallout.local_var(0) == 6 then
-            Amber10()
-        else
-            Amber15()
-        end
+        Amber15()
     end
 end
 
@@ -140,13 +133,11 @@ function Amber5()
 end
 
 function Amber6()
-    local v0 = 0
     fallout.set_local_var(1, fallout.local_var(1) + 1)
     fallout.gsay_message(272, 119, 50)
     fallout.gfade_out(800)
     fallout.gfade_in(800)
-    v0 = 3600 * 9
-    fallout.game_time_advance(fallout.game_ticks(v0))
+    fallout.game_time_advance(fallout.game_ticks(3600 * 9))
     fallout.critter_mod_skill(fallout.dude_obj(), 17, 15)
     fallout.gsay_message(272, 120, 50)
 end
@@ -156,13 +147,11 @@ function Amber7()
 end
 
 function Amber8()
-    local v0 = 0
     fallout.set_local_var(1, fallout.local_var(1) + 1)
     fallout.gsay_message(272, 122, 50)
     fallout.gfade_out(800)
     fallout.gfade_in(800)
-    v0 = 3600 * 7
-    fallout.game_time_advance(fallout.game_ticks(v0))
+    fallout.game_time_advance(fallout.game_ticks(3600 * 7))
     fallout.critter_mod_skill(fallout.dude_obj(), 17, 15)
     fallout.gsay_message(272, 123, 50)
 end
@@ -181,12 +170,10 @@ function Amber10()
 end
 
 function Amber11()
-    local v0 = 0
     fallout.gsay_message(272, 130, 50)
-    v0 = 3600 * 10
     fallout.gfade_out(800)
     fallout.gfade_in(800)
-    fallout.game_time_advance(fallout.game_ticks(v0))
+    fallout.game_time_advance(fallout.game_ticks(3600 * 10))
     fallout.critter_mod_skill(fallout.dude_obj(), 8, 12)
     fallout.critter_mod_skill(fallout.dude_obj(), 9, 10)
     fallout.critter_mod_skill(fallout.dude_obj(), 10, 8)
@@ -195,12 +182,10 @@ function Amber11()
 end
 
 function Amber12()
-    local v0 = 0
     fallout.gsay_message(272, 132, 50)
-    v0 = 3600 * 10
     fallout.gfade_out(800)
     fallout.gfade_in(800)
-    fallout.game_time_advance(fallout.game_ticks(v0))
+    fallout.game_time_advance(fallout.game_ticks(3600 * 10))
     fallout.critter_mod_skill(fallout.dude_obj(), 3, 10)
     fallout.critter_mod_skill(fallout.dude_obj(), 0, 8)
     fallout.critter_mod_skill(fallout.dude_obj(), 5, 8)
@@ -209,12 +194,10 @@ function Amber12()
 end
 
 function Amber13()
-    local v0 = 0
     fallout.gsay_message(272, 134, 50)
-    v0 = 3600 * 10
     fallout.gfade_out(800)
     fallout.gfade_in(800)
-    fallout.game_time_advance(fallout.game_ticks(v0))
+    fallout.game_time_advance(fallout.game_ticks(3600 * 10))
     fallout.critter_mod_skill(fallout.dude_obj(), 17, 10)
     fallout.critter_mod_skill(fallout.dude_obj(), 8, 8)
     fallout.critter_mod_skill(fallout.dude_obj(), 5, 8)
@@ -223,12 +206,10 @@ function Amber13()
 end
 
 function Amber14()
-    local v0 = 0
     fallout.gsay_message(272, 136, 50)
-    v0 = 3600 * 10
     fallout.gfade_out(800)
     fallout.gfade_in(800)
-    fallout.game_time_advance(fallout.game_ticks(v0))
+    fallout.game_time_advance(fallout.game_ticks(3600 * 10))
     fallout.critter_mod_skill(fallout.dude_obj(), 15, 10)
     fallout.critter_mod_skill(fallout.dude_obj(), 14, 8)
     fallout.critter_mod_skill(fallout.dude_obj(), 16, 8)
@@ -250,7 +231,7 @@ function Amber17()
         fallout.giq_option(7, 272, 141, Amber10, 50)
     end
     fallout.giq_option(7, 272, 142, AmberEnd, 50)
-    if not(fallout.local_var(1)) then
+    if not (fallout.local_var(1)) then
         fallout.giq_option(6, 272, 143, Amber4, 50)
     end
 end
