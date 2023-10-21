@@ -1,60 +1,50 @@
 local fallout = require("fallout")
 
 local start
-local do_dialogue
+local pickup_p_proc
+local talk_p_proc
+local critter_p_proc
+local look_at_p_proc
 
-local rndx = 0
-local hostile = 0
+local hostile = false
 
 function start()
-    if fallout.script_action() == 11 then
-        do_dialogue()
-    else
-        if fallout.script_action() == 12 then
-            if hostile then
-                hostile = 0
-                fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
-            end
-        else
-            if fallout.script_action() == 4 then
-                hostile = 1
-            else
-                if (fallout.script_action() == 21) or (fallout.script_action() == 3) then
-                    fallout.script_overrides()
-                    fallout.display_msg(fallout.message_str(4, 100))
-                end
-            end
-        end
+    local script_action = fallout.script_action()
+    if script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 21 or script_action == 3 then
+        look_at_p_proc()
     end
 end
 
-function do_dialogue()
-    local v0 = 0
-    rndx = fallout.random(0, 6)
-    if rndx == 0 then
-        v0 = fallout.message_str(4, 101)
+function pickup_p_proc()
+    hostile = true
+end
+
+function talk_p_proc()
+    local msg = fallout.message_str(4, 101 + fallout.random(0, 6))
+    fallout.float_msg(fallout.self_obj(), msg, 0)
+end
+
+function critter_p_proc()
+    if hostile then
+        hostile = false
+        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
-    if rndx == 1 then
-        v0 = fallout.message_str(4, 102)
-    end
-    if rndx == 2 then
-        v0 = fallout.message_str(4, 103)
-    end
-    if rndx == 3 then
-        v0 = fallout.message_str(4, 104)
-    end
-    if rndx == 4 then
-        v0 = fallout.message_str(4, 105)
-    end
-    if rndx == 5 then
-        v0 = fallout.message_str(4, 106)
-    end
-    if rndx == 6 then
-        v0 = fallout.message_str(4, 107)
-    end
-    fallout.float_msg(fallout.self_obj(), v0, 0)
+end
+
+function look_at_p_proc()
+    fallout.script_overrides()
+    fallout.display_msg(fallout.message_str(4, 100))
 end
 
 local exports = {}
 exports.start = start
+exports.talk_p_proc = talk_p_proc
+exports.critter_p_proc = critter_p_proc
+exports.look_at_p_proc = look_at_p_proc
 return exports
