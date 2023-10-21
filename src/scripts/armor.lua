@@ -8,40 +8,24 @@ local use_skill_on_p_proc
 local use_obj_on_p_proc
 local chance
 local try_skill
-local fixed
-local failure
-
-local Test = 0
-local temp = 0
-local bonus = 0
-local use_skill = 0
 
 function start()
-    bonus = 0
-    if fallout.script_action() == 21 then
+    local script_action = fallout.script_action()
+    if script_action == 21 then
         look_at_p_proc()
-    else
-        if fallout.script_action() == 6 then
-            use_p_proc()
-        else
-            if fallout.script_action() == 4 then
-                pickup_p_proc()
-            else
-                if fallout.script_action() == 8 then
-                    use_skill_on_p_proc()
-                else
-                    if fallout.script_action() == 7 then
-                        use_obj_on_p_proc()
-                    end
-                end
-            end
-        end
+    elseif script_action == 6 then
+        use_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 8 then
+        use_skill_on_p_proc()
+    elseif script_action == 7 then
+        use_obj_on_p_proc()
     end
 end
 
 function use_p_proc()
-    if fallout.source_obj() ~= fallout.dude_obj() then
-    else
+    if fallout.source_obj() == fallout.dude_obj() then
         fallout.display_msg(fallout.message_str(936, 101))
     end
 end
@@ -55,30 +39,35 @@ function look_at_p_proc()
 end
 
 function use_skill_on_p_proc()
-    use_skill = fallout.action_being_used()
-    try_skill()
+    try_skill(fallout.action_being_used(), 0)
 end
 
 function use_obj_on_p_proc()
     if fallout.obj_pid(fallout.obj_being_used_with()) == 75 then
-        bonus = 10
-        use_skill = 13
-        use_skill_on_p_proc()
+        try_skill(13, 10)
     else
         fallout.display_msg(fallout.message_str(936, 105))
     end
 end
 
-function chance()
-    Test = fallout.roll_vs_skill(fallout.dude_obj(), 13, bonus)
-    if fallout.is_success(Test) then
-        fixed()
+function chance(bonus)
+    if fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), 13, bonus)) then
+        local xp = 500
+        fallout.script_overrides()
+        fallout.set_global_var(304, 4)
+        fallout.display_msg(fallout.message_str(936, 104))
+        fallout.create_object_sid(3, 22475, 0, -1)
+        fallout.display_msg(fallout.message_str(936, 107) .. xp .. fallout.message_str(936, 108))
+        fallout.give_exp_points(xp)
+        fallout.destroy_object(fallout.self_obj())
     else
-        failure()
+        fallout.script_overrides()
+        fallout.set_global_var(304, 3)
+        fallout.display_msg(fallout.message_str(936, 106))
     end
 end
 
-function try_skill()
+function try_skill(use_skill, bonus)
     if use_skill == 13 then
         if fallout.global_var(304) > 1 then
             if fallout.global_var(304) == 3 then
@@ -86,10 +75,10 @@ function try_skill()
                     fallout.script_overrides()
                     fallout.display_msg(fallout.message_str(936, 103))
                 else
-                    chance()
+                    chance(bonus)
                 end
             else
-                chance()
+                chance(bonus)
             end
         else
             fallout.script_overrides()
@@ -99,23 +88,6 @@ function try_skill()
         fallout.script_overrides()
         fallout.display_msg(fallout.message_str(936, 105))
     end
-end
-
-function fixed()
-    fallout.script_overrides()
-    fallout.set_global_var(304, 4)
-    fallout.display_msg(fallout.message_str(936, 104))
-    fallout.create_object_sid(3, 22475, 0, -1)
-    temp = 500
-    fallout.display_msg(fallout.message_str(936, 107) .. temp .. fallout.message_str(936, 108))
-    fallout.give_exp_points(temp)
-    fallout.destroy_object(fallout.self_obj())
-end
-
-function failure()
-    fallout.script_overrides()
-    fallout.set_global_var(304, 3)
-    fallout.display_msg(fallout.message_str(936, 106))
 end
 
 local exports = {}
