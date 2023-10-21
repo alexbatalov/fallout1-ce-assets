@@ -16,17 +16,20 @@ fallout.create_external_var("Tycho_ptr")
 fallout.create_external_var("Katja_ptr")
 fallout.create_external_var("Tandi_ptr")
 
+fallout.set_external_var("Ian_ptr", nil)
+fallout.set_external_var("Dog_ptr", nil)
+fallout.set_external_var("Tycho_ptr", nil)
+fallout.set_external_var("Katja_ptr", nil)
+fallout.set_external_var("Tandi_ptr", nil)
+
 function start()
-    if fallout.script_action() == 15 then
+    local script_action = fallout.script_action()
+    if script_action == 15 then
         map_enter_p_proc()
-    else
-        if fallout.script_action() == 23 then
-            map_update_p_proc()
-        else
-            if fallout.script_action() == 16 then
-                map_exit_p_proc()
-            end
-        end
+    elseif script_action == 23 then
+        map_update_p_proc()
+    elseif script_action == 16 then
+        map_exit_p_proc()
     end
 end
 
