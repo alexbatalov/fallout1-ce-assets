@@ -235,7 +235,7 @@ end
 
 function talk_p_proc()
     get_reaction()
-    if fallout.local_var(4) then
+    if fallout.local_var(4) ~= 0 then
         fallout.float_msg(fallout.self_obj(), fallout.message_str(185, 166), 0)
     else
         if fallout.critter_state(fallout.self_obj()) & 1 then

@@ -89,7 +89,7 @@ function look_at_p_proc()
 end
 
 function talk_p_proc()
-    if fallout.local_var(0) then
+    if fallout.local_var(0) ~= 0 then
         ChdScout35()
     else
         fallout.set_local_var(0, 1)

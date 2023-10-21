@@ -55,7 +55,7 @@ end
 function do_dialogue()
     fallout.start_gdialog(100, fallout.self_obj(), 4, -1, -1)
     fallout.gsay_start()
-    if fallout.local_var(0) then
+    if fallout.local_var(0) ~= 0 then
         super00()
     else
         fallout.set_local_var(0, 1)

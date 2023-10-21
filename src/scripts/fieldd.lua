@@ -50,7 +50,7 @@ function turn_field_on()
 end
 
 function toggle_field()
-    if fallout.local_var(0) then
+    if fallout.local_var(0) ~= 0 then
         turn_field_on()
     else
         turn_field_off()

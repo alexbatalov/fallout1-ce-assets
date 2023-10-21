@@ -83,7 +83,7 @@ end
 
 function look_at_p_proc()
     fallout.script_overrides()
-    if fallout.local_var(0) then
+    if fallout.local_var(0) ~= 0 then
         fallout.display_msg(fallout.message_str(253, 100))
     else
         fallout.display_msg(fallout.message_str(253, 101))
@@ -97,7 +97,7 @@ end
 function talk_p_proc()
     fallout.start_gdialog(253, fallout.self_obj(), 4, -1, -1)
     fallout.gsay_start()
-    if fallout.local_var(0) then
+    if fallout.local_var(0) ~= 0 then
         Lorri04()
     else
         Lorri01()

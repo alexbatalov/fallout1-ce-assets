@@ -12,7 +12,7 @@ function start()
         fallout.set_obj_visibility(field1, fallout.local_var(0))
     end
     if fallout.script_action() == 6 then
-        if fallout.local_var(0) then
+        if fallout.local_var(0) ~= 0 then
             fallout.set_obj_visibility(field1, 0)
             fallout.set_local_var(0, 0)
         else

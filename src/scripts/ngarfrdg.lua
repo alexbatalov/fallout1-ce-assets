@@ -79,7 +79,7 @@ function Open_Fridge()
             fallout.script_overrides()
             fallout.display_msg(fallout.message_str(420, 100))
         else
-            if fallout.local_var(1) then
+            if fallout.local_var(1) ~= 0 then
                 fallout.set_local_var(1, 0)
             else
                 fallout.set_local_var(1, 1)
@@ -90,7 +90,7 @@ end
 
 function pick_lock()
     fallout.script_overrides()
-    if fallout.local_var(0) then
+    if fallout.local_var(0) ~= 0 then
         fallout.display_msg(fallout.message_str(420, 101))
     else
         if fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), 9, 0)) then

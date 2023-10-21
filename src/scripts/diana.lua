@@ -68,7 +68,7 @@ function do_dialogue()
     reaction.get_reaction()
     fallout.start_gdialog(142, fallout.self_obj(), 4, -1, -1)
     fallout.gsay_start()
-    if fallout.local_var(4) then
+    if fallout.local_var(4) ~= 0 then
         Diana10()
     else
         if fallout.global_var(611) == 1 then

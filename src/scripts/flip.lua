@@ -108,7 +108,7 @@ end
 
 function look_at_p_proc()
     fallout.script_overrides()
-    if fallout.local_var(4) then
+    if fallout.local_var(4) ~= 0 then
         fallout.display_msg(fallout.message_str(367, 100))
     else
         fallout.display_msg(fallout.message_str(367, 101))

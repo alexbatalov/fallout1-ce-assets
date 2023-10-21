@@ -19,7 +19,7 @@ function start()
         end
     end
     if fallout.script_action() == 6 then
-        if fallout.local_var(0) then
+        if fallout.local_var(0) ~= 0 then
             fallout.set_obj_visibility(fallout.external_var("Psy_Field_Ptr"), 0)
             fallout.set_map_var(6, 0)
             fallout.set_local_var(0, 0)

@@ -156,7 +156,7 @@ function Critter_Action()
         Hostile = 0
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     else
-        if fallout.local_var(5) then
+        if fallout.local_var(5) ~= 0 then
             loopcount = loopcount + 1
             if loopcount > 40 then
                 loopcount = 0

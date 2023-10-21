@@ -115,7 +115,7 @@ function do_dialogue()
     if Weapons == 1 then
         mutan01()
     else
-        if fallout.local_var(4) then
+        if fallout.local_var(4) ~= 0 then
             mutan13()
         else
             fallout.set_local_var(4, 1)

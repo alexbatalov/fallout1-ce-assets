@@ -102,7 +102,7 @@ end
 
 function look_at_p_proc()
     fallout.script_overrides()
-    if fallout.local_var(4) then
+    if fallout.local_var(4) ~= 0 then
         fallout.display_msg(fallout.message_str(288, 100))
     else
         fallout.display_msg(fallout.message_str(288, 101))
@@ -129,7 +129,7 @@ function talk_p_proc()
                 if (fallout.global_var(128) == 2) and (fallout.local_var(8) == 0) then
                     Jon16()
                 else
-                    if fallout.local_var(4) then
+                    if fallout.local_var(4) ~= 0 then
                         Jon13()
                     else
                         if fallout.local_var(1) < 2 then

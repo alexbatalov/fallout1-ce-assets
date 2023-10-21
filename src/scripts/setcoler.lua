@@ -27,7 +27,7 @@ function start()
                 if fallout.local_var(1) == 0 then
                     find_iq()
                 else
-                    if fallout.local_var(2) then
+                    if fallout.local_var(2) ~= 0 then
                         close_cooler()
                     else
                         open_cooler()
@@ -47,7 +47,7 @@ end
 function trap_stuff()
     fallout.script_overrides()
     use_skill = fallout.action_being_used()
-    if fallout.local_var(0) then
+    if fallout.local_var(0) ~= 0 then
         if fallout.local_var(1) == 0 then
             if use_skill == 11 then
                 disarm_trap()
@@ -84,7 +84,7 @@ end
 
 function find_iq()
     fallout.script_overrides()
-    if fallout.local_var(0) then
+    if fallout.local_var(0) ~= 0 then
         failure()
     else
         test = fallout.do_check(fallout.dude_obj(), 4, 0)

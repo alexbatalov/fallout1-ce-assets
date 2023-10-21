@@ -86,7 +86,7 @@ end
 
 function look_at_p_proc()
     fallout.script_overrides()
-    if fallout.local_var(4) then
+    if fallout.local_var(4) ~= 0 then
         fallout.display_msg(fallout.message_str(664, 101))
     else
         fallout.display_msg(fallout.message_str(664, 100))
@@ -97,7 +97,7 @@ function talk_p_proc()
     reaction.get_reaction()
     fallout.start_gdialog(664, fallout.self_obj(), 4, -1, -1)
     fallout.gsay_start()
-    if fallout.local_var(4) then
+    if fallout.local_var(4) ~= 0 then
         Chuck22()
     else
         Chuck01()

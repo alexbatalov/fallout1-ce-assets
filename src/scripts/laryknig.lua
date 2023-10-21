@@ -74,7 +74,7 @@ function pickup_p_proc()
 end
 
 function talk_p_proc()
-    if fallout.local_var(0) then
+    if fallout.local_var(0) ~= 0 then
         goto05()
     else
         if fallout.local_var(1) == 0 then

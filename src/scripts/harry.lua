@@ -150,7 +150,7 @@ function do_dialogue()
     reaction.get_reaction()
     fallout.start_gdialog(16, fallout.self_obj(), 4, 5, 4)
     fallout.gsay_start()
-    if fallout.local_var(4) then
+    if fallout.local_var(4) ~= 0 then
         if fallout.local_var(1) >= 2 then
             harry19()
         else

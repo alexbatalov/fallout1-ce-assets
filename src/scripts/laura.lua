@@ -314,7 +314,7 @@ function do_dialogue()
                     end
                 end
             else
-                if fallout.local_var(6) then
+                if fallout.local_var(6) ~= 0 then
                     if fallout.local_var(7) == 1 then
                         laura61()
                     else

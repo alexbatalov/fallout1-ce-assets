@@ -111,7 +111,7 @@ function damage_p_proc()
 end
 
 function description_p_proc()
-    if fallout.local_var(4) then
+    if fallout.local_var(4) ~= 0 then
         fallout.display_msg(fallout.message_str(168, 101))
     end
 end

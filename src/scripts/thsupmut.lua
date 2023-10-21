@@ -73,7 +73,7 @@ function talk_p_proc()
     fallout.script_overrides()
     fallout.start_gdialog(265, fallout.self_obj(), 4, -1, -1)
     fallout.gsay_start()
-    if fallout.local_var(0) then
+    if fallout.local_var(0) ~= 0 then
         goto7()
     else
         goto0()

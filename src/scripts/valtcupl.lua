@@ -76,7 +76,7 @@ function talk_p_proc()
     reaction.get_reaction()
     fallout.start_gdialog(-1, 209, fallout.self_obj(), -1, -1)
     fallout.gsay_start()
-    if fallout.local_var(4) then
+    if fallout.local_var(4) ~= 0 then
         if fallout.local_var(1) < 2 then
             ValtCupl07()
         else

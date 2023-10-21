@@ -69,7 +69,7 @@ function pickup_p_proc()
 end
 
 function talk_p_proc()
-    if fallout.local_var(0) then
+    if fallout.local_var(0) ~= 0 then
         Cougar04()
     else
         fallout.start_gdialog(35, fallout.self_obj(), 4, -1, -1)

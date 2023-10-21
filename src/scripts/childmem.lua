@@ -95,7 +95,7 @@ function do_dialogue()
 end
 
 function pre_dialogue()
-    if fallout.local_var(4) then
+    if fallout.local_var(4) ~= 0 then
         child16()
     else
         if fallout.global_var(35) > 0 then

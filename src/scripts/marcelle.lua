@@ -140,7 +140,7 @@ function critter_p_proc()
             end
             if (fallout.global_var(143) ~= 2) and (fallout.map_var(3) ~= 0) then
                 if fallout.tile_num(fallout.self_obj()) ~= waiting_tile then
-                    if fallout.local_var(5) then
+                    if fallout.local_var(5) ~= 0 then
                         fallout.set_local_var(5, 0)
                         sleeping_disabled = 1
                     else
@@ -201,7 +201,7 @@ end
 
 function look_at_p_proc()
     fallout.script_overrides()
-    if fallout.local_var(4) then
+    if fallout.local_var(4) ~= 0 then
         fallout.display_msg(fallout.message_str(339, 100))
     else
         fallout.display_msg(fallout.message_str(339, 101))

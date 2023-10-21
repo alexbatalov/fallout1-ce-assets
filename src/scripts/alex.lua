@@ -81,7 +81,7 @@ function destroy_p_proc()
 end
 
 function look_at_p_proc()
-    if fallout.local_var(0) then
+    if fallout.local_var(0) ~= 0 then
         fallout.script_overrides()
         fallout.display_msg(fallout.message_str(670, 100))
     end
@@ -91,7 +91,7 @@ function talk_p_proc()
     if fallout.global_var(128) == 2 then
         fallout.float_msg(fallout.self_obj(), fallout.message_str(670, 101) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1), 0)
     else
-        if fallout.local_var(0) then
+        if fallout.local_var(0) ~= 0 then
             Alex01()
         else
             fallout.start_gdialog(670, fallout.self_obj(), 4, -1, -1)

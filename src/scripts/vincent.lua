@@ -91,7 +91,7 @@ function critter_p_proc()
             end
         else
             if time.is_day() then
-                if fallout.local_var(6) then
+                if fallout.local_var(6) ~= 0 then
                     fallout.set_local_var(6, 0)
                     fallout.animate_move_obj_to_tile(fallout.self_obj(), home_tile, 0)
                 else
@@ -100,7 +100,7 @@ function critter_p_proc()
                     end
                 end
             else
-                if fallout.local_var(6) then
+                if fallout.local_var(6) ~= 0 then
                     if fallout.tile_num(fallout.self_obj()) ~= sleep_tile then
                         fallout.animate_move_obj_to_tile(fallout.self_obj(), sleep_tile, 0)
                     end

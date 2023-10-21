@@ -69,7 +69,7 @@ function talk_p_proc()
 end
 
 function Brenden01()
-    if fallout.local_var(0) then
+    if fallout.local_var(0) ~= 0 then
         fallout.gsay_reply(666, 112)
     else
         fallout.set_local_var(0, 1)

@@ -104,7 +104,7 @@ function do_dialogue()
     has_parts = fallout.obj_carrying_pid_obj(fallout.dude_obj(), 98)
     fallout.start_gdialog(81, fallout.self_obj(), 4, -1, -1)
     fallout.gsay_start()
-    if fallout.local_var(4) then
+    if fallout.local_var(4) ~= 0 then
         if fallout.local_var(1) < 2 then
             leader30()
         else

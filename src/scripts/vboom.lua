@@ -81,7 +81,7 @@ function use_skill_on_p_proc()
     local v0 = 0
     local v1 = 0
     if fallout.action_being_used() == 11 then
-        if fallout.local_var(0) then
+        if fallout.local_var(0) ~= 0 then
             fallout.script_overrides()
             v1 = fallout.roll_vs_skill(fallout.dude_obj(), 11, 10)
             if fallout.is_success(v1) then

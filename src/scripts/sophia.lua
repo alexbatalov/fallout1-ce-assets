@@ -100,7 +100,7 @@ function talk_p_proc()
     reaction.get_reaction()
     fallout.start_gdialog(319, fallout.self_obj(), 4, -1, -1)
     fallout.gsay_start()
-    if fallout.local_var(4) then
+    if fallout.local_var(4) ~= 0 then
         if fallout.local_var(1) < 2 then
             goto20()
         else

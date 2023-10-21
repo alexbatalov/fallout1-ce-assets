@@ -45,7 +45,7 @@ function start()
                     Hostile = 1
                 else
                     if fallout.script_action() == 13 then
-                        if fallout.local_var(3) then
+                        if fallout.local_var(3) ~= 0 then
                             if fallout.fixed_param() == 2 then
                                 rndx = fallout.random(1, 6) - 5
                                 if rndx < 0 then
@@ -89,7 +89,7 @@ function Critter_Action()
         Hostile = 0
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     else
-        if fallout.local_var(0) then
+        if fallout.local_var(0) ~= 0 then
             loopcount = loopcount + 1
             if loopcount > 40 then
                 loopcount = 0

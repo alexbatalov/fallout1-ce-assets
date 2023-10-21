@@ -53,7 +53,7 @@ function destroy_p_proc()
 end
 
 function look_at_p_proc()
-    if fallout.local_var(0) then
+    if fallout.local_var(0) ~= 0 then
         fallout.script_overrides()
         fallout.display_msg(fallout.message_str(267, 100))
     end

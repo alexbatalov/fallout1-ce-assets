@@ -56,7 +56,7 @@ function destroy_p_proc()
 end
 
 function look_at_p_proc()
-    if fallout.local_var(0) then
+    if fallout.local_var(0) ~= 0 then
         fallout.script_overrides()
         fallout.display_msg(fallout.message_str(269, 100))
     end
@@ -68,7 +68,7 @@ end
 
 function talk_p_proc()
     fallout.script_overrides()
-    if fallout.local_var(0) then
+    if fallout.local_var(0) ~= 0 then
         Orfeo3()
     else
         fallout.set_local_var(0, 1)

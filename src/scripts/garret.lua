@@ -183,7 +183,7 @@ function do_dialogue()
         else
             if time.is_day() then
                 reaction.get_reaction()
-                if fallout.local_var(4) then
+                if fallout.local_var(4) ~= 0 then
                     garret02a()
                 else
                     fallout.set_local_var(4, 1)

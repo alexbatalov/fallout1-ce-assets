@@ -59,7 +59,7 @@ function destroy_p_proc()
 end
 
 function talk_p_proc()
-    if fallout.local_var(4) then
+    if fallout.local_var(4) ~= 0 then
         if fallout.map_var(8) == 3 then
             fallout.float_msg(fallout.self_obj(), fallout.message_str(662, 105), 0)
         else

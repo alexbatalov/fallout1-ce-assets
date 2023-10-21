@@ -60,7 +60,7 @@ end
 function do_dialogue()
     fallout.start_gdialog(72, fallout.self_obj(), 4, -1, -1)
     fallout.gsay_start()
-    if fallout.local_var(4) then
+    if fallout.local_var(4) ~= 0 then
         ghoul06()
     else
         if fallout.local_var(1) >= 2 then
@@ -142,7 +142,7 @@ function Critter_Action()
         Hostile = 0
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     else
-        if fallout.local_var(5) then
+        if fallout.local_var(5) ~= 0 then
             loopcount = loopcount + 1
             if loopcount > 40 then
                 loopcount = 0

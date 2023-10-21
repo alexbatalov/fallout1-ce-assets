@@ -55,7 +55,7 @@ end
 
 function look_at_p_proc()
     fallout.script_overrides()
-    if fallout.local_var(0) then
+    if fallout.local_var(0) ~= 0 then
         if time.is_night() then
             fallout.display_msg(fallout.message_str(270, 100))
         else

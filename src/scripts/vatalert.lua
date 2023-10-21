@@ -54,7 +54,7 @@ end
 
 function use_skill_on_p_proc()
     if fallout.action_being_used() == 11 then
-        if fallout.local_var(0) then
+        if fallout.local_var(0) ~= 0 then
             fallout.script_overrides()
             if fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), 11, 0)) then
                 fallout.display_msg(fallout.message_str(611, 104))

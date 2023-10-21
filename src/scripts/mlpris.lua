@@ -19,7 +19,7 @@ function start()
     end
     if fallout.script_action() == 6 then
         fallout.display_msg(fallout.message_str(766, 187))
-        if fallout.local_var(0) then
+        if fallout.local_var(0) ~= 0 then
             fallout.set_local_var(0, 0)
             fallout.set_map_var(7, 0)
         else

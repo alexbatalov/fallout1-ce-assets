@@ -799,7 +799,7 @@ function goto150()
 end
 
 function do_dialogue()
-    if fallout.local_var(7) then
+    if fallout.local_var(7) ~= 0 then
         if fallout.local_var(1) < 2 then
             goto60()
         else

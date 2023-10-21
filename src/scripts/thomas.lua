@@ -197,7 +197,7 @@ function do_combat()
                 end
             end
             sequence = atk + outcome
-            if fallout.local_var(10) then
+            if fallout.local_var(10) ~= 0 then
                 do_round()
             else
                 fell = 2

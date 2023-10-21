@@ -86,10 +86,10 @@ function talk_p_proc()
             Jason19()
         end
     end
-    if fallout.local_var(0) then
+    if fallout.local_var(0) ~= 0 then
         Jason18()
     else
-        if fallout.local_var(1) then
+        if fallout.local_var(1) ~= 0 then
             Jason16()
         else
             Jason01()

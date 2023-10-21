@@ -133,7 +133,7 @@ function start()
                 if moving then
                     my_hex = fallout.tile_num(fallout.self_obj())
                     if my_hex == fallout.local_var(4) then
-                        if fallout.local_var(1) then
+                        if fallout.local_var(1) ~= 0 then
                             fallout.set_local_var(3, fallout.local_var(3) + 1)
                         else
                             fallout.set_local_var(3, fallout.local_var(3) - 1)

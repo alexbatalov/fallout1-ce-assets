@@ -85,7 +85,7 @@ end
 
 function description_p_proc()
     fallout.script_overrides()
-    if fallout.local_var(0) then
+    if fallout.local_var(0) ~= 0 then
         fallout.display_msg(fallout.message_str(365, 100))
     else
         fallout.display_msg(fallout.message_str(365, 101))

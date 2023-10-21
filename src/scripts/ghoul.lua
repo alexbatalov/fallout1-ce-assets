@@ -99,7 +99,7 @@ function do_dialogue()
 end
 
 function pre_dialogue()
-    if fallout.local_var(0) then
+    if fallout.local_var(0) ~= 0 then
         ghoul08()
     else
         do_dialogue()

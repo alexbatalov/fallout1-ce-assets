@@ -72,7 +72,7 @@ end
 
 function look_at_p_proc()
     fallout.script_overrides()
-    if fallout.local_var(4) then
+    if fallout.local_var(4) ~= 0 then
         fallout.display_msg(fallout.message_str(663, 101))
     else
         fallout.display_msg(fallout.message_str(663, 100))
@@ -82,8 +82,8 @@ end
 function talk_p_proc()
     fallout.start_gdialog(663, fallout.self_obj(), 4, -1, -1)
     fallout.gsay_start()
-    if fallout.local_var(4) then
-        if fallout.local_var(5) then
+    if fallout.local_var(4) ~= 0 then
+        if fallout.local_var(5) ~= 0 then
             Agatha14()
         else
             if fallout.local_var(1) > 1 then

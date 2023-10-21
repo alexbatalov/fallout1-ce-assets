@@ -102,7 +102,7 @@ end
 
 function look_at_p_proc()
     fallout.script_overrides()
-    if fallout.local_var(4) then
+    if fallout.local_var(4) ~= 0 then
         fallout.display_msg(fallout.message_str(257, 100))
     else
         fallout.display_msg(fallout.message_str(257, 101))
@@ -114,7 +114,7 @@ function pickup_p_proc()
 end
 
 function talk_p_proc()
-    if fallout.local_var(5) then
+    if fallout.local_var(5) ~= 0 then
         fallout.float_msg(fallout.self_obj(), fallout.message_str(669, 102), 0)
     else
         fallout.start_gdialog(257, fallout.self_obj(), 4, -1, -1)

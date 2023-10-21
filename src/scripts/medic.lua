@@ -84,7 +84,7 @@ function start()
 end
 
 function critter_p_proc()
-    if fallout.local_var(5) then
+    if fallout.local_var(5) ~= 0 then
         if fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 8 then
             flee_dude()
         else

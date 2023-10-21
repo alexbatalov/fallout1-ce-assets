@@ -90,7 +90,7 @@ end
 
 function talk_p_proc()
     fallout.script_overrides()
-    if fallout.local_var(0) then
+    if fallout.local_var(0) ~= 0 then
         ChdGuard35()
     else
         fallout.set_local_var(0, 1)

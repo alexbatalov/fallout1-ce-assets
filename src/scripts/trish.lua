@@ -169,7 +169,7 @@ end
 
 function talk_p_proc()
     reaction.get_reaction()
-    if fallout.local_var(4) then
+    if fallout.local_var(4) ~= 0 then
         fallout.float_msg(fallout.self_obj(), fallout.message_str(342, 151), 0)
     else
         if fallout.cur_map_index() == 12 then

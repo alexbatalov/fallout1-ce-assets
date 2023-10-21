@@ -80,7 +80,7 @@ function start()
             else
                 if fallout.script_action() == 21 then
                     fallout.script_overrides()
-                    if fallout.local_var(3) then
+                    if fallout.local_var(3) ~= 0 then
                         fallout.display_msg(fallout.message_str(811, 302))
                     else
                         fallout.display_msg(fallout.message_str(811, 200))
@@ -131,7 +131,7 @@ function moveme()
     my_hex = fallout.tile_num(fallout.self_obj())
     if my_hex == fallout.local_var(7) then
         fallout.set_local_var(3, 0)
-        if fallout.local_var(5) then
+        if fallout.local_var(5) ~= 0 then
             fallout.set_local_var(6, fallout.local_var(6) + 1)
         else
             fallout.set_local_var(6, fallout.local_var(6) - 1)

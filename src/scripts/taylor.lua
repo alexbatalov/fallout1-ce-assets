@@ -102,7 +102,7 @@ end
 
 function look_at_p_proc()
     fallout.script_overrides()
-    if fallout.local_var(4) then
+    if fallout.local_var(4) ~= 0 then
         fallout.display_msg(fallout.message_str(256, 101))
     else
         fallout.display_msg(fallout.message_str(256, 100))
@@ -139,7 +139,7 @@ function talk_p_proc()
                 if fallout.external_var("Tine_barter") == 2 then
                     Tine_barter2()
                 else
-                    if fallout.local_var(4) then
+                    if fallout.local_var(4) ~= 0 then
                         Tine07()
                     else
                         Tine01()

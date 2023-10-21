@@ -340,7 +340,7 @@ function Theresa20()
 end
 
 function Theresa21()
-    if fallout.local_var(7) then
+    if fallout.local_var(7) ~= 0 then
         Theresa25()
     else
         fallout.set_local_var(7, 1)

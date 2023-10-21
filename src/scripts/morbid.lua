@@ -264,13 +264,13 @@ function talk_p_proc()
                         end
                     else
                         if time.is_night() then
-                            if fallout.local_var(4) then
+                            if fallout.local_var(4) ~= 0 then
                                 Morbid04N()
                             else
                                 Morbid00N()
                             end
                         else
-                            if fallout.local_var(4) then
+                            if fallout.local_var(4) ~= 0 then
                                 if fallout.local_var(1) > 1 then
                                     Morbid13()
                                 else

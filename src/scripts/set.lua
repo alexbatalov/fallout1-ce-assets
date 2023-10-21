@@ -197,7 +197,7 @@ function do_dialogue()
     if Hostile then
         set49()
     else
-        if fallout.local_var(4) then
+        if fallout.local_var(4) ~= 0 then
             if (fallout.global_var(30) == 1) and (fallout.global_var(31) ~= 2) then
                 set57()
             else
@@ -220,7 +220,7 @@ function do_dialogue()
                                     if (fallout.global_var(29) == 2) or (fallout.global_var(306) ~= 0) then
                                         set18()
                                     else
-                                        if fallout.local_var(9) then
+                                        if fallout.local_var(9) ~= 0 then
                                             set25()
                                         else
                                             set51()

@@ -315,7 +315,7 @@ end
 
 function show_true_name()
     fallout.script_overrides()
-    if fallout.local_var(4) then
+    if fallout.local_var(4) ~= 0 then
         fallout.display_msg(fallout.message_str(280, 100))
     else
         fallout.display_msg(fallout.message_str(280, 103))

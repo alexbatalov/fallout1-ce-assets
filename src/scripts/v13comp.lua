@@ -22,7 +22,7 @@ end
 function use_p_proc()
     fallout.script_overrides()
     if time.game_time_in_days() == 0 then
-        if fallout.local_var(0) then
+        if fallout.local_var(0) ~= 0 then
             fallout.display_msg(fallout.message_str(344, 101))
             fallout.float_msg(fallout.self_obj(), fallout.message_str(344, 102), 0)
         else

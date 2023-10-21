@@ -90,7 +90,7 @@ function do_dialogue()
     if fallout.map_var(6) ~= 0 then
         prisonr06()
     else
-        if fallout.local_var(0) then
+        if fallout.local_var(0) ~= 0 then
             prisonr05()
         else
             fallout.set_local_var(0, 1)

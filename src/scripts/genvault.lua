@@ -134,7 +134,7 @@ end
 
 function talk_p_proc()
     reaction.get_reaction()
-    if fallout.local_var(6) then
+    if fallout.local_var(6) ~= 0 then
         if fallout.random(0, 1) then
             fallout.float_msg(fallout.self_obj(), fallout.message_str(185, 166), 0)
         else

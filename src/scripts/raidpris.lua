@@ -62,7 +62,7 @@ function do_dialogue()
     reaction.get_reaction()
     fallout.start_gdialog(138, fallout.self_obj(), 4, -1, -1)
     fallout.gsay_start()
-    if fallout.local_var(4) then
+    if fallout.local_var(4) ~= 0 then
         prisoner03()
     else
         fallout.set_local_var(4, 1)

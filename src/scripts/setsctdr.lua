@@ -18,7 +18,7 @@ local use_skill = 0
 function start()
     if fallout.script_action() == 6 then
         if fallout.source_obj() == fallout.dude_obj() then
-            if fallout.local_var(2) then
+            if fallout.local_var(2) ~= 0 then
                 use_door()
             end
             if fallout.local_var(3) == 0 then
@@ -27,10 +27,10 @@ function start()
                 fallout.give_exp_points(temp)
                 fallout.display_msg(fallout.message_str(96, 200) .. temp .. fallout.message_str(96, 201))
             else
-                if fallout.local_var(1) then
+                if fallout.local_var(1) ~= 0 then
                     use_door()
                 else
-                    if fallout.local_var(0) then
+                    if fallout.local_var(0) ~= 0 then
                         failure()
                     else
                         find_iq()
@@ -50,7 +50,7 @@ end
 function trap_stuff()
     use_skill = fallout.action_being_used()
     if fallout.local_var(1) == 0 then
-        if fallout.local_var(0) then
+        if fallout.local_var(0) ~= 0 then
             if use_skill == 11 then
                 disarm_trap()
             else
@@ -134,7 +134,7 @@ function explode()
 end
 
 function use_door()
-    if fallout.local_var(2) then
+    if fallout.local_var(2) ~= 0 then
         fallout.set_local_var(2, 0)
     else
         fallout.set_local_var(2, 1)

@@ -123,7 +123,7 @@ function start()
                     fallout.dialogue_system_enter()
                 else
                     if fallout.script_action() == 12 then
-                        if fallout.local_var(5) then
+                        if fallout.local_var(5) ~= 0 then
                             if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
                                 HOSTILE = 1
                             end
@@ -167,10 +167,10 @@ function do_dialogue()
     fallout.start_gdialog(51, fallout.self_obj(), 4, 6, 11)
     fallout.gsay_start()
     MALE = fallout.get_critter_stat(fallout.dude_obj(), 34) == 0
-    if fallout.local_var(5) then
+    if fallout.local_var(5) ~= 0 then
         master203()
     else
-        if fallout.local_var(4) then
+        if fallout.local_var(4) ~= 0 then
             if fallout.global_var(56) then
                 master46()
             else

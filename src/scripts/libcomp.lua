@@ -33,7 +33,7 @@ function use_skill_on_p_proc()
     if fallout.action_being_used() == 12 then
         fallout.script_overrides()
         fallout.display_msg(fallout.message_str(134, 101))
-        if fallout.local_var(0) then
+        if fallout.local_var(0) ~= 0 then
             fallout.display_msg(fallout.message_str(134, 102))
             fallout.game_time_advance(fallout.game_ticks(3600))
         else
