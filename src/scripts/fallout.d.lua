@@ -645,9 +645,9 @@ function fallout.gfade_in(a2) end
 function fallout.item_caps_total(obj) end
 
 --- @param obj Object
+--- @param amount integer
 --- @return integer
---- @nodiscard
-function fallout.item_caps_adjust(obj) end
+function fallout.item_caps_adjust(obj, amount) end
 
 --- @param obj Object
 --- @param anim integer
