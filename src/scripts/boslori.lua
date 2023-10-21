@@ -42,70 +42,52 @@ local bosloriend
 local sorry
 local do_dialog
 
-local hostile = 0
+local hostile = false
 local initialized = false
 local heal = 0
-local cost = 0
-local money = 0
-local temp = 0
-local rad_level = 0
-local Hurting = 0
-local armor = 0
-local bag_ptr = 0
-
-local exit_line = 0
 
 function start()
     if not initialized then
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 44)
+        fallout.critter_add_trait(self_obj, 1, 5, 63)
         initialized = true
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 44)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 63)
     end
-    if fallout.script_action() == 21 then
-        look_at_p_proc()
-    else
-        if fallout.script_action() == 4 then
-            pickup_p_proc()
-        else
-            if fallout.script_action() == 11 then
-                talk_p_proc()
-            else
-                if fallout.script_action() == 12 then
-                    critter_p_proc()
-                else
-                    if fallout.script_action() == 18 then
-                        destroy_p_proc()
-                    end
-                end
-            end
-        end
-    end
-end
 
-function combat()
-    hostile = 1
+    local script_action = fallout.script_action()
+    if script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    end
 end
 
 function critter_p_proc()
-    if fallout.global_var(250) then
-        hostile = 1
+    if fallout.global_var(250) ~= 0 then
+        hostile = true
     end
-    if fallout.global_var(250) then
-        hostile = 1
+    if fallout.global_var(250) ~= 0 then
+        hostile = true
     end
     if fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) > 12 then
-        hostile = 0
+        hostile = false
     end
     if hostile then
         fallout.set_global_var(250, 1)
-        hostile = 0
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
 end
 
 function pickup_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
-        hostile = 1
+        hostile = true
     end
 end
 
@@ -174,8 +156,7 @@ end
 function boslori05()
     fallout.gsay_message(675, 117, 50)
     fallout.gfade_out(600)
-    rad_level = fallout.get_critter_stat(fallout.dude_obj(), 37)
-    fallout.radiation_dec(fallout.dude_obj(), rad_level)
+    fallout.radiation_dec(fallout.dude_obj(), fallout.get_critter_stat(fallout.dude_obj(), 37))
     fallout.game_time_advance(fallout.game_ticks(86400))
     fallout.gfade_in(600)
     fallout.gsay_message(675, 146, 50)
@@ -222,8 +203,8 @@ function boslori10()
 end
 
 function boslori11()
-    temp = fallout.get_critter_stat(fallout.dude_obj(), 0)
-    if temp > 9 then
+    local strength = fallout.get_critter_stat(fallout.dude_obj(), 0)
+    if strength > 9 then
         sorry()
     else
         fallout.gsay_reply(675, 133)
@@ -233,8 +214,8 @@ function boslori11()
 end
 
 function boslori12()
-    temp = fallout.get_critter_stat(fallout.dude_obj(), 1)
-    if temp > 9 then
+    local perception = fallout.get_critter_stat(fallout.dude_obj(), 1)
+    if perception > 9 then
         sorry()
     else
         fallout.gsay_reply(675, 137)
@@ -244,8 +225,8 @@ function boslori12()
 end
 
 function boslori13()
-    temp = fallout.get_critter_stat(fallout.dude_obj(), 2)
-    if temp > 9 then
+    local endurance = fallout.get_critter_stat(fallout.dude_obj(), 2)
+    if endurance > 9 then
         sorry()
     else
         fallout.gsay_reply(675, 139)
@@ -255,8 +236,8 @@ function boslori13()
 end
 
 function boslori14()
-    temp = fallout.get_critter_stat(fallout.dude_obj(), 4)
-    if temp > 9 then
+    local intelligence = fallout.get_critter_stat(fallout.dude_obj(), 4)
+    if intelligence > 9 then
         sorry()
     else
         fallout.gsay_reply(675, 141)
@@ -266,8 +247,8 @@ function boslori14()
 end
 
 function boslori15()
-    temp = fallout.get_critter_stat(fallout.dude_obj(), 5)
-    if temp > 9 then
+    local agility = fallout.get_critter_stat(fallout.dude_obj(), 5)
+    if agility > 9 then
         sorry()
     else
         fallout.gsay_reply(675, 143)
@@ -286,12 +267,12 @@ function boslori17()
 end
 
 function boslori18()
-    cost = 2000
+    local cost = 2000
     if fallout.item_caps_total(fallout.dude_obj()) >= cost then
-        bag_ptr = fallout.create_object_sid(16777262, 0, 0, 860)
+        local bag_ptr = fallout.create_object_sid(16777262, 0, 0, 860)
         fallout.move_to(bag_ptr, 0, 0)
-        armor = fallout.critter_inven_obj(fallout.dude_obj(), 0)
-        if armor ~= 0 then
+        local armor = fallout.critter_inven_obj(fallout.dude_obj(), 0)
+        if armor ~= nil then
             fallout.move_obj_inven_to_obj(fallout.dude_obj(), bag_ptr)
             fallout.move_obj_inven_to_obj(bag_ptr, fallout.dude_obj())
             fallout.destroy_object(bag_ptr)
@@ -302,7 +283,6 @@ function boslori18()
         fallout.gfade_out(600)
         fallout.game_time_advance(fallout.game_ticks(3 * 604800))
         fallout.gfade_in(600)
-        temp = fallout.get_critter_stat(fallout.dude_obj(), 0)
         fallout.set_critter_stat(fallout.dude_obj(), 0, 1)
         fallout.gsay_message(675, 156, 50)
     else
@@ -311,7 +291,7 @@ function boslori18()
 end
 
 function boslori19()
-    cost = 4000
+    local cost = 4000
     if fallout.item_caps_total(fallout.dude_obj()) >= cost then
         fallout.set_local_var(7, 1)
         fallout.item_caps_adjust(fallout.dude_obj(), -cost)
@@ -319,7 +299,6 @@ function boslori19()
         fallout.gfade_out(600)
         fallout.game_time_advance(fallout.game_ticks(604800))
         fallout.gfade_in(600)
-        temp = fallout.get_critter_stat(fallout.dude_obj(), 1)
         fallout.set_critter_stat(fallout.dude_obj(), 1, 1)
         fallout.gsay_message(675, 161, 50)
     else
@@ -328,7 +307,7 @@ function boslori19()
 end
 
 function boslori20()
-    cost = 3000
+    local cost = 3000
     if fallout.item_caps_total(fallout.dude_obj()) >= cost then
         fallout.set_local_var(8, 1)
         fallout.item_caps_adjust(fallout.dude_obj(), -cost)
@@ -336,7 +315,6 @@ function boslori20()
         fallout.gfade_out(600)
         fallout.game_time_advance(fallout.game_ticks(604800))
         fallout.gfade_in(600)
-        temp = fallout.get_critter_stat(fallout.dude_obj(), 2)
         fallout.set_critter_stat(fallout.dude_obj(), 2, 1)
         fallout.gsay_message(675, 166, 50)
     else
@@ -358,17 +336,15 @@ function Dumb03()
 end
 
 function Dumb04()
-    local v0 = 0
-    v0 = 3000
-    if fallout.item_caps_total(fallout.dude_obj()) >= v0 then
+    local cost = 3000
+    if fallout.item_caps_total(fallout.dude_obj()) >= cost then
         fallout.set_local_var(9, 1)
         fallout.set_local_var(11, 1)
-        fallout.item_caps_adjust(fallout.dude_obj(), -v0)
+        fallout.item_caps_adjust(fallout.dude_obj(), -cost)
         fallout.gsay_message(675, 164, 50)
         fallout.gfade_out(600)
         fallout.game_time_advance(fallout.game_ticks(604800))
         fallout.gfade_in(600)
-        temp = fallout.get_critter_stat(fallout.dude_obj(), 4)
         fallout.set_critter_stat(fallout.dude_obj(), 4, 1)
         fallout.gsay_reply(675, 407)
         fallout.giq_option(4, 675, 409, Dumb06, 50)
@@ -388,22 +364,23 @@ function Dumb06()
 end
 
 function Dumb06a()
-    Hurting = fallout.get_critter_stat(fallout.dude_obj(), 7) - fallout.get_critter_stat(fallout.dude_obj(), 35)
-    fallout.critter_heal(fallout.dude_obj(), Hurting)
+    local dude_obj = fallout.dude_obj()
+    local hurting = fallout.get_critter_stat(dude_obj, 7) - fallout.get_critter_stat(dude_obj, 35)
+    fallout.critter_heal(dude_obj, hurting)
     fallout.gsay_message(675, 413, 50)
 end
 
 function raisiq()
-    cost = 6000
-    if fallout.item_caps_total(fallout.dude_obj()) >= cost then
+    local cost = 6000
+    local dude_obj = fallout.dude_obj()
+    if fallout.item_caps_total(dude_obj) >= cost then
         fallout.set_local_var(9, 1)
-        fallout.item_caps_adjust(fallout.dude_obj(), -cost)
+        fallout.item_caps_adjust(dude_obj, -cost)
         fallout.gsay_message(675, 168, 50)
         fallout.gfade_out(600)
         fallout.game_time_advance(fallout.game_ticks(3 * 604800))
         fallout.gfade_in(600)
-        temp = fallout.get_critter_stat(fallout.dude_obj(), 4)
-        fallout.set_critter_stat(fallout.dude_obj(), 4, 1)
+        fallout.set_critter_stat(dude_obj, 4, 1)
         fallout.gsay_message(675, 170, 50)
     else
         boslori16()
@@ -411,16 +388,16 @@ function raisiq()
 end
 
 function boslori22()
-    cost = 5000
-    if fallout.item_caps_total(fallout.dude_obj()) >= cost then
+    local cost = 5000
+    local dude_obj = fallout.dude_obj()
+    if fallout.item_caps_total(dude_obj) >= cost then
         fallout.set_local_var(10, 1)
-        fallout.item_caps_adjust(fallout.dude_obj(), -cost)
+        fallout.item_caps_adjust(dude_obj, -cost)
         fallout.gsay_message(675, 174, 50)
         fallout.gfade_out(600)
         fallout.game_time_advance(fallout.game_ticks(3 * 604800))
         fallout.gfade_in(600)
-        temp = fallout.get_critter_stat(fallout.dude_obj(), 5)
-        fallout.set_critter_stat(fallout.dude_obj(), 5, 1)
+        fallout.set_critter_stat(dude_obj, 5, 1)
         fallout.gsay_message(675, 176, 50)
     else
         boslori16()
