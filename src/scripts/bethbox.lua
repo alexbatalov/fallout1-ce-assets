@@ -2,12 +2,12 @@ local fallout = require("fallout")
 
 local start
 
-local OnceOnly = 1
+local initialized = false
 
 function start()
-    if OnceOnly then
-        OnceOnly = 0
+    if not initialized then
         fallout.set_external_var("Beth_Box_Ptr", fallout.self_obj())
+        initialized = true
     end
 end
 
