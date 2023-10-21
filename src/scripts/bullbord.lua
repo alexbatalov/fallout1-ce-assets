@@ -10,16 +10,13 @@ local bull03
 local bull04
 
 function start()
-    if (fallout.script_action() == 21) or (fallout.script_action() == 3) then
+    local script_action = fallout.script_action()
+    if script_action == 21 or script_action == 3 then
         look_at_p_proc()
-    else
-        if fallout.script_action() == 6 then
-            use_p_proc()
-        else
-            if fallout.script_action() == 11 then
-                talk_p_proc()
-            end
-        end
+    elseif script_action == 6 then
+        use_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
     end
 end
 
