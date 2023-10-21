@@ -18,35 +18,26 @@ local Andrew04
 local Andrew05
 local Andrew06
 
-local hostile = 0
+local hostile = false
 local round_counter = 0
-local moving_flag = 1
+local moving_flag = true
 
 local map_enter_p_proc
 
 function start()
-    if fallout.script_action() == 13 then
+    local script_action = fallout.script_action()
+    if script_action == 13 then
         combat_p_proc()
-    else
-        if fallout.script_action() == 12 then
-            critter_p_proc()
-        else
-            if fallout.script_action() == 21 then
-                look_at_p_proc()
-            else
-                if fallout.script_action() == 4 then
-                    pickup_p_proc()
-                else
-                    if fallout.script_action() == 11 then
-                        talk_p_proc()
-                    else
-                        if fallout.script_action() == 22 then
-                            timed_event_p_proc()
-                        end
-                    end
-                end
-            end
-        end
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 22 then
+        timed_event_p_proc()
     end
 end
 
@@ -63,40 +54,40 @@ function combat_p_proc()
 end
 
 function critter_p_proc()
+    local dude_obj = fallout.dude_obj()
+    local self_obj = fallout.self_obj()
     if hostile then
-        hostile = 0
-        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+        hostile = false
+        fallout.attack(dude_obj, 0, 1, 0, 0, 30000, 0, 0)
     else
-        if (fallout.map_var(1) == 1) and (time.game_time_in_days() > fallout.map_var(5)) then
-            if fallout.external_var("jail_door_ptr") ~= 0 then
-                fallout.obj_unlock(fallout.external_var("jail_door_ptr"))
-                fallout.use_obj(fallout.external_var("jail_door_ptr"))
-                moving_flag = 0
-                fallout.rm_timer_event(fallout.self_obj())
-                fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(5), 1)
+        if fallout.map_var(1) == 1 and time.game_time_in_days() > fallout.map_var(5) then
+            local jail_door_obj = fallout.external_var("jail_door_ptr")
+            if jail_door_obj ~= nil then
+                fallout.obj_unlock(jail_door_obj)
+                fallout.use_obj(jail_door_obj)
+                moving_flag = false
+                fallout.rm_timer_event(self_obj)
+                fallout.add_timer_event(self_obj, fallout.game_ticks(5), 1)
             end
             fallout.set_map_var(1, 0)
-            fallout.float_msg(fallout.self_obj(), fallout.message_str(172, 101), 3)
+            fallout.float_msg(self_obj, fallout.message_str(172, 101), 3)
+        elseif fallout.map_var(3) == 1 then
+            fallout.set_map_var(3, fallout.map_var(3) + 1)
+            fallout.float_msg(self_obj, fallout.message_str(172, 116), 2)
+        elseif fallout.map_var(3) == 3 then
+            local jail_door_obj = fallout.external_var("jail_door_ptr")
+            if jail_door_obj ~= nil then
+                fallout.obj_unlock(jail_door_obj)
+            end
+            hostile = true
         else
-            if fallout.map_var(3) == 1 then
-                fallout.set_map_var(3, fallout.map_var(3) + 1)
-                fallout.float_msg(fallout.self_obj(), fallout.message_str(172, 116), 2)
-            else
-                if fallout.map_var(3) == 3 then
-                    if fallout.external_var("jail_door_ptr") ~= 0 then
-                        fallout.obj_unlock(fallout.external_var("jail_door_ptr"))
-                    end
-                    hostile = 1
-                else
-                    if moving_flag == 1 then
-                        if fallout.tile_num(fallout.self_obj()) ~= fallout.local_var(1) then
-                            fallout.animate_move_obj_to_tile(fallout.self_obj(), fallout.local_var(1), 0)
-                        end
-                    end
-                    if (fallout.global_var(247) == 1) and fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
-                        fallout.dialogue_system_enter()
-                    end
+            if moving_flag then
+                if fallout.tile_num(self_obj) ~= fallout.local_var(1) then
+                    fallout.animate_move_obj_to_tile(self_obj, fallout.local_var(1), 0)
                 end
+            end
+            if fallout.global_var(247) == 1 and fallout.obj_can_see_obj(self_obj, dude_obj) then
+                fallout.dialogue_system_enter()
             end
         end
     end
@@ -110,13 +101,13 @@ function look_at_p_proc()
 end
 
 function pickup_p_proc()
-    hostile = 1
+    hostile = true
 end
 
 function talk_p_proc()
     if fallout.global_var(247) == 1 then
         fallout.float_msg(fallout.self_obj(), fallout.message_str(172, 102), 2)
-        hostile = 1
+        hostile = true
     else
         fallout.start_gdialog(172, fallout.self_obj(), 4, -1, -1)
         fallout.gsay_start()
@@ -127,14 +118,14 @@ function talk_p_proc()
 end
 
 function timed_event_p_proc()
-    if fallout.fixed_param() == 1 then
+    local timer = fallout.fixed_param()
+    if timer == 1 then
+        local self_obj = fallout.self_obj()
         fallout.obj_close(fallout.external_var("jail_door_ptr"))
-        fallout.rm_timer_event(fallout.self_obj())
-        fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(10), 2)
-    else
-        if fallout.fixed_param() == 2 then
-            moving_flag = 1
-        end
+        fallout.rm_timer_event(self_obj)
+        fallout.add_timer_event(self_obj, fallout.game_ticks(10), 2)
+    elseif timer == 2 then
+        moving_flag = true
     end
 end
 
@@ -190,13 +181,14 @@ function Andrew06()
 end
 
 function map_enter_p_proc()
+    local self_obj = fallout.self_obj()
     if fallout.global_var(15) == 1 then
-        fallout.kill_critter(fallout.self_obj(), 49)
+        fallout.kill_critter(self_obj, 49)
     end
-    fallout.critter_add_trait(fallout.self_obj(), 1, 6, 12)
-    fallout.critter_add_trait(fallout.self_obj(), 1, 5, 17)
+    fallout.critter_add_trait(self_obj, 1, 6, 12)
+    fallout.critter_add_trait(self_obj, 1, 5, 17)
     if fallout.local_var(1) == 0 then
-        fallout.set_local_var(1, fallout.tile_num(fallout.self_obj()))
+        fallout.set_local_var(1, fallout.tile_num(self_obj))
     end
 end
 
