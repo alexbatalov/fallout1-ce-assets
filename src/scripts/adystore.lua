@@ -7,57 +7,53 @@ local use_p_proc
 local use_skill_on_p_proc
 
 function start()
-    if fallout.script_action() == 23 then
+    local script_action = fallout.script_action()
+    if script_action == 23 then
         map_update_p_proc()
-    else
-        if fallout.script_action() == 15 then
-            map_enter_p_proc()
-        else
-            if fallout.script_action() == 6 then
-                use_p_proc()
-            else
-                if fallout.script_action() == 8 then
-                    use_skill_on_p_proc()
-                end
-            end
-        end
+    elseif script_action == 15 then
+        map_enter_p_proc()
+    elseif script_action == 6 then
+        use_p_proc()
+    elseif script_action == 8 then
+        use_skill_on_p_proc()
     end
 end
 
 function map_update_p_proc()
-    if fallout.tile_num(fallout.self_obj()) == 12315 then
-        fallout.set_external_var("AdyStor1_ptr", fallout.self_obj())
-    else
-        if fallout.tile_num(fallout.self_obj()) == 13115 then
-            fallout.set_external_var("AdyStor2_ptr", fallout.self_obj())
-        end
+    local self_obj = fallout.self_obj()
+    local self_tile_num = fallout.tile_num(self_obj)
+    if self_tile_num == 12315 then
+        fallout.set_external_var("AdyStor1_ptr", self_obj)
+    elseif self_tile_num == 13115 then
+        fallout.set_external_var("AdyStor2_ptr", self_obj)
     end
 end
 
 function map_enter_p_proc()
-    if fallout.tile_num(fallout.self_obj()) == 12315 then
-        fallout.set_external_var("AdyStor1_ptr", fallout.self_obj())
-    else
-        if fallout.tile_num(fallout.self_obj()) == 13115 then
-            fallout.set_external_var("AdyStor2_ptr", fallout.self_obj())
-        end
+    local self_obj = fallout.self_obj()
+    local self_tile_num = fallout.tile_num(self_obj)
+    if self_tile_num == 12315 then
+        fallout.set_external_var("AdyStor1_ptr", self_obj)
+    elseif self_tile_num == 13115 then
+        fallout.set_external_var("AdyStor2_ptr", self_obj)
     end
 end
 
 function use_p_proc()
     fallout.script_overrides()
-    if fallout.tile_num(fallout.self_obj()) == 12315 then
+
+    local self_obj = fallout.self_obj()
+    local self_tile_num = fallout.tile_num(self_obj)
+    if self_tile_num == 12315 then
         fallout.set_external_var("Tine_barter", 1)
-    else
-        if fallout.tile_num(fallout.self_obj()) == 13115 then
-            fallout.set_external_var("Tine_barter", 2)
-        end
+    elseif self_tile_num == 13115 then
+        fallout.set_external_var("Tine_barter", 2)
     end
 end
 
 function use_skill_on_p_proc()
     if fallout.action_being_used() == 10 then
-        if not(fallout.is_success(fallout.roll_vs_skill(fallout.source_obj(), fallout.action_being_used(), 0))) then
+        if not fallout.is_success(fallout.roll_vs_skill(fallout.source_obj(), fallout.action_being_used(), 0)) then
             fallout.script_overrides()
             fallout.set_external_var("Tine_barter", -1)
         end
