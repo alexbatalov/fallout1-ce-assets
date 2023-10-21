@@ -3,7 +3,6 @@ local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
 
 local start
-local combat
 local critter_p_proc
 local pickup_p_proc
 local talk_p_proc
@@ -99,123 +98,100 @@ local ButchEnd
 local ButchEndAccept
 local ButchEndTransport
 
-local hostile = 0
+local hostile = false
 local initialized = false
-local TossOut = 0
-
-local exit_line = 0
+local TossOut = false
 
 function start()
     if not initialized then
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 36)
+        fallout.critter_add_trait(self_obj, 1, 5, 50)
         initialized = true
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 36)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 50)
     end
-    if fallout.script_action() == 21 then
-        look_at_p_proc()
-    else
-        if fallout.script_action() == 4 then
-            pickup_p_proc()
-        else
-            if fallout.script_action() == 11 then
-                talk_p_proc()
-            else
-                if fallout.script_action() == 12 then
-                    critter_p_proc()
-                else
-                    if fallout.script_action() == 18 then
-                        destroy_p_proc()
-                    end
-                end
-            end
-        end
-    end
-end
 
-function combat()
-    hostile = 1
+    local script_action = fallout.script_action()
+    if script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    end
 end
 
 function critter_p_proc()
     if hostile then
-        hostile = 0
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
 end
 
 function pickup_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
-        hostile = 1
+        hostile = true
     end
 end
 
 function talk_p_proc()
+    local dude_obj = fallout.dude_obj()
+    local self_obj = fallout.self_obj()
     reaction.get_reaction()
     if fallout.map_var(40) == 1 then
-        fallout.float_msg(fallout.self_obj(), fallout.message_str(39, 328), 2)
+        fallout.float_msg(self_obj, fallout.message_str(39, 328), 2)
+    elseif fallout.map_var(41) == 2 then
+        fallout.float_msg(self_obj, fallout.message_str(39, 325), 2)
     else
-        if fallout.map_var(41) == 2 then
-            fallout.float_msg(fallout.self_obj(), fallout.message_str(39, 325), 2)
+        if fallout.get_critter_stat(dude_obj, 4) < 4 then
+            fallout.float_msg(dude_obj, fallout.message_str(39, 330), 3)
+            fallout.float_msg(self_obj, fallout.message_str(39, 331), 2)
+        elseif fallout.local_var(4) == 0 and fallout.map_var(34) == 1 then
+            fallout.set_local_var(4, 1)
+            fallout.start_gdialog(39, self_obj, 4, 8, 3)
+            fallout.gsay_start()
+            Butch01()
+            fallout.gsay_end()
+            fallout.end_dialogue()
+        elseif fallout.local_var(4) == 0 and fallout.map_var(34) == 0 then
+            fallout.float_msg(self_obj, fallout.message_str(39, 324), 2)
+        elseif fallout.map_var(41) == 3 then
+            fallout.start_gdialog(39, self_obj, 4, 8, 3)
+            fallout.gsay_start()
+            Butch73()
+            fallout.gsay_end()
+            fallout.end_dialogue()
+        elseif fallout.local_var(5) == 1 or fallout.map_var(41) == 4 then
+            fallout.start_gdialog(39, self_obj, 4, 8, 3)
+            fallout.gsay_start()
+            Butch60()
+            fallout.gsay_end()
+            fallout.end_dialogue()
+        elseif fallout.map_var(56) == 1 then
+            fallout.start_gdialog(39, self_obj, 4, 8, 3)
+            fallout.gsay_start()
+            Butch59()
+            fallout.gsay_end()
+            fallout.end_dialogue()
+        elseif fallout.global_var(226) == 5 then
+            fallout.start_gdialog(39, self_obj, 4, 8, 3)
+            fallout.gsay_start()
+            Butch37()
+            fallout.gsay_end()
+            fallout.end_dialogue()
         else
-            if fallout.get_critter_stat(fallout.dude_obj(), 4) < 4 then
-                fallout.float_msg(fallout.dude_obj(), fallout.message_str(39, 330), 3)
-                fallout.float_msg(fallout.self_obj(), fallout.message_str(39, 331), 2)
-            else
-                if (fallout.local_var(4) == 0) and (fallout.map_var(34) == 1) then
-                    fallout.set_local_var(4, 1)
-                    fallout.start_gdialog(39, fallout.self_obj(), 4, 8, 3)
-                    fallout.gsay_start()
-                    Butch01()
-                    fallout.gsay_end()
-                    fallout.end_dialogue()
-                else
-                    if (fallout.local_var(4) == 0) and (fallout.map_var(34) == 0) then
-                        fallout.float_msg(fallout.self_obj(), fallout.message_str(39, 324), 2)
-                    else
-                        if fallout.map_var(41) == 3 then
-                            fallout.start_gdialog(39, fallout.self_obj(), 4, 8, 3)
-                            fallout.gsay_start()
-                            Butch73()
-                            fallout.gsay_end()
-                            fallout.end_dialogue()
-                        else
-                            if (fallout.local_var(5) == 1) or (fallout.map_var(41) == 4) then
-                                fallout.start_gdialog(39, fallout.self_obj(), 4, 8, 3)
-                                fallout.gsay_start()
-                                Butch60()
-                                fallout.gsay_end()
-                                fallout.end_dialogue()
-                            else
-                                if fallout.map_var(56) == 1 then
-                                    fallout.start_gdialog(39, fallout.self_obj(), 4, 8, 3)
-                                    fallout.gsay_start()
-                                    Butch59()
-                                    fallout.gsay_end()
-                                    fallout.end_dialogue()
-                                else
-                                    if fallout.global_var(226) == 5 then
-                                        fallout.start_gdialog(39, fallout.self_obj(), 4, 8, 3)
-                                        fallout.gsay_start()
-                                        Butch37()
-                                        fallout.gsay_end()
-                                        fallout.end_dialogue()
-                                    else
-                                        fallout.start_gdialog(39, fallout.self_obj(), 4, 8, 3)
-                                        fallout.gsay_start()
-                                        Butch01()
-                                        fallout.gsay_end()
-                                        fallout.end_dialogue()
-                                    end
-                                end
-                            end
-                        end
-                    end
-                end
-            end
+            fallout.start_gdialog(39, self_obj, 4, 8, 3)
+            fallout.gsay_start()
+            Butch01()
+            fallout.gsay_end()
+            fallout.end_dialogue()
         end
     end
-    if TossOut == 1 then
-        TossOut = 0
+    if TossOut then
+        TossOut = false
         ButchEndTransport()
     end
 end
@@ -225,9 +201,8 @@ function destroy_p_proc()
 end
 
 function damage_p_proc()
-    local v0 = 0
-    v0 = fallout.obj_pid(fallout.source_obj())
-    if fallout.party_member_obj(v0) ~= 0 then
+    local pid = fallout.obj_pid(fallout.source_obj())
+    if fallout.party_member_obj(pid) ~= nil then
         fallout.set_global_var(248, 1)
     end
 end
@@ -356,7 +331,7 @@ function Butch15()
     fallout.set_map_var(40, 1)
     fallout.set_map_var(35, 1)
     fallout.set_map_var(10, 0)
-    TossOut = 1
+    TossOut = true
     fallout.gsay_message(39, 158, 50)
 end
 
@@ -419,13 +394,13 @@ function Butch23()
 end
 
 function Butch23a()
-    local v0 = 0
+    local bonus = 0
     if fallout.get_critter_stat(fallout.dude_obj(), 34) == 0 then
-        v0 = 0
+        bonus = 0
     else
-        v0 = 20
+        bonus = 20
     end
-    if fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), 14, v0)) then
+    if fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), 14, bonus)) then
         Butch24()
     else
         Butch26()
@@ -541,12 +516,10 @@ end
 
 function Butch37()
     fallout.gsay_reply(39, 211)
-    if (fallout.global_var(78) == 2) or (fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 196) >= 1) then
+    if fallout.global_var(78) == 2 or fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 196) >= 1 then
         fallout.giq_option(4, 39, 212, Butch38, 50)
-    else
-        if fallout.global_var(226) == 5 then
-            fallout.giq_option(4, 39, 213, Butch53, 50)
-        end
+    elseif fallout.global_var(226) == 5 then
+        fallout.giq_option(4, 39, 213, Butch53, 50)
     end
     fallout.giq_option(4, 39, 214, ButchEnd, 50)
 end
@@ -699,12 +672,10 @@ end
 
 function Butch59()
     fallout.gsay_reply(39, 263)
-    if (fallout.global_var(78) == 2) or (fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 196) >= 1) then
+    if fallout.global_var(78) == 2 or fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 196) >= 1 then
         fallout.giq_option(4, 39, 264, Butch40, 50)
-    else
-        if fallout.global_var(226) == 5 then
-            fallout.giq_option(4, 39, 265, Butch54a, 50)
-        end
+    elseif fallout.global_var(226) == 5 then
+        fallout.giq_option(4, 39, 265, Butch54a, 50)
     end
     fallout.giq_option(4, 39, 327, Butch67, 50)
     fallout.giq_option(4, 39, 329, Butch49, 50)
