@@ -143,7 +143,7 @@ function timed_event_p_proc()
     if fallout.fixed_param() == 2 then
         fallout.float_msg(fallout.self_obj(), fallout.message_str(352, 102), 0)
     else
-        if fallout.map_var(5) then
+        if fallout.map_var(5) ~= 0 then
             go_forward()
         end
     end

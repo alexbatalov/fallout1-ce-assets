@@ -334,12 +334,12 @@ end
 function Katja24()
     fallout.gsay_reply(623, 163)
     if fallout.cur_map_index() == 30 then
-        if fallout.map_var(3) then
+        if fallout.map_var(3) ~= 0 then
             fallout.giq_option(4, 623, 164, set_lock, 50)
         end
     end
     if (fallout.cur_map_index() == 10) and (fallout.elevation(fallout.dude_obj()) == 1) then
-        if fallout.map_var(4) then
+        if fallout.map_var(4) ~= 0 then
             fallout.giq_option(4, 623, 164, set_lock, 50)
         end
     end

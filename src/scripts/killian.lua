@@ -378,7 +378,7 @@ function talk_p_proc()
                         fallout.giq_option(4, 47, 121, Killianx, 50)
                         fallout.giq_option(-3, 47, 122, Killianx, 50)
                     else
-                        if fallout.map_var(2) then
+                        if fallout.map_var(2) ~= 0 then
                             Killian47()
                         else
                             if fallout.local_var(5) == 1 then

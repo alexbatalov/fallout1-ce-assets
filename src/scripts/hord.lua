@@ -13,7 +13,7 @@ function start()
         fallout.move_to(fallout.self_obj(), 0, 0)
     end
     if fallout.local_var(0) == 0 then
-        if fallout.map_var(4) then
+        if fallout.map_var(4) ~= 0 then
             fallout.set_map_var(4, 0)
             fallout.set_local_var(0, 1)
             fallout.critter_attempt_placement(fallout.self_obj(), 18859, 0)

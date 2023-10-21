@@ -82,7 +82,7 @@ function critter_p_proc()
         end
     end
     if fallout.cur_map_index() == 30 then
-        if fallout.map_var(0) then
+        if fallout.map_var(0) ~= 0 then
             if not(waypoint) then
                 if fallout.tile_num(fallout.self_obj()) ~= 22312 then
                     fallout.animate_move_obj_to_tile(fallout.self_obj(), 22312, 0)

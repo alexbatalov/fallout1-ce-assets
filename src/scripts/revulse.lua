@@ -36,7 +36,7 @@ function start()
                 if fallout.random(1, 10) < g0 then
                     g4 = fallout.map_var(0)
                     if fallout.obj_carrying_pid_obj(fallout.dude_obj(), 123) then
-                        if fallout.map_var(1) then
+                        if fallout.map_var(1) ~= 0 then
                             fallout.set_map_var(1, 0)
                             fallout.display_msg(fallout.message_str(740, 107))
                         end

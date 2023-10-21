@@ -107,7 +107,7 @@ function Critter_Action()
             fallout.set_local_var(0, 1)
             fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
         else
-            if fallout.map_var(5) then
+            if fallout.map_var(5) ~= 0 then
                 fallout.float_msg(fallout.self_obj(), fallout.message_str(66, 103), 7)
                 fallout.set_local_var(0, 1)
                 fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)

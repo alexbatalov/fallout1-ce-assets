@@ -264,7 +264,7 @@ function Radio36()
     fallout.gsay_reply(361, 133)
     fallout.giq_option(-3, 361, 134, Radio37, 0)
     fallout.giq_option(4, 361, 135, Radio37, 0)
-    if fallout.map_var(6) then
+    if fallout.map_var(6) ~= 0 then
         fallout.giq_option(4, 361, 136, Radio36a, 0)
     end
     fallout.giq_option(4, 361, 137, RadioEnd, 0)
@@ -287,7 +287,7 @@ function RadioAlert()
 end
 
 function RadioEnt()
-    if fallout.map_var(2) then
+    if fallout.map_var(2) ~= 0 then
         Radio08()
     else
         fallout.set_map_var(2, 1)

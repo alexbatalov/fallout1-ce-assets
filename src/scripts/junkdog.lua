@@ -64,8 +64,8 @@ function critter_p_proc()
             fallout.animate_move_obj_to_tile(fallout.self_obj(), fallout.tile_num_in_direction(fallout.tile_num(fallout.dude_obj()), fallout.random(0, 5), 3), 0)
         end
     else
-        if fallout.map_var(8) then
-            if fallout.map_var(5) then
+        if fallout.map_var(8) ~= 0 then
+            if fallout.map_var(5) ~= 0 then
                 fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(6), 1)
             end
             fallout.set_map_var(8, 0)

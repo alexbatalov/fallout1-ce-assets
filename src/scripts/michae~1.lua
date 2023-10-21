@@ -655,11 +655,11 @@ function goto150()
 end
 
 function Do_Dialogue()
-    if fallout.map_var(8) then
+    if fallout.map_var(8) ~= 0 then
         fallout.set_map_var(8, 2)
         goto59()
     else
-        if fallout.map_var(7) then
+        if fallout.map_var(7) ~= 0 then
             goto56()
         else
             if fallout.map_var(6) and ((time.game_time_in_hours() - fallout.local_var(5)) < 48) then
