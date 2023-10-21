@@ -4,7 +4,6 @@ local reputation = require("lib.reputation")
 local time = require("lib.time")
 
 local start
-local combat
 local critter_p_proc
 local pickup_p_proc
 local talk_p_proc
@@ -20,73 +19,61 @@ local Merchant05
 local Get_Stuff
 local Put_Stuff
 
-local hostile = 0
+local hostile = false
 local initialized = false
 
-local exit_line = 0
-
 function start()
-    local v0 = 0
     if not initialized then
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 41)
+        fallout.critter_add_trait(self_obj, 1, 5, 50)
         initialized = true
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 41)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 50)
     end
-    if fallout.script_action() == 21 then
-        look_at_p_proc()
-    else
-        if fallout.script_action() == 4 then
-            pickup_p_proc()
-        else
-            if fallout.script_action() == 11 then
-                talk_p_proc()
-            else
-                if fallout.script_action() == 12 then
-                    critter_p_proc()
-                else
-                    if fallout.script_action() == 18 then
-                        destroy_p_proc()
-                    end
-                end
-            end
-        end
-    end
-end
 
-function combat()
-    hostile = 1
+    local script_action = fallout.script_action()
+    if script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    end
 end
 
 function critter_p_proc()
     if hostile then
-        hostile = 0
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
 end
 
 function pickup_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
-        hostile = 1
+        hostile = true
     end
 end
 
 function talk_p_proc()
-    local v0 = 0
+    local self_obj = fallout.self_obj()
     Get_Stuff()
     reaction.get_reaction()
     if ((time.game_time_in_days() - fallout.local_var(4)) >= 1) or (fallout.local_var(4) == 0) then
         fallout.set_local_var(4, time.game_time_in_days())
         fallout.set_local_var(5, 1000 + fallout.random(0, 500))
-        v0 = fallout.item_caps_adjust(fallout.self_obj(), fallout.local_var(5))
+        fallout.item_caps_adjust(self_obj, fallout.local_var(5))
     else
-        v0 = fallout.item_caps_adjust(fallout.self_obj(), fallout.local_var(5))
+        fallout.item_caps_adjust(self_obj, fallout.local_var(5))
     end
-    fallout.start_gdialog(782, fallout.self_obj(), 4, -1, -1)
+    fallout.start_gdialog(782, self_obj, 4, -1, -1)
     fallout.gsay_start()
     Merchant00()
     fallout.gsay_end()
     fallout.end_dialogue()
-    v0 = fallout.item_caps_adjust(fallout.self_obj(), -1 * fallout.item_caps_total(fallout.self_obj()))
+    fallout.item_caps_adjust(self_obj, -1 * fallout.item_caps_total(self_obj))
     Put_Stuff()
 end
 
@@ -96,9 +83,8 @@ function destroy_p_proc()
 end
 
 function damage_p_proc()
-    local v0 = 0
-    v0 = fallout.obj_pid(fallout.source_obj())
-    if fallout.party_member_obj(v0) ~= 0 then
+    local pid = fallout.obj_pid(fallout.source_obj())
+    if fallout.party_member_obj(pid) ~= nil then
         fallout.set_global_var(248, 1)
     end
 end
