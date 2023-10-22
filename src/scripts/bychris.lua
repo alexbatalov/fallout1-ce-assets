@@ -22,15 +22,14 @@ local BYChrisEnd
 local initialized = false
 local DisplayMessage = 100
 
-local exit_line = 0
-
 function start()
     if not initialized then
-        if fallout.obj_is_carrying_obj_pid(fallout.self_obj(), 41) == 0 then
-            fallout.item_caps_adjust(fallout.self_obj(), fallout.random(10, 100))
+        local self_obj = fallout.self_obj()
+        if fallout.obj_is_carrying_obj_pid(self_obj, 41) == 0 then
+            fallout.item_caps_adjust(self_obj, fallout.random(10, 100))
         end
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 47)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 27)
+        fallout.critter_add_trait(self_obj, 1, 6, 47)
+        fallout.critter_add_trait(self_obj, 1, 5, 27)
         initialized = true
     end
 end
@@ -54,20 +53,19 @@ function description_p_proc()
 end
 
 function talk_p_proc()
+    local self_obj = fallout.self_obj()
     if fallout.global_var(253) == 1 then
-        fallout.float_msg(fallout.self_obj(), fallout.message_str(669, fallout.random(100, 105)), 2)
+        fallout.float_msg(self_obj, fallout.message_str(669, fallout.random(100, 105)), 2)
+    elseif fallout.local_var(5) == 2 then
+        fallout.float_msg(self_obj, fallout.message_str(924, 116), 0)
     else
-        if fallout.local_var(5) == 2 then
-            fallout.float_msg(fallout.self_obj(), fallout.message_str(924, 116), 0)
-        else
-            reaction.get_reaction()
-            fallout.start_gdialog(924, fallout.self_obj(), -1, -1, -1)
-            fallout.gsay_start()
-            DisplayMessage = 102
-            BYChris01()
-            fallout.gsay_end()
-            fallout.end_dialogue()
-        end
+        reaction.get_reaction()
+        fallout.start_gdialog(924, self_obj, -1, -1, -1)
+        fallout.gsay_start()
+        DisplayMessage = 102
+        BYChris01()
+        fallout.gsay_end()
+        fallout.end_dialogue()
     end
 end
 
