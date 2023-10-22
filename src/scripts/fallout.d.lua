@@ -296,7 +296,8 @@ function fallout.dialogue_reaction(mood) end
 function fallout.set_obj_visibility(obj, invisible) end
 
 --- @param map string | integer
-function fallout.load_map(map) end
+--- @param param integer
+function fallout.load_map(map, param) end
 
 --- @return integer
 --- @nodiscard
