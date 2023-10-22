@@ -90,50 +90,35 @@ local destroy_p_proc
 local look_at_p_proc
 local time_p_proc
 
-local VATS = 0
-local MALE = 0
-local SEXY = 0
-local HOSTILE = 0
+local hostile = false
 local ILLEGAL = 0
 local initialized = false
-local awardex = 0
-local temp = 0
-
-local exit_line = 0
+local awardex = false
 
 function start()
     if not initialized then
+        local self_obj = fallout.self_obj()
+        fallout.set_external_var("Cabbot_Ptr", self_obj)
+        fallout.critter_add_trait(self_obj, 1, 6, 44)
+        fallout.critter_add_trait(self_obj, 1, 5, 64)
         initialized = true
-        fallout.set_external_var("Cabbot_Ptr", fallout.self_obj())
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 44)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 64)
     end
-    if fallout.script_action() == 21 then
+
+    local script_action = fallout.script_action()
+    if script_action == 21 then
         look_at_p_proc()
-    else
-        if fallout.script_action() == 14 then
-            damage_p_proc()
-        else
-            if fallout.script_action() == 4 then
-                pickup_p_proc()
-            else
-                if fallout.script_action() == 22 then
-                    time_p_proc()
-                else
-                    if fallout.script_action() == 11 then
-                        talk_p_proc()
-                    else
-                        if fallout.script_action() == 12 then
-                            critter_p_proc()
-                        else
-                            if fallout.script_action() == 18 then
-                                destroy_p_proc()
-                            end
-                        end
-                    end
-                end
-            end
-        end
+    elseif script_action == 14 then
+        damage_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 22 then
+        time_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
     end
 end
 
@@ -144,20 +129,14 @@ function do_dialogue()
     if fallout.local_var(4) == 1 then
         if fallout.global_var(108) == 1 then
             cabbot24()
+        elseif fallout.global_var(108) == 2 then
+            cabbot36()
+        elseif fallout.global_var(117) == 1 then
+            cabbot33()
+        elseif fallout.local_var(0) >= 50 then
+            cabbot19()
         else
-            if fallout.global_var(108) == 2 then
-                cabbot36()
-            else
-                if fallout.global_var(117 == 1) then
-                    cabbot33()
-                else
-                    if fallout.local_var(0) >= 50 then
-                        cabbot19()
-                    else
-                        cabbot21()
-                    end
-                end
-            end
+            cabbot21()
         end
     else
         cabbot01()
@@ -165,7 +144,7 @@ function do_dialogue()
     fallout.gsay_end()
     fallout.end_dialogue()
     if awardex then
-        awardex = 0
+        awardex = false
         fallout.display_msg(fallout.message_str(40, 232))
         fallout.set_global_var(155, fallout.global_var(155) + 1)
         fallout.give_exp_points(2000)
@@ -217,7 +196,7 @@ end
 
 function cabbot06()
     fallout.gsay_reply(40, 123)
-    if not(fallout.global_var(76)) then
+    if fallout.global_var(76) == 0 then
         fallout.set_global_var(76, 1)
     end
     fallout.giq_option(7, 40, 124, cabbot07, 50)
@@ -506,13 +485,12 @@ function cabbotx1()
 end
 
 function cabbotx3()
-    local v0 = 0
     if fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 164) then
-        awardex = 1
-        v0 = fallout.obj_carrying_pid_obj(fallout.dude_obj(), 164)
+        awardex = true
+        local item_obj = fallout.obj_carrying_pid_obj(fallout.dude_obj(), 164)
         fallout.set_global_var(108, 2)
         reaction.TopReact()
-        fallout.rm_obj_from_inven(fallout.dude_obj(), v0)
+        fallout.rm_obj_from_inven(fallout.dude_obj(), item_obj)
         cabbot27()
     else
         cabbot31()
@@ -623,37 +601,32 @@ end
 function cabbotopen()
 end
 
-function combat()
-    HOSTILE = 1
-end
-
 function damage_p_proc()
     fallout.set_global_var(250, 1)
 end
 
 function critter_p_proc()
+    local self_obj = fallout.self_obj()
     if fallout.global_var(250) ~= 0 then
-        HOSTILE = 1
+        hostile = true
     end
-    if fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) > 12 then
-        HOSTILE = 0
+    if fallout.tile_distance_objs(self_obj, fallout.dude_obj()) > 12 then
+        hostile = false
     end
-    if HOSTILE then
+    if hostile then
         fallout.set_global_var(250, 1)
-        HOSTILE = 0
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     else
         if fallout.local_var(5) == 0 then
             if fallout.global_var(108) == 2 then
-                fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(1), 1)
+                fallout.add_timer_event(self_obj, fallout.game_ticks(1), 1)
             end
-        else
-            if fallout.local_var(5) == 1 then
-                if fallout.tile_num(fallout.self_obj()) == 20906 then
-                    fallout.set_local_var(5, 2)
-                else
-                    fallout.animate_move_obj_to_tile(fallout.self_obj(), 20906, 0)
-                end
+        elseif fallout.local_var(5) == 1 then
+            if fallout.tile_num(self_obj) == 20906 then
+                fallout.set_local_var(5, 2)
+            else
+                fallout.animate_move_obj_to_tile(self_obj, 20906, 0)
             end
         end
     end
@@ -661,7 +634,7 @@ end
 
 function pickup_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
-        HOSTILE = 1
+        hostile = true
     end
 end
 
