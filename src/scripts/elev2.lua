@@ -1,15 +1,3 @@
-local fallout = require("fallout")
+local factory = require("lib.factory")
 
-local start
-
-function start()
-    if fallout.script_action() == 2 then
-        if fallout.source_obj() == fallout.dude_obj() then
-            fallout.metarule(15, 2)
-        end
-    end
-end
-
-local exports = {}
-exports.start = start
-return exports
+return factory.create_elevator_spatial_scr(2)

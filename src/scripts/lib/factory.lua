@@ -43,8 +43,22 @@ local function create_load_map_use_scr(map, param)
     return scr
 end
 
+--- @param elevator integer
+local function create_elevator_spatial_scr(elevator)
+    local scr = {}
+    scr.start = function()
+        if fallout.script_action() == 2 then
+            if fallout.source_obj() == fallout.dude_obj() then
+                fallout.metarule(15, elevator)
+            end
+        end
+    end
+    return scr
+end
+
 local exports = {}
 exports.create_one_off_spatial_scr = create_one_off_spatial_scr
 exports.create_load_map_spatial_scr = create_load_map_spatial_scr
 exports.create_load_map_use_scr = create_load_map_use_scr
+exports.create_elevator_spatial_scr = create_elevator_spatial_scr
 return exports
