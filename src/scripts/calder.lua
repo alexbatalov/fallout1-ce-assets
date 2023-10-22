@@ -2,7 +2,11 @@ local fallout = require("fallout")
 local reputation = require("lib.reputation")
 
 local start
-local do_dialogue
+local pickup_p_proc
+local talk_p_proc
+local critter_p_proc
+local destroy_p_proc
+local look_at_p_proc
 local calder00
 local calder01
 local calder01a
@@ -55,50 +59,40 @@ local calder34
 local calderdone
 local calderend
 local caldercombat
-local weapon_check
 
-local hostile = 0
-local armed = 0
+local hostile = false
 local GENDER = 0
 local LASHERKNOWN = 0
 local LASHERABUSEKNOWN = 0
 local initialized = false
 
-local exit_line = 0
-
 function start()
     if not initialized then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 20)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 69)
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 20)
+        fallout.critter_add_trait(self_obj, 1, 5, 69)
         initialized = true
     end
-    if fallout.script_action() == 11 then
-        do_dialogue()
-    else
-        if (fallout.script_action() == 21) or (fallout.script_action() == 3) then
-            fallout.script_overrides()
-            fallout.display_msg(fallout.message_str(393, 100))
-        else
-            if fallout.script_action() == 18 then
-                reputation.inc_good_critter()
-            else
-                if fallout.script_action() == 4 then
-                    hostile = 1
-                else
-                    if fallout.script_action() == 12 then
-                        if hostile then
-                            hostile = 0
-                            fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
-                        end
-                    end
-                end
-            end
-        end
+
+    local script_action = fallout.script_action()
+    if script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 21 or script_action == 3 then
+        look_at_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
     end
 end
 
-function do_dialogue()
-    weapon_check()
+function pickup_p_proc()
+    hostile = true
+end
+
+function talk_p_proc()
     fallout.start_gdialog(-1, fallout.self_obj(), 4, -1, -1)
     fallout.gsay_start()
     if fallout.obj_pid(fallout.critter_inven_obj(fallout.dude_obj(), 0)) == 113 then
@@ -111,17 +105,31 @@ function do_dialogue()
     else
         if fallout.global_var(158) > 2 then
             calder00()
+        elseif fallout.local_var(4) == 1 then
+            calder28()
         else
-            if fallout.local_var(4) == 1 then
-                calder28()
-            else
-                fallout.set_local_var(4, 1)
-                calder29()
-            end
+            fallout.set_local_var(4, 1)
+            calder29()
         end
     end
     fallout.gsay_end()
     fallout.end_dialogue()
+end
+
+function critter_p_proc()
+    if hostile then
+        hostile = false
+        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+    end
+end
+
+function destroy_p_proc()
+    reputation.inc_good_critter()
+end
+
+function look_at_p_proc()
+    fallout.script_overrides()
+    fallout.display_msg(fallout.message_str(393, 100))
 end
 
 function calder00()
@@ -244,9 +252,8 @@ function calder07b()
 end
 
 function calder08()
-    local v0 = 0
-    v0 = fallout.create_object_sid(117, 0, 0, -1)
-    fallout.add_obj_to_inven(fallout.dude_obj(), v0)
+    local item_obj = fallout.create_object_sid(117, 0, 0, -1)
+    fallout.add_obj_to_inven(fallout.dude_obj(), item_obj)
     fallout.gsay_message(393, 133, 49)
 end
 
@@ -502,17 +509,14 @@ end
 
 function caldercombat()
     fallout.set_global_var(195, 1)
-    hostile = 1
-end
-
-function weapon_check()
-    if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) then
-        armed = 1
-    else
-        armed = 0
-    end
+    hostile = true
 end
 
 local exports = {}
 exports.start = start
+exports.pickup_p_proc = pickup_p_proc
+exports.talk_p_proc = talk_p_proc
+exports.critter_p_proc = critter_p_proc
+exports.destroy_p_proc = destroy_p_proc
+exports.look_at_p_proc = look_at_p_proc
 return exports
