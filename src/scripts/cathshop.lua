@@ -29,95 +29,77 @@ local BarterGuy13
 local BarterGuy14
 local BarterGuyEnd
 
-local hostile = 0
+local hostile = false
 local initialized = false
-local Caught_Stealing = 0
-local Here_To_Shop = 0
-local Go_Balistic = 0
-
-local exit_line = 0
+local Caught_Stealing = false
 
 function start()
     if not initialized then
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 20)
+        fallout.critter_add_trait(self_obj, 1, 5, 69)
+        fallout.set_external_var("Shopkepper_Ptr", self_obj)
         initialized = true
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 20)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 69)
-        fallout.set_external_var("Shopkepper_Ptr", fallout.self_obj())
     end
-    if fallout.script_action() == 21 then
+
+    local script_action = fallout.script_action()
+    if script_action == 21 then
         look_at_p_proc()
-    else
-        if fallout.script_action() == 22 then
-            timed_event_p_proc()
-        else
-            if fallout.script_action() == 4 then
-                pickup_p_proc()
-            else
-                if fallout.script_action() == 11 then
-                    talk_p_proc()
-                else
-                    if fallout.script_action() == 12 then
-                        critter_p_proc()
-                    else
-                        if fallout.script_action() == 18 then
-                            destroy_p_proc()
-                        end
-                    end
-                end
-            end
-        end
+    elseif script_action == 22 then
+        timed_event_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
     end
 end
 
 function combat()
-    hostile = 1
+    hostile = true
 end
 
 function critter_p_proc()
     if hostile then
-        hostile = 0
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
 end
 
 function pickup_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
-        hostile = 1
+        hostile = true
     end
 end
 
 function talk_p_proc()
-    local v0 = 0
-    local v1 = 0
+    local self_obj = fallout.self_obj()
     reaction.get_reaction()
-    v1 = fallout.obj_carrying_pid_obj(fallout.self_obj(), 113)
-    fallout.rm_obj_from_inven(fallout.self_obj(), v1)
-    fallout.move_obj_inven_to_obj(fallout.external_var("Shop_Ptr"), fallout.self_obj())
-    fallout.start_gdialog(843, fallout.self_obj(), 4, -1, -1)
+    local item_obj = fallout.obj_carrying_pid_obj(self_obj, 113)
+    fallout.rm_obj_from_inven(self_obj, item_obj)
+    local shop_obj = fallout.external_var("Shop_Ptr")
+    fallout.move_obj_inven_to_obj(shop_obj, self_obj)
+    fallout.start_gdialog(843, self_obj, 4, -1, -1)
     fallout.gsay_start()
     if Caught_Stealing then
         BarterGuy00()
     else
         if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) or (fallout.global_var(195) == 1) then
             BarterGuy02()
+        elseif fallout.obj_pid(fallout.critter_inven_obj(fallout.dude_obj(), 0)) == 113 then
+            BarterGuy07()
         else
-            if fallout.obj_pid(fallout.critter_inven_obj(fallout.dude_obj(), 0)) == 113 then
-                BarterGuy07()
-            else
-                BarterGuy10()
-            end
+            BarterGuy10()
         end
     end
     fallout.gsay_end()
     fallout.end_dialogue()
-    fallout.move_obj_inven_to_obj(fallout.self_obj(), fallout.external_var("Shop_Ptr"))
-    fallout.add_obj_to_inven(fallout.self_obj(), v1)
-    fallout.wield_obj_critter(fallout.self_obj(), v1)
-    if Go_Balistic then
-        v0 = fallout.create_object_sid(12, 0, 0, -1)
-        fallout.add_obj_to_inven(fallout.self_obj(), v0)
-        fallout.wield_obj_critter(fallout.self_obj(), v0)
-    end
+    fallout.move_obj_inven_to_obj(self_obj, shop_obj)
+    fallout.add_obj_to_inven(self_obj, item_obj)
+    fallout.wield_obj_critter(self_obj, item_obj)
 end
 
 function destroy_p_proc()
@@ -131,13 +113,10 @@ end
 
 function timed_event_p_proc()
     if fallout.fixed_param() == 1 then
-        Here_To_Shop = 1
         fallout.dialogue_system_enter()
-    else
-        if fallout.fixed_param() == 2 then
-            Caught_Stealing = 1
-            fallout.dialogue_system_enter()
-        end
+    elseif fallout.fixed_param() == 2 then
+        Caught_Stealing = true
+        fallout.dialogue_system_enter()
     end
 end
 
