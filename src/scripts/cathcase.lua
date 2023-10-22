@@ -7,27 +7,20 @@ local use_p_proc
 local pickup_p_proc
 local use_skill_on_p_proc
 
-local Free_To_Steal = 0
+local Free_To_Steal = false
 
 function start()
-    if fallout.script_action() == 15 then
+    local script_action = fallout.script_action()
+    if script_action == 15 then
         map_enter_p_proc()
-    else
-        if fallout.script_action() == 23 then
-            map_update_p_proc()
-        else
-            if fallout.script_action() == 6 then
-                use_p_proc()
-            else
-                if fallout.script_action() == 4 then
-                    pickup_p_proc()
-                else
-                    if fallout.script_action() == 8 then
-                        use_skill_on_p_proc()
-                    end
-                end
-            end
-        end
+    elseif script_action == 23 then
+        map_update_p_proc()
+    elseif script_action == 6 then
+        use_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 8 then
+        use_skill_on_p_proc()
     end
 end
 
@@ -40,26 +33,31 @@ function map_update_p_proc()
 end
 
 function use_p_proc()
-    if fallout.external_var("Shopkepper_Ptr") ~= 0 then
+    local shopkeeper_obj = fallout.external_var("Shopkepper_Ptr")
+    if shopkeeper_obj ~= nil then
         fallout.script_overrides()
-        fallout.add_timer_event(fallout.external_var("Shopkepper_Ptr"), 1, 1)
+        fallout.add_timer_event(shopkeeper_obj, 1, 1)
     end
 end
 
 function pickup_p_proc()
-    if (fallout.external_var("Shopkepper_Ptr") ~= 0) and (Free_To_Steal == 0) then
+    local shopkeeper_obj = fallout.external_var("Shopkepper_Ptr")
+    if shopkeeper_obj ~= nil and not Free_To_Steal then
         fallout.script_overrides()
-        fallout.add_timer_event(fallout.external_var("Shopkepper_Ptr"), 1, 1)
+        fallout.add_timer_event(shopkeeper_obj, 1, 1)
     end
 end
 
 function use_skill_on_p_proc()
-    if (fallout.action_being_used() == 10) and (fallout.external_var("Shopkepper_Ptr") ~= 0) then
-        if fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), 10, -10)) then
-            Free_To_Steal = 1
-        else
-            fallout.script_overrides()
-            fallout.add_timer_event(fallout.external_var("Shopkepper_Ptr"), 1, 2)
+    if fallout.action_being_used() == 10 then
+        local shopkeeper_obj = fallout.external_var("Shopkepper_Ptr")
+        if shopkeeper_obj ~= nil then
+            if fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), 10, -10)) then
+                Free_To_Steal = true
+            else
+                fallout.script_overrides()
+                fallout.add_timer_event(shopkeeper_obj, 1, 2)
+            end
         end
     end
 end
