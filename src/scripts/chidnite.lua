@@ -2,6 +2,12 @@ local fallout = require("fallout")
 local reputation = require("lib.reputation")
 
 local start
+local pickup_p_proc
+local talk_p_proc
+local critter_p_proc
+local damage_p_proc
+local destroy_p_proc
+local look_at_p_proc
 local Nightkin01
 local Nightkin01a
 local Nightkin02
@@ -14,64 +20,81 @@ local Nightkin07
 local Nightkinend
 local Combat
 
-local Hostile = 0
+local hostile = false
 local initialized = false
 
 function start()
     if not initialized then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 20)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 66)
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 20)
+        fallout.critter_add_trait(self_obj, 1, 5, 66)
         initialized = true
     end
-    if (fallout.script_action() == 21) or (fallout.script_action() == 3) then
-        fallout.script_overrides()
-        fallout.display_msg(fallout.message_str(394, 100))
-    else
-        if fallout.script_action() == 18 then
-            reputation.inc_evil_critter()
-        else
-            if fallout.script_action() == 14 then
-                fallout.set_global_var(245, 1)
-            else
-                if fallout.script_action() == 12 then
-                    if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
-                        if not(fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 142)) then
-                            if not(fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 141)) then
-                                if fallout.obj_pid(fallout.critter_inven_obj(fallout.dude_obj(), 0)) ~= 113 then
-                                    Hostile = 1
-                                end
-                            end
-                        end
-                    end
-                    if (fallout.metarule(16, 0) > 1) and fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
-                        Hostile = 1
-                    end
-                    if Hostile then
-                        Hostile = 0
-                        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
-                    end
-                else
-                    if fallout.script_action() == 4 then
-                        Hostile = 1
-                    else
-                        if fallout.script_action() == 11 then
-                            fallout.script_overrides()
-                            if fallout.global_var(195) == 1 then
-                                fallout.float_msg(fallout.self_obj(), fallout.message_str(394, 101), 0)
-                                Hostile = 1
-                            else
-                                fallout.start_gdialog(394, fallout.self_obj(), 4, -1, -1)
-                                fallout.gsay_start()
-                                Nightkin01()
-                                fallout.gsay_end()
-                                fallout.end_dialogue()
-                            end
-                        end
-                    end
-                end
-            end
-        end
+
+    local script_action = fallout.script_action()
+    if script_action == 21 or script_action == 3 then
+        look_at_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 14 then
+        damage_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
     end
+end
+
+function pickup_p_proc()
+    hostile = true
+end
+
+function talk_p_proc()
+    fallout.script_overrides()
+    if fallout.global_var(195) == 1 then
+        fallout.float_msg(fallout.self_obj(), fallout.message_str(394, 101), 0)
+        hostile = true
+    else
+        fallout.start_gdialog(394, fallout.self_obj(), 4, -1, -1)
+        fallout.gsay_start()
+        Nightkin01()
+        fallout.gsay_end()
+        fallout.end_dialogue()
+    end
+end
+
+function critter_p_proc()
+    local dude_obj = fallout.dude_obj()
+    local self_obj = fallout.self_obj()
+    local self_can_see_dude = fallout.obj_can_see_obj(self_obj, dude_obj)
+    if self_can_see_dude
+        and fallout.obj_is_carrying_obj_pid(dude_obj, 142) == 0
+        and fallout.obj_is_carrying_obj_pid(dude_obj, 141) == 0
+        and fallout.obj_pid(fallout.critter_inven_obj(dude_obj, 0)) ~= 113 then
+        hostile = true
+    end
+    if fallout.metarule(16, 0) > 1 and self_can_see_dude then
+        hostile = true
+    end
+    if hostile then
+        hostile = false
+        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+    end
+end
+
+function damage_p_proc()
+    fallout.set_global_var(245, 1)
+end
+
+function destroy_p_proc()
+    reputation.inc_evil_critter()
+end
+
+function look_at_p_proc()
+    fallout.script_overrides()
+    fallout.display_msg(fallout.message_str(394, 100))
 end
 
 function Nightkin01()
@@ -151,9 +174,15 @@ end
 
 function Combat()
     fallout.set_global_var(195, 1)
-    Hostile = 1
+    hostile = true
 end
 
 local exports = {}
 exports.start = start
+exports.pickup_p_proc = pickup_p_proc
+exports.talk_p_proc = talk_p_proc
+exports.critter_p_proc = critter_p_proc
+exports.damage_p_proc = damage_p_proc
+exports.destroy_p_proc = destroy_p_proc
+exports.look_at_p_proc = look_at_p_proc
 return exports
