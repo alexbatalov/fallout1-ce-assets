@@ -46,35 +46,30 @@ local ChdScout35
 local ChdScoutend
 local combat
 
-local hostile = 0
+local hostile = false
 local initialized = false
 
 function start()
     if not initialized then
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 20)
         initialized = true
-    else
-        if fallout.script_action() == 12 then
-            critter_p_proc()
-        else
-            if fallout.script_action() == 18 then
-                destroy_p_proc()
-            else
-                if fallout.script_action() == 21 then
-                    look_at_p_proc()
-                else
-                    if fallout.script_action() == 11 then
-                        talk_p_proc()
-                    end
-                end
-            end
-        end
+    end
+
+    local script_action = fallout.script_action()
+    if script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
     end
 end
 
 function critter_p_proc()
     if hostile then
-        hostile = 0
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
 end
@@ -180,7 +175,9 @@ function ChdScout13()
     fallout.gsay_reply(276, 137)
     fallout.giq_option(4, 276, 138, ChdScout14, 50)
     fallout.giq_option(4, 276, 139, ChdScout15, 50)
-    fallout.giq_option(4, 276, fallout.message_str(276, 140) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(276, 141), ChdScout22, 50)
+    fallout.giq_option(4, 276,
+        fallout.message_str(276, 140) ..
+        fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(276, 141), ChdScout22, 50)
     fallout.giq_option(4, 276, 142, ChdScout24, 50)
     fallout.giq_option(4, 276, 143, combat, 50)
 end
@@ -203,7 +200,9 @@ end
 
 function ChdScout17()
     fallout.gsay_reply(276, 149)
-    fallout.giq_option(4, 276, fallout.message_str(276, 150) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(276, 151), ChdScout17a, 50)
+    fallout.giq_option(4, 276,
+        fallout.message_str(276, 150) ..
+        fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(276, 151), ChdScout17a, 50)
     fallout.giq_option(4, 276, 152, ChdScout20, 50)
     fallout.giq_option(4, 276, 153, combat, 50)
 end
@@ -227,7 +226,9 @@ end
 
 function ChdScout20()
     fallout.gsay_reply(276, 156)
-    fallout.giq_option(4, 276, fallout.message_str(276, 157) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(276, 158), ChdScout21, 50)
+    fallout.giq_option(4, 276,
+        fallout.message_str(276, 157) ..
+        fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(276, 158), ChdScout21, 50)
     fallout.giq_option(4, 276, 159, combat, 50)
 end
 
@@ -237,7 +238,9 @@ function ChdScout21()
 end
 
 function ChdScout22()
-    fallout.gsay_reply(276, fallout.message_str(276, 161) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(276, 162))
+    fallout.gsay_reply(276,
+        fallout.message_str(276, 161) ..
+        fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(276, 162))
     fallout.giq_option(4, 276, 163, ChdScout23, 50)
     fallout.giq_option(4, 276, 164, ChdScout23, 50)
     fallout.giq_option(4, 276, 165, combat, 50)
@@ -257,7 +260,9 @@ function ChdScout25()
     fallout.gsay_reply(276, 168)
     fallout.giq_option(4, 276, 169, ChdScout14, 50)
     fallout.giq_option(4, 276, 170, ChdScout15, 50)
-    fallout.giq_option(4, 276, fallout.message_str(276, 171) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(276, 172), ChdScout22, 50)
+    fallout.giq_option(4, 276,
+        fallout.message_str(276, 171) ..
+        fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(276, 172), ChdScout22, 50)
     fallout.giq_option(4, 276, 173, ChdScout24, 50)
     fallout.giq_option(4, 276, 174, combat, 50)
 end
@@ -322,7 +327,7 @@ function ChdScoutend()
 end
 
 function combat()
-    hostile = 1
+    hostile = true
 end
 
 local exports = {}
