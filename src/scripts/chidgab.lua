@@ -2,60 +2,79 @@ local fallout = require("fallout")
 local reputation = require("lib.reputation")
 
 local start
+local pickup_p_proc
+local talk_p_proc
+local critter_p_proc
+local destroy_p_proc
+local look_at_p_proc
 local Brat02
 local Brat03
 local Brat04
 local Brat05
 local Brat06
 local Brat07
-local Combat
 local BratEnd
 
-local Hostile = 0
+local hostile = false
 local initialized = false
 
 function start()
     if not initialized then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 20)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 69)
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 20)
+        fallout.critter_add_trait(self_obj, 1, 5, 69)
         initialized = true
     end
-    if (fallout.script_action() == 21) or (fallout.script_action() == 3) then
-        fallout.script_overrides()
-        fallout.display_msg(fallout.message_str(395, 100))
-    else
-        if fallout.script_action() == 4 then
-            Hostile = 1
-        else
-            if fallout.script_action() == 12 then
-                if Hostile then
-                    Hostile = 0
-                    fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
-                end
-            else
-                if fallout.script_action() == 18 then
-                    reputation.inc_evil_critter()
-                else
-                    if fallout.script_action() == 11 then
-                        fallout.script_overrides()
-                        if fallout.global_var(195) == 1 then
-                            if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) or (fallout.global_var(158) > 2) then
-                                fallout.float_msg(fallout.self_obj(), fallout.message_str(395, 102), 0)
-                            else
-                                fallout.float_msg(fallout.self_obj(), fallout.message_str(395, 101), 0)
-                            end
-                        else
-                            fallout.start_gdialog(395, fallout.self_obj(), 4, -1, -1)
-                            fallout.gsay_start()
-                            Brat02()
-                            fallout.gsay_end()
-                            fallout.end_dialogue()
-                        end
-                    end
-                end
-            end
-        end
+
+    local script_action = fallout.script_action()
+    if script_action == 21 or script_action == 3 then
+        look_at_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
     end
+end
+
+function pickup_p_proc()
+    hostile = true
+end
+
+function talk_p_proc()
+    fallout.script_overrides()
+    if fallout.global_var(195) == 1 then
+        if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) or (fallout.global_var(158) > 2) then
+            fallout.float_msg(fallout.self_obj(), fallout.message_str(395, 102), 0)
+        else
+            fallout.float_msg(fallout.self_obj(), fallout.message_str(395, 101), 0)
+        end
+    else
+        fallout.start_gdialog(395, fallout.self_obj(), 4, -1, -1)
+        fallout.gsay_start()
+        Brat02()
+        fallout.gsay_end()
+        fallout.end_dialogue()
+    end
+end
+
+function critter_p_proc()
+    if hostile then
+        hostile = false
+        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+    end
+end
+
+function destroy_p_proc()
+    reputation.inc_evil_critter()
+end
+
+function look_at_p_proc()
+    fallout.script_overrides()
+    fallout.display_msg(fallout.message_str(395, 100))
 end
 
 function Brat02()
@@ -97,13 +116,14 @@ function Brat07()
     fallout.gsay_option(395, 115, BratEnd, 50)
 end
 
-function Combat()
-    Hostile = 1
-end
-
 function BratEnd()
 end
 
 local exports = {}
 exports.start = start
+exports.pickup_p_proc = pickup_p_proc
+exports.talk_p_proc = talk_p_proc
+exports.critter_p_proc = critter_p_proc
+exports.destroy_p_proc = destroy_p_proc
+exports.look_at_p_proc = look_at_p_proc
 return exports
