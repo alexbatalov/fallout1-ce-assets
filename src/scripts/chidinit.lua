@@ -15,18 +15,15 @@ function start()
             fallout.set_local_var(0, fallout.random(100, 109))
         end
         initialized = true
-    else
-        if fallout.script_action() == 18 then
-            destroy_p_proc()
-        else
-            if fallout.script_action() == 21 then
-                look_at_p_proc()
-            else
-                if fallout.script_action() == 11 then
-                    talk_p_proc()
-                end
-            end
-        end
+    end
+
+    local script_action = fallout.script_action()
+    if script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
     end
 end
 
