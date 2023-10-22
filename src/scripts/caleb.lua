@@ -30,19 +30,16 @@ local DialogMain12
 local DialogMain13
 
 local initialized = false
-local Hostile = 0
 local DisplayMessage = 100
 
-local exit_line = 0
-
 function start()
-    local v0 = 0
     if not initialized then
-        if fallout.obj_is_carrying_obj_pid(fallout.self_obj(), 41) == 0 then
-            fallout.item_caps_adjust(fallout.self_obj(), fallout.random(10, 100))
+        local self_obj = fallout.self_obj()
+        if fallout.obj_is_carrying_obj_pid(self_obj, 41) == 0 then
+            fallout.item_caps_adjust(self_obj, fallout.random(10, 100))
         end
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 89)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 29)
+        fallout.critter_add_trait(self_obj, 1, 6, 89)
+        fallout.critter_add_trait(self_obj, 1, 5, 29)
         if fallout.local_var(7) == 0 then
             fallout.set_map_var(1, fallout.map_var(1) + 1)
             fallout.set_local_var(7, 1)
@@ -71,55 +68,47 @@ function description_p_proc()
 end
 
 function talk_p_proc()
-    if (fallout.global_var(251) == 1) or (fallout.global_var(616) == 1) then
+    if fallout.global_var(251) == 1 or fallout.global_var(616) == 1 then
         fallout.float_msg(fallout.self_obj(), fallout.message_str(669, fallout.random(100, 105)), 2)
+    elseif fallout.local_var(4) == 1 and fallout.get_critter_stat(fallout.dude_obj(), 4) < 4 then
+        fallout.float_msg(fallout.self_obj(), fallout.message_str(255, 127), 0)
+    elseif fallout.global_var(128) == 2 then
+        fallout.float_msg(fallout.self_obj(), fallout.message_str(255, 147), 0)
     else
-        if (fallout.local_var(4) == 1) and (fallout.get_critter_stat(fallout.dude_obj(), 4) < 4) then
-            fallout.float_msg(fallout.self_obj(), fallout.message_str(255, 127), 0)
-        else
-            if fallout.global_var(128) == 2 then
-                fallout.float_msg(fallout.self_obj(), fallout.message_str(255, 147), 0)
+        reaction.get_reaction()
+        fallout.start_gdialog(255, fallout.self_obj(), -1, -1, -1)
+        fallout.gsay_start()
+        if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) then
+            DialogWeapon()
+        elseif fallout.local_var(4) == 0 then
+            if fallout.local_var(1) < 2 then
+                DisplayMessage = 102
             else
-                reaction.get_reaction()
-                fallout.start_gdialog(255, fallout.self_obj(), -1, -1, -1)
-                fallout.gsay_start()
-                if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) then
-                    DialogWeapon()
-                else
-                    if fallout.local_var(4) == 0 then
-                        if fallout.local_var(1) < 2 then
-                            DisplayMessage = 102
-                        else
-                            DisplayMessage = 103
-                        end
-                        DialogMain()
-                    else
-                        if fallout.global_var(128) == 0 then
-                            if fallout.local_var(1) < 2 then
-                                DisplayMessage = 122
-                            end
-                            if fallout.get_critter_stat(fallout.dude_obj(), 34) == 0 then
-                                DisplayMessage = 123
-                            else
-                                DisplayMessage = 124
-                            end
-                            DialogMain()
-                        else
-                            DisplayMessage = 141
-                            DialogMain11()
-                        end
-                    end
-                end
-                fallout.gsay_end()
-                fallout.end_dialogue()
+                DisplayMessage = 103
             end
+            DialogMain()
+        elseif fallout.global_var(128) == 0 then
+            if fallout.local_var(1) < 2 then
+                DisplayMessage = 122
+            end
+            if fallout.get_critter_stat(fallout.dude_obj(), 34) == 0 then
+                DisplayMessage = 123
+            else
+                DisplayMessage = 124
+            end
+            DialogMain()
+        else
+            DisplayMessage = 141
+            DialogMain11()
         end
+        fallout.gsay_end()
+        fallout.end_dialogue()
     end
 end
 
 function critter_p_proc()
     if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
-        if (fallout.global_var(251) == 1) or (fallout.global_var(616) == 1) then
+        if fallout.global_var(251) == 1 or fallout.global_var(616) == 1 then
             fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
         end
     end
