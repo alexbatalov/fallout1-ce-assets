@@ -46,35 +46,30 @@ local ChdGuard35
 local ChdGuardend
 local combat
 
-local hostile = 0
+local hostile = false
 local initialized = false
 
 function start()
     if not initialized then
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 20)
         initialized = true
-    else
-        if fallout.script_action() == 12 then
-            critter_p_proc()
-        else
-            if fallout.script_action() == 18 then
-                destroy_p_proc()
-            else
-                if fallout.script_action() == 21 then
-                    look_at_p_proc()
-                else
-                    if fallout.script_action() == 11 then
-                        talk_p_proc()
-                    end
-                end
-            end
-        end
+    end
+
+    local script_action = fallout.script_action()
+    if script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
     end
 end
 
 function critter_p_proc()
     if hostile then
-        hostile = 0
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
 end
@@ -181,7 +176,9 @@ function ChdGuard13()
     fallout.gsay_reply(275, 137)
     fallout.giq_option(4, 275, 138, ChdGuard14, 50)
     fallout.giq_option(4, 275, 139, ChdGuard15, 50)
-    fallout.giq_option(4, 275, fallout.message_str(275, 140) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(275, 141), ChdGuard22, 50)
+    fallout.giq_option(4, 275,
+        fallout.message_str(275, 140) ..
+        fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(275, 141), ChdGuard22, 50)
     fallout.giq_option(4, 275, 142, ChdGuard24, 50)
     fallout.giq_option(4, 275, 143, combat, 50)
 end
@@ -204,7 +201,9 @@ end
 
 function ChdGuard17()
     fallout.gsay_reply(275, 149)
-    fallout.giq_option(4, 275, fallout.message_str(275, 150) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(275, 151), ChdGuard17a, 50)
+    fallout.giq_option(4, 275,
+        fallout.message_str(275, 150) ..
+        fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(275, 151), ChdGuard17a, 50)
     fallout.giq_option(4, 275, 152, ChdGuard20, 50)
     fallout.giq_option(4, 275, 153, combat, 50)
 end
@@ -228,7 +227,9 @@ end
 
 function ChdGuard20()
     fallout.gsay_reply(275, 156)
-    fallout.giq_option(4, 275, fallout.message_str(275, 157) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(275, 158), ChdGuard21, 50)
+    fallout.giq_option(4, 275,
+        fallout.message_str(275, 157) ..
+        fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(275, 158), ChdGuard21, 50)
     fallout.giq_option(4, 275, 159, combat, 50)
 end
 
@@ -238,7 +239,9 @@ function ChdGuard21()
 end
 
 function ChdGuard22()
-    fallout.gsay_reply(275, fallout.message_str(275, 161) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(275, 162))
+    fallout.gsay_reply(275,
+        fallout.message_str(275, 161) ..
+        fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(275, 162))
     fallout.giq_option(4, 275, 163, ChdGuard23, 50)
     fallout.giq_option(4, 275, 164, ChdGuard23, 50)
     fallout.giq_option(4, 275, 165, combat, 50)
@@ -258,7 +261,9 @@ function ChdGuard25()
     fallout.gsay_reply(275, 168)
     fallout.giq_option(4, 275, 169, ChdGuard14, 50)
     fallout.giq_option(4, 275, 170, ChdGuard15, 50)
-    fallout.giq_option(4, 275, fallout.message_str(275, 171) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(275, 172), ChdGuard22, 50)
+    fallout.giq_option(4, 275,
+        fallout.message_str(275, 171) ..
+        fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(275, 172), ChdGuard22, 50)
     fallout.giq_option(4, 275, 173, ChdGuard24, 50)
     fallout.giq_option(4, 275, 174, combat, 50)
 end
@@ -323,7 +328,7 @@ function ChdGuardend()
 end
 
 function combat()
-    hostile = 1
+    hostile = true
 end
 
 local exports = {}
