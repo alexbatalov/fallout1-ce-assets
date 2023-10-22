@@ -22,15 +22,14 @@ local BYMikeEnd
 local initialized = false
 local DisplayMessage = 100
 
-local exit_line = 0
-
 function start()
     if not initialized then
-        if fallout.obj_is_carrying_obj_pid(fallout.self_obj(), 41) == 0 then
-            fallout.item_caps_adjust(fallout.self_obj(), fallout.random(10, 100))
+        local self_obj = fallout.self_obj()
+        if fallout.obj_is_carrying_obj_pid(self_obj, 41) == 0 then
+            fallout.item_caps_adjust(self_obj, fallout.random(10, 100))
         end
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 47)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 27)
+        fallout.critter_add_trait(self_obj, 1, 6, 47)
+        fallout.critter_add_trait(self_obj, 1, 5, 27)
         initialized = true
     end
 end
@@ -54,29 +53,26 @@ function description_p_proc()
 end
 
 function talk_p_proc()
+    local self_obj = fallout.self_obj()
     if fallout.global_var(253) == 1 then
-        fallout.float_msg(fallout.self_obj(), fallout.message_str(669, fallout.random(100, 105)), 2)
+        fallout.float_msg(self_obj, fallout.message_str(669, fallout.random(100, 105)), 2)
+    elseif fallout.local_var(5) == 2 then
+        fallout.float_msg(self_obj, fallout.message_str(923, 116), 0)
     else
-        if fallout.local_var(5) == 2 then
-            fallout.float_msg(fallout.self_obj(), fallout.message_str(923, 116), 0)
+        reaction.get_reaction()
+        fallout.start_gdialog(923, self_obj, -1, -1, -1)
+        fallout.gsay_start()
+        if fallout.global_var(613) == 2 then
+            BYMike06()
+        elseif fallout.local_var(4) == 0 then
+            DisplayMessage = 102
+            BYMike02()
         else
-            reaction.get_reaction()
-            fallout.start_gdialog(923, fallout.self_obj(), -1, -1, -1)
-            fallout.gsay_start()
-            if fallout.global_var(613) == 2 then
-                BYMike06()
-            else
-                if fallout.local_var(4) == 0 then
-                    DisplayMessage = 102
-                    BYMike02()
-                else
-                    DisplayMessage = 103
-                    BYMike02()
-                end
-            end
-            fallout.gsay_end()
-            fallout.end_dialogue()
+            DisplayMessage = 103
+            BYMike02()
         end
+        fallout.gsay_end()
+        fallout.end_dialogue()
     end
 end
 
@@ -144,11 +140,10 @@ function BYMike07()
 end
 
 function BYMike08()
-    local v0 = 0
     fallout.gsay_message(923, 115, 50)
     fallout.set_local_var(5, 1)
-    v0 = fallout.create_object_sid(40, 0, 0, -1)
-    fallout.add_mult_objs_to_inven(fallout.dude_obj(), v0, 4)
+    local item_obj = fallout.create_object_sid(40, 0, 0, -1)
+    fallout.add_mult_objs_to_inven(fallout.dude_obj(), item_obj, 4)
     fallout.item_caps_adjust(fallout.dude_obj(), fallout.random(10, 100))
 end
 
