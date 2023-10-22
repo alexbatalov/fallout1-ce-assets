@@ -1,20 +1,8 @@
 local fallout = require("fallout")
+local factory = require("lib.factory")
 
-local start
-
-function start()
-    if fallout.script_action() == 2 then
-        if fallout.source_obj() == fallout.dude_obj() then
-            if fallout.local_var(0) == 0 then
-                fallout.set_local_var(0, 1)
-                if fallout.is_success(fallout.do_check(fallout.dude_obj(), 4, 0)) then
-                    fallout.display_msg(fallout.message_str(145, 100))
-                end
-            end
-        end
+return factory.create_one_off_spatial_scr(function()
+    if fallout.is_success(fallout.do_check(fallout.dude_obj(), 4, 0)) then
+        fallout.display_msg(fallout.message_str(145, 100))
     end
-end
-
-local exports = {}
-exports.start = start
-return exports
+end)
