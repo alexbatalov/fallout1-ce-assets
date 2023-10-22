@@ -1,13 +1,3 @@
-local fallout = require("fallout")
+local factory = require("lib.factory")
 
-local start
-
-function start()
-    if fallout.script_action() == 6 then
-        fallout.load_map("VAULTBUR.map", 0)
-    end
-end
-
-local exports = {}
-exports.start = start
-return exports
+return factory.create_load_map_use_scr("VAULTBUR.map", 0)

@@ -1,13 +1,3 @@
-local fallout = require("fallout")
+local factory = require("lib.factory")
 
-local start
-
-function start()
-    if fallout.script_action() == 2 then
-        fallout.load_map(5, 12)
-    end
-end
-
-local exports = {}
-exports.start = start
-return exports
+return factory.create_load_map_spatial_scr(5, 12)

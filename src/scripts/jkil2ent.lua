@@ -1,19 +1,3 @@
-local fallout = require("fallout")
+local factory = require("lib.factory")
 
-local start
-
-local HEREBEFORE = 0
-
-function start()
-    if fallout.script_action() == 2 then
-        if fallout.source_obj() == fallout.dude_obj() then
-            if HEREBEFORE == 0 then
-                fallout.load_map("JunkEnt.map", 1)
-            end
-        end
-    end
-end
-
-local exports = {}
-exports.start = start
-return exports
+return factory.create_load_map_spatial_scr("JunkEnt.map", 1)
