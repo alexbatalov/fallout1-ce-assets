@@ -3,8 +3,11 @@ local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
 
 local start
-local do_dialogue
-local social_skills
+local pickup_p_proc
+local talk_p_proc
+local critter_p_proc
+local destroy_p_proc
+local look_at_p_proc
 local dane00
 local dane01
 local dane02
@@ -33,141 +36,102 @@ local dane24
 local danemore
 local danereturn
 
-local hostile = 0
+local hostile = false
 local initialized = false
-
-local exit_line = 0
 
 function start()
     if not initialized then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 20)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 69)
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 20)
+        fallout.critter_add_trait(self_obj, 1, 5, 69)
         initialized = true
     end
-    if fallout.script_action() == 11 then
-        do_dialogue()
-    else
-        if (fallout.script_action() == 21) or (fallout.script_action() == 3) then
-            fallout.script_overrides()
-            fallout.display_msg(fallout.message_str(499, 100))
-        else
-            if fallout.script_action() == 4 then
-                hostile = 1
-            else
-                if fallout.script_action() == 18 then
-                    reputation.inc_evil_critter()
-                else
-                    if fallout.script_action() == 12 then
-                        if hostile then
-                            hostile = 0
-                            fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
-                        end
-                    end
-                end
-            end
-        end
+
+    local script_action = fallout.script_action()
+    if script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 21 or script_action == 3 then
+        look_at_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
     end
 end
 
-function do_dialogue()
+function pickup_p_proc()
+    hostile = true
+end
+
+function talk_p_proc()
     reaction.get_reaction()
     fallout.start_gdialog(-1, fallout.self_obj(), 4, -1, -1)
     fallout.gsay_start()
     if fallout.local_var(6) == 0 then
         dane00()
-    else
-        if fallout.local_var(7) == 0 then
-            dane01()
-        else
-            if fallout.local_var(8) == 0 then
-                dane02()
-            else
-                if fallout.local_var(9) == 0 then
-                    dane03()
-                else
-                    if fallout.local_var(10) == 0 then
-                        dane04()
-                    else
-                        if fallout.local_var(11) == 0 then
-                            dane05()
-                        else
-                            if fallout.local_var(12) == 0 then
-                                dane06()
-                            else
-                                if fallout.local_var(13) == 0 then
-                                    dane07()
-                                else
-                                    if fallout.local_var(14) == 0 then
-                                        dane08()
-                                    else
-                                        if fallout.local_var(15) == 0 then
-                                            dane09()
-                                        else
-                                            if fallout.local_var(16) == 0 then
-                                                dane10()
-                                            else
-                                                if fallout.local_var(17) == 0 then
-                                                    dane11()
-                                                else
-                                                    if fallout.local_var(18) == 0 then
-                                                        dane12()
-                                                    else
-                                                        if fallout.local_var(19) == 0 then
-                                                            dane13()
-                                                        else
-                                                            if fallout.local_var(20) == 0 then
-                                                                dane14()
-                                                            else
-                                                                if fallout.local_var(21) == 0 then
-                                                                    dane15()
-                                                                else
-                                                                    if fallout.local_var(22) == 0 then
-                                                                        dane16()
-                                                                    else
-                                                                        if fallout.local_var(23) == 0 then
-                                                                            dane17()
-                                                                        else
-                                                                            if fallout.local_var(24) == 0 then
-                                                                                dane18()
-                                                                            else
-                                                                                if fallout.local_var(25) == 0 then
-                                                                                    dane19()
-                                                                                else
-                                                                                    if fallout.local_var(26) == 0 then
-                                                                                        dane20()
-                                                                                    else
-                                                                                        if fallout.local_var(5) == 1 then
-                                                                                            dane24()
-                                                                                        end
-                                                                                    end
-                                                                                end
-                                                                            end
-                                                                        end
-                                                                    end
-                                                                end
-                                                            end
-                                                        end
-                                                    end
-                                                end
-                                            end
-                                        end
-                                    end
-                                end
-                            end
-                        end
-                    end
-                end
-            end
-        end
+    elseif fallout.local_var(7) == 0 then
+        dane01()
+    elseif fallout.local_var(8) == 0 then
+        dane02()
+    elseif fallout.local_var(9) == 0 then
+        dane03()
+    elseif fallout.local_var(10) == 0 then
+        dane04()
+    elseif fallout.local_var(11) == 0 then
+        dane05()
+    elseif fallout.local_var(12) == 0 then
+        dane06()
+    elseif fallout.local_var(13) == 0 then
+        dane07()
+    elseif fallout.local_var(14) == 0 then
+        dane08()
+    elseif fallout.local_var(15) == 0 then
+        dane09()
+    elseif fallout.local_var(16) == 0 then
+        dane10()
+    elseif fallout.local_var(17) == 0 then
+        dane11()
+    elseif fallout.local_var(18) == 0 then
+        dane12()
+    elseif fallout.local_var(19) == 0 then
+        dane13()
+    elseif fallout.local_var(20) == 0 then
+        dane14()
+    elseif fallout.local_var(21) == 0 then
+        dane15()
+    elseif fallout.local_var(22) == 0 then
+        dane16()
+    elseif fallout.local_var(23) == 0 then
+        dane17()
+    elseif fallout.local_var(24) == 0 then
+        dane18()
+    elseif fallout.local_var(25) == 0 then
+        dane19()
+    elseif fallout.local_var(26) == 0 then
+        dane20()
+    elseif fallout.local_var(5) == 1 then
+        dane24()
     end
     fallout.gsay_end()
     fallout.end_dialogue()
 end
 
-function social_skills()
+function critter_p_proc()
+    if hostile then
+        hostile = false
+        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+    end
+end
+
+function destroy_p_proc()
+    reputation.inc_evil_critter()
+end
+
+function look_at_p_proc()
     fallout.script_overrides()
-    reaction.get_reaction()
-    do_dialogue()
+    fallout.display_msg(fallout.message_str(499, 100))
 end
 
 function dane00()
@@ -472,4 +436,8 @@ end
 
 local exports = {}
 exports.start = start
+exports.pickup_p_proc = pickup_p_proc
+exports.talk_p_proc = talk_p_proc
+exports.destroy_p_proc = destroy_p_proc
+exports.look_at_p_proc = look_at_p_proc
 return exports
