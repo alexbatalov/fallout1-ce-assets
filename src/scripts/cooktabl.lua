@@ -6,12 +6,13 @@ local look_at_p_proc
 local description_p_proc
 
 function start()
-    if fallout.script_action() == 4 then
+    local script_action = fallout.script_action()
+    if script_action == 4 then
         pickup_p_proc()
-    else
-        if (fallout.script_action() == 3) or (fallout.script_action() == 21) then
-            look_at_p_proc()
-        end
+    elseif script_action == 3 then
+        description_p_proc()
+    elseif script_action == 21 then
+        look_at_p_proc()
     end
 end
 
