@@ -39,33 +39,28 @@ local ChuckEnd
 
 local initialized = false
 
-local exit_line = 0
-
 function start()
-    local v0 = 0
     if not initialized then
-        if fallout.obj_is_carrying_obj_pid(fallout.self_obj(), 41) == 0 then
-            v0 = fallout.create_object_sid(41, 0, 0, -1)
-            fallout.add_mult_objs_to_inven(fallout.self_obj(), v0, fallout.random(0, 20))
-            if (fallout.global_var(613) == 9103) or (fallout.global_var(613) == 9102) then
-                fallout.critter_add_trait(fallout.self_obj(), 1, 6, 0)
+        local self_obj = fallout.self_obj()
+        if fallout.obj_is_carrying_obj_pid(self_obj, 41) == 0 then
+            local coins = fallout.create_object_sid(41, 0, 0, -1)
+            fallout.add_mult_objs_to_inven(self_obj, coins, fallout.random(0, 20))
+            if fallout.global_var(613) == 9103 or fallout.global_var(613) == 9102 then
+                fallout.critter_add_trait(self_obj, 1, 6, 0)
             else
-                fallout.critter_add_trait(fallout.self_obj(), 1, 6, 49)
+                fallout.critter_add_trait(self_obj, 1, 6, 49)
             end
         end
         initialized = true
-    else
-        if fallout.script_action() == 18 then
-            destroy_p_proc()
-        else
-            if fallout.script_action() == 21 then
-                look_at_p_proc()
-            else
-                if fallout.script_action() == 11 then
-                    talk_p_proc()
-                end
-            end
-        end
+    end
+
+    local script_action = fallout.script_action()
+    if script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
     end
 end
 
