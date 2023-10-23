@@ -1,17 +1,12 @@
 local fallout = require("fallout")
+local factory = require("lib.factory")
 
-local start
+return factory.create_use_scr(function()
+    fallout.script_overrides()
 
-function start()
-    if fallout.script_action() == 6 then
-        fallout.script_overrides()
-        if fallout.source_obj() == fallout.dude_obj() then
-            fallout.reg_anim_func(2, fallout.dude_obj())
-            fallout.move_to(fallout.dude_obj(), 19701, 0)
-        end
+    local dude_obj = fallout.dude_obj()
+    if fallout.source_obj() == dude_obj then
+        fallout.reg_anim_func(2, dude_obj)
+        fallout.move_to(dude_obj, 19701, 0)
     end
-end
-
-local exports = {}
-exports.start = start
-return exports
+end)

@@ -1,9 +1,20 @@
 local fallout = require("fallout")
 
 --- @param fn function
+local function create_use_scr(fn)
+    local scr = {}
+    scr.start = function()
+        if fallout.script_action() == 6 then
+            fn()
+        end
+    end
+    return scr
+end
+
+--- @param fn function
 local function create_one_off_spatial_scr(fn)
     local scr = {}
-    scr.start = function ()
+    scr.start = function()
         if fallout.script_action() == 2 then
             if fallout.source_obj() == fallout.dude_obj() then
                 if fallout.local_var(0) == 0 then
@@ -57,6 +68,7 @@ local function create_elevator_spatial_scr(elevator)
 end
 
 local exports = {}
+exports.create_use_scr = create_use_scr
 exports.create_one_off_spatial_scr = create_one_off_spatial_scr
 exports.create_load_map_spatial_scr = create_load_map_spatial_scr
 exports.create_load_map_use_scr = create_load_map_use_scr

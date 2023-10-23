@@ -1,13 +1,6 @@
 local fallout = require("fallout")
+local factory = require("lib.factory")
 
-local start
-
-function start()
-    if fallout.script_action() == 6 then
-        fallout.move_to(fallout.dude_obj(), 15891, 0)
-    end
-end
-
-local exports = {}
-exports.start = start
-return exports
+return factory.create_use_scr(function()
+    fallout.move_to(fallout.dude_obj(), 15891, 0)
+end)

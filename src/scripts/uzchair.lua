@@ -1,21 +1,12 @@
 local fallout = require("fallout")
+local factory = require("lib.factory")
 
-local start
-
-local gear = 0
-
-function start()
-    if fallout.script_action() == 6 then
-        if fallout.local_var(0) == 0 then
-            fallout.script_overrides()
-            fallout.set_local_var(0, 1)
-            fallout.display_msg(fallout.message_str(464, 100))
-            gear = fallout.create_object_sid(82, 0, 0, -1)
-            fallout.add_obj_to_inven(fallout.dude_obj(), gear)
-        end
+return factory.create_use_scr(function()
+    if fallout.local_var(0) == 0 then
+        fallout.script_overrides()
+        fallout.display_msg(fallout.message_str(464, 100))
+        local item_obj = fallout.create_object_sid(82, 0, 0, -1)
+        fallout.add_obj_to_inven(fallout.dude_obj(), item_obj)
+        fallout.set_local_var(0, 1)
     end
-end
-
-local exports = {}
-exports.start = start
-return exports
+end)
