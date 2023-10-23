@@ -17,30 +17,26 @@ local Dealer08
 local DealerEnd
 
 local initialized = false
-local said_hi = 0
+local said_hi = false
 
 function start()
-    local v0 = 0
     if not initialized then
-        if fallout.metarule(14, 0) then
-            v0 = fallout.create_object_sid(41, 0, 0, -1)
-            fallout.add_mult_objs_to_inven(fallout.self_obj(), v0, fallout.random(0, 100))
+        if fallout.metarule(14, 0) ~= 0 then
+            local caps_obj = fallout.create_object_sid(41, 0, 0, -1)
+            fallout.add_mult_objs_to_inven(fallout.self_obj(), caps_obj, fallout.random(0, 100))
             fallout.critter_add_trait(fallout.self_obj(), 1, 6, 24)
             fallout.set_global_var(289, 0)
         end
         initialized = true
-    else
-        if fallout.script_action() == 18 then
-            destroy_p_proc()
-        else
-            if fallout.script_action() == 11 then
-                talk_p_proc()
-            else
-                if fallout.script_action() == 12 then
-                    critter_p_proc()
-                end
-            end
-        end
+    end
+
+    local script_action = fallout.script_action()
+    if script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
     end
 end
 
@@ -61,9 +57,10 @@ function talk_p_proc()
 end
 
 function critter_p_proc()
-    if not(said_hi) and (fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) <= 6) then
-        fallout.float_msg(fallout.self_obj(), fallout.message_str(657, 131), 0)
-        said_hi = 1
+    local self_obj = fallout.self_obj()
+    if not said_hi and fallout.tile_distance_objs(self_obj, fallout.dude_obj()) <= 6 then
+        fallout.float_msg(self_obj, fallout.message_str(657, 131), 0)
+        said_hi = true
     end
 end
 
