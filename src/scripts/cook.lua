@@ -12,47 +12,35 @@ local talk_p_proc
 local pickup_p_proc
 local Cook01
 
-local hostile = 0
+local hostile = false
 local initialized = false
 local round_counter = 0
 
 function start()
     if not initialized then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 2)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 6)
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 2)
+        fallout.critter_add_trait(self_obj, 1, 5, 6)
         initialized = true
-    else
-        if fallout.script_action() == 13 then
-            combat_p_proc()
-        else
-            if fallout.script_action() == 12 then
-                critter_p_proc()
-            else
-                if fallout.script_action() == 14 then
-                    damage_p_proc()
-                else
-                    if fallout.script_action() == 3 then
-                        description_p_proc()
-                    else
-                        if fallout.script_action() == 18 then
-                            destroy_p_proc()
-                        else
-                            if fallout.script_action() == 21 then
-                                look_at_p_proc()
-                            else
-                                if fallout.script_action() == 4 then
-                                    pickup_p_proc()
-                                else
-                                    if fallout.script_action() == 11 then
-                                        talk_p_proc()
-                                    end
-                                end
-                            end
-                        end
-                    end
-                end
-            end
-        end
+    end
+
+    local script_action = fallout.script_action()
+    if script_action == 13 then
+        combat_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 14 then
+        damage_p_proc()
+    elseif script_action == 3 then
+        description_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
     end
 end
 
@@ -71,11 +59,11 @@ end
 function critter_p_proc()
     if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
         if fallout.global_var(246) == 1 then
-            hostile = 1
+            hostile = true
         end
     end
     if hostile then
-        hostile = 0
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
 end
@@ -104,10 +92,10 @@ function look_at_p_proc()
 end
 
 function talk_p_proc()
-    if fallout.global_var(246) or (fallout.local_var(1) == 1) then
+    if fallout.global_var(246) or fallout.local_var(1) == 1 then
         fallout.float_msg(fallout.self_obj(), fallout.message_str(669, fallout.random(100, 105)), 0)
     else
-        if fallout.is_success(fallout.do_check(fallout.dude_obj(), 6, 0)) and (fallout.local_var(0) == 0) then
+        if fallout.is_success(fallout.do_check(fallout.dude_obj(), 6, 0)) and fallout.local_var(0) == 0 then
             fallout.start_gdialog(114, fallout.self_obj(), 4, -1, -1)
             fallout.gsay_start()
             fallout.gsay_reply(114, 101)
