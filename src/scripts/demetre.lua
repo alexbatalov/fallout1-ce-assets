@@ -64,53 +64,46 @@ local Demetre42
 local Demetre43
 local DemetreEnd
 
-local hostile = 0
+local hostile = false
 local initialized = false
-
-local exit_line = 0
 
 function start()
     if not initialized then
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 36)
+        fallout.critter_add_trait(self_obj, 1, 5, 1)
         initialized = true
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 36)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 1)
     end
-    if fallout.script_action() == 21 then
+
+    local script_action = fallout.script_action()
+    if script_action == 21 then
         look_at_p_proc()
-    else
-        if fallout.script_action() == 4 then
-            pickup_p_proc()
-        else
-            if fallout.script_action() == 11 then
-                talk_p_proc()
-            else
-                if fallout.script_action() == 12 then
-                    critter_p_proc()
-                else
-                    if fallout.script_action() == 18 then
-                        destroy_p_proc()
-                    end
-                end
-            end
-        end
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
     end
 end
 
 function combat()
-    hostile = 1
+    hostile = true
     fallout.set_map_var(24, 1)
 end
 
 function critter_p_proc()
     if hostile then
-        hostile = 0
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
 end
 
 function pickup_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
-        hostile = 1
+        hostile = true
     end
 end
 
@@ -181,32 +174,24 @@ function look_at_p_proc()
 end
 
 function damage_p_proc()
-    local v0 = 0
-    v0 = fallout.obj_pid(fallout.source_obj())
-    if fallout.party_member_obj(v0) ~= 0 then
+    local pid = fallout.obj_pid(fallout.source_obj())
+    if fallout.party_member_obj(pid) ~= 0 then
         fallout.set_global_var(248, 1)
     end
 end
 
 function Demetre00()
-    local v0 = 0
-    v0 = fallout.get_critter_stat(fallout.dude_obj(), 0)
-    if v0 < 4 then
+    local strength = fallout.get_critter_stat(fallout.dude_obj(), 0)
+    if strength < 4 then
         fallout.gsay_reply(566, fallout.message_str(566, 101) .. " " .. fallout.message_str(566, 102))
+    elseif strength >= 4 and strength < 6 then
+        fallout.gsay_reply(566, fallout.message_str(566, 101) .. " " .. fallout.message_str(566, 103))
+    elseif strength >= 6 and strength < 8 then
+        fallout.gsay_reply(566, fallout.message_str(566, 101) .. " " .. fallout.message_str(566, 104))
+    elseif strength >= 8 and strength < 10 then
+        fallout.gsay_reply(566, fallout.message_str(566, 101) .. " " .. fallout.message_str(566, 105))
     else
-        if (v0 >= 4) and (v0 < 6) then
-            fallout.gsay_reply(566, fallout.message_str(566, 101) .. " " .. fallout.message_str(566, 103))
-        else
-            if (v0 >= 6) and (v0 < 8) then
-                fallout.gsay_reply(566, fallout.message_str(566, 101) .. " " .. fallout.message_str(566, 104))
-            else
-                if (v0 >= 8) and (v0 < 10) then
-                    fallout.gsay_reply(566, fallout.message_str(566, 101) .. " " .. fallout.message_str(566, 105))
-                else
-                    fallout.gsay_reply(566, fallout.message_str(566, 101) .. " " .. fallout.message_str(566, 106))
-                end
-            end
-        end
+        fallout.gsay_reply(566, fallout.message_str(566, 101) .. " " .. fallout.message_str(566, 106))
     end
     fallout.giq_option(4, 566, 107, Demetre01, 49)
     fallout.giq_option(4, 566, 108, Demetre01, 50)
@@ -312,7 +297,7 @@ end
 function Demetre16()
     fallout.gsay_reply(566, 149)
     fallout.giq_option(4, 566, 150, Demetre02, 50)
-    if (fallout.map_var(4) == 1) and (fallout.global_var(106) == 1) then
+    if fallout.map_var(4) == 1 and fallout.global_var(106) == 1 then
         fallout.giq_option(4, 566, 151, Demetre17, 50)
     end
     fallout.giq_option(4, 566, 152, DemetreEnd, 50)
@@ -553,10 +538,9 @@ function Demetre40()
 end
 
 function Demetre41()
-    local v0 = 0
     if fallout.local_var(10) == 0 then
-        v0 = fallout.create_object_sid(25, 0, 0, -1)
-        fallout.add_obj_to_inven(fallout.dude_obj(), v0)
+        local item_obj = fallout.create_object_sid(25, 0, 0, -1)
+        fallout.add_obj_to_inven(fallout.dude_obj(), item_obj)
         fallout.set_local_var(10, 1)
         fallout.gsay_message(566, 237, 50)
     else
