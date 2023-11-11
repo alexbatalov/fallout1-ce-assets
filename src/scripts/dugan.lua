@@ -25,12 +25,11 @@ local DuganEnd
 local initialized = false
 local PsstTime = 0
 
-local exit_line = 0
-
 function start()
     if not initialized then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 47)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 27)
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 47)
+        fallout.critter_add_trait(self_obj, 1, 5, 27)
         initialized = true
     end
 end
@@ -57,7 +56,7 @@ function talk_p_proc()
     if fallout.global_var(253) == 1 then
         fallout.float_msg(fallout.self_obj(), fallout.message_str(669, fallout.random(100, 105)), 2)
     else
-        if (fallout.local_var(4) == 1) and (fallout.get_critter_stat(fallout.dude_obj(), 4) < 4) then
+        if fallout.local_var(4) == 1 and fallout.get_critter_stat(fallout.dude_obj(), 4) < 4 then
             fallout.float_msg(fallout.self_obj(), fallout.message_str(917, 120), 0)
         else
             reaction.get_reaction()
@@ -71,13 +70,15 @@ function talk_p_proc()
 end
 
 function critter_p_proc()
-    if ((time.game_time_in_seconds() - PsstTime) >= 30) and (fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) <= 10) then
-        fallout.float_msg(fallout.self_obj(), fallout.message_str(917, fallout.random(121, 125)), 0)
+    local dude_obj = fallout.dude_obj()
+    local self_obj = fallout.self_obj()
+    if time.game_time_in_seconds() - PsstTime >= 30 and fallout.tile_distance_objs(self_obj, dude_obj) <= 10 then
+        fallout.float_msg(self_obj, fallout.message_str(917, fallout.random(121, 125)), 0)
         PsstTime = time.game_time_in_seconds()
     end
-    if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
+    if fallout.obj_can_see_obj(self_obj, dude_obj) then
         if fallout.global_var(253) == 1 then
-            fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+            fallout.attack(dude_obj, 0, 1, 0, 0, 30000, 0, 0)
         end
     end
 end
