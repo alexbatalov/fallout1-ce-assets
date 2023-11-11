@@ -9,31 +9,36 @@ local initialized = false
 
 function start()
     if not initialized and fallout.metarule(14, 0) then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 0)
-        fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(1), 1)
-        fallout.move_to(fallout.self_obj(), fallout.tile_num_in_direction(fallout.tile_num(fallout.dude_obj()), (fallout.has_trait(1, fallout.dude_obj(), 10) + 3) % 6, 2), fallout.elevation(fallout.dude_obj()))
+        local dude_obj = fallout.dude_obj()
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 0)
+        fallout.add_timer_event(self_obj, fallout.game_ticks(1), 1) -- FIXME: What for?
+        fallout.move_to(self_obj,
+            fallout.tile_num_in_direction(fallout.tile_num(dude_obj), (fallout.has_trait(1, dude_obj, 10) + 3) % 6, 2),
+            fallout.elevation(dude_obj))
         initialized = true
-    else
-        if fallout.script_action() == 12 then
-            critter_p_proc()
-        else
-            if fallout.script_action() == 18 then
-                destroy_p_proc()
-            else
-                if fallout.script_action() == 8 then
-                    use_skill_on_p_proc()
-                end
-            end
-        end
+    end
+
+    local script_action = fallout.script_action()
+    if script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 8 then
+        use_skill_on_p_proc()
     end
 end
 
 function critter_p_proc()
     if fallout.global_var(5) == 1 then
-        if fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) > 4 then
-            fallout.animate_move_obj_to_tile(fallout.self_obj(), fallout.tile_num_in_direction(fallout.tile_num(fallout.dude_obj()), fallout.random(0, 5), 1), 1)
+        local dude_obj = fallout.dude_obj()
+        local self_obj = fallout.self_obj()
+        if fallout.tile_distance_objs(self_obj, dude_obj) > 4 then
+            fallout.animate_move_obj_to_tile(self_obj,
+                fallout.tile_num_in_direction(fallout.tile_num(dude_obj), fallout.random(0, 5), 1), 1)
         else
-            fallout.animate_move_obj_to_tile(fallout.self_obj(), fallout.tile_num_in_direction(fallout.tile_num(fallout.dude_obj()), fallout.random(0, 5), 3), 0)
+            fallout.animate_move_obj_to_tile(self_obj,
+                fallout.tile_num_in_direction(fallout.tile_num(dude_obj), fallout.random(0, 5), 3), 0)
         end
     end
 end
