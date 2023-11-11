@@ -1,7 +1,9 @@
 local fallout = require("fallout")
 
 local start
-local do_dialogue
+local talk_p_proc
+local destroy_p_proc
+local look_at_p_proc
 local elder01
 local elder02
 local elder03
@@ -10,50 +12,51 @@ local elder05
 local elder06
 local elder07
 
-local whim = 0
-local reaction = 0
-local in_combat = 0
-local rndx = 0
-local rndy = 0
-local new_obj = 0
-local new_obj_picked = 0
+local PIDS <const> = {
+    1,
+    10,
+    34,
+    34,
+}
 
 function start()
-    local v0 = 0
-    if fallout.script_action() == 11 then
-        do_dialogue()
-    else
-        if fallout.script_action() == 21 then
-            fallout.script_overrides()
-            fallout.display_msg(fallout.message_str(2, 100))
-        else
-            if fallout.script_action() == 18 then
-                fallout.set_global_var(6, 1)
-            end
-        end
+    local script_action = fallout.script_action()
+    if script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
     end
 end
 
-function do_dialogue()
+function talk_p_proc()
     fallout.start_gdialog(2, fallout.self_obj(), 4, -1, -1)
     fallout.gsay_start()
-    if (fallout.global_var(6) ~= 0) or (fallout.global_var(4) ~= 0) then
+    if fallout.global_var(6) ~= 0 or fallout.global_var(4) ~= 0 then
         fallout.set_global_var(0, 1)
         fallout.set_global_var(1, 1)
     end
     if fallout.global_var(0) ~= 0 then
         elder07()
+    elseif fallout.global_var(1) ~= 0 then
+        elder06()
     else
-        if fallout.global_var(1) ~= 0 then
-            elder06()
-        else
-            fallout.gsay_reply(2, 101)
-            fallout.gsay_option(2, 102, elder01, 50)
-            fallout.gsay_option(2, 103, elder02, 50)
-        end
+        fallout.gsay_reply(2, 101)
+        fallout.gsay_option(2, 102, elder01, 50)
+        fallout.gsay_option(2, 103, elder02, 50)
     end
     fallout.gsay_end()
     fallout.end_dialogue()
+end
+
+function destroy_p_proc()
+    fallout.set_global_var(6, 1)
+end
+
+function look_at_p_proc()
+    fallout.script_overrides()
+    fallout.display_msg(fallout.message_str(2, 100))
 end
 
 function elder01()
@@ -82,18 +85,15 @@ function elder04()
 end
 
 function elder05()
-    local v0 = 0
     fallout.set_global_var(1, 1)
     fallout.dialogue_reaction(-1)
     fallout.gsay_reply(2, 112)
-    v0 = fallout.create_object_sid(1, 0, 0, -1)
-    fallout.add_obj_to_inven(fallout.dude_obj(), v0)
-    v0 = fallout.create_object_sid(10, 0, 0, -1)
-    fallout.add_obj_to_inven(fallout.dude_obj(), v0)
-    v0 = fallout.create_object_sid(34, 0, 0, -1)
-    fallout.add_obj_to_inven(fallout.dude_obj(), v0)
-    v0 = fallout.create_object_sid(34, 0, 0, -1)
-    fallout.add_obj_to_inven(fallout.dude_obj(), v0)
+
+    local dude_obj = fallout.dude_obj()
+    for index = 1, #PIDS do
+        local item_obj = fallout.create_object_sid(PIDS[index], 0, 0, -1)
+        fallout.add_obj_to_inven(dude_obj, item_obj)
+    end
 end
 
 function elder06()
@@ -107,4 +107,7 @@ end
 
 local exports = {}
 exports.start = start
+exports.talk_p_proc = talk_p_proc
+exports.destroy_p_proc = destroy_p_proc
+exports.look_at_p_proc = look_at_p_proc
 return exports
