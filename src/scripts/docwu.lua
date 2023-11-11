@@ -3,8 +3,11 @@ local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
 
 local start
-local do_dialogue
-local social_skills
+local pickup_p_proc
+local talk_p_proc
+local critter_p_proc
+local destroy_p_proc
+local timed_event_p_proc
 local DocWu00
 local DocWu01
 local DocWu02
@@ -53,98 +56,35 @@ local DocWuEnd
 
 local healing = 0
 local initialized = false
-local hostile = 0
-
-local exit_line = 0
+local hostile = false
 
 function start()
     if not initialized then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 20)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 69)
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 20)
+        fallout.critter_add_trait(self_obj, 1, 5, 69)
         initialized = true
     end
-    if fallout.script_action() == 11 then
-        do_dialogue()
-    else
-        if fallout.script_action() == 18 then
-            reputation.inc_evil_critter()
-        else
-            if fallout.script_action() == 12 then
-                if hostile then
-                    hostile = 0
-                    fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
-                end
-            else
-                if (fallout.script_action() == 21) or (fallout.script_action() == 3) then
-                else
-                    if fallout.script_action() == 4 then
-                        hostile = 1
-                    else
-                        if fallout.script_action() == 22 then
-                            if fallout.fixed_param() == 1 then
-                                if (healing == 1) or (healing == 3) then
-                                    fallout.float_msg(fallout.dude_obj(), fallout.message_str(400, 138), 2)
-                                else
-                                    if healing == 2 then
-                                        fallout.float_msg(fallout.dude_obj(), fallout.message_str(400, 152), 2)
-                                    else
-                                        if healing == 4 then
-                                            fallout.float_msg(fallout.dude_obj(), fallout.message_str(400, 175), 2)
-                                        else
-                                            if healing == 5 then
-                                                fallout.float_msg(fallout.self_obj(), fallout.message_str(400, 150), 8)
-                                            else
-                                                if healing == 6 then
-                                                    fallout.float_msg(fallout.self_obj(), fallout.message_str(400, 178), 8)
-                                                end
-                                            end
-                                        end
-                                    end
-                                end
-                                fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(3), 2)
-                            else
-                                if fallout.fixed_param() == 2 then
-                                    if healing < 4 then
-                                        fallout.float_msg(fallout.self_obj(), fallout.message_str(400, 139), 8)
-                                    else
-                                        if healing == 4 then
-                                            fallout.float_msg(fallout.self_obj(), fallout.message_str(400, 176), 8)
-                                        end
-                                    end
-                                    fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(3), 3)
-                                else
-                                    if fallout.fixed_param() == 3 then
-                                        if healing == 1 then
-                                            if fallout.get_critter_stat(fallout.dude_obj(), 34) == 0 then
-                                                fallout.float_msg(fallout.self_obj(), fallout.message_str(400, 140), 8)
-                                            else
-                                                fallout.float_msg(fallout.self_obj(), fallout.message_str(400, 141), 8)
-                                            end
-                                        else
-                                            if healing == 2 then
-                                                fallout.float_msg(fallout.self_obj(), fallout.message_str(400, 153), 8)
-                                            else
-                                                if healing == 3 then
-                                                    if fallout.get_critter_stat(fallout.dude_obj(), 34) == 0 then
-                                                        fallout.float_msg(fallout.self_obj(), fallout.message_str(400, 167), 8)
-                                                    else
-                                                        fallout.float_msg(fallout.self_obj(), fallout.message_str(400, 168), 8)
-                                                    end
-                                                end
-                                            end
-                                        end
-                                    end
-                                end
-                            end
-                        end
-                    end
-                end
-            end
-        end
+
+    local script_action = fallout.script_action()
+    if script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 22 then
+        timed_event_p_proc()
     end
 end
 
-function do_dialogue()
+function pickup_p_proc()
+    hostile = true
+end
+
+function talk_p_proc()
     reaction.get_reaction()
     fallout.start_gdialog(400, fallout.self_obj(), 4, -1, -1)
     fallout.gsay_start()
@@ -170,13 +110,61 @@ function do_dialogue()
     end
 end
 
-function social_skills()
-    reaction.get_reaction()
-    fallout.dialogue_system_enter()
+function critter_p_proc()
+    if hostile then
+        hostile = false
+        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+    end
+end
+
+function destroy_p_proc()
+    reputation.inc_evil_critter()
+end
+
+function timed_event_p_proc()
+    local event = fallout.fixed_param()
+    local dude_obj = fallout.dude_obj()
+    local self_obj = fallout.self_obj()
+    if event == 1 then
+        if healing == 1 or healing == 3 then
+            fallout.float_msg(dude_obj, fallout.message_str(400, 138), 2)
+        elseif healing == 2 then
+            fallout.float_msg(dude_obj, fallout.message_str(400, 152), 2)
+        elseif healing == 4 then
+            fallout.float_msg(dude_obj, fallout.message_str(400, 175), 2)
+        elseif healing == 5 then
+            fallout.float_msg(self_obj, fallout.message_str(400, 150), 8)
+        elseif healing == 6 then
+            fallout.float_msg(self_obj, fallout.message_str(400, 178), 8)
+        end
+        fallout.add_timer_event(self_obj, fallout.game_ticks(3), 2)
+    elseif event == 2 then
+        if healing < 4 then
+            fallout.float_msg(self_obj, fallout.message_str(400, 139), 8)
+        elseif healing == 4 then
+            fallout.float_msg(self_obj, fallout.message_str(400, 176), 8)
+        end
+        fallout.add_timer_event(self_obj, fallout.game_ticks(3), 3)
+    elseif event == 3 then
+        if healing == 1 then
+            if fallout.get_critter_stat(dude_obj, 34) == 0 then
+                fallout.float_msg(self_obj, fallout.message_str(400, 140), 8)
+            else
+                fallout.float_msg(self_obj, fallout.message_str(400, 141), 8)
+            end
+        elseif healing == 2 then
+            fallout.float_msg(self_obj, fallout.message_str(400, 153), 8)
+        elseif healing == 3 then
+            if fallout.get_critter_stat(dude_obj, 34) == 0 then
+                fallout.float_msg(self_obj, fallout.message_str(400, 167), 8)
+            else
+                fallout.float_msg(self_obj, fallout.message_str(400, 168), 8)
+            end
+        end
+    end
 end
 
 function DocWu00()
-    local v0 = 0
     fallout.set_local_var(4, 1)
     fallout.set_local_var(5, 1)
     if fallout.get_critter_stat(fallout.dude_obj(), 34) == 0 then
@@ -338,19 +326,16 @@ function DocWu18()
 end
 
 function DocWu19()
-    local v0 = 0
-    local v1 = 0
-    v1 = fallout.get_critter_stat(fallout.dude_obj(), 7)
-    v0 = fallout.get_critter_stat(fallout.dude_obj(), 35)
-    if v0 == v1 then
+    local dude_obj = fallout.dude_obj()
+    local max_hit_points = fallout.get_critter_stat(dude_obj, 7)
+    local curr_hit_points = fallout.get_critter_stat(dude_obj, 35)
+    if curr_hit_points == max_hit_points then
         fallout.gsay_reply(400, 170)
         fallout.giq_option(0, 400, 101, DocWuEnd, 50)
+    elseif curr_hit_points > max_hit_points // 2 then
+        DocWu19a()
     else
-        if v0 > (v1 // 2) then
-            DocWu19a()
-        else
-            DocWu19b()
-        end
+        DocWu19b()
     end
 end
 
@@ -400,19 +385,16 @@ function DocWu23()
 end
 
 function DocWu24()
-    local v0 = 0
-    local v1 = 0
-    v1 = fallout.get_critter_stat(fallout.dude_obj(), 7)
-    v0 = fallout.get_critter_stat(fallout.dude_obj(), 35)
-    if v0 == v1 then
+    local dude_obj = fallout.dude_obj()
+    local max_hit_points = fallout.get_critter_stat(dude_obj, 7)
+    local curr_hit_points = fallout.get_critter_stat(dude_obj, 35)
+    if curr_hit_points == max_hit_points then
         fallout.gsay_reply(400, 170)
         fallout.giq_option(0, 400, 101, DocWuEnd, 50)
+    elseif curr_hit_points > (max_hit_points // 2) then
+        DocWu24a()
     else
-        if v0 > (v1 // 2) then
-            DocWu24a()
-        else
-            DocWu24b()
-        end
+        DocWu24b()
     end
 end
 
@@ -469,4 +451,9 @@ end
 
 local exports = {}
 exports.start = start
+exports.pickup_p_proc = pickup_p_proc
+exports.talk_p_proc = talk_p_proc
+exports.critter_p_proc = critter_p_proc
+exports.destroy_p_proc = destroy_p_proc
+exports.timed_event_p_proc = timed_event_p_proc
 return exports
