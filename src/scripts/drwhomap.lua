@@ -7,13 +7,14 @@ local map_update_p_proc
 
 fallout.create_external_var("Tardis_ptr")
 
+fallout.set_external_var("Tardis_ptr", nil)
+
 function start()
-    if fallout.script_action() == 15 then
+    local script_action = fallout.script_action()
+    if script_action == 15 then
         map_enter_p_proc()
-    else
-        if fallout.script_action() == 23 then
-            map_update_p_proc()
-        end
+    elseif script_action == 23 then
+        map_update_p_proc()
     end
 end
 
