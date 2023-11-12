@@ -2,6 +2,10 @@ local fallout = require("fallout")
 local reputation = require("lib.reputation")
 
 local start
+local pickup_p_proc
+local talk_p_proc
+local critter_p_proc
+local destroy_p_proc
 local Francis04
 local Francis05
 local Francis06
@@ -34,68 +38,79 @@ local Francis22
 local FrancisEnd
 local Combat
 
-local Hostile = 0
+local hostile = false
 local initialized = false
 
 function start()
     if not initialized then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 20)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 67)
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 20)
+        fallout.critter_add_trait(self_obj, 1, 5, 67)
         initialized = true
     end
-    if (fallout.script_action() == 21) or (fallout.script_action() == 3) then
+
+    local script_action = fallout.script_action()
+    if script_action == 21 or script_action == 3 then
         fallout.script_overrides()
         fallout.display_msg(fallout.message_str(399, 100))
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    end
+end
+
+function pickup_p_proc()
+    hostile = true
+end
+
+function talk_p_proc()
+    fallout.script_overrides()
+    if fallout.global_var(195) == 1 then
+        fallout.float_msg(fallout.self_obj(), fallout.message_str(399, 101), 0)
     else
-        if fallout.script_action() == 4 then
-            Hostile = 1
+        if fallout.local_var(0) == 1 then
+            fallout.float_msg(fallout.self_obj(), fallout.message_str(399, 102), 0)
         else
-            if fallout.script_action() == 12 then
-                if Hostile then
-                    Hostile = 0
-                    fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
-                end
+            if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) then
+                fallout.float_msg(fallout.self_obj(), fallout.message_str(399, 103), 0)
             else
-                if fallout.script_action() == 18 then
-                    reputation.inc_evil_critter()
+                if not (fallout.obj_pid(fallout.critter_inven_obj(fallout.dude_obj(), 0)) == 113) and (((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) or (fallout.global_var(158) > 2)) then
+                    fallout.float_msg(fallout.self_obj(), fallout.message_str(399, 104), 0)
                 else
-                    if fallout.script_action() == 11 then
-                        fallout.script_overrides()
-                        if fallout.global_var(195) == 1 then
-                            fallout.float_msg(fallout.self_obj(), fallout.message_str(399, 101), 0)
+                    fallout.start_gdialog(399, fallout.self_obj(), 4, -1, -1)
+                    fallout.gsay_start()
+                    if not (fallout.obj_pid(fallout.critter_inven_obj(fallout.dude_obj(), 0)) == 113) then
+                        Francis04()
+                    else
+                        if fallout.obj_pid(fallout.critter_inven_obj(fallout.dude_obj(), 0)) == 113 then
+                            Francis05()
                         else
-                            if fallout.local_var(0) == 1 then
-                                fallout.float_msg(fallout.self_obj(), fallout.message_str(399, 102), 0)
-                            else
-                                if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) then
-                                    fallout.float_msg(fallout.self_obj(), fallout.message_str(399, 103), 0)
-                                else
-                                    if not(fallout.obj_pid(fallout.critter_inven_obj(fallout.dude_obj(), 0)) == 113) and (((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) or (fallout.global_var(158) > 2)) then
-                                        fallout.float_msg(fallout.self_obj(), fallout.message_str(399, 104), 0)
-                                    else
-                                        fallout.start_gdialog(399, fallout.self_obj(), 4, -1, -1)
-                                        fallout.gsay_start()
-                                        if not(fallout.obj_pid(fallout.critter_inven_obj(fallout.dude_obj(), 0)) == 113) then
-                                            Francis04()
-                                        else
-                                            if fallout.obj_pid(fallout.critter_inven_obj(fallout.dude_obj(), 0)) == 113 then
-                                                Francis05()
-                                            else
-                                                Francis06()
-                                            end
-                                        end
-                                        fallout.gsay_end()
-                                        fallout.end_dialogue()
-                                        fallout.set_local_var(0, 1)
-                                    end
-                                end
-                            end
+                            Francis06()
                         end
                     end
+                    fallout.gsay_end()
+                    fallout.end_dialogue()
+                    fallout.set_local_var(0, 1)
                 end
             end
         end
     end
+end
+
+function critter_p_proc()
+    if hostile then
+        hostile = false
+        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+    end
+end
+
+function destroy_p_proc()
+    reputation.inc_evil_critter()
 end
 
 function Francis04()
@@ -207,7 +222,8 @@ function Francis14()
 end
 
 function Francis15_1()
-    fallout.gsay_message(399, fallout.message_str(399, 144) .. fallout.message_str(399, 145) .. fallout.message_str(399, 146), 50)
+    fallout.gsay_message(399,
+        fallout.message_str(399, 144) .. fallout.message_str(399, 145) .. fallout.message_str(399, 146), 50)
 end
 
 function Francis15_2()
@@ -261,10 +277,10 @@ end
 function FrancisEnd()
 end
 
-function Combat()
-    Hostile = 1
-end
-
 local exports = {}
 exports.start = start
+exports.pickup_p_proc = pickup_p_proc
+exports.talk_p_proc = talk_p_proc
+exports.critter_p_proc = critter_p_proc
+exports.destroy_p_proc = destroy_p_proc
 return exports
