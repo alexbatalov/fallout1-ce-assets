@@ -3,22 +3,16 @@ local fallout = require("fallout")
 local start
 local description_p_proc
 local use_p_proc
-local skills
-
-local use_skill = 0
+local use_skill_on_p_proc
 
 function start()
-    if fallout.script_action() == 3 then
+    local script_action = fallout.script_action()
+    if script_action == 3 then
         description_p_proc()
-    else
-        if fallout.script_action() == 8 then
-            use_skill = fallout.action_being_used()
-            skills()
-        else
-            if fallout.script_action() == 6 then
-                use_p_proc()
-            end
-        end
+    elseif script_action == 8 then
+        use_skill_on_p_proc()
+    elseif script_action == 6 then
+        use_p_proc()
     end
 end
 
@@ -32,7 +26,7 @@ function use_p_proc()
     fallout.display_msg(fallout.message_str(810, 101))
 end
 
-function skills()
+function use_skill_on_p_proc()
     fallout.script_overrides()
     fallout.display_msg(fallout.message_str(810, 103))
 end
@@ -41,4 +35,5 @@ local exports = {}
 exports.start = start
 exports.description_p_proc = description_p_proc
 exports.use_p_proc = use_p_proc
+exports.use_skill_on_p_proc = use_skill_on_p_proc
 return exports
