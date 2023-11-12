@@ -37,46 +37,36 @@ local follow_player
 local show_true_name
 local show_false_name
 
-local hostile = 0
+local hostile = false
 local initialized = false
 local prev_tile = 7000
 local dest_tile = 7000
-local name = 0
 
 local timed_event_p_proc
 
 function start()
-    if fallout.script_action() == 12 then
+    local script_action = fallout.script_action()
+    if script_action == 12 then
         critter_p_proc()
-    else
-        if fallout.script_action() == 18 then
-            destroy_p_proc()
-        else
-            if fallout.script_action() == 21 then
-                look_at_p_proc()
-            else
-                if fallout.script_action() == 23 then
-                    map_update_p_proc()
-                else
-                    if fallout.script_action() == 4 then
-                        pickup_p_proc()
-                    else
-                        if fallout.script_action() == 11 then
-                            talk_p_proc()
-                        end
-                    end
-                end
-            end
-        end
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 23 then
+        map_update_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
     end
 end
 
 function critter_p_proc()
-    if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) and (fallout.global_var(136) < 41) then
-        hostile = 1
+    if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) and fallout.global_var(136) < 41 then
+        hostile = true
     end
     if hostile then
-        hostile = 0
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
 end
@@ -88,55 +78,51 @@ function destroy_p_proc()
 end
 
 function look_at_p_proc()
-    if (fallout.global_var(135) == 2) or (fallout.get_critter_stat(fallout.dude_obj(), 6) > 6) then
+    if fallout.global_var(135) == 2 or fallout.get_critter_stat(fallout.dude_obj(), 6) > 6 then
         show_true_name()
+    elseif fallout.get_critter_stat(fallout.dude_obj(), 6) < 4 then
+        show_false_name()
+    elseif fallout.get_critter_stat(fallout.dude_obj(), 4) < 5 then
+        show_false_name()
     else
-        if fallout.get_critter_stat(fallout.dude_obj(), 6) < 4 then
+        if fallout.random(0, 1) then
             show_false_name()
         else
-            if fallout.get_critter_stat(fallout.dude_obj(), 4) < 5 then
-                show_false_name()
-            else
-                if fallout.random(0, 1) then
-                    show_false_name()
-                else
-                    show_true_name()
-                end
-            end
+            show_true_name()
         end
     end
 end
 
 function map_update_p_proc()
+    local self_obj = fallout.self_obj()
     if not initialized then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 27)
+        fallout.critter_add_trait(self_obj, 1, 5, 27)
         if fallout.cur_map_index() == 44 then
-            fallout.critter_add_trait(fallout.self_obj(), 1, 6, 47)
-        else
-            if (fallout.cur_map_index() == 17) or (fallout.cur_map_index() == 18) then
-                fallout.party_add(fallout.self_obj())
-                if fallout.global_var(131) == 1 then
-                    fallout.set_obj_visibility(fallout.self_obj(), 0)
-                    fallout.critter_add_trait(fallout.self_obj(), 1, 6, 0)
-                    fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(1), 1)
-                else
-                    fallout.set_obj_visibility(fallout.self_obj(), 1)
-                end
+            fallout.critter_add_trait(self_obj, 1, 6, 47)
+        elseif fallout.cur_map_index() == 17 or fallout.cur_map_index() == 18 then
+            fallout.party_add(self_obj)
+            if fallout.global_var(131) == 1 then
+                fallout.set_obj_visibility(self_obj, 0)
+                fallout.critter_add_trait(self_obj, 1, 6, 0)
+                fallout.add_timer_event(self_obj, fallout.game_ticks(1), 1)
             else
-                if (fallout.cur_map_index() ~= 17) and (fallout.cur_map_index() ~= 18) then
-                    fallout.party_remove(fallout.self_obj())
-                end
+                fallout.set_obj_visibility(self_obj, true)
             end
+        else
+            fallout.party_remove(self_obj)
         end
         initialized = true
     end
-    if (fallout.elevation(fallout.self_obj()) ~= fallout.elevation(fallout.dude_obj())) and (fallout.global_var(131) == 1) then
-        fallout.move_to(fallout.self_obj(), fallout.tile_num_in_direction(fallout.tile_num(fallout.dude_obj()), fallout.random(4, 5), 1), fallout.elevation(fallout.dude_obj()))
+    local dude_obj = fallout.dude_obj()
+    local dude_tile_num = fallout.tile_num(dude_obj)
+    local dude_elevation = fallout.elevation(dude_obj)
+    if fallout.elevation(self_obj) ~= dude_elevation and fallout.global_var(131) == 1 then
+        fallout.move_to(self_obj, fallout.tile_num_in_direction(dude_tile_num, fallout.random(4, 5), 1), dude_elevation)
     end
 end
 
 function pickup_p_proc()
-    hostile = 1
+    hostile = true
 end
 
 function talk_p_proc()
@@ -282,34 +268,40 @@ function Fire21()
 end
 
 function FireCombat()
-    hostile = 1
+    hostile = true
 end
 
 function FireEnd()
 end
 
 function follow_player()
-    local v0 = 0
+    local dude_obj = fallout.dude_obj()
+    local dude_tile_num = fallout.tile_num(dude_obj)
+    local self_obj = fallout.self_obj()
+    local distance_self_to_dude = fallout.tile_distance_objs(self_obj, dude_obj)
+
     prev_tile = dest_tile
-    v0 = (fallout.has_trait(1, fallout.dude_obj(), 10) + fallout.random(4, 5)) % 6
-    dest_tile = fallout.tile_num_in_direction(fallout.tile_num(fallout.dude_obj()), v0, fallout.random(2, 3))
-    if fallout.tile_distance(prev_tile, fallout.tile_num(fallout.dude_obj())) > fallout.tile_distance(dest_tile, fallout.tile_num(fallout.dude_obj())) then
-        if fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) > 8 then
-            fallout.animate_move_obj_to_tile(fallout.self_obj(), dest_tile, 1 | 16)
+
+    local rotation = (fallout.has_trait(1, dude_obj, 10) + fallout.random(4, 5)) % 6
+    local distance = fallout.random(2, 3)
+    dest_tile = fallout.tile_num_in_direction(dude_tile_num, rotation, distance)
+    if fallout.tile_distance(prev_tile, dude_tile_num) > fallout.tile_distance(dest_tile, dude_tile_num) then
+        if distance_self_to_dude > 8 then
+            fallout.animate_move_obj_to_tile(self_obj, dest_tile, 1 | 16)
         else
-            fallout.animate_move_obj_to_tile(fallout.self_obj(), dest_tile, 0 | 16)
+            fallout.animate_move_obj_to_tile(self_obj, dest_tile, 0 | 16)
         end
     else
-        if fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) > 8 then
-            fallout.animate_move_obj_to_tile(fallout.self_obj(), dest_tile, 1)
+        if distance_self_to_dude > 8 then
+            fallout.animate_move_obj_to_tile(self_obj, dest_tile, 1)
         else
-            fallout.animate_move_obj_to_tile(fallout.self_obj(), dest_tile, 0)
+            fallout.animate_move_obj_to_tile(self_obj, dest_tile, 0)
         end
     end
-    if fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) > 3 then
-        fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(1), 1)
+    if distance_self_to_dude > 3 then
+        fallout.add_timer_event(self_obj, fallout.game_ticks(1), 1)
     else
-        fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(fallout.random(2, 5)), 1)
+        fallout.add_timer_event(self_obj, fallout.game_ticks(fallout.random(2, 5)), 1)
     end
 end
 
@@ -332,7 +324,7 @@ function timed_event_p_proc()
         follow_player()
     else
         if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
-            hostile = 1
+            hostile = true
         end
     end
 end
