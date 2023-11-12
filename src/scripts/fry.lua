@@ -4,7 +4,6 @@ local reputation = require("lib.reputation")
 local time = require("lib.time")
 
 local start
-local combat
 local critter_p_proc
 local pickup_p_proc
 local talk_p_proc
@@ -40,68 +39,60 @@ local Fry22
 local Fry23
 local Fry24
 
-local hostile = 0
+local hostile = false
 local initialized = false
-
-local exit_line = 0
 
 function start()
     if not initialized then
-        initialized = true
+        local self_obj = fallout.self_obj()
         if fallout.global_var(469) == 1 then
-            fallout.set_obj_visibility(fallout.self_obj(), 1)
+            fallout.set_obj_visibility(self_obj, true)
         end
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 40)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 86)
+        fallout.critter_add_trait(self_obj, 1, 6, 40)
+        fallout.critter_add_trait(self_obj, 1, 5, 86)
+        initialized = true
     end
-    if fallout.script_action() == 21 then
-        look_at_p_proc()
-    else
-        if fallout.script_action() == 4 then
-            pickup_p_proc()
-        else
-            if fallout.script_action() == 11 then
-                talk_p_proc()
-            else
-                if fallout.script_action() == 12 then
-                    critter_p_proc()
-                else
-                    if fallout.script_action() == 18 then
-                        destroy_p_proc()
-                    end
-                end
-            end
-        end
-    end
-end
 
-function combat()
-    hostile = 1
+    local script_action = fallout.script_action()
+    if script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    end
 end
 
 function critter_p_proc()
+    local self_obj = fallout.self_obj()
     if hostile then
-        hostile = 0
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
     if time.is_morning() or time.is_day() then
-        if fallout.tile_num(fallout.self_obj()) ~= 21508 then
-            fallout.animate_move_obj_to_tile(fallout.self_obj(), 21508, 0)
+        if fallout.tile_num(self_obj) ~= 21508 then
+            fallout.animate_move_obj_to_tile(self_obj, 21508, 0)
         else
             if fallout.random(1, 150) == 1 then
-                fallout.animate_move_obj_to_tile(fallout.self_obj(), fallout.tile_num_in_direction(fallout.tile_num(fallout.self_obj()), fallout.random(0, 5), fallout.random(3, 5)), 0)
+                fallout.animate_move_obj_to_tile(self_obj,
+                    fallout.tile_num_in_direction(fallout.tile_num(self_obj), fallout.random(0, 5),
+                        fallout.random(3, 5)), 0)
             end
         end
     else
-        if fallout.tile_num(fallout.self_obj()) ~= 22280 then
-            fallout.animate_move_obj_to_tile(fallout.self_obj(), 22280, 0)
+        if fallout.tile_num(self_obj) ~= 22280 then
+            fallout.animate_move_obj_to_tile(self_obj, 22280, 0)
         end
     end
 end
 
 function pickup_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
-        hostile = 1
+        hostile = true
     end
 end
 
@@ -121,9 +112,8 @@ function look_at_p_proc()
 end
 
 function damage_p_proc()
-    local v0 = 0
-    v0 = fallout.obj_pid(fallout.source_obj())
-    if fallout.party_member_obj(v0) ~= 0 then
+    local pid = fallout.obj_pid(fallout.source_obj())
+    if fallout.party_member_obj(pid) ~= nil then
         fallout.set_global_var(248, 1)
     end
 end
@@ -136,33 +126,21 @@ function FryDialog()
         fallout.gsay_start()
         if fallout.global_var(220) > 2 then
             Fry11()
+        elseif fallout.global_var(221) == 1 then
+            Fry12()
+        elseif fallout.global_var(222) > 2 then
+            Fry13()
+        elseif fallout.local_var(4) == 0 then
+            Fry00()
+            fallout.set_local_var(4, 1)
+        elseif fallout.global_var(158) > 2 then
+            Fry10()
+        elseif fallout.local_var(1) == 3 then
+            Fry14()
+        elseif fallout.local_var(1) == 2 then
+            Fry15()
         else
-            if fallout.global_var(221) == 1 then
-                Fry12()
-            else
-                if fallout.global_var(222) > 2 then
-                    Fry13()
-                else
-                    if fallout.local_var(4) == 0 then
-                        Fry00()
-                        fallout.set_local_var(4, 1)
-                    else
-                        if fallout.global_var(158) > 2 then
-                            Fry10()
-                        else
-                            if fallout.local_var(1) == 3 then
-                                Fry14()
-                            else
-                                if fallout.local_var(1) == 2 then
-                                    Fry15()
-                                else
-                                    Fry16()
-                                end
-                            end
-                        end
-                    end
-                end
-            end
+            Fry16()
         end
         fallout.gsay_end()
         fallout.end_dialogue()
@@ -170,7 +148,7 @@ function FryDialog()
 end
 
 function FryCombat()
-    hostile = 1
+    hostile = true
 end
 
 function FryEnd()
