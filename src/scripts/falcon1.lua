@@ -27,56 +27,42 @@ local Falcon15
 local Falcon16
 local FalconEnd
 
-local hostile = 0
+local hostile = false
 local initialized = false
-local First_Water = 0
-local Money_Pack = 0
-local Money_Count = 0
-local item = 0
-
-local exit_line = 0
+local First_Water = false
 
 function start()
     if not initialized then
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 38)
+        fallout.critter_add_trait(self_obj, 1, 5, 50)
         initialized = true
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 38)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 50)
     end
-    if fallout.script_action() == 21 then
-        look_at_p_proc()
-    else
-        if fallout.script_action() == 4 then
-            pickup_p_proc()
-        else
-            if fallout.script_action() == 11 then
-                talk_p_proc()
-            else
-                if fallout.script_action() == 12 then
-                    critter_p_proc()
-                else
-                    if fallout.script_action() == 18 then
-                        destroy_p_proc()
-                    end
-                end
-            end
-        end
-    end
-end
 
-function combat()
-    hostile = 1
+    local script_action = fallout.script_action()
+    if script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    end
 end
 
 function critter_p_proc()
     if hostile then
-        hostile = 0
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
 end
 
 function pickup_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
-        hostile = 1
+        hostile = true
     end
 end
 
@@ -171,14 +157,16 @@ end
 
 function Falcon09()
     if First_Water then
-        fallout.gsay_reply(697, fallout.message_str(697, 139) .. fallout.message_str(697, 140) .. fallout.message_str(697, 141))
+        fallout.gsay_reply(697,
+            fallout.message_str(697, 139) .. fallout.message_str(697, 140) .. fallout.message_str(697, 141))
     else
-        fallout.gsay_reply(697, fallout.message_str(697, 136) .. fallout.message_str(697, 137) .. fallout.message_str(697, 138))
+        fallout.gsay_reply(697,
+            fallout.message_str(697, 136) .. fallout.message_str(697, 137) .. fallout.message_str(697, 138))
     end
-    Money_Pack = fallout.obj_carrying_pid_obj(fallout.dude_obj(), 41)
-    Money_Count = fallout.rm_mult_objs_from_inven(fallout.dude_obj(), Money_Pack, 2)
-    fallout.destroy_object(Money_Pack)
-    First_Water = 1
+    local money_obj = fallout.obj_carrying_pid_obj(fallout.dude_obj(), 41)
+    fallout.rm_mult_objs_from_inven(fallout.dude_obj(), money_obj, 2)
+    fallout.destroy_object(money_obj)
+    First_Water = true
     Falcon15()
 end
 
@@ -191,11 +179,11 @@ function Falcon11()
 end
 
 function Falcon14()
-    Money_Pack = fallout.obj_carrying_pid_obj(fallout.dude_obj(), 41)
-    Money_Count = fallout.rm_mult_objs_from_inven(fallout.dude_obj(), Money_Pack, 5)
-    fallout.destroy_object(Money_Pack)
-    item = fallout.create_object_sid(124, 0, 0, -1)
-    fallout.add_obj_to_inven(fallout.dude_obj(), item)
+    local money_obj = fallout.obj_carrying_pid_obj(fallout.dude_obj(), 41)
+    fallout.rm_mult_objs_from_inven(fallout.dude_obj(), money_obj, 5)
+    fallout.destroy_object(money_obj)
+    local item_obj = fallout.create_object_sid(124, 0, 0, -1)
+    fallout.add_obj_to_inven(fallout.dude_obj(), item_obj)
     fallout.gsay_reply(697, fallout.message_str(697, 160) .. fallout.message_str(697, 161))
     Falcon15()
 end
@@ -209,11 +197,11 @@ function Falcon15()
 end
 
 function Falcon16()
-    Money_Pack = fallout.obj_carrying_pid_obj(fallout.dude_obj(), 41)
-    Money_Count = fallout.rm_mult_objs_from_inven(fallout.dude_obj(), Money_Pack, 10)
-    fallout.destroy_object(Money_Pack)
-    item = fallout.create_object_sid(125, 0, 0, -1)
-    fallout.add_obj_to_inven(fallout.dude_obj(), item)
+    local money_obj = fallout.obj_carrying_pid_obj(fallout.dude_obj(), 41)
+    fallout.rm_mult_objs_from_inven(fallout.dude_obj(), money_obj, 10)
+    fallout.destroy_object(money_obj)
+    local item_obj = fallout.create_object_sid(125, 0, 0, -1)
+    fallout.add_obj_to_inven(fallout.dude_obj(), item_obj)
     fallout.gsay_reply(697, fallout.message_str(697, 163) .. fallout.message_str(697, 164))
     Falcon15()
 end
