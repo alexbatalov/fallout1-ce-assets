@@ -12,59 +12,45 @@ local look_at_p_proc
 local combat_p_proc
 local damage_p_proc
 
-local hostile = 0
+local hostile = false
 local initialized = false
-local beingShown = 0
-
-local exit_line = 0
 
 function start()
     if not initialized then
+        local self_obj = fallout.self_obj()
+        fallout.set_external_var("Fry_Stub_Ptr", self_obj)
+        fallout.set_obj_visibility(self_obj, true)
+        fallout.critter_add_trait(self_obj, 1, 6, 0)
+        fallout.critter_add_trait(self_obj, 1, 5, 86)
         initialized = true
-        fallout.set_external_var("Fry_Stub_Ptr", fallout.self_obj())
-        fallout.set_obj_visibility(fallout.self_obj(), 1)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 0)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 86)
     end
-    if fallout.script_action() == 21 then
-        look_at_p_proc()
-    else
-        if fallout.script_action() == 4 then
-            pickup_p_proc()
-        else
-            if fallout.script_action() == 11 then
-                talk_p_proc()
-            else
-                if fallout.script_action() == 12 then
-                    critter_p_proc()
-                else
-                    if fallout.script_action() == 18 then
-                        destroy_p_proc()
-                    else
-                        if fallout.script_action() == 13 then
-                            combat_p_proc()
-                        end
-                    end
-                end
-            end
-        end
-    end
-end
 
-function combat()
-    hostile = 1
+    local script_action = fallout.script_action()
+    if script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 13 then
+        combat_p_proc()
+    end
 end
 
 function critter_p_proc()
     if hostile then
-        hostile = 0
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
 end
 
 function pickup_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
-        hostile = 1
+        hostile = true
     end
 end
 
@@ -90,9 +76,8 @@ function combat_p_proc()
 end
 
 function damage_p_proc()
-    local v0 = 0
-    v0 = fallout.obj_pid(fallout.source_obj())
-    if (fallout.party_member_obj(v0) ~= 0) and (fallout.map_var(52) == 0) then
+    local pid = fallout.obj_pid(fallout.source_obj())
+    if fallout.party_member_obj(pid) ~= nil and fallout.map_var(52) == 0 then
         fallout.set_global_var(248, 1)
     end
 end
