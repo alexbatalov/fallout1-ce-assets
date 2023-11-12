@@ -5,12 +5,11 @@ local description_p_proc
 local use_p_proc
 
 function start()
-    if fallout.script_action() == 3 then
+    local script_action = fallout.script_action()
+    if script_action == 3 then
         description_p_proc()
-    else
-        if fallout.script_action() == 6 then
-            use_p_proc()
-        end
+    elseif script_action == 6 then
+        use_p_proc()
     end
 end
 
@@ -20,7 +19,7 @@ function description_p_proc()
 end
 
 function use_p_proc()
-    if not(fallout.global_var(609)) then
+    if fallout.global_var(609) == 0 then
         fallout.script_overrides()
         fallout.display_msg(fallout.message_str(364, 101))
         fallout.set_global_var(262, 0)
