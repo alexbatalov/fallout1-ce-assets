@@ -6,20 +6,15 @@ local use_p_proc
 local use_skill_on_p_proc
 
 function start()
-    if fallout.script_action() == 21 then
+    local script_action = fallout.script_action()
+    if script_action == 21 then
         look_at_p_proc()
-    else
-        if fallout.script_action() == 3 then
-            look_at_p_proc()
-        else
-            if fallout.script_action() == 6 then
-                use_p_proc()
-            else
-                if fallout.script_action() == 8 then
-                    use_skill_on_p_proc()
-                end
-            end
-        end
+    elseif script_action == 3 then
+        look_at_p_proc()
+    elseif script_action == 6 then
+        use_p_proc()
+    elseif script_action == 8 then
+        use_skill_on_p_proc()
     end
 end
 
@@ -34,14 +29,13 @@ function use_p_proc()
 end
 
 function use_skill_on_p_proc()
-    if fallout.action_being_used() == 12 then
+    local skill = fallout.action_being_used()
+    if skill == 12 then
         fallout.script_overrides()
         fallout.display_msg(fallout.message_str(766, 203))
-    else
-        if fallout.action_being_used() == 13 then
-            fallout.script_overrides()
-            fallout.display_msg(fallout.message_str(766, 202))
-        end
+    elseif skill == 13 then
+        fallout.script_overrides()
+        fallout.display_msg(fallout.message_str(766, 202))
     end
 end
 
