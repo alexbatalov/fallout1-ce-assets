@@ -13,17 +13,15 @@ local timed_event_p_proc
 local pickup_p_proc
 
 local initialized = false
-local PsstTime = 0
-
-local exit_line = 0
 
 function start()
     if not initialized then
-        if fallout.obj_is_carrying_obj_pid(fallout.self_obj(), 41) == 0 then
-            fallout.item_caps_adjust(fallout.self_obj(), fallout.random(1, 10))
+        local self_obj = fallout.self_obj()
+        if fallout.obj_is_carrying_obj_pid(self_obj, 41) == 0 then
+            fallout.item_caps_adjust(self_obj, fallout.random(1, 10))
         end
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 46)
-        fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(fallout.random(3, 5)), 1)
+        fallout.critter_add_trait(self_obj, 1, 6, 46)
+        fallout.add_timer_event(self_obj, fallout.game_ticks(fallout.random(3, 5)), 1)
         initialized = true
     end
 end
@@ -41,30 +39,29 @@ end
 function talk_p_proc()
     if fallout.global_var(256) == 1 then
         fallout.float_msg(fallout.self_obj(), fallout.message_str(669, fallout.random(100, 105)), 2)
+    elseif fallout.global_var(18) == 1 then
+        fallout.float_msg(fallout.self_obj(), fallout.message_str(258, fallout.random(115, 119)), 0)
     else
-        if fallout.global_var(18) == 1 then
-            fallout.float_msg(fallout.self_obj(), fallout.message_str(258, fallout.random(115, 119)), 0)
-        else
-            fallout.float_msg(fallout.self_obj(), fallout.message_str(258, fallout.random(101, 114)), 0)
-        end
+        fallout.float_msg(fallout.self_obj(), fallout.message_str(258, fallout.random(101, 114)), 0)
     end
 end
 
 function critter_p_proc()
-    local v0 = 0
-    v0 = fallout.global_var(344)
-    if ((time.game_time_in_seconds() - v0) >= 10) and (fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) <= 4) and (fallout.global_var(256) == 0) then
+    local dude_obj = fallout.dude_obj()
+    local self_obj = fallout.self_obj()
+    if time.game_time_in_seconds() - fallout.global_var(344) >= 10
+        and fallout.tile_distance_objs(self_obj, dude_obj) <= 4
+        and fallout.global_var(256) == 0 then
         if fallout.global_var(18) == 1 then
-            fallout.float_msg(fallout.self_obj(), fallout.message_str(258, fallout.random(115, 119)), 0)
+            fallout.float_msg(self_obj, fallout.message_str(258, fallout.random(115, 119)), 0)
         else
-            fallout.float_msg(fallout.self_obj(), fallout.message_str(258, fallout.random(101, 114)), 0)
+            fallout.float_msg(self_obj, fallout.message_str(258, fallout.random(101, 114)), 0)
         end
-        v0 = time.game_time_in_seconds()
-        fallout.set_global_var(344, v0)
+        fallout.set_global_var(344, time.game_time_in_seconds())
     else
-        if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
+        if fallout.obj_can_see_obj(self_obj, dude_obj) then
             if fallout.global_var(256) == 1 then
-                fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+                fallout.attack(dude_obj, 0, 1, 0, 0, 30000, 0, 0)
             end
         end
     end
@@ -84,8 +81,12 @@ function destroy_p_proc()
 end
 
 function timed_event_p_proc()
-    fallout.animate_move_obj_to_tile(fallout.self_obj(), fallout.tile_num_in_direction(fallout.tile_num(fallout.self_obj()), fallout.random(0, 5), fallout.random(1, 5)), 0)
-    fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(fallout.random(3, 5)), 1)
+    local self_obj = fallout.self_obj()
+    local rotation = fallout.random(0, 5)
+    local distance = fallout.random(1, 5)
+    fallout.animate_move_obj_to_tile(self_obj,
+        fallout.tile_num_in_direction(fallout.tile_num(self_obj), rotation, distance), 0)
+    fallout.add_timer_event(self_obj, fallout.game_ticks(fallout.random(3, 5)), 1)
 end
 
 function pickup_p_proc()
