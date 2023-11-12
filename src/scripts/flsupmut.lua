@@ -8,7 +8,7 @@ local look_at_p_proc
 local pickup_p_proc
 local talk_p_proc
 
-local hostile = 0
+local hostile = false
 local initialized = false
 
 function start()
@@ -18,32 +18,25 @@ function start()
             fallout.set_local_var(0, fallout.random(100, 109))
         end
         initialized = true
-    else
-        if fallout.script_action() == 12 then
-            critter_p_proc()
-        else
-            if fallout.script_action() == 18 then
-                destroy_p_proc()
-            else
-                if fallout.script_action() == 21 then
-                    look_at_p_proc()
-                else
-                    if fallout.script_action() == 4 then
-                        pickup_p_proc()
-                    else
-                        if fallout.script_action() == 11 then
-                            talk_p_proc()
-                        end
-                    end
-                end
-            end
-        end
+    end
+
+    local script_action = fallout.script_action()
+    if script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
     end
 end
 
 function critter_p_proc()
     if hostile then
-        hostile = 0
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
 end
@@ -57,16 +50,16 @@ function look_at_p_proc()
 end
 
 function pickup_p_proc()
-    hostile = 1
+    hostile = true
 end
 
 function talk_p_proc()
-    local v0 = 0
     fallout.script_overrides()
-    v0 = fallout.random(110, 118)
-    fallout.float_msg(fallout.self_obj(), fallout.message_str(260, v0), 0)
-    if (v0 == 3) or (v0 == 8) then
-        hostile = 1
+    local rnd = fallout.random(110, 118)
+    fallout.float_msg(fallout.self_obj(), fallout.message_str(260, rnd), 0)
+    -- FIXME: Will never be true, probably should be 103/108?
+    if rnd == 3 or rnd == 8 then
+        hostile = true
     end
 end
 
