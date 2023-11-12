@@ -16,59 +16,52 @@ local gambler3
 local gambler4
 local gambler5
 
-local hostile = 0
-local weapon_check = 0
+local hostile = false
+local weapon_check = false
 
 local pickup_p_proc
 
 function start()
-    if fallout.script_action() == 12 then
+    local script_action = fallout.script_action()
+    if script_action == 12 then
         critter_p_proc()
-    else
-        if fallout.script_action() == 18 then
-            destroy_p_proc()
-        else
-            if fallout.script_action() == 21 then
-                look_at_p_proc()
-            else
-                if fallout.script_action() == 15 then
-                    map_enter_p_proc()
-                else
-                    if fallout.script_action() == 11 then
-                        talk_p_proc()
-                    else
-                        if fallout.script_action() == 22 then
-                            timed_event_p_proc()
-                        end
-                    end
-                end
-            end
-        end
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 15 then
+        map_enter_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 22 then
+        timed_event_p_proc()
     end
 end
 
 function critter_p_proc()
-    if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) then
-        if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
-            if fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 12 then
-                if not(weapon_check) then
+    local dude_obj = fallout.dude_obj()
+    local self_obj = fallout.self_obj()
+    if fallout.obj_item_subtype(fallout.critter_inven_obj(dude_obj, 1)) == 3 or fallout.obj_item_subtype(fallout.critter_inven_obj(dude_obj, 2)) == 3 then
+        if fallout.obj_can_see_obj(self_obj, dude_obj) then
+            if fallout.tile_distance_objs(self_obj, dude_obj) < 12 then
+                if not (weapon_check) then
                     fallout.dialogue_system_enter()
-                    fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(600), 1)
+                    fallout.add_timer_event(self_obj, fallout.game_ticks(600), 1)
                 end
             end
         end
     end
     if hostile then
-        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+        fallout.attack(dude_obj, 0, 1, 0, 0, 30000, 0, 0)
     end
     if fallout.global_var(247) == 1 then
-        if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
-            fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+        if fallout.obj_can_see_obj(self_obj, dude_obj) then
+            fallout.attack(dude_obj, 0, 1, 0, 0, 30000, 0, 0)
         end
     end
     if fallout.cur_map_index() == 11 then
-        if (fallout.global_var(104) == 2) or (fallout.global_var(38) == 1) then
-            fallout.destroy_object(fallout.self_obj())
+        if fallout.global_var(104) == 2 or fallout.global_var(38) == 1 then
+            fallout.destroy_object(self_obj)
         end
     end
 end
@@ -86,43 +79,40 @@ function look_at_p_proc()
 end
 
 function map_enter_p_proc()
+    local self_obj = fallout.self_obj()
     if fallout.local_var(0) == 0 then
-        fallout.set_local_var(0, fallout.tile_num(fallout.self_obj()))
+        fallout.set_local_var(0, fallout.tile_num(self_obj))
     end
-    if not(fallout.obj_is_carrying_obj_pid(fallout.self_obj(), 41)) then
-        fallout.item_caps_adjust(fallout.self_obj(), fallout.random(0, 200))
+    if fallout.obj_is_carrying_obj_pid(self_obj, 41) == 0 then
+        fallout.item_caps_adjust(self_obj, fallout.random(0, 200))
     end
     if fallout.cur_map_index() == 11 then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 24)
-        if (fallout.global_var(104) == 2) or (fallout.global_var(38) == 1) then
-            fallout.destroy_object(fallout.self_obj())
+        fallout.critter_add_trait(self_obj, 1, 6, 24)
+        if fallout.global_var(104) == 2 or fallout.global_var(38) == 1 then
+            fallout.destroy_object(self_obj)
         end
     end
 end
 
 function talk_p_proc()
     fallout.script_overrides()
-    if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) then
+
+    local dude_obj = fallout.dude_obj()
+    if fallout.obj_item_subtype(fallout.critter_inven_obj(dude_obj, 1)) == 3 or fallout.obj_item_subtype(fallout.critter_inven_obj(dude_obj, 2)) == 3 then
         gambler1()
+    elseif fallout.global_var(158) > 2 then
+        gambler3()
+    elseif fallout.global_var(105) == 2 then
+        gambler4()
+    elseif fallout.global_var(155) < -10 then
+        gambler2()
     else
-        if fallout.global_var(158) > 2 then
-            gambler3()
-        else
-            if fallout.global_var(105) == 2 then
-                gambler4()
-            else
-                if fallout.global_var(155) < -10 then
-                    gambler2()
-                else
-                    gambler5()
-                end
-            end
-        end
+        gambler5()
     end
 end
 
 function timed_event_p_proc()
-    weapon_check = 0
+    weapon_check = false
 end
 
 function damage_p_proc()
@@ -132,22 +122,17 @@ function damage_p_proc()
 end
 
 function gambler1()
-    local v0 = 0
-    weapon_check = 1
-    v0 = fallout.random(1, 3)
-    if v0 == 1 then
+    weapon_check = true
+    local rnd = fallout.random(1, 3)
+    if rnd == 1 then
         fallout.float_msg(fallout.self_obj(), fallout.message_str(351, 101), 0)
-    else
-        if v0 == 2 then
-            fallout.float_msg(fallout.self_obj(), fallout.message_str(351, 102), 0)
+    elseif rnd == 2 then
+        fallout.float_msg(fallout.self_obj(), fallout.message_str(351, 102), 0)
+    elseif rnd == 3 then
+        if fallout.get_critter_stat(fallout.dude_obj(), 34) == 0 then
+            fallout.float_msg(fallout.self_obj(), fallout.message_str(351, 103), 0)
         else
-            if v0 == 3 then
-                if fallout.get_critter_stat(fallout.dude_obj(), 34) == 0 then
-                    fallout.float_msg(fallout.self_obj(), fallout.message_str(351, 103), 0)
-                else
-                    fallout.float_msg(fallout.self_obj(), fallout.message_str(351, 104), 0)
-                end
-            end
+            fallout.float_msg(fallout.self_obj(), fallout.message_str(351, 104), 0)
         end
     end
 end
@@ -165,21 +150,20 @@ function gambler4()
 end
 
 function gambler5()
-    local v0 = 0
-    v0 = fallout.random(1, 6)
-    if v0 == 1 then
+    local rnd = fallout.random(1, 6)
+    if rnd == 1 then
         if time.is_day() then
             fallout.float_msg(fallout.self_obj(), fallout.message_str(351, 114), 0)
         else
             fallout.float_msg(fallout.self_obj(), fallout.message_str(351, 115), 0)
         end
     else
-        fallout.float_msg(fallout.self_obj(), fallout.message_str(351, 114 + v0), 0)
+        fallout.float_msg(fallout.self_obj(), fallout.message_str(351, 114 + rnd), 0)
     end
 end
 
 function pickup_p_proc()
-    hostile = 1
+    hostile = true
 end
 
 local exports = {}
