@@ -35,68 +35,66 @@ local guard23
 local combat
 local guardend
 
-local hostile = 0
+local hostile = false
 local initialized = false
 
 function start()
     if not initialized then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 46)
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 46)
         if fallout.local_var(0) == 0 then
-            if fallout.get_critter_stat(fallout.self_obj(), 34) == 1 then
+            if fallout.get_critter_stat(self_obj, 34) == 1 then
                 fallout.set_local_var(0, fallout.random(100, 104))
             else
                 fallout.set_local_var(0, fallout.random(105, 109))
             end
         end
         if fallout.global_var(129) == 2 then
-            if fallout.random(0, 1) then
-                fallout.kill_critter(fallout.self_obj(), 59)
+            if fallout.random(0, 1) ~= 0 then
+                fallout.kill_critter(self_obj, 59)
             else
-                fallout.kill_critter(fallout.self_obj(), 57)
+                fallout.kill_critter(self_obj, 57)
             end
         end
         initialized = true
-    else
-        if fallout.script_action() == 12 then
-            critter_p_proc()
-        else
-            if fallout.script_action() == 14 then
-                damage_p_proc()
-            else
-                if fallout.script_action() == 18 then
-                    destroy_p_proc()
-                else
-                    if fallout.script_action() == 21 then
-                        look_at_p_proc()
-                    else
-                        if fallout.script_action() == 11 then
-                            talk_p_proc()
-                        end
-                    end
-                end
-            end
-        end
+    end
+
+    local script_action = fallout.script_action()
+    if script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 14 then
+        damage_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
     end
 end
 
 function critter_p_proc()
+    local dude_obj = fallout.dude_obj()
+    local self_obj = fallout.self_obj()
     if fallout.map_var(1) == 1 then
-        fallout.animate_move_obj_to_tile(fallout.self_obj(), fallout.tile_num_in_direction(fallout.tile_num(fallout.dude_obj()), fallout.random(0, 6), fallout.random(3, 7)), 0)
-    else
-        if (fallout.map_var(1) == 2) and fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
-            hostile = 1
+        fallout.animate_move_obj_to_tile(self_obj,
+            fallout.tile_num_in_direction(fallout.tile_num(dude_obj), fallout.random(0, 6),
+                fallout.random(3, 7)), 0)
+    elseif fallout.map_var(1) == 2 then
+        if fallout.obj_can_see_obj(self_obj, dude_obj) then
+            hostile = true
         end
     end
     if fallout.global_var(129) == 2 then
-        fallout.set_external_var("removal_ptr", fallout.self_obj())
+        fallout.set_external_var("removal_ptr", self_obj)
     end
     if hostile then
-        hostile = 0
-        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+        hostile = false
+        fallout.attack(dude_obj, 0, 1, 0, 0, 30000, 0, 0)
     else
-        if fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 8 then
-            if fallout.local_var(1) or fallout.global_var(256) then
-                hostile = 1
+        if fallout.tile_distance_objs(self_obj, dude_obj) < 8 then
+            if fallout.local_var(1) ~= 0 or fallout.global_var(256) ~= 0 then
+                hostile = true
             end
         end
     end
@@ -121,7 +119,7 @@ end
 
 function talk_p_proc()
     fallout.script_overrides()
-    if fallout.local_var(1) or fallout.global_var(256) then
+    if fallout.local_var(1) ~= 0 or fallout.global_var(256) ~= 0 then
         fallout.float_msg(fallout.self_obj(), fallout.message_str(669, fallout.random(100, 105)), 0)
     else
         fallout.start_gdialog(264, fallout.self_obj(), 4, -1, -1)
@@ -143,17 +141,27 @@ end
 function guard0()
     fallout.gsay_reply(264, 110)
     fallout.giq_option(-3, 264, 111, guard1, 50)
-    fallout.giq_option(4, 264, fallout.message_str(264, 112) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(264, 113), guard4, 50)
-    fallout.giq_option(4, 264, fallout.message_str(264, 114) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(264, 115), combat, 50)
+    fallout.giq_option(4, 264,
+        fallout.message_str(264, 112) ..
+        fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(264, 113), guard4, 50)
+    fallout.giq_option(4, 264,
+        fallout.message_str(264, 114) ..
+        fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(264, 115), combat, 50)
     fallout.giq_option(6, 264, 116, guard11, 50)
 end
 
 function guard1()
     fallout.gsay_reply(264, 117)
-    fallout.giq_option(-3, 264, fallout.message_str(264, 118) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(264, 119), combat, 50)
-    fallout.giq_option(-3, 264, fallout.message_str(264, 120) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(264, 121), guard2, 50)
+    fallout.giq_option(-3, 264,
+        fallout.message_str(264, 118) ..
+        fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(264, 119), combat, 50)
+    fallout.giq_option(-3, 264,
+        fallout.message_str(264, 120) ..
+        fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(264, 121), guard2, 50)
     fallout.giq_option(-3, 264, fallout.message_str(264, 122), guard3, 50)
-    fallout.giq_option(-3, 264, fallout.message_str(264, 123) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(264, 124), guard3, 50)
+    fallout.giq_option(-3, 264,
+        fallout.message_str(264, 123) ..
+        fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(264, 124), guard3, 50)
 end
 
 function guard2()
@@ -296,7 +304,7 @@ function guard23()
 end
 
 function combat()
-    hostile = 1
+    hostile = true
 end
 
 function guardend()
