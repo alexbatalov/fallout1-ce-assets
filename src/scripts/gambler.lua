@@ -2,9 +2,10 @@ local fallout = require("fallout")
 local reputation = require("lib.reputation")
 
 local start
-local see_stuff
-local do_dialogue
+local talk_p_proc
 local destroy_p_proc
+local timed_event_p_proc
+local look_at_p_proc
 local Hernandez01
 local Hernandez02
 local Hernandez03
@@ -21,27 +22,22 @@ local Hernandez13
 local Hernandez14
 local Hernandezend
 
-local known = 0
+local known = false
 
 function start()
-    if fallout.script_action() == 11 then
-        do_dialogue()
-    else
-        if fallout.script_action() == 18 then
-            destroy_p_proc()
-        else
-            if (fallout.script_action() == 21) or (fallout.script_action() == 3) then
-                see_stuff()
-            else
-                if fallout.script_action() == 22 then
-                    fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
-                end
-            end
-        end
+    local script_action = fallout.script_action()
+    if script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 21 or script_action == 3 then
+        look_at_p_proc()
+    elseif script_action == 22 then
+        timed_event_p_proc()
     end
 end
 
-function see_stuff()
+function look_at_p_proc()
     fallout.script_overrides()
     if known then
         fallout.display_msg(fallout.message_str(247, 100))
@@ -50,7 +46,7 @@ function see_stuff()
     end
 end
 
-function do_dialogue()
+function talk_p_proc()
     fallout.start_gdialog(247, fallout.self_obj(), 4, -1, -1)
     fallout.gsay_start()
     if known then
@@ -66,9 +62,13 @@ function destroy_p_proc()
     reputation.inc_evil_critter()
 end
 
+function timed_event_p_proc()
+    fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+end
+
 function Hernandez01()
     fallout.gsay_reply(247, 102)
-    known = 1
+    known = true
     fallout.giq_option(4, 247, 103, Hernandez02, 50)
     fallout.giq_option(4, 247, 104, Hernandez03, 50)
     fallout.giq_option(-3, 247, 105, Hernandez04, 50)
@@ -82,18 +82,16 @@ function Hernandez02()
 end
 
 function Hernandez03()
-    local v0 = 0
-    local v1 = 0
-    v0 = fallout.do_check(fallout.dude_obj(), 1, 0)
-    v1 = fallout.message_str(247, 110)
-    if fallout.is_success(v0) then
-        v1 = v1 .. fallout.message_str(247, 111)
+    local roll = fallout.do_check(fallout.dude_obj(), 1, 0)
+    local msg = fallout.message_str(247, 110)
+    if fallout.is_success(roll) then
+        msg = msg .. fallout.message_str(247, 111)
     end
-    fallout.gsay_message(247, v1, 50)
+    fallout.gsay_message(247, msg, 50)
     fallout.gsay_reply(247, 112)
     fallout.giq_option(4, 247, 113, Hernandez05, 50)
     fallout.giq_option(4, 247, 114, Hernandez06, 50)
-    if fallout.is_success(v0) then
+    if fallout.is_success(roll) then
         fallout.giq_option(4, 247, 115, Hernandez14, 50)
     end
 end
@@ -161,5 +159,8 @@ end
 
 local exports = {}
 exports.start = start
+exports.talk_p_proc = talk_p_proc
 exports.destroy_p_proc = destroy_p_proc
+exports.look_at_p_proc = look_at_p_proc
+exports.timed_event_p_proc = timed_event_p_proc
 return exports
