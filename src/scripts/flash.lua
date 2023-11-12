@@ -30,66 +30,59 @@ local Flash11N
 local FlashCombat
 local FlashEnd
 
-local hostile = 0
-local loitering = 0
-
-local exit_line = 0
+local hostile = false
+local loitering = false
 
 local damage_p_proc
 
 function start()
-    if fallout.script_action() == 12 then
+    local script_action = fallout.script_action()
+    if script_action == 12 then
         critter_p_proc()
-    else
-        if fallout.script_action() == 18 then
-            destroy_p_proc()
-        else
-            if fallout.script_action() == 4 then
-                pickup_p_proc()
-            else
-                if fallout.script_action() == 11 then
-                    talk_p_proc()
-                else
-                    if fallout.script_action() == 22 then
-                        timed_event_p_proc()
-                    end
-                end
-            end
-        end
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 22 then
+        timed_event_p_proc()
     end
 end
 
 function critter_p_proc()
+    local dude_obj = fallout.dude_obj()
     if hostile then
-        hostile = 0
-        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+        hostile = false
+        fallout.attack(dude_obj, 0, 1, 0, 0, 30000, 0, 0)
     else
-        if fallout.external_var("fetch_dude") then
+        if fallout.external_var("fetch_dude") ~= 0 then
             fallout.set_external_var("fetch_dude", 0)
-            hostile = 1
+            hostile = true
         end
     end
     if fallout.global_var(346) == 1 then
-        if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
-            fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+        if fallout.obj_can_see_obj(fallout.self_obj(), dude_obj) then
+            fallout.attack(dude_obj, 0, 1, 0, 0, 30000, 0, 0)
         end
     end
 end
 
 function map_enter_p_proc()
+    local self_obj = fallout.self_obj()
     if fallout.global_var(15) == 1 then
-        fallout.kill_critter(fallout.self_obj(), 57)
+        fallout.kill_critter(self_obj, 57)
     end
-    fallout.critter_add_trait(fallout.self_obj(), 1, 6, 19)
+    fallout.critter_add_trait(self_obj, 1, 6, 19)
 end
 
 function pickup_p_proc()
-    hostile = 1
+    hostile = true
 end
 
 function talk_p_proc()
     if time.is_day() then
-        if not(fallout.local_var(0)) then
+        if fallout.local_var(0) == 0 then
             Flash00()
         else
             Flash01()
@@ -100,7 +93,7 @@ function talk_p_proc()
         else
             fallout.start_gdialog(36, fallout.self_obj(), 4, -1, -1)
             fallout.gsay_start()
-            if not(fallout.local_var(0)) then
+            if fallout.local_var(0) == 0 then
                 Flash00N()
             else
                 Flash03N()
@@ -112,15 +105,14 @@ function talk_p_proc()
 end
 
 function timed_event_p_proc()
-    if fallout.fixed_param() == 1 then
+    local event = fallout.fixed_param()
+    if event == 1 then
         if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
-            loitering = 1
+            loitering = true
             fallout.dialogue_system_enter()
         end
-    else
-        if fallout.fixed_param() == 2 then
-            hostile = 1
-        end
+    elseif event == 2 then
+        hostile = true
     end
 end
 
@@ -151,19 +143,16 @@ function Flash00N()
 end
 
 function Flash00Na()
-    local v0 = 0
-    local v1 = 0
-    local v2 = 0
-    v1 = fallout.get_critter_stat(fallout.dude_obj(), 7)
-    v2 = fallout.get_critter_stat(fallout.dude_obj(), 35)
-    if v2 == v1 then
+    local max_hit_points = fallout.get_critter_stat(fallout.dude_obj(), 7)
+    local curr_hit_points = fallout.get_critter_stat(fallout.dude_obj(), 35)
+    if curr_hit_points == max_hit_points then
         Flash01N()
     else
-        v0 = -20
-        if v2 < 5 then
-            v0 = 0
+        local modifier = -20
+        if curr_hit_points < 5 then
+            modifier = 0
         end
-        if fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), 14, v0)) then
+        if fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), 14, modifier)) then
             Flash02N()
         else
             Flash01N()
@@ -172,8 +161,9 @@ function Flash00Na()
 end
 
 function Flash01N()
-    fallout.float_msg(fallout.self_obj(), fallout.message_str(36, 107), 7)
-    fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(10), 2)
+    local self_obj = fallout.self_obj()
+    fallout.float_msg(self_obj, fallout.message_str(36, 107), 7)
+    fallout.add_timer_event(self_obj, fallout.game_ticks(10), 2)
 end
 
 function Flash02N()
@@ -217,13 +207,13 @@ function Flash07N()
 end
 
 function Flash07Na()
-    local v0 = 0
+    local modifier = 0
     if fallout.get_critter_stat(fallout.dude_obj(), 34) == 0 then
-        v0 = -15
+        modifier = -15
     else
-        v0 = -25
+        modifier = -25
     end
-    if fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), 14, v0)) then
+    if fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), 14, modifier)) then
         Flash09N()
     else
         if fallout.get_critter_stat(fallout.dude_obj(), 34) == 0 then
@@ -259,7 +249,7 @@ function Flash11N()
 end
 
 function FlashCombat()
-    hostile = 1
+    hostile = true
 end
 
 function FlashEnd()
