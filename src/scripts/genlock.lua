@@ -9,28 +9,19 @@ local look_at_p_proc
 local map_update_p_proc
 
 function start()
-    if fallout.script_action() == 6 then
+    local script_action = fallout.script_action()
+    if script_action == 6 then
         use_p_proc()
-    else
-        if fallout.script_action() == 21 then
-            look_at_p_proc()
-        else
-            if fallout.script_action() == 4 then
-                pickup_p_proc()
-            else
-                if fallout.script_action() == 7 then
-                    use_obj_on_p_proc()
-                else
-                    if fallout.script_action() == 8 then
-                        use_skill_on_p_proc()
-                    else
-                        if fallout.script_action() == 23 then
-                            map_update_p_proc()
-                        end
-                    end
-                end
-            end
-        end
+    elseif script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 7 then
+        use_obj_on_p_proc()
+    elseif script_action == 8 then
+        use_skill_on_p_proc()
+    elseif script_action == 23 then
+        map_update_p_proc()
     end
 end
 
@@ -49,23 +40,22 @@ function use_p_proc()
 end
 
 function use_skill_on_p_proc()
-    local v0 = 0
-    local v1 = 0
-    v0 = fallout.action_being_used()
-    if v0 == 9 then
+    local self_obj = fallout.self_obj()
+    local skill = fallout.action_being_used()
+    if skill == 9 then
         fallout.script_overrides()
-        v1 = fallout.roll_vs_skill(fallout.source_obj(), 9, 0)
-        if fallout.obj_is_locked(fallout.self_obj()) then
-            if fallout.is_success(v1) then
+        local roll = fallout.roll_vs_skill(fallout.source_obj(), 9, 0)
+        if fallout.obj_is_locked(self_obj) then
+            if fallout.is_success(roll) then
                 fallout.set_local_var(0, 1)
                 fallout.display_msg(fallout.message_str(954, 101))
-                fallout.obj_unlock(fallout.self_obj())
+                fallout.obj_unlock(self_obj)
                 fallout.display_msg(fallout.message_str(766, 103) .. "25" .. fallout.message_str(766, 104))
                 fallout.give_exp_points(25)
             else
-                if fallout.is_critical(v1) then
+                if fallout.is_critical(roll) then
                     fallout.display_msg(fallout.message_str(954, 102))
-                    fallout.jam_lock(fallout.self_obj())
+                    fallout.jam_lock(self_obj)
                 else
                     fallout.display_msg(fallout.message_str(954, 103))
                 end
@@ -73,37 +63,33 @@ function use_skill_on_p_proc()
         else
             fallout.display_msg(fallout.message_str(954, 104))
         end
-    else
-        if v0 == 10 then
-            if fallout.obj_is_locked(fallout.self_obj()) then
-                fallout.script_overrides()
-                fallout.display_msg(fallout.message_str(954, 100))
-            end
+    elseif skill == 10 then
+        if fallout.obj_is_locked(self_obj) then
+            fallout.script_overrides()
+            fallout.display_msg(fallout.message_str(954, 100))
         end
     end
 end
 
 function use_obj_on_p_proc()
-    local v0 = 0
-    local v1 = 0
-    v1 = fallout.obj_being_used_with()
-    if fallout.obj_pid(v1) == 84 then
+    local item_obj = fallout.obj_being_used_with()
+    if fallout.obj_pid(item_obj) == 84 then
         fallout.script_overrides()
-        v0 = fallout.roll_vs_skill(fallout.source_obj(), 9, 20)
+        local roll = fallout.roll_vs_skill(fallout.source_obj(), 9, 20)
         if fallout.obj_is_locked(fallout.self_obj()) then
-            if fallout.is_success(v0) then
+            if fallout.is_success(roll) then
                 fallout.set_local_var(0, 1)
                 fallout.display_msg(fallout.message_str(954, 101))
                 fallout.obj_unlock(fallout.self_obj())
                 fallout.display_msg(fallout.message_str(766, 103) .. "25" .. fallout.message_str(766, 104))
                 fallout.give_exp_points(25)
             else
-                if fallout.is_critical(v0) then
+                if fallout.is_critical(roll) then
                     fallout.display_msg(fallout.message_str(954, 102))
                     fallout.display_msg(fallout.message_str(954, 105))
                     fallout.jam_lock(fallout.self_obj())
-                    fallout.rm_obj_from_inven(fallout.source_obj(), v1)
-                    fallout.destroy_object(v1)
+                    fallout.rm_obj_from_inven(fallout.source_obj(), item_obj)
+                    fallout.destroy_object(item_obj)
                 else
                     fallout.display_msg(fallout.message_str(954, 103))
                 end
