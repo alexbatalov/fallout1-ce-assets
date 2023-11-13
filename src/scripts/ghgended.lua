@@ -1,37 +1,21 @@
 local fallout = require("fallout")
 
 local start
-local do_stuff
-
-local rndx = 0
+local look_at_p_proc
 
 function start()
-    local v0 = 0
-    if (fallout.script_action() == 21) or (fallout.script_action() == 3) then
-        fallout.script_overrides()
-        do_stuff()
+    local script_action = fallout.script_action()
+    if script_action == 21 or script_action == 3 then
+        look_at_p_proc()
     end
 end
 
-function do_stuff()
-    rndx = fallout.random(1, 5)
-    if rndx == 1 then
-        fallout.display_msg(fallout.message_str(71, 100))
-    end
-    if rndx == 2 then
-        fallout.display_msg(fallout.message_str(71, 101))
-    end
-    if rndx == 3 then
-        fallout.display_msg(fallout.message_str(71, 102))
-    end
-    if rndx == 4 then
-        fallout.display_msg(fallout.message_str(71, 103))
-    end
-    if rndx == 5 then
-        fallout.display_msg(fallout.message_str(71, 104))
-    end
+function look_at_p_proc()
+    fallout.script_overrides()
+    fallout.display_msg(fallout.message_str(71, fallout.random(100, 104)))
 end
 
 local exports = {}
 exports.start = start
+exports.look_at_p_proc = look_at_p_proc
 return exports
