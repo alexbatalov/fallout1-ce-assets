@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local behaviour = require("lib.behaviour")
 local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
 local time = require("lib.time")
@@ -10,7 +11,6 @@ local pickup_p_proc
 local talk_p_proc
 local destroy_p_proc
 local look_at_p_proc
-local flee_dude
 local damage_p_proc
 local Thorn00
 local Thorn01
@@ -152,20 +152,6 @@ function look_at_p_proc()
     fallout.display_msg(fallout.message_str(603, 100))
 end
 
-function flee_dude()
-    local v0 = 0
-    local v1 = 0
-    local v2 = 0
-    while v1 < 5 do
-        if fallout.tile_distance(fallout.tile_num(fallout.dude_obj()), fallout.tile_num_in_direction(fallout.tile_num(fallout.self_obj()), v1, 3)) > v2 then
-            v0 = fallout.tile_num_in_direction(fallout.tile_num(fallout.self_obj()), v1, 3)
-            v2 = fallout.tile_distance(fallout.tile_num(fallout.dude_obj()), v0)
-        end
-        v1 = v1 + 1
-    end
-    fallout.animate_move_obj_to_tile(fallout.self_obj(), v0, 0)
-end
-
 function damage_p_proc()
     local v0 = 0
     v0 = fallout.obj_pid(fallout.source_obj())
@@ -176,12 +162,12 @@ end
 
 function Thorn00()
     fallout.float_msg(fallout.self_obj(), fallout.message_str(603, 101), 2)
-    flee_dude()
+    behaviour.flee_dude(0)
 end
 
 function Thorn01()
     fallout.float_msg(fallout.self_obj(), fallout.message_str(603, 102), 2)
-    flee_dude()
+    behaviour.flee_dude(0)
 end
 
 function Thorn02()

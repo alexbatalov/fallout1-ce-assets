@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local behaviour = require("lib.behaviour")
 local reputation = require("lib.reputation")
 
 local start
@@ -10,7 +11,6 @@ local talk_p_proc
 local float_line0
 local float_line1
 local float_line2
-local flee_dude
 
 local initialized = false
 
@@ -61,7 +61,7 @@ function critter_p_proc()
     end
     if fallout.local_var(1) or fallout.global_var(256) then
         if fallout.tile_distance_objs(fallout.dude_obj(), fallout.self_obj()) < 8 then
-            flee_dude()
+            behaviour.flee_dude(1)
         end
     end
 end
@@ -111,20 +111,6 @@ end
 
 function float_line2()
     fallout.float_msg(fallout.self_obj(), fallout.message_str(259, fallout.random(123, 126)), 0)
-end
-
-function flee_dude()
-    local v0 = 0
-    local v1 = 0
-    local v2 = 0
-    while v1 < 5 do
-        if fallout.tile_distance(fallout.tile_num(fallout.dude_obj()), fallout.tile_num_in_direction(fallout.tile_num(fallout.self_obj()), v1, 3)) > v2 then
-            v0 = fallout.tile_num_in_direction(fallout.tile_num(fallout.self_obj()), v1, 3)
-            v2 = fallout.tile_distance(fallout.tile_num(fallout.dude_obj()), v0)
-        end
-        v1 = v1 + 1
-    end
-    fallout.animate_move_obj_to_tile(fallout.self_obj(), v0, 1)
 end
 
 local exports = {}

@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local behaviour = require("lib.behaviour")
 local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
 
@@ -9,7 +10,6 @@ local pickup_p_proc
 local talk_p_proc
 local destroy_p_proc
 local look_at_p_proc
-local flee_dude
 local damage_p_proc
 local Flower00
 local Flower01
@@ -116,20 +116,6 @@ function look_at_p_proc()
     fallout.display_msg(fallout.message_str(588, 100))
 end
 
-function flee_dude()
-    local v0 = 0
-    local v1 = 0
-    local v2 = 0
-    while v1 < 5 do
-        if fallout.tile_distance(fallout.tile_num(fallout.dude_obj()), fallout.tile_num_in_direction(fallout.tile_num(fallout.self_obj()), v1, 3)) > v2 then
-            v0 = fallout.tile_num_in_direction(fallout.tile_num(fallout.self_obj()), v1, 3)
-            v2 = fallout.tile_distance(fallout.tile_num(fallout.dude_obj()), v0)
-        end
-        v1 = v1 + 1
-    end
-    fallout.animate_move_obj_to_tile(fallout.self_obj(), v0, 0)
-end
-
 function damage_p_proc()
     local v0 = 0
     v0 = fallout.obj_pid(fallout.source_obj())
@@ -140,12 +126,12 @@ end
 
 function Flower00()
     fallout.float_msg(fallout.self_obj(), fallout.message_str(588, 101), 2)
-    flee_dude()
+    behaviour.flee_dude(0)
 end
 
 function Flower01()
     fallout.float_msg(fallout.self_obj(), fallout.message_str(588, 102), 2)
-    flee_dude()
+    behaviour.flee_dude(0)
 end
 
 function Flower02()
@@ -225,7 +211,7 @@ end
 
 function Flower07()
     fallout.gsay_message(588, 136, 51)
-    flee_dude()
+    behaviour.flee_dude(0)
 end
 
 function Flower08()
@@ -237,7 +223,7 @@ end
 
 function Flower09()
     fallout.gsay_message(588, 138, 51)
-    flee_dude()
+    behaviour.flee_dude(0)
 end
 
 function Flower10()
@@ -249,7 +235,7 @@ end
 
 function Flower11()
     fallout.gsay_message(588, 140, 51)
-    flee_dude()
+    behaviour.flee_dude(0)
 end
 
 function Flower12()

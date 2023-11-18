@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local behaviour = require("lib.behaviour")
 local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
 
@@ -34,7 +35,6 @@ local FishrSon18
 local FishrSon19
 local FishrSon20
 local FishrSon21
-local flee_dude
 
 local initialized = false
 local known = 0
@@ -76,7 +76,7 @@ end
 
 function critter_p_proc()
     if fallout.external_var("dude_enemy") and (fallout.tile_distance_objs(fallout.dude_obj(), fallout.self_obj()) < 8) then
-        flee_dude()
+        behaviour.flee_dude(1)
     end
 end
 
@@ -277,20 +277,6 @@ end
 
 function FishrSon21()
     fallout.gsay_message(645, 142, 50)
-end
-
-function flee_dude()
-    local v0 = 0
-    local v1 = 0
-    local v2 = 0
-    while v1 < 5 do
-        if fallout.tile_distance(fallout.tile_num(fallout.dude_obj()), fallout.tile_num_in_direction(fallout.tile_num(fallout.self_obj()), v1, 3)) > v2 then
-            v0 = fallout.tile_num_in_direction(fallout.tile_num(fallout.self_obj()), v1, 3)
-            v2 = fallout.tile_distance(fallout.tile_num(fallout.dude_obj()), v0)
-        end
-        v1 = v1 + 1
-    end
-    fallout.animate_move_obj_to_tile(fallout.self_obj(), v0, 1)
 end
 
 local exports = {}

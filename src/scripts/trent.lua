@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local behaviour = require("lib.behaviour")
 local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
 
@@ -34,7 +35,6 @@ local Trent21
 local Trent22
 local Trent23
 local Trent24
-local flee_dude
 local give_money
 
 local calm = 0
@@ -82,7 +82,7 @@ end
 
 function critter_p_proc()
     if scared and (fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 60) then
-        flee_dude()
+        behaviour.flee_dude(1)
     else
         if not(close2dude) then
             if fallout.tile_distance_objs(fallout.dude_obj(), fallout.self_obj()) <= 2 then
@@ -110,7 +110,7 @@ function damage_p_proc()
         scared = 1
     end
     fallout.script_overrides()
-    flee_dude()
+    behaviour.flee_dude(1)
 end
 
 function destroy_p_proc()
@@ -334,19 +334,6 @@ end
 function Trent24()
     fallout.float_msg(fallout.self_obj(), fallout.message_str(703, 139), 3)
     give_money()
-end
-
-function flee_dude()
-    direction = 0
-    prev_dist = 0
-    while direction < 5 do
-        if fallout.tile_distance(fallout.tile_num(fallout.dude_obj()), fallout.tile_num_in_direction(fallout.tile_num(fallout.self_obj()), direction, 3)) > prev_dist then
-            dest_tile = fallout.tile_num_in_direction(fallout.tile_num(fallout.self_obj()), direction, 3)
-            prev_dist = fallout.tile_distance(fallout.tile_num(fallout.dude_obj()), dest_tile)
-        end
-        direction = direction + 1
-    end
-    fallout.animate_move_obj_to_tile(fallout.self_obj(), dest_tile, 1)
 end
 
 function give_money()

@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local behaviour = require("lib.behaviour")
 local reputation = require("lib.reputation")
 
 local start
@@ -21,7 +22,6 @@ local Curtis06
 local Curtis07
 local Curtis08
 local CurtisEnd
-local flee_dude
 local movement
 local sleeping
 
@@ -93,7 +93,7 @@ function critter_p_proc()
     end
     if fallout.local_var(5) == 1 then
         if fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 8 then
-            flee_dude()
+            behaviour.flee_dude(1)
         end
     end
 end
@@ -222,20 +222,6 @@ function Curtis08()
 end
 
 function CurtisEnd()
-end
-
-function flee_dude()
-    local v0 = 0
-    local v1 = 0
-    local v2 = 0
-    while v1 < 5 do
-        if fallout.tile_distance(fallout.tile_num(fallout.dude_obj()), fallout.tile_num_in_direction(fallout.tile_num(fallout.self_obj()), v1, 3)) > v2 then
-            v0 = fallout.tile_num_in_direction(fallout.tile_num(fallout.self_obj()), v1, 3)
-            v2 = fallout.tile_distance(fallout.tile_num(fallout.dude_obj()), v0)
-        end
-        v1 = v1 + 1
-    end
-    fallout.animate_move_obj_to_tile(fallout.self_obj(), v0, 1)
 end
 
 function movement()

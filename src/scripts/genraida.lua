@@ -1,11 +1,11 @@
 local fallout = require("fallout")
+local behaviour = require("lib.behaviour")
 local reputation = require("lib.reputation")
 
 local start
 local critter_p_proc
 local destroy_p_proc
 local pickup_p_proc
-local flee_dude
 
 local hostile = 0
 local initialized = false
@@ -39,7 +39,7 @@ function critter_p_proc()
     else
         if fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 12 then
             if scared then
-                flee_dude()
+                behaviour.flee_dude(1)
             else
                 hostile = 1
             end
@@ -55,20 +55,6 @@ function pickup_p_proc()
     if not(scared) then
         hostile = 1
     end
-end
-
-function flee_dude()
-    local v0 = 0
-    local v1 = 0
-    local v2 = 0
-    while v1 < 5 do
-        if fallout.tile_distance(fallout.tile_num(fallout.dude_obj()), fallout.tile_num_in_direction(fallout.tile_num(fallout.self_obj()), v1, 3)) > v2 then
-            v0 = fallout.tile_num_in_direction(fallout.tile_num(fallout.self_obj()), v1, 3)
-            v2 = fallout.tile_distance(fallout.tile_num(fallout.dude_obj()), v0)
-        end
-        v1 = v1 + 1
-    end
-    fallout.animate_move_obj_to_tile(fallout.self_obj(), v0, 1)
 end
 
 local exports = {}

@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local behaviour = require("lib.behaviour")
 local reputation = require("lib.reputation")
 local time = require("lib.time")
 
@@ -19,7 +20,6 @@ local Cindy05
 local Cindy06
 local Cindy07
 local CindyEnd
-local flee_dude
 local get_rations
 
 local crying = 0
@@ -78,7 +78,7 @@ function critter_p_proc()
     else
         if fallout.local_var(6) == 1 then
             if fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 8 then
-                flee_dude()
+                behaviour.flee_dude(1)
             else
                 if fallout.tile_distance(fallout.tile_num(fallout.dude_obj()), home_tile) > 3 then
                     fallout.animate_move_obj_to_tile(fallout.self_obj(), home_tile, 0)
@@ -213,20 +213,6 @@ function Cindy07()
 end
 
 function CindyEnd()
-end
-
-function flee_dude()
-    local v0 = 0
-    local v1 = 0
-    local v2 = 0
-    while v1 < 5 do
-        if fallout.tile_distance(fallout.tile_num(fallout.dude_obj()), fallout.tile_num_in_direction(fallout.tile_num(fallout.self_obj()), v1, 3)) > v2 then
-            v0 = fallout.tile_num_in_direction(fallout.tile_num(fallout.self_obj()), v1, 3)
-            v2 = fallout.tile_distance(fallout.tile_num(fallout.dude_obj()), v0)
-        end
-        v1 = v1 + 1
-    end
-    fallout.animate_move_obj_to_tile(fallout.self_obj(), v0, 1)
 end
 
 function get_rations()
