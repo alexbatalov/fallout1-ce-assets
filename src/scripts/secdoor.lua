@@ -9,23 +9,16 @@ local use_obj_on_p_proc
 local use_skill_on_p_proc
 local give_exps
 
-local test = 0
-
 function start()
-    if fallout.script_action() == 15 then
+    local script_action = fallout.script_action()
+    if script_action == 15 then
         map_enter_p_proc()
-    else
-        if fallout.script_action() == 6 then
-            use_p_proc()
-        else
-            if fallout.script_action() == 7 then
-                use_obj_on_p_proc()
-            else
-                if fallout.script_action() == 8 then
-                    use_skill_on_p_proc()
-                end
-            end
-        end
+    elseif script_action == 6 then
+        use_p_proc()
+    elseif script_action == 7 then
+        use_obj_on_p_proc()
+    elseif script_action == 8 then
+        use_skill_on_p_proc()
     end
 end
 
@@ -37,12 +30,13 @@ function dude_use_door()
 end
 
 function Officer_use_door()
-    if fallout.obj_is_open(fallout.self_obj()) then
-        fallout.obj_close(fallout.self_obj())
-        fallout.obj_lock(fallout.self_obj())
+    local self_obj = fallout.self_obj()
+    if fallout.obj_is_open(self_obj) then
+        fallout.obj_close(self_obj)
+        fallout.obj_lock(self_obj)
     else
-        fallout.obj_unlock(fallout.self_obj())
-        fallout.obj_open(fallout.self_obj())
+        fallout.obj_unlock(self_obj)
+        fallout.obj_open(self_obj)
     end
 end
 
@@ -51,29 +45,29 @@ function map_enter_p_proc()
 end
 
 function use_p_proc()
-    if fallout.source_obj() == fallout.dude_obj() then
+    local source_obj = fallout.source_obj()
+    if source_obj == fallout.dude_obj() then
         dude_use_door()
-    else
-        if fallout.source_obj() == fallout.external_var("Officer_ptr") then
-            Officer_use_door()
-        end
+    elseif source_obj == fallout.external_var("Officer_ptr") then
+        Officer_use_door()
     end
 end
 
 function use_obj_on_p_proc()
     if fallout.obj_pid(fallout.obj_being_used_with()) == 77 then
         fallout.script_overrides()
-        if not(fallout.obj_is_locked(fallout.self_obj())) then
+        local self_obj = fallout.self_obj()
+        if not fallout.obj_is_locked(self_obj) then
             fallout.display_msg(fallout.message_str(459, 101))
         else
-            test = fallout.roll_vs_skill(fallout.source_obj(), 9, 0)
-            if fallout.is_success(test) then
+            local roll = fallout.roll_vs_skill(fallout.source_obj(), 9, 0)
+            if fallout.is_success(roll) then
                 fallout.display_msg(fallout.message_str(459, 102))
-                fallout.obj_unlock(fallout.self_obj())
+                fallout.obj_unlock(self_obj)
                 give_exps()
             else
-                if fallout.is_critical(test) then
-                    fallout.jam_lock(fallout.self_obj())
+                if fallout.is_critical(roll) then
+                    fallout.jam_lock(self_obj)
                     fallout.display_msg(fallout.message_str(459, 104))
                 else
                     fallout.display_msg(fallout.message_str(459, 103))
@@ -81,7 +75,7 @@ function use_obj_on_p_proc()
             end
         end
         if fallout.tile_distance_objs(fallout.external_var("Officer_ptr"), fallout.dude_obj()) < 4 then
-            if not(fallout.external_var("armory_access")) then
+            if fallout.external_var("armory_access") == 0 then
                 fallout.set_external_var("armory_access", 2)
             end
         end
@@ -91,17 +85,18 @@ end
 function use_skill_on_p_proc()
     if fallout.action_being_used() == 9 then
         fallout.script_overrides()
-        if not(fallout.obj_is_locked(fallout.self_obj())) then
+        local self_obj = fallout.self_obj()
+        if not fallout.obj_is_locked(self_obj) then
             fallout.display_msg(fallout.message_str(459, 101))
         else
-            test = fallout.roll_vs_skill(fallout.source_obj(), 9, -20)
-            if fallout.is_success(test) then
+            local roll = fallout.roll_vs_skill(fallout.source_obj(), 9, -20)
+            if fallout.is_success(roll) then
                 fallout.display_msg(fallout.message_str(459, 102))
-                fallout.obj_unlock(fallout.self_obj())
+                fallout.obj_unlock(self_obj)
                 give_exps()
             else
-                if fallout.is_critical(test) then
-                    fallout.jam_lock(fallout.self_obj())
+                if fallout.is_critical(roll) then
+                    fallout.jam_lock(self_obj)
                     fallout.display_msg(fallout.message_str(459, 104))
                 else
                     fallout.display_msg(fallout.message_str(459, 103))
@@ -109,7 +104,7 @@ function use_skill_on_p_proc()
             end
         end
         if fallout.tile_distance_objs(fallout.external_var("Officer_ptr"), fallout.dude_obj()) < 4 then
-            if not(fallout.external_var("armory_access")) then
+            if fallout.external_var("armory_access") == 0 then
                 fallout.set_external_var("armory_access", 2)
             end
         end
