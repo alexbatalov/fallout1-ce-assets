@@ -22,51 +22,41 @@ local wake_time = 0
 local sleep_time = 0
 local home_tile = 0
 local sleep_tile = 0
-local hostile = 0
-local initialized = false
+local hostile = false
 
 function start()
-    if fallout.script_action() == 12 then
+    local script_action = fallout.script_action()
+    if script_action == 12 then
         critter_p_proc()
-    else
-        if fallout.script_action() == 14 then
-            damage_p_proc()
-        else
-            if fallout.script_action() == 18 then
-                destroy_p_proc()
-            else
-                if fallout.script_action() == 21 then
-                    look_at_p_proc()
-                else
-                    if fallout.script_action() == 15 then
-                        map_enter_p_proc()
-                    else
-                        if fallout.script_action() == 4 then
-                            pickup_p_proc()
-                        else
-                            if fallout.script_action() == 11 then
-                                talk_p_proc()
-                            end
-                        end
-                    end
-                end
-            end
-        end
+    elseif script_action == 14 then
+        damage_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 15 then
+        map_enter_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
     end
 end
 
 function critter_p_proc()
+    local dude_obj = fallout.dude_obj()
     if hostile then
-        hostile = 0
-        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+        hostile = false
+        fallout.attack(dude_obj, 0, 1, 0, 0, 30000, 0, 0)
     else
         if fallout.local_var(5) ~= 0 then
-            if fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 8 then
+            local self_obj = fallout.self_obj()
+            if fallout.tile_distance_objs(self_obj, dude_obj) < 8 then
                 behaviour.flee_dude(1)
             else
-                if fallout.tile_distance(fallout.tile_num(fallout.dude_obj()), home_tile) > 4 then
+                if fallout.tile_distance(fallout.tile_num(dude_obj), home_tile) > 4 then
                     if fallout.local_var(4) == 0 then
-                        fallout.animate_move_obj_to_tile(fallout.self_obj(), home_tile, 0)
+                        fallout.animate_move_obj_to_tile(self_obj, home_tile, 0)
                     end
                 end
             end
@@ -106,35 +96,31 @@ function pickup_p_proc()
         fallout.float_msg(fallout.self_obj(), fallout.message_str(507, 101), 0)
     end
     fallout.set_global_var(261, 1)
-    hostile = 1
+    hostile = true
 end
 
 function talk_p_proc()
     if fallout.local_var(4) == 1 then
         fallout.float_msg(fallout.self_obj(), fallout.message_str(185, 166), 0)
+    elseif fallout.global_var(261) ~= 0 or fallout.local_var(5) ~= 0 then
+        fallout.float_msg(fallout.self_obj(), fallout.message_str(507, 114), 0)
+    elseif fallout.global_var(101) == 2 then
+        fallout.float_msg(fallout.self_obj(), fallout.message_str(507, 102), 0)
+    elseif fallout.global_var(188) == 2 then
+        fallout.float_msg(fallout.self_obj(), fallout.message_str(507, 113), 0)
     else
-        if fallout.global_var(261) or fallout.local_var(5) then
-            fallout.float_msg(fallout.self_obj(), fallout.message_str(507, 114), 0)
-        else
-            if fallout.global_var(101) == 2 then
-                fallout.float_msg(fallout.self_obj(), fallout.message_str(507, 102), 0)
-            else
-                if fallout.global_var(188) == 2 then
-                    fallout.float_msg(fallout.self_obj(), fallout.message_str(507, 113), 0)
-                else
-                    fallout.start_gdialog(507, fallout.self_obj(), 4, -1, -1)
-                    fallout.gsay_start()
-                    Lyle01()
-                    fallout.gsay_end()
-                    fallout.end_dialogue()
-                end
-            end
-        end
+        fallout.start_gdialog(507, fallout.self_obj(), 4, -1, -1)
+        fallout.gsay_start()
+        Lyle01()
+        fallout.gsay_end()
+        fallout.end_dialogue()
     end
 end
 
 function Lyle01()
-    fallout.gsay_reply(507, fallout.message_str(507, 103) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(507, 104))
+    fallout.gsay_reply(507,
+        fallout.message_str(507, 103) ..
+        fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(507, 104))
     fallout.giq_option(4, 507, 105, Lyle02, 50)
     fallout.giq_option(-3, 507, 107, LyleEnd, 50)
 end
