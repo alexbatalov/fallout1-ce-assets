@@ -10,8 +10,9 @@ function start()
 end
 
 function map_enter_p_proc()
-    fallout.obj_close(fallout.self_obj())
-    fallout.set_external_var("VaultBox_ptr", fallout.self_obj())
+    local self_obj = fallout.self_obj()
+    fallout.obj_close(self_obj)
+    fallout.set_external_var("VaultBox_ptr", self_obj)
 end
 
 local exports = {}
