@@ -23,9 +23,8 @@ local Curtis07
 local Curtis08
 local CurtisEnd
 local movement
-local sleeping
 
-local night_person = 0
+local night_person = false
 local wake_time = 0
 local sleep_time = 0
 local home_tile = 0
@@ -230,41 +229,6 @@ function movement()
     new_tile = fallout.tile_num_in_direction(fallout.tile_num(fallout.self_obj()), v0, 1)
     if fallout.tile_distance(home_tile, new_tile) < 6 then
         fallout.animate_move_obj_to_tile(fallout.self_obj(), new_tile, 0)
-    end
-end
-
-function sleeping()
-    if fallout.local_var(4) == 1 then
-        if not(night_person) and (fallout.game_time_hour() >= wake_time) and (fallout.game_time_hour() < sleep_time) or (night_person and ((fallout.game_time_hour() >= wake_time) or (fallout.game_time_hour() < sleep_time))) then
-            if ((fallout.game_time_hour() - wake_time) < 10) and ((fallout.game_time_hour() - wake_time) > 0) then
-                if fallout.tile_num(fallout.self_obj()) ~= home_tile then
-                    fallout.animate_move_obj_to_tile(fallout.self_obj(), home_tile, 0)
-                else
-                    fallout.set_local_var(4, 0)
-                end
-            else
-                fallout.move_to(fallout.self_obj(), home_tile, fallout.elevation(fallout.self_obj()))
-                if fallout.tile_num(fallout.self_obj()) == home_tile then
-                    fallout.set_local_var(4, 0)
-                end
-            end
-        end
-    else
-        if night_person and (fallout.game_time_hour() >= sleep_time) and (fallout.game_time_hour() < wake_time) or (not(night_person) and ((fallout.game_time_hour() >= sleep_time) or (fallout.game_time_hour() < wake_time))) then
-            if ((fallout.game_time_hour() - sleep_time) < 10) and ((fallout.game_time_hour() - sleep_time) > 0) then
-                if fallout.tile_num(fallout.self_obj()) ~= sleep_tile then
-                    fallout.animate_move_obj_to_tile(fallout.self_obj(), fallout.self_obj(), 0)
-                else
-                    fallout.set_local_var(4, 1)
-                end
-            else
-                if fallout.tile_num(fallout.self_obj()) ~= sleep_tile then
-                    fallout.move_to(fallout.self_obj(), sleep_tile, fallout.elevation(fallout.self_obj()))
-                else
-                    fallout.set_local_var(4, 1)
-                end
-            end
-        end
     end
 end
 

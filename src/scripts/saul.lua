@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local behaviour = require("lib.behaviour")
 local reputation = require("lib.reputation")
 local time = require("lib.time")
 
@@ -8,11 +9,11 @@ local time = require("lib.time")
 -- the real names of global variables.
 --
 
-local g0 = 0
-local g1 = 0
-local g2 = 0
-local g3 = 0
-local g4 = 0
+local night_person = false
+local wake_time = 0
+local sleep_time = 0
+local home_tile = 0
+local sleep_tile = 0
 local g5 = 0
 local g6 = 0
 local g7 = 0
@@ -57,7 +58,6 @@ local SaulBoxing
 local SaulCombat
 local SaulEnd
 local create_challenger
-local sleeping
 
 -- ?import? variable night_person
 -- ?import? variable wake_time
@@ -160,7 +160,7 @@ function critter_p_proc()
             end
         end
         if g8 == 0 then
-            sleeping()
+            behaviour.sleeping(4, night_person, wake_time, sleep_time, home_tile, sleep_tile)
         end
     end
     if fallout.global_var(247) == 1 then
@@ -201,35 +201,35 @@ function map_enter_p_proc()
         fallout.kill_critter(fallout.self_obj(), 48)
     end
     g8 = 0
-    g2 = 2000
-    g1 = 700
+    sleep_time = 2000
+    wake_time = 700
     if fallout.cur_map_index() == 11 then
-        g4 = 7000
+        sleep_tile = 7000
         if (time.game_time_in_days() % 3) == 0 then
-            g3 = 15094
+            home_tile = 15094
         else
-            g3 = 16892
+            home_tile = 16892
         end
     end
     if fallout.global_var(169) == 3 then
         fallout.destroy_object(fallout.self_obj())
     end
-    fallout.move_to(fallout.self_obj(), g3, 0)
+    fallout.move_to(fallout.self_obj(), home_tile, 0)
 end
 
 function map_update_p_proc()
     if not(fallout.combat_is_initialized()) then
         if (time.game_time_in_days() % 3) == 0 then
-            g3 = 15094
+            home_tile = 15094
         else
-            g3 = 16892
+            home_tile = 16892
         end
-        fallout.move_to(fallout.self_obj(), g3, 0)
+        fallout.move_to(fallout.self_obj(), home_tile, 0)
         if fallout.local_var(8) == 1 then
             fallout.set_local_var(8, 0)
             fallout.reg_anim_animate(fallout.self_obj(), 0, 0)
         end
-        sleeping()
+        behaviour.sleeping(4, night_person, wake_time, sleep_time, home_tile, sleep_tile)
     end
 end
 
@@ -592,41 +592,6 @@ function create_challenger()
     end
     fallout.critter_attempt_placement(fallout.external_var("challenger_ptr"), fallout.tile_num_in_direction(fallout.tile_num(fallout.self_obj()), 1, 1), 0)
     fallout.anim(fallout.external_var("challenger_ptr"), 1000, 4)
-end
-
-function sleeping()
-    if fallout.local_var(4) == 1 then
-        if not(g0) and (fallout.game_time_hour() >= g1) and (fallout.game_time_hour() < g2) or (g0 and ((fallout.game_time_hour() >= g1) or (fallout.game_time_hour() < g2))) then
-            if ((fallout.game_time_hour() - g1) < 10) and ((fallout.game_time_hour() - g1) > 0) then
-                if fallout.tile_num(fallout.self_obj()) ~= g3 then
-                    fallout.animate_move_obj_to_tile(fallout.self_obj(), g3, 0)
-                else
-                    fallout.set_local_var(4, 0)
-                end
-            else
-                fallout.move_to(fallout.self_obj(), g3, fallout.elevation(fallout.self_obj()))
-                if fallout.tile_num(fallout.self_obj()) == g3 then
-                    fallout.set_local_var(4, 0)
-                end
-            end
-        end
-    else
-        if g0 and (fallout.game_time_hour() >= g2) and (fallout.game_time_hour() < g1) or (not(g0) and ((fallout.game_time_hour() >= g2) or (fallout.game_time_hour() < g1))) then
-            if ((fallout.game_time_hour() - g2) < 10) and ((fallout.game_time_hour() - g2) > 0) then
-                if fallout.tile_num(fallout.self_obj()) ~= g4 then
-                    fallout.animate_move_obj_to_tile(fallout.self_obj(), fallout.self_obj(), 0)
-                else
-                    fallout.set_local_var(4, 1)
-                end
-            else
-                if fallout.tile_num(fallout.self_obj()) ~= g4 then
-                    fallout.move_to(fallout.self_obj(), g4, fallout.elevation(fallout.self_obj()))
-                else
-                    fallout.set_local_var(4, 1)
-                end
-            end
-        end
-    end
 end
 
 function get_reaction()

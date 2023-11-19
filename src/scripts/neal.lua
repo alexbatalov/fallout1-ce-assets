@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local behaviour = require("lib.behaviour")
 local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
 
@@ -28,9 +29,8 @@ local NealEnd
 local NealCola
 local NealBeer
 local NealBooze
-local sleeping
 
-local night_person = 0
+local night_person = false
 local wake_time = 0
 local sleep_time = 0
 local home_tile = 0
@@ -89,7 +89,7 @@ function critter_p_proc()
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
     if sleeping_disabled == 0 then
-        sleeping()
+        behaviour.sleeping(9, night_person, wake_time, sleep_time, home_tile, sleep_tile)
     end
     if (fallout.game_time_hour() > 1700) or (fallout.game_time_hour() < 330) and (moving_disabled == 0) then
         if fallout.tile_num(fallout.self_obj()) ~= home_tile then
@@ -175,7 +175,7 @@ function look_at_p_proc()
 end
 
 function map_enter_p_proc()
-    night_person = 1
+    night_person = true
     wake_time = 1300
     sleep_time = 410
     home_tile = 19477
@@ -444,41 +444,6 @@ function NealBooze()
         end
     else
         item = fallout.create_object_sid(125, 0, 0, -1)
-    end
-end
-
-function sleeping()
-    if fallout.local_var(9) == 1 then
-        if not(night_person) and (fallout.game_time_hour() >= wake_time) and (fallout.game_time_hour() < sleep_time) or (night_person and ((fallout.game_time_hour() >= wake_time) or (fallout.game_time_hour() < sleep_time))) then
-            if ((fallout.game_time_hour() - wake_time) < 10) and ((fallout.game_time_hour() - wake_time) > 0) then
-                if fallout.tile_num(fallout.self_obj()) ~= home_tile then
-                    fallout.animate_move_obj_to_tile(fallout.self_obj(), home_tile, 0)
-                else
-                    fallout.set_local_var(9, 0)
-                end
-            else
-                fallout.move_to(fallout.self_obj(), home_tile, fallout.elevation(fallout.self_obj()))
-                if fallout.tile_num(fallout.self_obj()) == home_tile then
-                    fallout.set_local_var(9, 0)
-                end
-            end
-        end
-    else
-        if night_person and (fallout.game_time_hour() >= sleep_time) and (fallout.game_time_hour() < wake_time) or (not(night_person) and ((fallout.game_time_hour() >= sleep_time) or (fallout.game_time_hour() < wake_time))) then
-            if ((fallout.game_time_hour() - sleep_time) < 10) and ((fallout.game_time_hour() - sleep_time) > 0) then
-                if fallout.tile_num(fallout.self_obj()) ~= sleep_tile then
-                    fallout.animate_move_obj_to_tile(fallout.self_obj(), fallout.self_obj(), 0)
-                else
-                    fallout.set_local_var(9, 1)
-                end
-            else
-                if fallout.tile_num(fallout.self_obj()) ~= sleep_tile then
-                    fallout.move_to(fallout.self_obj(), sleep_tile, fallout.elevation(fallout.self_obj()))
-                else
-                    fallout.set_local_var(9, 1)
-                end
-            end
-        end
     end
 end
 

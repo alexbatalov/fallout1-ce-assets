@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local behaviour = require("lib.behaviour")
 local reputation = require("lib.reputation")
 local time = require("lib.time")
 
@@ -19,11 +20,11 @@ local g7 = 0
 local g8 = 0
 local g9 = 0
 local g10 = 0
-local g11 = 0
-local g12 = 0
-local g13 = 0
-local g14 = 0
-local g15 = 0
+local night_person = false
+local wake_time = 0
+local sleep_time = 0
+local home_tile = 0
+local sleep_tile = 0
 local g16 = 0
 
 local start
@@ -147,8 +148,6 @@ local put_stuff_in_safe
 -- ?import? variable item
 -- ?import? variable go_to_jail
 
-local sleeping
-
 -- ?import? variable night_person
 -- ?import? variable wake_time
 -- ?import? variable sleep_time
@@ -239,10 +238,10 @@ function critter_p_proc()
     if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) and (fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 12) and fallout.map_var(2) and (fallout.cur_map_index() == 12) then
         fallout.dialogue_system_enter()
     end
-    sleeping()
+    behaviour.sleeping(7, night_person, wake_time, sleep_time, home_tile, sleep_tile)
     if (fallout.game_time_hour() > 730) and (fallout.game_time_hour() < 1900) then
-        if fallout.tile_num(fallout.self_obj()) ~= g14 then
-            fallout.animate_move_obj_to_tile(fallout.self_obj(), g14, 0)
+        if fallout.tile_num(fallout.self_obj()) ~= home_tile then
+            fallout.animate_move_obj_to_tile(fallout.self_obj(), home_tile, 0)
         else
             if fallout.has_trait(1, fallout.self_obj(), 10) ~= 2 then
                 fallout.anim(fallout.self_obj(), 1000, 2)
@@ -286,10 +285,10 @@ function look_at_p_proc()
 end
 
 function map_enter_p_proc()
-    g15 = 27896
-    g13 = 1900
-    g12 = 700
-    g14 = 25683
+    sleep_tile = 27896
+    sleep_time = 1900
+    wake_time = 700
+    home_tile = 25683
     fallout.set_external_var("Killian_ptr", fallout.self_obj())
     if fallout.cur_map_index() == 11 then
         if fallout.global_var(38) == 1 then
@@ -1097,41 +1096,6 @@ function put_stuff_in_safe()
         g9 = fallout.obj_carrying_pid_obj(fallout.self_obj(), 4)
         fallout.rm_obj_from_inven(fallout.self_obj(), g9)
         fallout.add_obj_to_inven(fallout.external_var("KillSafe_ptr"), g9)
-    end
-end
-
-function sleeping()
-    if fallout.local_var(7) == 1 then
-        if not(g11) and (fallout.game_time_hour() >= g12) and (fallout.game_time_hour() < g13) or (g11 and ((fallout.game_time_hour() >= g12) or (fallout.game_time_hour() < g13))) then
-            if ((fallout.game_time_hour() - g12) < 10) and ((fallout.game_time_hour() - g12) > 0) then
-                if fallout.tile_num(fallout.self_obj()) ~= g14 then
-                    fallout.animate_move_obj_to_tile(fallout.self_obj(), g14, 0)
-                else
-                    fallout.set_local_var(7, 0)
-                end
-            else
-                fallout.move_to(fallout.self_obj(), g14, fallout.elevation(fallout.self_obj()))
-                if fallout.tile_num(fallout.self_obj()) == g14 then
-                    fallout.set_local_var(7, 0)
-                end
-            end
-        end
-    else
-        if g11 and (fallout.game_time_hour() >= g13) and (fallout.game_time_hour() < g12) or (not(g11) and ((fallout.game_time_hour() >= g13) or (fallout.game_time_hour() < g12))) then
-            if ((fallout.game_time_hour() - g13) < 10) and ((fallout.game_time_hour() - g13) > 0) then
-                if fallout.tile_num(fallout.self_obj()) ~= g15 then
-                    fallout.animate_move_obj_to_tile(fallout.self_obj(), fallout.self_obj(), 0)
-                else
-                    fallout.set_local_var(7, 1)
-                end
-            else
-                if fallout.tile_num(fallout.self_obj()) ~= g15 then
-                    fallout.move_to(fallout.self_obj(), g15, fallout.elevation(fallout.self_obj()))
-                else
-                    fallout.set_local_var(7, 1)
-                end
-            end
-        end
     end
 end
 

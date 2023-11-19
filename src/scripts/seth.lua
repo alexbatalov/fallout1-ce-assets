@@ -34,9 +34,8 @@ local TanSeth04
 local TanSeth05
 local TanSeth06
 local TanSeth07
-local sleeping
 
-local night_person = 0
+local night_person = false
 local wake_time = 0
 local sleep_time = 0
 local home_tile = 0
@@ -405,41 +404,6 @@ function TanSeth07()
     fallout.giq_option(4, 183, 323, travel, 50)
     fallout.giq_option(4, 183, 324, TanSeth02, 51)
     fallout.giq_option(4, 183, 325, Sethend, 50)
-end
-
-function sleeping()
-    if fallout.local_var(5) == 1 then
-        if not(night_person) and (fallout.game_time_hour() >= wake_time) and (fallout.game_time_hour() < sleep_time) or (night_person and ((fallout.game_time_hour() >= wake_time) or (fallout.game_time_hour() < sleep_time))) then
-            if ((fallout.game_time_hour() - wake_time) < 10) and ((fallout.game_time_hour() - wake_time) > 0) then
-                if fallout.tile_num(fallout.self_obj()) ~= home_tile then
-                    fallout.animate_move_obj_to_tile(fallout.self_obj(), home_tile, 0)
-                else
-                    fallout.set_local_var(5, 0)
-                end
-            else
-                fallout.move_to(fallout.self_obj(), home_tile, fallout.elevation(fallout.self_obj()))
-                if fallout.tile_num(fallout.self_obj()) == home_tile then
-                    fallout.set_local_var(5, 0)
-                end
-            end
-        end
-    else
-        if night_person and (fallout.game_time_hour() >= sleep_time) and (fallout.game_time_hour() < wake_time) or (not(night_person) and ((fallout.game_time_hour() >= sleep_time) or (fallout.game_time_hour() < wake_time))) then
-            if ((fallout.game_time_hour() - sleep_time) < 10) and ((fallout.game_time_hour() - sleep_time) > 0) then
-                if fallout.tile_num(fallout.self_obj()) ~= sleep_tile then
-                    fallout.animate_move_obj_to_tile(fallout.self_obj(), fallout.self_obj(), 0)
-                else
-                    fallout.set_local_var(5, 1)
-                end
-            else
-                if fallout.tile_num(fallout.self_obj()) ~= sleep_tile then
-                    fallout.move_to(fallout.self_obj(), sleep_tile, fallout.elevation(fallout.self_obj()))
-                else
-                    fallout.set_local_var(5, 1)
-                end
-            end
-        end
-    end
 end
 
 local exports = {}
