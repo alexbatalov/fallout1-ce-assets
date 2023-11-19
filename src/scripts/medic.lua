@@ -41,7 +41,6 @@ local pushdrugs
 local medicend
 
 local damage = 0
-local intensity = 0
 local removal = 0
 local rndx = 0
 local rads = 0
@@ -56,45 +55,38 @@ function start()
     if not initialized then
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 1)
         initialized = true
-    else
-        if fallout.script_action() == 12 then
-            critter_p_proc()
-        else
-            if fallout.script_action() == 14 then
-                damage_p_proc()
-            else
-                if fallout.script_action() == 18 then
-                    destroy_p_proc()
-                else
-                    if fallout.script_action() == 21 then
-                        look_at_p_proc()
-                    else
-                        if fallout.script_action() == 4 then
-                            pickup_p_proc()
-                        else
-                            if fallout.script_action() == 11 then
-                                talk_p_proc()
-                            end
-                        end
-                    end
-                end
-            end
-        end
+    end
+
+    local script_action = fallout.script_action()
+    if script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 14 then
+        damage_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
     end
 end
 
 function critter_p_proc()
+    local dude_obj = fallout.dude_obj()
+    local self_obj = fallout.self_obj()
     if fallout.local_var(5) ~= 0 then
-        if fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 8 then
+        if fallout.tile_distance_objs(self_obj, dude_obj) < 8 then
             behaviour.flee_dude(1)
         else
-            if fallout.tile_distance(fallout.tile_num(fallout.dude_obj()), home_tile) > 4 then
-                fallout.animate_move_obj_to_tile(fallout.self_obj(), home_tile, 0)
+            if fallout.tile_distance(fallout.tile_num(dude_obj), home_tile) > 4 then
+                fallout.animate_move_obj_to_tile(self_obj, home_tile, 0)
             end
         end
     else
-        if fallout.tile_num(fallout.self_obj()) ~= home_tile then
-            fallout.animate_move_obj_to_tile(fallout.self_obj(), home_tile, 0)
+        if fallout.tile_num(self_obj) ~= home_tile then
+            fallout.animate_move_obj_to_tile(self_obj, home_tile, 0)
         end
     end
 end
@@ -124,13 +116,13 @@ function pickup_p_proc()
 end
 
 function talk_p_proc()
-    if not(fallout.local_var(4)) then
+    if fallout.local_var(4) == 0 then
         reaction.get_reaction()
         fallout.start_gdialog(184, fallout.self_obj(), 4, -1, -1)
         fallout.gsay_start()
         player_hits = fallout.get_critter_stat(fallout.dude_obj(), 35)
         player_max_hits = fallout.get_critter_stat(fallout.dude_obj(), 7)
-        if (fallout.local_var(5) == 1) or (fallout.global_var(261) == 1) then
+        if fallout.local_var(5) == 1 or fallout.global_var(261) == 1 then
             Medic00()
         else
             damage = player_max_hits - player_hits
@@ -173,7 +165,9 @@ function Medic03()
 end
 
 function Medic04()
-    fallout.gsay_reply(184, fallout.message_str(184, 106) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(184, 107))
+    fallout.gsay_reply(184,
+        fallout.message_str(184, 106) ..
+        fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(184, 107))
     fallout.giq_option(4, 184, 108, Medic06, 0)
     fallout.giq_option(4, 184, 109, Medic04a, 0)
     fallout.giq_option(-3, 184, 110, Medic05, 0)
@@ -270,20 +264,15 @@ function Medic18()
     removal = 70 + fallout.random(1, 6) + fallout.random(1, 6) + fallout.random(1, 6)
     rads = fallout.get_critter_stat(fallout.dude_obj(), 37)
     rndx = rads * 20
+    local intensity
     if rads > 400 then
         intensity = fallout.message_str(184, 132)
-    else
-        if rads > 200 then
-            intensity = fallout.message_str(184, 133)
-        else
-            if rads > 100 then
-                intensity = fallout.message_str(184, 134)
-            else
-                if rads > 30 then
-                    intensity = fallout.message_str(184, 135)
-                end
-            end
-        end
+    elseif rads > 200 then
+        intensity = fallout.message_str(184, 133)
+    elseif rads > 100 then
+        intensity = fallout.message_str(184, 134)
+    elseif rads > 30 then
+        intensity = fallout.message_str(184, 135)
     end
     fallout.gsay_reply(184, intensity)
     fallout.giq_option(4, 184, 138, Medic19, 0)
@@ -305,7 +294,9 @@ function Medic20()
 end
 
 function Medic21()
-    fallout.gsay_reply(184, fallout.message_str(184, 149) .. rndx .. fallout.message_str(184, 150) .. removal .. fallout.message_str(184, 151))
+    fallout.gsay_reply(184,
+        fallout.message_str(184, 149) ..
+        rndx .. fallout.message_str(184, 150) .. removal .. fallout.message_str(184, 151))
     fallout.giq_option(4, 184, 152, Medic19, 0)
     fallout.giq_option(4, 184, 153, Medic22, 0)
 end
@@ -331,9 +322,8 @@ function Medic24()
 end
 
 function pushdrugs()
-    local v0 = 0
-    v0 = fallout.create_object_sid(40, 0, 0, -1)
-    fallout.add_obj_to_inven(fallout.dude_obj(), v0)
+    local item_obj = fallout.create_object_sid(40, 0, 0, -1)
+    fallout.add_obj_to_inven(fallout.dude_obj(), item_obj)
 end
 
 function medicend()
