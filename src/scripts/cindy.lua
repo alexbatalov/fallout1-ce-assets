@@ -22,10 +22,9 @@ local Cindy07
 local CindyEnd
 local get_rations
 
-local crying = 0
-local hostile = 0
+local hostile = false
 local ration_tile = 7000
-local sleeping_disabled = 0
+local sleeping_disabled = false
 
 local night_person = false
 local wake_time = 0
@@ -33,60 +32,49 @@ local sleep_time = 0
 local home_tile = 0
 local sleep_tile = 0
 
-local exit_line = 0
-
 function start()
-    if fallout.script_action() == 12 then
+    local script_action = fallout.script_action()
+    if script_action == 12 then
         critter_p_proc()
-    else
-        if fallout.script_action() == 14 then
-            damage_p_proc()
-        else
-            if fallout.script_action() == 3 then
-                description_p_proc()
-            else
-                if fallout.script_action() == 18 then
-                    destroy_p_proc()
-                else
-                    if fallout.script_action() == 21 then
-                        look_at_p_proc()
-                    else
-                        if fallout.script_action() == 15 then
-                            map_enter_p_proc()
-                        else
-                            if fallout.script_action() == 4 then
-                                pickup_p_proc()
-                            else
-                                if fallout.script_action() == 11 then
-                                    talk_p_proc()
-                                end
-                            end
-                        end
-                    end
-                end
-            end
-        end
+    elseif script_action == 14 then
+        damage_p_proc()
+    elseif script_action == 3 then
+        description_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 15 then
+        map_enter_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
     end
 end
 
 function critter_p_proc()
+    local dude_obj = fallout.dude_obj()
     if hostile then
-        hostile = 0
-        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+        hostile = false
+        fallout.attack(dude_obj, 0, 1, 0, 0, 30000, 0, 0)
     else
+        local self_obj = fallout.self_obj()
         if fallout.local_var(6) == 1 then
-            if fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 8 then
+            if fallout.tile_distance_objs(self_obj, dude_obj) < 8 then
                 behaviour.flee_dude(1)
             else
-                if fallout.tile_distance(fallout.tile_num(fallout.dude_obj()), home_tile) > 3 then
-                    fallout.animate_move_obj_to_tile(fallout.self_obj(), home_tile, 0)
+                if fallout.tile_distance(fallout.tile_num(dude_obj), home_tile) > 3 then
+                    fallout.animate_move_obj_to_tile(self_obj, home_tile, 0)
                 end
             end
         else
             if fallout.global_var(101) == 0 then
                 if fallout.local_var(7) == 0 then
-                    if (fallout.elevation(fallout.self_obj()) == fallout.elevation(fallout.external_var("WtrGrd_ptr"))) and (fallout.elevation(fallout.self_obj()) == fallout.elevation(fallout.dude_obj())) then
-                        if (fallout.game_time_hour() > 700) and (fallout.game_time_hour() < 900) then
+                    local self_elevation = fallout.elevation(self_obj)
+                    if self_elevation == fallout.elevation(fallout.external_var("WtrGrd_ptr"))
+                        and self_elevation == fallout.elevation(dude_obj) then
+                        if fallout.game_time_hour() > 700 and fallout.game_time_hour() < 900 then
                             get_rations()
                         end
                     end
@@ -95,7 +83,7 @@ function critter_p_proc()
             if not time.is_day() then
                 fallout.set_local_var(7, 0)
             end
-            if sleeping_disabled == 0 then
+            if not sleeping_disabled then
                 behaviour.sleeping(5, night_person, wake_time, sleep_time, home_tile, sleep_tile)
             end
         end
@@ -138,34 +126,32 @@ function pickup_p_proc()
     if time.game_time_in_days() >= 30 then
         fallout.float_msg(fallout.self_obj(), fallout.message_str(168, 122), 2)
     end
-    hostile = 1
+    hostile = true
 end
 
 function talk_p_proc()
-    if not(fallout.local_var(4)) then
-        if (fallout.global_var(261) == 1) or (fallout.local_var(6) == 1) then
+    if fallout.local_var(4) == 0 then
+        if fallout.global_var(261) == 1 or fallout.local_var(6) == 1 then
             fallout.float_msg(fallout.self_obj(), fallout.message_str(168, 125), 0)
             fallout.set_local_var(4, 1)
+        elseif fallout.global_var(101) == 2 then
+            fallout.float_msg(fallout.self_obj(), fallout.message_str(168, 123), 0)
+        elseif fallout.global_var(188) == 2 then
+            fallout.float_msg(fallout.self_obj(), fallout.message_str(168, 124), 0)
         else
-            if fallout.global_var(101) == 2 then
-                fallout.float_msg(fallout.self_obj(), fallout.message_str(168, 123), 0)
-            else
-                if fallout.global_var(188) == 2 then
-                    fallout.float_msg(fallout.self_obj(), fallout.message_str(168, 124), 0)
-                else
-                    fallout.start_gdialog(168, fallout.self_obj(), 4, -1, -1)
-                    fallout.gsay_start()
-                    Cindy01()
-                    fallout.gsay_end()
-                    fallout.end_dialogue()
-                end
-            end
+            fallout.start_gdialog(168, fallout.self_obj(), 4, -1, -1)
+            fallout.gsay_start()
+            Cindy01()
+            fallout.gsay_end()
+            fallout.end_dialogue()
         end
     end
 end
 
 function Cindy01()
-    fallout.gsay_reply(168, fallout.message_str(168, 102) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(168, 103))
+    fallout.gsay_reply(168,
+        fallout.message_str(168, 102) ..
+        fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(168, 103))
     fallout.giq_option(4, 168, 104, Cindy03, 50)
     fallout.giq_option(4, 168, 105, Cindy04, 50)
     fallout.giq_option(-3, 168, 106, Cindy02, 50)
@@ -214,19 +200,20 @@ function CindyEnd()
 end
 
 function get_rations()
-    if fallout.tile_num(fallout.self_obj()) ~= ration_tile then
-        sleeping_disabled = 1
+    local self_obj = fallout.self_obj()
+    if fallout.tile_num(self_obj) ~= ration_tile then
+        sleeping_disabled = true
         if fallout.random(0, 1) then
-            fallout.animate_move_obj_to_tile(fallout.self_obj(), ration_tile, 0)
+            fallout.animate_move_obj_to_tile(self_obj, ration_tile, 0)
         else
-            fallout.animate_move_obj_to_tile(fallout.self_obj(), ration_tile, 1)
+            fallout.animate_move_obj_to_tile(self_obj, ration_tile, 1)
         end
     else
-        if not(fallout.external_var("recipient")) then
-            fallout.set_external_var("recipient", fallout.self_obj())
-            fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(3), 1)
+        if fallout.external_var("recipient") == nil then
+            fallout.set_external_var("recipient", self_obj)
+            fallout.add_timer_event(self_obj, fallout.game_ticks(3), 1)
             fallout.set_local_var(7, 1)
-            sleeping_disabled = 0
+            sleeping_disabled = false
         end
     end
 end
