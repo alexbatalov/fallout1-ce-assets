@@ -5,19 +5,14 @@ local description_p_proc
 local map_enter_p_proc
 local use_p_proc
 
-local initialized = false
-
 function start()
-    if fallout.script_action() == 3 then
+    local script_action = fallout.script_action()
+    if script_action == 3 then
         description_p_proc()
-    else
-        if fallout.script_action() == 15 then
-            map_enter_p_proc()
-        else
-            if fallout.script_action() == 6 then
-                use_p_proc()
-            end
-        end
+    elseif script_action == 15 then
+        map_enter_p_proc()
+    elseif script_action == 6 then
+        use_p_proc()
     end
 end
 
@@ -26,9 +21,10 @@ function description_p_proc()
 end
 
 function map_enter_p_proc()
-    fallout.set_external_var("vault_door_ptr", fallout.self_obj())
-    if fallout.obj_is_open(fallout.self_obj()) then
-        fallout.use_obj(fallout.self_obj())
+    local self_obj = fallout.self_obj()
+    fallout.set_external_var("vault_door_ptr", self_obj)
+    if fallout.obj_is_open(self_obj) then
+        fallout.use_obj(self_obj)
     end
 end
 
