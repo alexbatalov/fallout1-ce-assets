@@ -5,12 +5,11 @@ local look_at_p_proc
 local use_skill_on_p_proc
 
 function start()
-    if fallout.script_action() == 21 then
+    local script_action = fallout.script_action()
+    if script_action == 21 then
         look_at_p_proc()
-    else
-        if fallout.script_action() == 8 then
-            use_skill_on_p_proc()
-        end
+    elseif script_action == 8 then
+        use_skill_on_p_proc()
     end
 end
 
