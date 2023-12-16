@@ -25,12 +25,11 @@ local initialized = false
 local BarterMod = -10
 local DisplayMessage = 0
 
-local exit_line = 0
-
 function start()
     if not initialized then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 48)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 28)
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 48)
+        fallout.critter_add_trait(self_obj, 1, 5, 28)
         initialized = true
     end
 end
@@ -54,23 +53,22 @@ function description_p_proc()
 end
 
 function talk_p_proc()
+    local self_obj = fallout.self_obj()
     if fallout.global_var(617) == 1 then
-        fallout.float_msg(fallout.self_obj(), fallout.message_str(669, fallout.random(100, 105)), 2)
+        fallout.float_msg(self_obj, fallout.message_str(669, fallout.random(100, 105)), 2)
     else
         BarterMod = -10
-        fallout.move_obj_inven_to_obj(fallout.external_var("Locker_Ptr"), fallout.self_obj())
-        fallout.item_caps_adjust(fallout.self_obj(), 3000 + fallout.random(1, 1000))
+        fallout.move_obj_inven_to_obj(fallout.external_var("Locker_Ptr"), self_obj)
+        fallout.item_caps_adjust(self_obj, 3000 + fallout.random(1, 1000))
         reaction.get_reaction()
-        fallout.start_gdialog(377, fallout.self_obj(), -1, -1, -1)
+        fallout.start_gdialog(377, self_obj, -1, -1, -1)
         fallout.gsay_start()
         if fallout.local_var(5) == 2 then
             BarterMod = 15
+        elseif fallout.local_var(5) == 1 then
+            BarterMod = 5
         else
-            if fallout.local_var(5) == 1 then
-                BarterMod = 5
-            else
-                BarterMod = -10
-            end
+            BarterMod = -10
         end
         fallout.gdialog_set_barter_mod(BarterMod)
         if fallout.local_var(4) == 0 then
@@ -80,8 +78,8 @@ function talk_p_proc()
         end
         fallout.gsay_end()
         fallout.end_dialogue()
-        fallout.item_caps_adjust(fallout.self_obj(), -fallout.item_caps_total(fallout.self_obj()))
-        fallout.move_obj_inven_to_obj(fallout.self_obj(), fallout.external_var("Locker_Ptr"))
+        fallout.item_caps_adjust(self_obj, -fallout.item_caps_total(self_obj))
+        fallout.move_obj_inven_to_obj(self_obj, fallout.external_var("Locker_Ptr"))
     end
 end
 
