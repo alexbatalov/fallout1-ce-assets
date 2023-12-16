@@ -2,7 +2,11 @@ local fallout = require("fallout")
 local reputation = require("lib.reputation")
 
 local start
-local do_dialogue
+local pickup_p_proc
+local talk_p_proc
+local critter_p_proc
+local destroy_p_proc
+local look_at_p_proc
 local zark00
 local zark00a
 local zark00b
@@ -91,52 +95,45 @@ local zarkend
 local zarkcombat
 local weapon_check
 
-local hostile = 0
-local armed = 0
+local hostile = false
+local armed = false
 local GENDER = 0
 local LASHERKNOWN = 0
 local initialized = false
 
-local exit_line = 0
-
 function start()
     if not initialized then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 20)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 69)
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 20)
+        fallout.critter_add_trait(self_obj, 1, 5, 69)
         initialized = true
     end
-    if fallout.script_action() == 11 then
-        do_dialogue()
-    else
-        if (fallout.script_action() == 21) or (fallout.script_action() == 3) then
-            fallout.script_overrides()
-            fallout.display_msg(fallout.message_str(392, 100))
-        else
-            if fallout.script_action() == 4 then
-                hostile = 1
-            else
-                if fallout.script_action() == 18 then
-                    reputation.inc_evil_critter()
-                else
-                    if fallout.script_action() == 12 then
-                        if hostile then
-                            hostile = 0
-                            fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
-                        end
-                    end
-                end
-            end
-        end
+
+    local script_action = fallout.script_action()
+    if script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 21 or script_action == 3 then
+        look_at_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
     end
 end
 
-function do_dialogue()
+function pickup_p_proc()
+    hostile = true
+end
+
+function talk_p_proc()
     weapon_check()
     fallout.start_gdialog(-1, fallout.self_obj(), 4, -1, -1)
     fallout.gsay_start()
     if fallout.obj_pid(fallout.critter_inven_obj(fallout.dude_obj(), 0)) == 113 then
         if fallout.local_var(4) == 0 then
-            if armed == 1 then
+            if armed then
                 zark14()
             else
                 zark01()
@@ -150,31 +147,43 @@ function do_dialogue()
         if fallout.global_var(195) == 1 then
             zark00()
         else
-            if armed == 1 then
+            if armed then
                 if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(160) > (3 * fallout.global_var(159))) or (fallout.global_var(157) == 1)) or (fallout.global_var(155) > 50) then
                     zark02()
+                elseif (fallout.global_var(158) > 2) or (((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1))) or (fallout.global_var(155) < -50) then
+                    zark45()
                 else
-                    if (fallout.global_var(158) > 2) or (((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1))) or (fallout.global_var(155) < -50) then
-                        zark45()
-                    else
-                        zark03()
-                    end
+                    zark03()
                 end
             else
                 if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(160) > (3 * fallout.global_var(159))) or (fallout.global_var(157) == 1)) or (fallout.global_var(155) > 50) then
                     zark02()
+                elseif (fallout.global_var(158) > 2) or (((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1))) or (fallout.global_var(155) < -50) then
+                    zark45()
                 else
-                    if (fallout.global_var(158) > 2) or (((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1))) or (fallout.global_var(155) < -50) then
-                        zark45()
-                    else
-                        zark04()
-                    end
+                    zark04()
                 end
             end
         end
     end
     fallout.gsay_end()
     fallout.end_dialogue()
+end
+
+function critter_p_proc()
+    if hostile then
+        hostile = false
+        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+    end
+end
+
+function destroy_p_proc()
+    reputation.inc_evil_critter()
+end
+
+function look_at_p_proc()
+    fallout.script_overrides()
+    fallout.display_msg(fallout.message_str(392, 100))
 end
 
 function zark00()
@@ -843,17 +852,22 @@ end
 
 function zarkcombat()
     fallout.set_global_var(195, 1)
-    hostile = 1
+    hostile = true
 end
 
 function weapon_check()
     if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) then
-        armed = 1
+        armed = true
     else
-        armed = 0
+        armed = false
     end
 end
 
 local exports = {}
 exports.start = start
+exports.pickup_p_proc = pickup_p_proc
+exports.talk_p_proc = talk_p_proc
+exports.critter_p_proc = critter_p_proc
+exports.destroy_p_proc = destroy_p_proc
+exports.look_at_p_proc = look_at_p_proc
 return exports
