@@ -22,124 +22,108 @@ local WtrGrd09
 local WtrGrdEnd
 local WtrGrdQuest
 
-local asleep = 0
-local hostile = 0
-local on_rounds = 0
-local going_up = 0
-local going_down = 0
+local asleep = false
+local hostile = false
+local on_rounds = false
+local going_up = false
+local going_down = false
 local dest_tile = 0
 
-local exit_line = 0
-
 function start()
-    if fallout.script_action() == 12 then
+    local script_action = fallout.script_action()
+    if script_action == 12 then
         critter_p_proc()
-    else
-        if fallout.script_action() == 18 then
-            destroy_p_proc()
-        else
-            if fallout.script_action() == 21 then
-                look_at_p_proc()
-            else
-                if fallout.script_action() == 15 then
-                    map_enter_p_proc()
-                else
-                    if fallout.script_action() == 4 then
-                        pickup_p_proc()
-                    else
-                        if fallout.script_action() == 11 then
-                            talk_p_proc()
-                        else
-                            if fallout.script_action() == 22 then
-                                timed_event_p_proc()
-                            end
-                        end
-                    end
-                end
-            end
-        end
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 15 then
+        map_enter_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 22 then
+        timed_event_p_proc()
     end
 end
 
 function critter_p_proc()
+    local dude_obj = fallout.dude_obj()
+    local self_obj = fallout.self_obj()
+    local self_tile_num = fallout.tile_num(self_obj)
     if hostile then
-        hostile = 0
-        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+        hostile = false
+        fallout.attack(dude_obj, 0, 1, 0, 0, 30000, 0, 0)
     else
-        if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
-            if fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 126) > 3 then
+        if fallout.obj_can_see_obj(self_obj, dude_obj) then
+            if fallout.obj_is_carrying_obj_pid(dude_obj, 126) > 3 then
                 if fallout.local_var(4) == 0 then
                     fallout.set_local_var(4, 1)
-                    fallout.float_msg(fallout.self_obj(), fallout.message_str(163, 116), 0)
+                    fallout.float_msg(self_obj, fallout.message_str(163, 116), 0)
                 end
             end
         end
         if time.is_day() then
-            if fallout.tile_num(fallout.self_obj()) ~= dest_tile then
-                fallout.animate_move_obj_to_tile(fallout.self_obj(), dest_tile, 0)
+            if self_tile_num ~= dest_tile then
+                fallout.animate_move_obj_to_tile(self_obj, dest_tile, 0)
             end
         end
         if not time.is_day() then
-            on_rounds = 0
+            on_rounds = false
         end
-        if (fallout.game_time_hour() > 700) and (fallout.game_time_hour() < 900) and not(on_rounds) then
+        if fallout.game_time_hour() > 700 and fallout.game_time_hour() < 900 and not on_rounds then
             dest_tile = 21511
-            on_rounds = 1
-            fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(300), 1)
+            on_rounds = true
+            fallout.add_timer_event(self_obj, fallout.game_ticks(300), 1)
         end
         if not time.is_day() then
-            if not(asleep) then
-                if (fallout.game_time_hour() > 1905) and (fallout.game_time_hour() < 1915) then
-                    fallout.animate_move_obj_to_tile(fallout.self_obj(), 16912, 0)
-                    if fallout.tile_num(fallout.self_obj()) == 16912 then
-                        fallout.move_to(fallout.self_obj(), 7000, 2)
-                        asleep = 1
+            if not asleep then
+                if fallout.game_time_hour() > 1905 and fallout.game_time_hour() < 1915 then
+                    fallout.animate_move_obj_to_tile(self_obj, 16912, 0)
+                    if self_tile_num == 16912 then
+                        fallout.move_to(self_obj, 7000, 2)
+                        asleep = true
                     end
                 else
-                    fallout.move_to(fallout.self_obj(), 7000, 2)
-                    asleep = 1
+                    fallout.move_to(self_obj, 7000, 2)
+                    asleep = true
                 end
             end
         else
-            if (fallout.game_time_hour() > 630) and asleep then
-                fallout.move_to(fallout.self_obj(), fallout.local_var(5), 2)
-                asleep = 0
+            if fallout.game_time_hour() > 630 and asleep then
+                fallout.move_to(self_obj, fallout.local_var(5), 2)
+                asleep = false
             else
-                if (fallout.game_time_hour() > 620) and asleep then
-                    if fallout.elevation(fallout.self_obj()) ~= 2 then
-                        fallout.move_to(fallout.self_obj(), 16912, 2)
+                if fallout.game_time_hour() > 620 and asleep then
+                    if fallout.elevation(self_obj) ~= 2 then
+                        fallout.move_to(self_obj, 16912, 2)
                     else
-                        fallout.animate_move_obj_to_tile(fallout.self_obj(), fallout.self_obj(), 0)
+                        fallout.animate_move_obj_to_tile(self_obj, 16912, 0)
                     end
-                    asleep = 0
+                    asleep = false
                 end
             end
         end
         if fallout.external_var("getting_ration") then
             fallout.use_obj(fallout.external_var("recipient"))
-            fallout.float_msg(fallout.self_obj(), fallout.message_str(163, fallout.random(113, 114)), 3)
+            fallout.float_msg(self_obj, fallout.message_str(163, fallout.random(113, 114)), 3)
             fallout.set_external_var("getting_ration", 0)
         end
-        if (fallout.tile_num(fallout.self_obj()) == 16912) and going_down then
-            fallout.move_to(fallout.self_obj(), 22104, 1)
-            going_down = 0
-        else
-            if fallout.tile_num(fallout.self_obj()) == 22104 then
-                if going_down then
-                    fallout.move_to(fallout.self_obj(), 13704, 0)
-                    going_down = 0
-                else
-                    if going_up then
-                        fallout.move_to(fallout.self_obj(), 16912, 2)
-                        going_up = 0
-                    end
-                end
-            else
-                if (fallout.tile_num(fallout.self_obj()) == 13704) and going_up then
-                    fallout.move_to(fallout.self_obj(), 22104, 1)
-                    going_up = 0
-                end
+        if self_tile_num == 16912 and going_down then
+            fallout.move_to(self_obj, 22104, 1)
+            going_down = false
+        elseif self_tile_num == 22104 then
+            if going_down then
+                fallout.move_to(self_obj, 13704, 0)
+                going_down = false
+            elseif going_up then
+                fallout.move_to(self_obj, 16912, 2)
+                going_up = false
             end
+        elseif self_tile_num == 13704 and going_up then
+            fallout.move_to(self_obj, 22104, 1)
+            going_up = false
         end
     end
 end
@@ -157,84 +141,70 @@ function look_at_p_proc()
 end
 
 function map_enter_p_proc()
+    local self_obj = fallout.self_obj()
     if fallout.local_var(5) == 0 then
-        fallout.set_local_var(5, fallout.tile_num(fallout.self_obj()))
+        fallout.set_local_var(5, fallout.tile_num(self_obj))
     end
     dest_tile = fallout.local_var(5)
-    fallout.set_external_var("WtrGrd_ptr", fallout.self_obj())
-    fallout.set_external_var("recipient", 0)
+    fallout.set_external_var("WtrGrd_ptr", self_obj)
+    fallout.set_external_var("recipient", nil)
     if not time.is_day() then
-        fallout.move_to(fallout.self_obj(), 7000, 2)
-        asleep = 1
+        fallout.move_to(self_obj, 7000, 2)
+        asleep = true
     end
 end
 
 function pickup_p_proc()
     fallout.float_msg(fallout.self_obj(), fallout.message_str(163, 115), 0)
-    hostile = 1
+    hostile = true
 end
 
 function talk_p_proc()
     if fallout.global_var(261) == 1 then
         fallout.float_msg(fallout.self_obj(), fallout.message_str(185, 102), 2)
+    elseif fallout.global_var(101) == 2 then
+        fallout.float_msg(fallout.self_obj(), fallout.message_str(185, 109), 0)
+    elseif fallout.global_var(188) == 2 then
+        fallout.float_msg(fallout.self_obj(), fallout.message_str(507, 113), 0)
     else
-        if fallout.global_var(101) == 2 then
-            fallout.float_msg(fallout.self_obj(), fallout.message_str(185, 109), 0)
+        fallout.start_gdialog(163, fallout.self_obj(), 4, -1, -1)
+        fallout.gsay_start()
+        if time.game_time_in_days() < 30 then
+            WtrGrd05()
         else
-            if fallout.global_var(188) == 2 then
-                fallout.float_msg(fallout.self_obj(), fallout.message_str(507, 113), 0)
-            else
-                fallout.start_gdialog(163, fallout.self_obj(), 4, -1, -1)
-                fallout.gsay_start()
-                if time.game_time_in_days() < 30 then
-                    WtrGrd05()
-                else
-                    WtrGrd01()
-                end
-                fallout.gsay_end()
-                fallout.end_dialogue()
-            end
+            WtrGrd01()
         end
+        fallout.gsay_end()
+        fallout.end_dialogue()
     end
 end
 
 function timed_event_p_proc()
-    if (fallout.game_time_hour() > 700) and (fallout.game_time_hour() < 900) then
-        if fallout.fixed_param() == 1 then
+    if fallout.game_time_hour() > 700 and fallout.game_time_hour() < 900 then
+        local event = fallout.fixed_param()
+        if event == 1 then
             dest_tile = 16912
-            going_down = 1
+            going_down = true
             fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(60), 2)
-        else
-            if fallout.fixed_param() == 2 then
-                dest_tile = 20910
-                fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(120), 3)
-            else
-                if fallout.fixed_param() == 3 then
-                    dest_tile = 22104
-                    going_down = 1
-                    fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(60), 4)
-                else
-                    if fallout.fixed_param() == 4 then
-                        dest_tile = 14102
-                        fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(120), 5)
-                    else
-                        if fallout.fixed_param() == 5 then
-                            dest_tile = 13704
-                            going_up = 1
-                            fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(5), 6)
-                        else
-                            if fallout.fixed_param() == 6 then
-                                going_up = 1
-                                fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(60), 7)
-                            else
-                                if fallout.fixed_param() == 7 then
-                                    dest_tile = fallout.local_var(5)
-                                end
-                            end
-                        end
-                    end
-                end
-            end
+        elseif event == 2 then
+            dest_tile = 20910
+            fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(120), 3)
+        elseif event == 3 then
+            dest_tile = 22104
+            going_down = true
+            fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(60), 4)
+        elseif event == 4 then
+            dest_tile = 14102
+            fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(120), 5)
+        elseif event == 5 then
+            dest_tile = 13704
+            going_up = true
+            fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(5), 6)
+        elseif event == 6 then
+            going_up = true
+            fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(60), 7)
+        elseif event == 7 then
+            dest_tile = fallout.local_var(5)
         end
     else
         fallout.move_to(fallout.self_obj(), 16912, 2)
@@ -242,7 +212,9 @@ function timed_event_p_proc()
 end
 
 function WtrGrd01()
-    fallout.gsay_reply(163, fallout.message_str(163, 101) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(163, 102))
+    fallout.gsay_reply(163,
+        fallout.message_str(163, 101) ..
+        fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(163, 102))
     fallout.giq_option(4, 163, 103, WtrGrd03, 50)
     fallout.giq_option(4, 163, 127, WtrGrd09, 50)
     fallout.giq_option(-3, 163, 104, WtrGrd02, 50)
@@ -267,7 +239,9 @@ function WtrGrd04()
 end
 
 function WtrGrd05()
-    fallout.gsay_reply(163, fallout.message_str(163, 118) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(163, 119))
+    fallout.gsay_reply(163,
+        fallout.message_str(163, 118) ..
+        fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(163, 119))
     fallout.giq_option(4, 163, 120, WtrGrd06, 50)
     fallout.giq_option(6, 163, 121, WtrGRd07, 50)
     fallout.giq_option(4, 163, 127, WtrGrd09, 50)
@@ -297,7 +271,7 @@ function WtrGrdEnd()
 end
 
 function WtrGrdQuest()
-    if not(fallout.global_var(188)) then
+    if fallout.global_var(188) == 0 then
         fallout.set_global_var(188, 1)
     end
 end
