@@ -1,7 +1,9 @@
 local fallout = require("fallout")
 
 local start
+local use_p_proc
 local talk_p_proc
+local look_at_p_proc
 local Zax01
 local Zax02
 local Zax03
@@ -69,25 +71,19 @@ local Mainframe08a
 local Mainframe09
 local Mainframe10
 
-local exit_line = 0
-
 function start()
-    if fallout.script_action() == 11 then
+    local script_action = fallout.script_action()
+    if script_action == 11 then
         talk_p_proc()
-    else
-        if fallout.script_action() == 6 then
-            fallout.dialogue_system_enter()
-        else
-            if (fallout.script_action() == 21) or (fallout.script_action() == 3) then
-                fallout.script_overrides()
-                if fallout.local_var(4) == 1 then
-                    fallout.display_msg(fallout.message_str(312, 100))
-                else
-                    fallout.display_msg(fallout.message_str(312, 101))
-                end
-            end
-        end
+    elseif script_action == 6 then
+        use_p_proc()
+    elseif script_action == 21 or script_action == 3 then
+        look_at_p_proc()
     end
+end
+
+function use_p_proc()
+    fallout.dialogue_system_enter()
 end
 
 function talk_p_proc()
@@ -97,6 +93,15 @@ function talk_p_proc()
     Zax01()
     fallout.gsay_end()
     fallout.end_dialogue()
+end
+
+function look_at_p_proc()
+    fallout.script_overrides()
+    if fallout.local_var(4) == 1 then
+        fallout.display_msg(fallout.message_str(312, 100))
+    else
+        fallout.display_msg(fallout.message_str(312, 101))
+    end
 end
 
 function Zax01()
@@ -131,7 +136,9 @@ end
 
 function Zax04()
     ZaxClearance()
-    fallout.gsay_reply(828, fallout.message_str(828, 211) .. fallout.message_str(828, 241) .. fallout.message_str(828, 242) .. fallout.message_str(828, 243))
+    fallout.gsay_reply(828,
+        fallout.message_str(828, 211) ..
+        fallout.message_str(828, 241) .. fallout.message_str(828, 242) .. fallout.message_str(828, 243))
     fallout.giq_option(7, 312, 119, Zax21, 50)
     fallout.giq_option(7, 312, 120, Zax15, 50)
     fallout.giq_option(5, 312, 121, Zax13, 50)
@@ -186,14 +193,13 @@ function Zax11()
 end
 
 function Zax12()
-    local v0 = 0
     fallout.gsay_message(312, 148, 50)
     fallout.gfade_out(600)
     fallout.game_time_advance(fallout.game_ticks(7200))
-    v0 = fallout.do_check(fallout.dude_obj(), 4, 0)
+    local roll = fallout.do_check(fallout.dude_obj(), 4, 0)
     fallout.gfade_in(600)
-    if fallout.is_success(v0) then
-        if fallout.is_critical(v0) then
+    if fallout.is_success(roll) then
+        if fallout.is_critical(roll) then
             fallout.gsay_reply(312, 149)
             fallout.set_local_var(6, 1)
             fallout.give_exp_points(700)
@@ -446,12 +452,10 @@ end
 function TermStart()
     if fallout.global_var(224) == 0 then
         Term14()
+    elseif fallout.global_var(224) == 1 then
+        Term01()
     else
-        if fallout.global_var(224) == 1 then
-            Term01()
-        else
-            Term09()
-        end
+        Term09()
     end
 end
 
@@ -495,13 +499,15 @@ function Mainframe02()
 end
 
 function Mainframe03()
-    fallout.gsay_reply(828, fallout.message_str(828, 211) .. fallout.message_str(828, 241) .. fallout.message_str(828, 242) .. fallout.message_str(828, 243))
+    fallout.gsay_reply(828,
+        fallout.message_str(828, 211) ..
+        fallout.message_str(828, 241) .. fallout.message_str(828, 242) .. fallout.message_str(828, 243))
     fallout.giq_option(4, 828, 203, Mainframe02, 50)
     fallout.giq_option(4, 828, 205, TermEnd, 50)
 end
 
 function Mainframe04()
-    if (fallout.global_var(140) == 0) and (fallout.global_var(224) == 2) then
+    if fallout.global_var(140) == 0 and fallout.global_var(224) == 2 then
         fallout.gsay_reply(828, 212)
     else
         fallout.gsay_reply(828, 213)
@@ -598,7 +604,9 @@ function Mainframe06a()
 end
 
 function Mainframe07()
-    fallout.gsay_reply(828, fallout.message_str(828, 231) .. fallout.message_str(828, 250) .. fallout.message_str(828, 251) .. fallout.message_str(828, 252))
+    fallout.gsay_reply(828,
+        fallout.message_str(828, 231) ..
+        fallout.message_str(828, 250) .. fallout.message_str(828, 251) .. fallout.message_str(828, 252))
     fallout.giq_option(4, 828, 229, Mainframe07a, 50)
     fallout.giq_option(4, 828, 230, Mainframe05, 50)
     fallout.giq_option(4, 828, 205, TermEnd, 50)
@@ -612,7 +620,8 @@ end
 function Mainframe08()
     fallout.gsay_message(828, fallout.message_str(828, 232) .. fallout.message_str(828, 233), 50)
     fallout.gsay_message(828, fallout.message_str(828, 234) .. fallout.message_str(828, 235), 50)
-    fallout.gsay_reply(828, fallout.message_str(828, 236) .. fallout.message_str(828, 237) .. fallout.message_str(828, 238))
+    fallout.gsay_reply(828,
+        fallout.message_str(828, 236) .. fallout.message_str(828, 237) .. fallout.message_str(828, 238))
     fallout.giq_option(4, 828, 229, Mainframe08a, 50)
     fallout.giq_option(4, 828, 230, Mainframe05, 50)
     fallout.giq_option(4, 828, 205, TermEnd, 50)
@@ -638,5 +647,7 @@ end
 
 local exports = {}
 exports.start = start
+exports.use_p_proc = use_p_proc
 exports.talk_p_proc = talk_p_proc
+exports.look_at_p_proc = look_at_p_proc
 return exports
