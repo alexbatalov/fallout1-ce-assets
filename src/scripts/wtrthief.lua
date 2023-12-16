@@ -30,109 +30,92 @@ local WtrThiefBye
 local WtrThiefEnd
 
 local dest_tile = 7000
-local hostile = 0
-local watched = 0
-local got_water = 0
-local on_the_way = 0
-local searched = 0
-local scared = 0
-
-local exit_line = 0
+local hostile = false
+local watched = false
+local got_water = false
+local on_the_way = false
+local searched = false
+local scared = false
 
 function start()
-    if fallout.script_action() == 13 then
+    local script_action = fallout.script_action()
+    if script_action == 13 then
         combat_p_proc()
-    else
-        if fallout.script_action() == 12 then
-            critter_p_proc()
-        else
-            if fallout.script_action() == 3 then
-                description_p_proc()
-            else
-                if fallout.script_action() == 18 then
-                    destroy_p_proc()
-                else
-                    if fallout.script_action() == 21 then
-                        look_at_p_proc()
-                    else
-                        if fallout.script_action() == 15 then
-                            map_enter_p_proc()
-                        else
-                            if fallout.script_action() == 23 then
-                                map_update_p_proc()
-                            else
-                                if fallout.script_action() == 4 then
-                                    pickup_p_proc()
-                                else
-                                    if fallout.script_action() == 11 then
-                                        talk_p_proc()
-                                    else
-                                        if fallout.script_action() == 22 then
-                                            timed_event_p_proc()
-                                        end
-                                    end
-                                end
-                            end
-                        end
-                    end
-                end
-            end
-        end
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 3 then
+        description_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 15 then
+        map_enter_p_proc()
+    elseif script_action == 23 then
+        map_update_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 22 then
+        timed_event_p_proc()
     end
 end
 
 function combat_p_proc()
     if fallout.fixed_param() == 4 then
-        if fallout.external_var("Officer_ptr") ~= 0 then
-            fallout.critter_add_trait(fallout.external_var("Officer_ptr"), 1, 6, 0)
+        local officer_obj = fallout.external_var("Officer_ptr")
+        if officer_obj ~= nil then
+            fallout.critter_add_trait(officer_obj, 1, 6, 0)
         end
     end
 end
 
 function critter_p_proc()
-    local v0 = 0
+    local dude_obj = fallout.dude_obj()
+    local self_obj = fallout.self_obj()
     if hostile then
-        hostile = 0
-        scared = 1
-        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+        hostile = false
+        scared = true
+        fallout.attack(dude_obj, 0, 1, 0, 0, 30000, 0, 0)
     else
         if fallout.game_time_hour() <= 600 then
             if fallout.global_var(188) == 1 then
-                if not(got_water) then
-                    if not(on_the_way) then
-                        on_the_way = 1
+                if not got_water then
+                    if not on_the_way then
+                        on_the_way = true
                         dest_tile = 22728
-                        fallout.move_to(fallout.self_obj(), 16912, 2)
-                        fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(30), 1)
+                        fallout.move_to(self_obj, 16912, 2)
+                        fallout.add_timer_event(self_obj, fallout.game_ticks(30), 1)
                     end
                 end
             end
-            if fallout.tile_num(fallout.self_obj()) ~= dest_tile then
-                fallout.animate_move_obj_to_tile(fallout.self_obj(), dest_tile, 0)
+            if fallout.tile_num(self_obj) ~= dest_tile then
+                fallout.animate_move_obj_to_tile(self_obj, dest_tile, 0)
             end
         else
-            got_water = 0
-            on_the_way = 0
-            if fallout.obj_is_carrying_obj_pid(fallout.self_obj(), 126) then
-                fallout.destroy_object(fallout.obj_carrying_pid_obj(fallout.self_obj(), 126))
+            got_water = false
+            on_the_way = false
+            if fallout.obj_is_carrying_obj_pid(self_obj, 126) ~= 0 then
+                fallout.destroy_object(fallout.obj_carrying_pid_obj(self_obj, 126))
             end
         end
-        if fallout.tile_distance_objs(fallout.self_obj(), fallout.external_var("VaultBox_ptr")) < 4 then
-            if not(got_water) then
-                if fallout.anim_busy(fallout.self_obj()) == 0 then
+        if fallout.tile_distance_objs(self_obj, fallout.external_var("VaultBox_ptr")) < 4 then
+            if not got_water then
+                if fallout.anim_busy(self_obj) == 0 then
                     fallout.use_obj(fallout.external_var("VaultBox_ptr"))
-                    got_water = 1
-                    v0 = fallout.create_object_sid(126, 0, 0, -1)
-                    fallout.add_obj_to_inven(fallout.self_obj(), v0)
-                    fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(3), 2)
-                    if fallout.obj_can_see_obj(fallout.dude_obj(), fallout.self_obj()) then
+                    got_water = true
+                    local item_obj = fallout.create_object_sid(126, 0, 0, -1)
+                    fallout.add_obj_to_inven(self_obj, item_obj)
+                    fallout.add_timer_event(self_obj, fallout.game_ticks(3), 2)
+                    if fallout.obj_can_see_obj(dude_obj, self_obj) then
                         fallout.display_msg(fallout.message_str(461, 103))
                     end
                 end
             end
         end
-        if got_water and (fallout.tile_num(fallout.self_obj()) == 16912) then
-            fallout.move_to(fallout.self_obj(), 7000, 0)
+        if got_water and fallout.tile_num(self_obj) == 16912 then
+            fallout.move_to(self_obj, 7000, 0)
             dest_tile = 7000
         end
     end
@@ -140,7 +123,7 @@ end
 
 function description_p_proc()
     fallout.script_overrides()
-    watched = 1
+    watched = true
     fallout.display_msg(fallout.message_str(461, 102))
 end
 
@@ -151,17 +134,21 @@ function destroy_p_proc()
         fallout.give_exp_points(500)
     end
     fallout.set_global_var(188, 2)
-    if fallout.external_var("Officer_ptr") ~= 0 then
-        fallout.critter_add_trait(fallout.external_var("Officer_ptr"), 1, 6, 1)
+    local officer_obj = fallout.external_var("Officer_ptr")
+    if officer_obj ~= nil then
+        fallout.critter_add_trait(officer_obj, 1, 6, 1)
     end
 end
 
 function look_at_p_proc()
     fallout.script_overrides()
-    if not(watched) then
-        watched = fallout.is_success(fallout.do_check(fallout.self_obj(), 1, fallout.has_trait(0, fallout.dude_obj(), 0)))
+
+    local dude_obj = fallout.dude_obj()
+    local self_obj = fallout.self_obj()
+    if not watched then
+        watched = fallout.is_success(fallout.do_check(self_obj, 1, fallout.has_trait(0, dude_obj, 0)))
     end
-    if (fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) > 2) and not(watched) then
+    if fallout.tile_distance_objs(self_obj, dude_obj) > 2 and not watched then
         fallout.display_msg(fallout.message_str(461, 100))
     else
         fallout.display_msg(fallout.message_str(461, 101))
@@ -169,51 +156,56 @@ function look_at_p_proc()
 end
 
 function map_enter_p_proc()
-    fallout.set_external_var("WtrThief_ptr", fallout.self_obj())
-    fallout.critter_add_trait(fallout.self_obj(), 1, 6, 87)
-    fallout.critter_add_trait(fallout.self_obj(), 1, 5, 1)
+    local self_obj = fallout.self_obj()
+    fallout.set_external_var("WtrThief_ptr", self_obj)
+    fallout.critter_add_trait(self_obj, 1, 6, 87)
+    fallout.critter_add_trait(self_obj, 1, 5, 1)
     if fallout.global_var(188) == 0 then
-        fallout.set_obj_visibility(fallout.self_obj(), 1)
+        fallout.set_obj_visibility(self_obj, true)
     else
-        fallout.set_obj_visibility(fallout.self_obj(), 0)
+        fallout.set_obj_visibility(self_obj, false)
     end
 end
 
 function map_update_p_proc()
+    local self_obj = fallout.self_obj()
     if fallout.global_var(188) == 0 then
-        fallout.set_obj_visibility(fallout.self_obj(), 1)
+        fallout.set_obj_visibility(self_obj, true)
     else
-        fallout.set_obj_visibility(fallout.self_obj(), 0)
+        fallout.set_obj_visibility(self_obj, false)
     end
-    if (fallout.game_time_hour() > 700) and (fallout.tile_num(fallout.self_obj()) ~= 7000) then
-        fallout.move_to(fallout.self_obj(), 7000, 0)
+    if fallout.game_time_hour() > 700 and fallout.tile_num(self_obj) ~= 7000 then
+        fallout.move_to(self_obj, 7000, 0)
         dest_tile = 7000
     end
 end
 
 function pickup_p_proc()
-    hostile = 1
+    hostile = true
 end
 
 function talk_p_proc()
+    local self_obj = fallout.self_obj()
     if scared then
-        fallout.animate_move_obj_to_tile(fallout.self_obj(), 16912, 1)
+        fallout.animate_move_obj_to_tile(self_obj, 16912, 1)
     else
-        fallout.start_gdialog(461, fallout.self_obj(), 4, -1, -1)
+        fallout.start_gdialog(461, self_obj, 4, -1, -1)
         fallout.gsay_start()
-        watched = 1
+        watched = true
         WtrThief01()
         fallout.gsay_end()
         fallout.end_dialogue()
         if fallout.global_var(188) == 2 then
             fallout.gfade_out(600)
-            fallout.move_to(fallout.self_obj(), 7000, 2)
-            if fallout.external_var("Officer_ptr") ~= 0 then
-                fallout.move_to(fallout.external_var("Officer_ptr"), 22093, 2)
-                fallout.move_to(fallout.dude_obj(), 22293, 2)
-                fallout.anim(fallout.dude_obj(), 1000, 5)
-                fallout.anim(fallout.external_var("Officer_ptr"), 1000, 2)
-                fallout.float_msg(fallout.external_var("Officer_ptr"), fallout.message_str(461, 105), 0)
+            fallout.move_to(self_obj, 7000, 2)
+            local officer_obj = fallout.external_var("Officer_ptr")
+            if officer_obj ~= nil then
+                local dude_obj = fallout.dude_obj()
+                fallout.move_to(officer_obj, 22093, 2)
+                fallout.move_to(dude_obj, 22293, 2)
+                fallout.anim(dude_obj, 1000, 5)
+                fallout.anim(officer_obj, 1000, 2)
+                fallout.float_msg(officer_obj, fallout.message_str(461, 105), 0)
             end
             fallout.gfade_in(600)
             fallout.display_msg(fallout.message_str(461, 106))
@@ -221,7 +213,7 @@ function talk_p_proc()
         end
         if searched then
             fallout.display_msg(fallout.message_str(461, 130))
-            searched = 0
+            searched = false
         end
     end
 end
@@ -241,11 +233,9 @@ function timed_event_p_proc()
 end
 
 function WtrThief01()
-    local v0 = 0
-    v0 = fallout.message_str(461, 107)
-    v0 = v0 + fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1)
-    v0 = v0 .. fallout.message_str(461, 108)
-    fallout.gsay_reply(461, v0)
+    fallout.gsay_reply(461,
+        fallout.message_str(461, 107) ..
+        fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(461, 108))
     fallout.giq_option(4, 461, 109, WtrThief02, 50)
     fallout.giq_option(-3, 461, 110, WtrThiefEnd, 50)
 end
@@ -284,7 +274,7 @@ function WtrThief06()
 end
 
 function WtrThief07()
-    searched = 1
+    searched = true
 end
 
 function WtrThief08()
@@ -320,7 +310,7 @@ function WtrThief11a()
 end
 
 function WtrThiefCombat()
-    hostile = 1
+    hostile = true
 end
 
 function finish_quest()
