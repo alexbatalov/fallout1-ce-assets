@@ -10,7 +10,7 @@ function start()
 end
 
 function damage_p_proc()
-    fallout.set_obj_visibility(fallout.self_obj(), 1)
+    fallout.set_obj_visibility(fallout.self_obj(), true)
 end
 
 local exports = {}
