@@ -31,58 +31,50 @@ local Barter
 local Get_Stuff
 local Put_Stuff
 
-local hostile = 0
+local hostile = false
 local initialized = false
-local kickOut = 0
-local initiateDialogue = 1
-
-local exit_line = 0
+local kick_out = false
+local initiate_dialogue = true
 
 function start()
-    local v0 = 0
     fallout.gdialog_set_barter_mod(-20)
     if not initialized then
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 81)
+        fallout.critter_add_trait(self_obj, 1, 5, 4)
         initialized = true
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 81)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 4)
     end
-    if fallout.script_action() == 21 then
+
+    local script_action = fallout.script_action()
+    if script_action == 21 then
         look_at_p_proc()
-    else
-        if fallout.script_action() == 4 then
-            pickup_p_proc()
-        else
-            if fallout.script_action() == 11 then
-                talk_p_proc()
-            else
-                if fallout.script_action() == 12 then
-                    critter_p_proc()
-                else
-                    if fallout.script_action() == 18 then
-                        destroy_p_proc()
-                    end
-                end
-            end
-        end
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
     end
 end
 
 function combat()
-    hostile = 1
+    hostile = true
 end
 
 function critter_p_proc()
     if hostile then
-        hostile = 0
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
-    if (initiateDialogue == 1) and (fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) <= 4) then
-        initiateDialogue = 0
+    if initiate_dialogue and fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) <= 4 then
+        initiate_dialogue = false
         fallout.dialogue_system_enter()
     end
-    if kickOut == 1 then
-        kickOut = 0
-        initiateDialogue = 1
+    if kick_out then
+        kick_out = false
+        initiate_dialogue = true
         fallout.gfade_out(500)
         fallout.move_to(fallout.dude_obj(), 16265, 0)
         fallout.gfade_in(500)
@@ -91,7 +83,7 @@ end
 
 function pickup_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
-        hostile = 1
+        hostile = true
     end
 end
 
@@ -247,7 +239,7 @@ function Vance13()
 end
 
 function Vance14()
-    kickOut = 1
+    kick_out = true
 end
 
 function Vance15()
