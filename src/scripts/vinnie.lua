@@ -38,51 +38,40 @@ local VinnieEnd
 local VinnieCombat
 local VinnieKillNeal
 
-local hostile = 0
-local line160flag = 0
-local line162flag = 0
-local Vinnie_kill_Neal = 0
-local moving_disabled = 0
-local sleeping_disabled = 0
+local hostile = false
+local line160flag = false
+local line162flag = false
+local Vinnie_kill_Neal = false
 
 local combat_p_proc
 local timed_event_p_proc
 
 function start()
-    if fallout.script_action() == 12 then
+    local script_action = fallout.script_action()
+    if script_action == 12 then
         critter_p_proc()
-    else
-        if fallout.script_action() == 18 then
-            destroy_p_proc()
-        else
-            if fallout.script_action() == 15 then
-                map_enter_p_proc()
-            else
-                if fallout.script_action() == 21 then
-                    look_at_p_proc()
-                else
-                    if fallout.script_action() == 4 then
-                        pickup_p_proc()
-                    else
-                        if fallout.script_action() == 11 then
-                            talk_p_proc()
-                        end
-                    end
-                end
-            end
-        end
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 15 then
+        map_enter_p_proc()
+    elseif script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
     end
 end
 
 function critter_p_proc()
     if hostile then
-        hostile = 0
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     else
-        if (fallout.cur_map_index() == 11) and (line160flag == 0) then
+        if fallout.cur_map_index() == 11 and not line160flag then
             fallout.float_msg(fallout.self_obj(), fallout.message_str(385, 160), 2)
             fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(4), 1)
-            line160flag = 1
+            line160flag = true
         end
     end
 end
@@ -104,44 +93,39 @@ function look_at_p_proc()
 end
 
 function map_enter_p_proc()
-    fallout.critter_add_trait(fallout.self_obj(), 1, 6, 14)
-    fallout.critter_add_trait(fallout.self_obj(), 1, 5, 59)
-    if (fallout.global_var(555) == 2) or ((fallout.cur_map_index() == 11) and (fallout.global_var(284) == 1)) then
-        fallout.move_to(fallout.self_obj(), 7000, 0)
-        fallout.set_obj_visibility(fallout.self_obj(), 1)
-        fallout.set_external_var("removal_ptr", fallout.self_obj())
+    local self_obj = fallout.self_obj()
+    fallout.critter_add_trait(self_obj, 1, 6, 14)
+    fallout.critter_add_trait(self_obj, 1, 5, 59)
+    if fallout.global_var(555) == 2 or (fallout.cur_map_index() == 11 and fallout.global_var(284) == 1) then
+        fallout.move_to(self_obj, 7000, 0)
+        fallout.set_obj_visibility(self_obj, 1)
+        fallout.set_external_var("removal_ptr", self_obj)
     end
 end
 
 function pickup_p_proc()
-    hostile = 1
+    hostile = true
 end
 
 function talk_p_proc()
     if fallout.global_var(285) == 2 then
         fallout.float_msg(fallout.self_obj(), fallout.message_str(385, 171), 4)
+    elseif fallout.global_var(284) == 1 then
+        fallout.float_msg(fallout.self_obj(), fallout.message_str(385, 170), 2)
     else
-        if fallout.global_var(284) == 1 then
-            fallout.float_msg(fallout.self_obj(), fallout.message_str(385, 170), 2)
+        fallout.start_gdialog(385, fallout.self_obj(), 4, -1, -1)
+        fallout.gsay_start()
+        if fallout.global_var(285) == 1 then
+            Vinnie24()
+        elseif fallout.local_var(2) == 1 then
+            Vinnie19()
+        elseif fallout.local_var(0) == 1 then
+            Vinnie10()
         else
-            fallout.start_gdialog(385, fallout.self_obj(), 4, -1, -1)
-            fallout.gsay_start()
-            if fallout.global_var(285) == 1 then
-                Vinnie24()
-            else
-                if fallout.local_var(2) == 1 then
-                    Vinnie19()
-                else
-                    if fallout.local_var(0) == 1 then
-                        Vinnie10()
-                    else
-                        Vinnie01()
-                    end
-                end
-            end
-            fallout.gsay_end()
-            fallout.end_dialogue()
+            Vinnie01()
         end
+        fallout.gsay_end()
+        fallout.end_dialogue()
     end
     if fallout.local_var(1) == 1 then
         fallout.display_msg(fallout.message_str(385, 163))
@@ -153,7 +137,7 @@ function talk_p_proc()
         end
     end
     if Vinnie_kill_Neal then
-        Vinnie_kill_Neal = 0
+        Vinnie_kill_Neal = false
         fallout.load_map(11, 7)
     end
     if (fallout.global_var(283) > time.game_time_in_days()) and (fallout.global_var(284) == 0) then
@@ -350,19 +334,19 @@ function VinnieEnd()
 end
 
 function VinnieCombat()
-    hostile = 1
+    hostile = true
 end
 
 function VinnieKillNeal()
     fallout.set_global_var(285, 2)
-    Vinnie_kill_Neal = 1
+    Vinnie_kill_Neal = true
 end
 
 function combat_p_proc()
     if fallout.cur_map_index() == 11 then
-        if (fallout.map_var(1) ~= 0) and (line162flag == 0) then
+        if fallout.map_var(1) ~= 0 and not line162flag then
             fallout.float_msg(fallout.self_obj(), fallout.message_str(385, 162), 2)
-            line162flag = 1
+            line162flag = true
         end
     end
 end
