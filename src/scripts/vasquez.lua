@@ -3,7 +3,11 @@ local reputation = require("lib.reputation")
 local time = require("lib.time")
 
 local start
-local do_dialogue
+local talk_p_proc
+local critter_p_proc
+local damage_p_proc
+local destroy_p_proc
+local look_at_p_proc
 local end_employment
 local hiring
 local follow_player
@@ -20,49 +24,27 @@ local vasquez07
 local vasquez08
 local vasquez09
 
-local known = 0
-local warned = 0
-local following = 0
+local known = false
+local warned = false
+local following = false
 local hire_date = 0
 
 function start()
-    if fallout.script_action() == 11 then
-        do_dialogue()
-    else
-        if fallout.script_action() == 18 then
-            reputation.inc_good_critter()
-        else
-            if (fallout.script_action() == 21) or (fallout.script_action() == 3) then
-                fallout.script_overrides()
-                if known then
-                    fallout.display_msg(fallout.message_str(436, 100))
-                else
-                    fallout.display_msg(fallout.message_str(436, 101))
-                end
-            else
-                if fallout.script_action() == 12 then
-                    if following then
-                        if (time.game_time_in_days() - hire_date) > 7 then
-                            end_employment()
-                        else
-                            follow_player()
-                        end
-                    else
-                        if fallout.script_action() == 14 then
-                            if fallout.source_obj() == fallout.dude_obj() then
-                                if not(warned) then
-                                    vasquez10()
-                                end
-                            end
-                        end
-                    end
-                end
-            end
-        end
+    local script_action = fallout.script_action()
+    if script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 21 or script_action == 3 then
+        look_at_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 14 then
+        damage_p_proc()
     end
 end
 
-function do_dialogue()
+function talk_p_proc()
     fallout.start_gdialog(436, fallout.self_obj(), 4, -1, -1)
     fallout.gsay_start()
     if following then
@@ -78,8 +60,39 @@ function do_dialogue()
     fallout.end_dialogue()
 end
 
+function critter_p_proc()
+    if following then
+        if time.game_time_in_days() - hire_date > 7 then
+            end_employment()
+        else
+            follow_player()
+        end
+    end
+end
+
+function damage_p_proc()
+    if fallout.source_obj() == fallout.dude_obj() then
+        if not warned then
+            vasquez10()
+        end
+    end
+end
+
+function destroy_p_proc()
+    reputation.inc_good_critter()
+end
+
+function look_at_p_proc()
+    fallout.script_overrides()
+    if known then
+        fallout.display_msg(fallout.message_str(436, 100))
+    else
+        fallout.display_msg(fallout.message_str(436, 101))
+    end
+end
+
 function end_employment()
-    following = 0
+    following = false
 end
 
 function hiring()
@@ -87,11 +100,13 @@ function hiring()
 end
 
 function follow_player()
-    if fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) > 3 then
-        fallout.animate_move_obj_to_tile(fallout.self_obj(), fallout.tile_num(fallout.dude_obj()), 0)
+    local dude_obj = fallout.dude_obj()
+    local self_obj = fallout.self_obj()
+    if fallout.tile_distance_objs(self_obj, dude_obj) > 3 then
+        fallout.animate_move_obj_to_tile(self_obj, fallout.tile_num(dude_obj), 0)
     else
-        if fallout.anim_busy(fallout.self_obj()) then
-            fallout.animate_move_obj_to_tile(fallout.self_obj(), fallout.tile_num(fallout.self_obj()), 0)
+        if fallout.anim_busy(self_obj) ~= 0 then
+            fallout.animate_move_obj_to_tile(self_obj, fallout.tile_num(self_obj), 0)
         end
     end
 end
@@ -111,11 +126,11 @@ end
 
 function vasquez10()
     fallout.float_msg(fallout.self_obj(), fallout.message_str(436, 126), 0)
-    warned = 1
+    warned = true
 end
 
 function vasquez02()
-    known = 1
+    known = true
     fallout.gsay_reply(436, 106)
     fallout.giq_option(4, 436, 107, vasquez03, 50)
     fallout.giq_option(4, 436, 108, vasquezend, 50)
@@ -133,34 +148,12 @@ end
 
 function vasquez05()
     fallout.gsay_message(436, 113, 50)
-    following = 1
+    following = true
     hire_date = time.game_time_in_days()
 end
 
 function vasquez06()
-    local v0 = 0
-    local v1 = 0
-    v0 = fallout.random(1, 5)
-    if v0 == 1 then
-        v1 = fallout.message_str(436, 114)
-    else
-        if v0 == 2 then
-            v1 = fallout.message_str(436, 115)
-        else
-            if v0 == 3 then
-                v1 = fallout.message_str(436, 116)
-            else
-                if v0 == 4 then
-                    v1 = fallout.message_str(436, 117)
-                else
-                    if v0 == 5 then
-                        v1 = fallout.message_str(436, 118)
-                    end
-                end
-            end
-        end
-    end
-    fallout.float_msg(fallout.self_obj(), v1, 0)
+    fallout.float_msg(fallout.self_obj(), fallout.message_str(436, fallout.random(114, 118)), 0)
 end
 
 function vasquez07()
@@ -181,4 +174,9 @@ end
 
 local exports = {}
 exports.start = start
+exports.talk_p_proc = talk_p_proc
+exports.critter_p_proc = critter_p_proc
+exports.damage_p_proc = damage_p_proc
+exports.destroy_p_proc = destroy_p_proc
+exports.look_at_p_proc = look_at_p_proc
 return exports
