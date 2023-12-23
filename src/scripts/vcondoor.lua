@@ -7,27 +7,18 @@ local use_p_proc
 local use_obj_on_p_proc
 local use_skill_on_p_proc
 
-local test = 0
-
 function start()
-    if fallout.script_action() == 3 then
+    local script_action = fallout.script_action()
+    if script_action == 3 then
         description_p_proc()
-    else
-        if fallout.script_action() == 15 then
-            map_enter_p_proc()
-        else
-            if fallout.script_action() == 6 then
-                use_p_proc()
-            else
-                if fallout.script_action() == 7 then
-                    use_obj_on_p_proc()
-                else
-                    if fallout.script_action() == 8 then
-                        use_skill_on_p_proc()
-                    end
-                end
-            end
-        end
+    elseif script_action == 15 then
+        map_enter_p_proc()
+    elseif script_action == 6 then
+        use_p_proc()
+    elseif script_action == 7 then
+        use_obj_on_p_proc()
+    elseif script_action == 8 then
+        use_skill_on_p_proc()
     end
 end
 
@@ -50,17 +41,18 @@ end
 function use_obj_on_p_proc()
     if fallout.obj_being_used_with() == 77 then
         fallout.script_overrides()
-        if not(fallout.obj_is_locked(fallout.self_obj())) then
+        local self_obj = fallout.self_obj()
+        if not fallout.obj_is_locked(self_obj) then
             fallout.display_msg(fallout.message_str(363, 104))
         else
-            test = fallout.roll_vs_skill(fallout.dude_obj(), 9, 0)
-            if fallout.is_success(test) then
+            local roll = fallout.roll_vs_skill(fallout.dude_obj(), 9, 0)
+            if fallout.is_success(roll) then
                 fallout.display_msg(fallout.message_str(363, 102))
-                fallout.obj_unlock(fallout.self_obj())
+                fallout.obj_unlock(self_obj)
             else
-                if fallout.is_critical(test) then
+                if fallout.is_critical(roll) then
                     fallout.display_msg(fallout.message_str(363, 103))
-                    fallout.jam_lock(fallout.self_obj())
+                    fallout.jam_lock(self_obj)
                 else
                     fallout.display_msg(fallout.message_str(363, 106))
                 end
@@ -72,17 +64,18 @@ end
 function use_skill_on_p_proc()
     if fallout.action_being_used() == 9 then
         fallout.script_overrides()
-        if not(fallout.obj_is_locked(fallout.self_obj())) then
+        local self_obj = fallout.self_obj()
+        if not fallout.obj_is_locked(self_obj) then
             fallout.display_msg(fallout.message_str(363, 104))
         else
-            test = fallout.roll_vs_skill(fallout.source_obj(), fallout.action_being_used(), -20)
-            if fallout.is_success(test) then
+            local roll = fallout.roll_vs_skill(fallout.source_obj(), fallout.action_being_used(), -20)
+            if fallout.is_success(roll) then
                 fallout.display_msg(fallout.message_str(363, 102))
-                fallout.obj_unlock(fallout.self_obj())
+                fallout.obj_unlock(self_obj)
             else
-                if fallout.is_critical(test) then
+                if fallout.is_critical(roll) then
                     fallout.display_msg(fallout.message_str(363, 103))
-                    fallout.jam_lock(fallout.self_obj())
+                    fallout.jam_lock(self_obj)
                 else
                     fallout.display_msg(fallout.message_str(363, 105))
                 end
