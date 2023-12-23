@@ -3,7 +3,6 @@ local reputation = require("lib.reputation")
 local time = require("lib.time")
 
 local start
-local do_dialogue
 local Wife01
 local Wife02
 local Wife03
@@ -15,45 +14,28 @@ local pickup_p_proc
 local destroy_p_proc
 local damage_p_proc
 
-local HOSTILE = 0
+local hostile = false
 local initialized = false
 
 function start()
     if not initialized then
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 2)
+        fallout.critter_add_trait(self_obj, 1, 5, 6)
         initialized = true
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 2)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 6)
     end
-    if fallout.script_action() == 12 then
-        critter_p_proc()
-    else
-        if fallout.script_action() == 11 then
-            talk_p_proc()
-        else
-            if fallout.script_action() == 4 then
-                pickup_p_proc()
-            else
-                if fallout.script_action() == 18 then
-                    destroy_p_proc()
-                else
-                    if fallout.script_action() == 14 then
-                        damage_p_proc()
-                    end
-                end
-            end
-        end
-    end
-end
 
-function do_dialogue()
-    if time.is_night() then
-        Wife00n()
-    else
-        fallout.start_gdialog(119, fallout.self_obj(), 4, -1, -1)
-        fallout.gsay_start()
-        Wife01()
-        fallout.gsay_end()
-        fallout.end_dialogue()
+    local script_action = fallout.script_action()
+    if script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 14 then
+        damage_p_proc()
     end
 end
 
@@ -80,32 +62,42 @@ function WifeEnd()
 end
 
 function critter_p_proc()
+    local dude_obj = fallout.dude_obj()
+    local self_obj = fallout.self_obj()
     if fallout.map_var(2) == 1 then
         fallout.set_local_var(0, fallout.local_var(0) + 1)
         fallout.set_map_var(2, 0)
         if fallout.local_var(0) < 3 then
-            fallout.float_msg(fallout.self_obj(), fallout.message_str(129, 308), 2)
+            fallout.float_msg(self_obj, fallout.message_str(129, 308), 2)
         else
-            HOSTILE = 1
+            hostile = true
         end
     end
-    if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
+    if fallout.obj_can_see_obj(self_obj, dude_obj) then
         if fallout.global_var(246) == 1 then
-            HOSTILE = 1
+            hostile = true
         end
     end
-    if HOSTILE then
-        HOSTILE = 0
-        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+    if hostile then
+        hostile = false
+        fallout.attack(dude_obj, 0, 1, 0, 0, 30000, 0, 0)
     end
 end
 
 function talk_p_proc()
-    do_dialogue()
+    if time.is_night() then
+        Wife00n()
+    else
+        fallout.start_gdialog(119, fallout.self_obj(), 4, -1, -1)
+        fallout.gsay_start()
+        Wife01()
+        fallout.gsay_end()
+        fallout.end_dialogue()
+    end
 end
 
 function pickup_p_proc()
-    HOSTILE = 1
+    hostile = true
 end
 
 function destroy_p_proc()
