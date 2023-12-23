@@ -26,37 +26,28 @@ local wake_time = 0
 local sleep_time = 0
 local home_tile = 0
 local sleep_tile = 0
-local hostile = 0
+local hostile = false
 
 function start()
-    if fallout.script_action() == 12 then
+    local script_action = fallout.script_action()
+    if script_action == 12 then
         critter_p_proc()
-    else
-        if fallout.script_action() == 21 then
-            look_at_p_proc()
-        else
-            if fallout.script_action() == 18 then
-                destroy_p_proc()
-            else
-                if fallout.script_action() == 4 then
-                    pickup_p_proc()
-                else
-                    if fallout.script_action() == 11 then
-                        talk_p_proc()
-                    else
-                        if fallout.script_action() == 22 then
-                            timed_event_p_proc()
-                        end
-                    end
-                end
-            end
-        end
+    elseif script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 22 then
+        timed_event_p_proc()
     end
 end
 
 function critter_p_proc()
     if hostile then
-        hostile = 0
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
     if fallout.global_var(555) ~= 2 then
@@ -85,7 +76,7 @@ function map_enter_p_proc()
 end
 
 function pickup_p_proc()
-    hostile = 1
+    hostile = true
 end
 
 function talk_p_proc()
@@ -105,10 +96,11 @@ function talk_p_proc()
 end
 
 function timed_event_p_proc()
-    if fallout.obj_can_hear_obj(fallout.dude_obj(), fallout.self_obj()) then
-        fallout.float_msg(fallout.self_obj(), fallout.message_str(386, 102), 5)
+    local self_obj = fallout.self_obj()
+    if fallout.obj_can_hear_obj(fallout.dude_obj(), self_obj) then
+        fallout.float_msg(self_obj, fallout.message_str(386, 102), 5)
     end
-    fallout.critter_dmg(fallout.self_obj(), 250, 0)
+    fallout.critter_dmg(self_obj, 250, 0)
 end
 
 function destroy_p_proc()
@@ -159,7 +151,7 @@ function VictorEnd()
 end
 
 function VictorCombat()
-    hostile = 1
+    hostile = true
 end
 
 function VictorDies()
