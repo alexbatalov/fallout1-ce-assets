@@ -54,32 +54,21 @@ local VConCompEnd
 local Update_Invasion
 
 function start()
-    if fallout.script_action() == 14 then
+    local script_action = fallout.script_action()
+    if script_action == 14 then
         damage_p_proc()
-    else
-        if fallout.script_action() == 21 then
-            look_at_p_proc()
-        else
-            if fallout.script_action() == 3 then
-                description_p_proc()
-            else
-                if fallout.script_action() == 11 then
-                    talk_p_proc()
-                else
-                    if fallout.script_action() == 6 then
-                        use_p_proc()
-                    else
-                        if fallout.script_action() == 7 then
-                            use_obj_on_p_proc()
-                        else
-                            if fallout.script_action() == 8 then
-                                use_skill_on_p_proc()
-                            end
-                        end
-                    end
-                end
-            end
-        end
+    elseif script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 3 then
+        description_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 6 then
+        use_p_proc()
+    elseif script_action == 7 then
+        use_obj_on_p_proc()
+    elseif script_action == 8 then
+        use_skill_on_p_proc()
     end
 end
 
@@ -183,7 +172,7 @@ function VConComp02()
 end
 
 function VConComp02a()
-    if fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), 12, -10)) or (fallout.global_var(298) == 1) then
+    if fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), 12, -10)) or fallout.global_var(298) == 1 then
         VConComp09()
     else
         VConComp10()
@@ -434,16 +423,11 @@ function VConCompEnd()
 end
 
 function Update_Invasion()
-    local v0 = 0
-    local v1 = 0
-    local v2 = 0
-    local v3 = 0
-    local v4 = 0
-    v0 = fallout.global_var(150) - ((fallout.global_var(150) - time.game_time_in_days()) // 2)
-    v1 = fallout.global_var(151) - ((fallout.global_var(151) - time.game_time_in_days()) // 2)
-    v2 = fallout.global_var(152) - ((fallout.global_var(152) - time.game_time_in_days()) // 2)
-    v3 = fallout.global_var(153) - ((fallout.global_var(153) - time.game_time_in_days()) // 2)
-    v4 = fallout.global_var(154) - ((fallout.global_var(154) - time.game_time_in_days()) // 2)
+    local v0 = fallout.global_var(150) - ((fallout.global_var(150) - time.game_time_in_days()) // 2)
+    local v1 = fallout.global_var(151) - ((fallout.global_var(151) - time.game_time_in_days()) // 2)
+    local v2 = fallout.global_var(152) - ((fallout.global_var(152) - time.game_time_in_days()) // 2)
+    local v3 = fallout.global_var(153) - ((fallout.global_var(153) - time.game_time_in_days()) // 2)
+    local v4 = fallout.global_var(154) - ((fallout.global_var(154) - time.game_time_in_days()) // 2)
     fallout.set_global_var(150, v0)
     fallout.set_global_var(151, v1)
     fallout.set_global_var(152, v2)
