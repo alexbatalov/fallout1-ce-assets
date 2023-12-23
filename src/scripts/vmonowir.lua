@@ -5,7 +5,6 @@ local spatial_p_proc
 local use_skill_on_p_proc
 
 local triggered = false
-local test = 0
 
 function start()
     local script_action = fallout.script_action()
@@ -54,13 +53,14 @@ end
 function use_skill_on_p_proc()
     if fallout.map_var(7) == 1 and fallout.map_var(13) == 0 then
         fallout.script_overrides()
-        if fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), 11, -20)) then
+        local roll = fallout.roll_vs_skill(fallout.dude_obj(), 11, -20)
+        if fallout.is_success(roll) then
             fallout.display_msg(fallout.message_str(615, 104))
             fallout.set_map_var(13, 1)
             fallout.move_to(fallout.self_obj(), 7000, 0)
             fallout.set_external_var("removal_ptr", fallout.self_obj())
         else
-            if fallout.is_critical(test) then
+            if fallout.is_critical(roll) then
                 fallout.display_msg(fallout.message_str(615, 106))
                 fallout.critter_dmg(fallout.dude_obj(), 1, 1)
             else
