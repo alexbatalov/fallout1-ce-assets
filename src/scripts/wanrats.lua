@@ -7,46 +7,44 @@ local combat_p_proc
 local timed_event_p_proc
 local use_skill_on_p_proc
 
-local attacked = 0
-local hostile = 0
+local attacked = false
+local hostile = false
 local initialized = false
 
 function start()
     if not initialized then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 12)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 9)
-        fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(fallout.random(1, 5)), 0)
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 5, 12)
+        fallout.critter_add_trait(self_obj, 1, 6, 9)
+        fallout.add_timer_event(self_obj, fallout.game_ticks(fallout.random(1, 5)), 0)
         initialized = true
-    else
-        if fallout.script_action() == 12 then
-            critter_p_proc()
-        else
-            if fallout.script_action() == 13 then
-                combat_p_proc()
-            else
-                if fallout.script_action() == 22 then
-                    timed_event_p_proc()
-                else
-                    if fallout.script_action() == 8 then
-                        use_skill_on_p_proc()
-                    end
-                end
-            end
-        end
+    end
+
+    local script_action = fallout.script_action()
+    if script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 13 then
+        combat_p_proc()
+    elseif script_action == 22 then
+        timed_event_p_proc()
+    elseif script_action == 8 then
+        use_skill_on_p_proc()
     end
 end
 
 function critter_p_proc()
-    if hostile and (attacked == 0) then
-        hostile = 0
-        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+    local dude_obj = fallout.dude_obj()
+    if hostile and not attacked then
+        hostile = false
+        fallout.attack(dude_obj, 0, 1, 0, 0, 30000, 0, 0)
     else
-        if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
-            if fallout.has_trait(0, fallout.dude_obj(), 44) == 0 then
-                hostile = 1
+        local self_obj = fallout.self_obj()
+        if fallout.obj_can_see_obj(self_obj, dude_obj) then
+            if fallout.has_trait(0, dude_obj, 44) == 0 then
+                hostile = true
             end
         end
-        if attacked and (fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 8) then
+        if attacked and fallout.tile_distance_objs(self_obj, dude_obj) < 8 then
             behaviour.flee_dude(1)
         end
     end
@@ -54,13 +52,17 @@ end
 
 function combat_p_proc()
     if fallout.fixed_param() == 4 then
-        attacked = 1
+        attacked = true
     end
 end
 
 function timed_event_p_proc()
-    fallout.animate_move_obj_to_tile(fallout.self_obj(), fallout.tile_num_in_direction(fallout.tile_num(fallout.self_obj()), fallout.random(0, 5), fallout.random(1, 3)), 0)
-    fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(fallout.random(1, 5)), 0)
+    local self_obj = fallout.self_obj()
+    local rotation = fallout.random(0, 5)
+    local distance = fallout.random(1, 5)
+    local self_tile_num = fallout.tile_num(self_obj)
+    fallout.animate_move_obj_to_tile(self_obj, fallout.tile_num_in_direction(self_tile_num, rotation, distance), 0)
+    fallout.add_timer_event(self_obj, fallout.game_ticks(fallout.random(1, 5)), 0)
 end
 
 function use_skill_on_p_proc()
