@@ -7,43 +7,46 @@ local damage_p_proc
 local timed_event_p_proc
 
 local initialized = false
-local hostile = 0
+local hostile = false
 
 function start()
     if not initialized then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 12)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 9)
-        initialized = true
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 5, 12)
+        fallout.critter_add_trait(self_obj, 1, 6, 9)
         if time.is_night() then
-            fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(fallout.random(30, 40)), 0)
+            fallout.add_timer_event(self_obj, fallout.game_ticks(fallout.random(30, 40)), 0)
         end
-    else
-        if fallout.script_action() == 12 then
-            critter_p_proc()
-        else
-            if fallout.script_action() == 14 then
-                damage_p_proc()
-            else
-                if fallout.script_action() == 22 then
-                    timed_event_p_proc()
-                end
-            end
-        end
+        initialized = true
+    end
+
+    local script_action = fallout.script_action()
+    if script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 14 then
+        damage_p_proc()
+    elseif script_action == 22 then
+        timed_event_p_proc()
     end
 end
 
 function critter_p_proc()
-    if not time.is_night() and not(hostile) then
-        if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
-            if fallout.has_trait(0, fallout.dude_obj(), 44) == 0 then
-                fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
-                hostile = 1
+    local dude_obj = fallout.dude_obj()
+    local self_obj = fallout.self_obj()
+    if not time.is_night() and not hostile then
+        if fallout.obj_can_see_obj(self_obj, dude_obj) then
+            if fallout.has_trait(0, dude_obj, 44) == 0 then
+                fallout.attack(dude_obj, 0, 1, 0, 0, 30000, 0, 0)
+                hostile = true
             end
         end
     end
-    if not(hostile) then
+    if not hostile then
         fallout.script_overrides()
-        fallout.animate_move_obj_to_tile(fallout.self_obj(), fallout.tile_num_in_direction(fallout.tile_num(fallout.self_obj()), fallout.random(3, 4), 4), 1)
+        local self_tile_num = fallout.tile_num(self_obj)
+        -- FIXME: Odd rotation (it's usually any direction) and fixed distance.
+        local rotation = fallout.random(3, 4)
+        fallout.animate_move_obj_to_tile(self_obj, fallout.tile_num_in_direction(self_tile_num, rotation, 4), 1)
     end
 end
 
@@ -53,7 +56,7 @@ end
 
 function timed_event_p_proc()
     fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
-    hostile = 1
+    hostile = true
 end
 
 local exports = {}
