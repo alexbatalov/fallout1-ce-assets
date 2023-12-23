@@ -21,49 +21,39 @@ local VPLotMutAlert
 local VPLotMutxx
 
 local initialized = false
-local hostile = 0
-local all_clear = 0
+local hostile = false
+local all_clear = false
 local round_count = 0
 local parking_lot_tile = 17083
 local guard_tile = 20101
 local home_tile = 7000
 local waypoint = 0
 
-local exit_line = 0
-
 function start()
     if not initialized then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 34)
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 34)
         if fallout.map_var(0) ~= 0 then
-            fallout.move_to(fallout.self_obj(), home_tile, 0)
+            fallout.move_to(self_obj, home_tile, 0)
         else
-            fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(45), 1)
+            fallout.add_timer_event(self_obj, fallout.game_ticks(45), 1)
         end
         initialized = true
-    else
-        if fallout.script_action() == 13 then
-            combat_p_proc()
-        else
-            if fallout.script_action() == 12 then
-                critter_p_proc()
-            else
-                if fallout.script_action() == 18 then
-                    destroy_p_proc()
-                else
-                    if fallout.script_action() == 4 then
-                        pickup_p_proc()
-                    else
-                        if fallout.script_action() == 11 then
-                            talk_p_proc()
-                        else
-                            if fallout.script_action() == 22 then
-                                timed_event_p_proc()
-                            end
-                        end
-                    end
-                end
-            end
-        end
+    end
+
+    local script_action = fallout.script_action()
+    if script_action == 13 then
+        combat_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 22 then
+        timed_event_p_proc()
     end
 end
 
@@ -77,16 +67,18 @@ function combat_p_proc()
 end
 
 function critter_p_proc()
-    if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
+    local dude_obj = fallout.dude_obj()
+    local self_obj = fallout.self_obj()
+    if fallout.obj_can_see_obj(self_obj, dude_obj) then
         if hostile then
-            hostile = 0
-            fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+            hostile = false
+            fallout.attack(dude_obj, 0, 1, 0, 0, 30000, 0, 0)
         else
             if fallout.global_var(146) ~= 0 then
-                hostile = 1
+                hostile = true
             else
-                if not(fallout.external_var("ignoring_dude")) then
-                    if fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 12 then
+                if fallout.external_var("ignoring_dude") == 0 then
+                    if fallout.tile_distance_objs(self_obj, dude_obj) < 12 then
                         fallout.dialogue_system_enter()
                     end
                 end
@@ -94,32 +86,26 @@ function critter_p_proc()
         end
     end
     if fallout.map_var(0) ~= 0 then
-        if not(waypoint) then
-            if fallout.tile_num(fallout.self_obj()) ~= 22312 then
-                fallout.animate_move_obj_to_tile(fallout.self_obj(), 22312, 0)
+        if waypoint == 0 then
+            if fallout.tile_num(self_obj) ~= 22312 then
+                fallout.animate_move_obj_to_tile(self_obj, 22312, 0)
             else
                 waypoint = 1
             end
-        else
-            if waypoint == 1 then
-                if fallout.tile_num(fallout.self_obj()) ~= 26317 then
-                    fallout.animate_move_obj_to_tile(fallout.self_obj(), 26317, 0)
-                else
-                    waypoint = 2
-                end
+        elseif waypoint == 1 then
+            if fallout.tile_num(self_obj) ~= 26317 then
+                fallout.animate_move_obj_to_tile(self_obj, 26317, 0)
             else
-                if waypoint == 2 then
-                    if fallout.tile_num(fallout.self_obj()) ~= 31517 then
-                        fallout.animate_move_obj_to_tile(fallout.self_obj(), 32319, 0)
-                    else
-                        waypoint = 3
-                    end
-                else
-                    if waypoint == 3 then
-                        fallout.set_external_var("removal_ptr", fallout.self_obj())
-                    end
-                end
+                waypoint = 2
             end
+        elseif waypoint == 2 then
+            if fallout.tile_num(self_obj) ~= 31517 then
+                fallout.animate_move_obj_to_tile(self_obj, 32319, 0)
+            else
+                waypoint = 3
+            end
+        elseif waypoint == 3 then
+            fallout.set_external_var("removal_ptr", self_obj)
         end
     end
 end
@@ -129,18 +115,18 @@ function destroy_p_proc()
 end
 
 function pickup_p_proc()
-    hostile = 1
+    hostile = true
 end
 
 function talk_p_proc()
     if fallout.global_var(54) ~= 0 then
         VPLotMut08()
     else
-        if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) and not(hostile) then
+        if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) and not hostile then
             if fallout.random(0, 5) == 5 then
                 VPLotMut00()
             else
-                hostile = 1
+                hostile = true
             end
         else
             fallout.start_gdialog(433, fallout.self_obj(), 4, -1, -1)
@@ -153,24 +139,25 @@ function talk_p_proc()
 end
 
 function timed_event_p_proc()
-    if not(fallout.map_var(0)) then
-        if fallout.tile_num(fallout.self_obj()) == guard_tile then
-            if not(all_clear) then
-                fallout.float_msg(fallout.self_obj(), fallout.message_str(433, 100), 0)
-                all_clear = 1
+    if fallout.map_var(0) == 0 then
+        local self_obj = fallout.self_obj()
+        if fallout.tile_num(self_obj) == guard_tile then
+            if not all_clear then
+                fallout.float_msg(self_obj, fallout.message_str(433, 100), 0)
+                all_clear = true
             end
-            fallout.animate_move_obj_to_tile(fallout.self_obj(), parking_lot_tile, 0)
+            fallout.animate_move_obj_to_tile(self_obj, parking_lot_tile, 0)
         else
-            all_clear = 0
-            fallout.animate_move_obj_to_tile(fallout.self_obj(), guard_tile, 0)
+            all_clear = false
+            fallout.animate_move_obj_to_tile(self_obj, guard_tile, 0)
         end
-        fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(60), 1)
+        fallout.add_timer_event(self_obj, fallout.game_ticks(60), 1)
     end
 end
 
 function VPLotMut00()
     fallout.float_msg(fallout.self_obj(), fallout.message_str(433, fallout.random(101, 103)), 0)
-    hostile = 1
+    hostile = true
 end
 
 function VPLotMut03()
@@ -201,7 +188,7 @@ function VPLotMut03b()
 end
 
 function VPLotMut04()
-    hostile = 1
+    hostile = true
     fallout.gsay_message(433, fallout.random(112, 114), 0)
 end
 
@@ -212,7 +199,7 @@ function VPLotMut05()
 end
 
 function VPLotMut06()
-    hostile = 1
+    hostile = true
     fallout.gsay_message(433, fallout.random(118, 120), 0)
 end
 
@@ -223,12 +210,12 @@ end
 
 function VPLotMut08()
     fallout.float_msg(fallout.self_obj(), fallout.message_str(433, fallout.random(124, 127)), 0)
-    hostile = 1
+    hostile = true
 end
 
 function VPLotMutAlert()
     fallout.set_global_var(146, 1)
-    hostile = 1
+    hostile = true
 end
 
 function VPLotMutxx()
