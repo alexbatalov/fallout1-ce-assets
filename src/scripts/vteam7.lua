@@ -21,42 +21,33 @@ local GenSuprxx
 local set_alert_tile
 
 local initialized = false
-local hostile = 0
+local hostile = false
 local round_counter = 0
-local home_tile = 0
 local alert_tile = 0
-
-local exit_line = 0
 
 function start()
     if not initialized then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 34)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 48)
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 34)
+        fallout.critter_add_trait(self_obj, 1, 5, 48)
         set_alert_tile()
         if fallout.global_var(146) ~= 0 then
-            fallout.move_to(fallout.self_obj(), alert_tile, 0)
+            fallout.move_to(self_obj, alert_tile, 0)
         end
         initialized = true
-    else
-        if fallout.script_action() == 13 then
-            combat_p_proc()
-        else
-            if fallout.script_action() == 12 then
-                critter_p_proc()
-            else
-                if fallout.script_action() == 18 then
-                    destroy_p_proc()
-                else
-                    if fallout.script_action() == 4 then
-                        pickup_p_proc()
-                    else
-                        if fallout.script_action() == 11 then
-                            talk_p_proc()
-                        end
-                    end
-                end
-            end
-        end
+    end
+
+    local script_action = fallout.script_action()
+    if script_action == 13 then
+        combat_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
     end
 end
 
@@ -77,33 +68,35 @@ function combat_p_proc()
 end
 
 function critter_p_proc()
-    if hostile and fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
-        hostile = 0
-        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+    local dude_obj = fallout.dude_obj()
+    local self_obj = fallout.self_obj()
+    if hostile and fallout.obj_can_see_obj(self_obj, dude_obj) then
+        hostile = false
+        fallout.attack(dude_obj, 0, 1, 0, 0, 30000, 0, 0)
     else
-        if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
+        if fallout.obj_can_see_obj(self_obj, dude_obj) then
             if fallout.global_var(146) ~= 0 then
-                hostile = 1
+                hostile = true
             else
-                if not(fallout.external_var("ignoring_dude")) then
-                    if fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 12 then
+                if fallout.external_var("ignoring_dude") == 0 then
+                    if fallout.tile_distance_objs(self_obj, dude_obj) < 12 then
                         fallout.dialogue_system_enter()
                     end
                 end
             end
         end
         if fallout.global_var(146) ~= 0 then
-            if fallout.tile_num(fallout.self_obj()) ~= alert_tile then
-                fallout.animate_move_obj_to_tile(fallout.self_obj(), alert_tile, 0)
+            if fallout.tile_num(self_obj) ~= alert_tile then
+                fallout.animate_move_obj_to_tile(self_obj, alert_tile, 0)
             end
         else
-            if fallout.tile_num(fallout.self_obj()) ~= fallout.local_var(4) then
-                fallout.animate_move_obj_to_tile(fallout.self_obj(), fallout.local_var(4), 0)
+            if fallout.tile_num(self_obj) ~= fallout.local_var(4) then
+                fallout.animate_move_obj_to_tile(self_obj, fallout.local_var(4), 0)
             end
         end
     end
-    if (fallout.global_var(273) >= 1) and (fallout.global_var(273) <= 3) then
-        fallout.set_external_var("valid_target", fallout.self_obj())
+    if fallout.global_var(273) >= 1 and fallout.global_var(273) <= 3 then
+        fallout.set_external_var("valid_target", self_obj)
     end
 end
 
@@ -112,18 +105,18 @@ function destroy_p_proc()
 end
 
 function pickup_p_proc()
-    hostile = 1
+    hostile = true
 end
 
 function talk_p_proc()
     if fallout.global_var(54) ~= 0 then
         GenSupr08()
     else
-        if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) and not(hostile) then
+        if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) and not hostile then
             if fallout.random(0, 5) == 5 then
                 GenSupr00()
             else
-                hostile = 1
+                hostile = true
             end
         else
             fallout.start_gdialog(433, fallout.self_obj(), 4, -1, -1)
@@ -137,7 +130,7 @@ end
 
 function GenSupr00()
     fallout.float_msg(fallout.self_obj(), fallout.message_str(433, fallout.random(101, 103)), 2)
-    hostile = 1
+    hostile = true
 end
 
 function GenSupr03()
@@ -168,7 +161,7 @@ function GenSupr03b()
 end
 
 function GenSupr04()
-    hostile = 1
+    hostile = true
     fallout.gsay_message(433, fallout.random(112, 114), 51)
 end
 
@@ -179,7 +172,7 @@ function GenSupr05()
 end
 
 function GenSupr06()
-    hostile = 1
+    hostile = true
     fallout.gsay_message(433, fallout.random(118, 120), 51)
 end
 
@@ -190,12 +183,12 @@ end
 
 function GenSupr08()
     fallout.float_msg(fallout.self_obj(), fallout.message_str(433, fallout.random(124, 127)), 2)
-    hostile = 1
+    hostile = true
 end
 
 function GenSuprAlert()
     fallout.set_global_var(146, 1)
-    hostile = 1
+    hostile = true
 end
 
 function GenSuprxx()
@@ -204,19 +197,17 @@ function GenSuprxx()
 end
 
 function set_alert_tile()
-    if not(fallout.local_var(4)) then
-        fallout.set_local_var(4, fallout.tile_num(fallout.self_obj()))
+    local tile_num = fallout.local_var(4)
+    if tile_num == 0 then
+        tile_num = fallout.tile_num(fallout.self_obj())
+        fallout.set_local_var(4, tile_num)
     end
-    if fallout.local_var(4) == 16732 then
+    if tile_num == 16732 then
         alert_tile = 16341
-    else
-        if fallout.local_var(4) == 18131 then
-            alert_tile = 17147
-        else
-            if fallout.local_var(4) == 17335 then
-                alert_tile = 16144
-            end
-        end
+    elseif tile_num == 18131 then
+        alert_tile = 17147
+    elseif tile_num == 17335 then
+        alert_tile = 16144
     end
 end
 
