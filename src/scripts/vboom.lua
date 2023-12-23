@@ -9,42 +9,31 @@ local deallocate
 local detonate
 local plasma_death
 
-local initialized = false
-
 function start()
-    if not initialized then
-        initialized = true
-    else
-        if fallout.script_action() == 3 then
-            description_p_proc()
-        else
-            if fallout.script_action() == 21 then
-                look_at_p_proc()
-            else
-                if fallout.script_action() == 8 then
-                    use_skill_on_p_proc()
-                else
-                    if fallout.script_action() == 2 then
-                        spatial_p_proc()
-                    end
-                end
-            end
-        end
+    local script_action = fallout.script_action()
+    if script_action == 3 then
+        description_p_proc()
+    elseif script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 8 then
+        use_skill_on_p_proc()
+    elseif script_action == 2 then
+        spatial_p_proc()
     end
 end
 
 function description_p_proc()
-    local v0 = 0
     fallout.script_overrides()
-    v0 = fallout.message_str(611, 100)
-    if not(fallout.local_var(0)) then
-        if not(fallout.is_success(fallout.do_check(fallout.dude_obj(), 1, fallout.has_trait(0, fallout.dude_obj(), 0)))) then
-            v0 = fallout.message_str(611, 101)
+    local message = fallout.message_str(611, 100)
+    if fallout.local_var(0) == 0 then
+        local dude_obj = fallout.dude_obj()
+        if not fallout.is_success(fallout.do_check(dude_obj, 1, fallout.has_trait(0, dude_obj, 0))) then
+            message = fallout.message_str(611, 101)
         else
             fallout.set_local_var(0, 1)
         end
     end
-    fallout.display_msg(v0)
+    fallout.display_msg(message)
 end
 
 function look_at_p_proc()
@@ -55,22 +44,22 @@ function look_at_p_proc()
 end
 
 function spatial_p_proc()
-    local v0 = 0
     if fallout.map_var(10) == 1 then
         deallocate()
     else
-        if fallout.source_obj() == fallout.dude_obj() then
+        local dude_obj = fallout.dude_obj()
+        if fallout.source_obj() == dude_obj then
             if fallout.map_var(7) == 1 then
                 detonate()
             else
-                if fallout.is_success(fallout.do_check(fallout.dude_obj(), 1, fallout.has_trait(0, fallout.dude_obj(), 0) - 3)) then
+                if fallout.is_success(fallout.do_check(dude_obj, 1, fallout.has_trait(0, dude_obj, 0) - 3)) then
                     fallout.script_overrides()
-                    v0 = fallout.message_str(613, 100)
-                    if fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), 11, 10)) then
-                        v0 = v0 .. fallout.message_str(613, 101)
+                    local message = fallout.message_str(613, 100)
+                    if fallout.is_success(fallout.roll_vs_skill(dude_obj, 11, 10)) then
+                        message = message .. fallout.message_str(613, 101)
                     end
                     fallout.set_local_var(0, 1)
-                    fallout.display_msg(v0)
+                    fallout.display_msg(message)
                 end
             end
         end
@@ -78,19 +67,17 @@ function spatial_p_proc()
 end
 
 function use_skill_on_p_proc()
-    local v0 = 0
-    local v1 = 0
     if fallout.action_being_used() == 11 then
         if fallout.local_var(0) ~= 0 then
             fallout.script_overrides()
-            v1 = fallout.roll_vs_skill(fallout.dude_obj(), 11, 10)
-            if fallout.is_success(v1) then
+            local roll = fallout.roll_vs_skill(fallout.dude_obj(), 11, 10)
+            if fallout.is_success(roll) then
                 fallout.display_msg(fallout.message_str(613, 102))
-                v0 = fallout.create_object_sid(26, 0, 0, -1)
-                fallout.add_obj_to_inven(fallout.dude_obj(), v0)
+                local item_obj = fallout.create_object_sid(26, 0, 0, -1)
+                fallout.add_obj_to_inven(fallout.dude_obj(), item_obj)
                 deallocate()
             else
-                if fallout.is_critical(v1) then
+                if fallout.is_critical(roll) then
                     fallout.display_msg(fallout.message_str(613, 103))
                     detonate()
                 else
@@ -102,26 +89,27 @@ function use_skill_on_p_proc()
 end
 
 function deallocate()
-    fallout.move_to(fallout.self_obj(), 7000, 0)
+    local self_obj = fallout.self_obj()
+    fallout.move_to(self_obj, 7000, 0)
     fallout.set_map_var(10, 1)
-    fallout.set_external_var("removal_ptr", fallout.self_obj())
+    fallout.set_external_var("removal_ptr", self_obj)
 end
 
 function detonate()
-    local v0 = 0
-    v0 = fallout.random(10, 20)
-    fallout.explosion(fallout.tile_num(fallout.dude_obj()), fallout.elevation(fallout.dude_obj()), v0)
+    local dude_obj = fallout.dude_obj()
+    fallout.explosion(fallout.tile_num(dude_obj), fallout.elevation(dude_obj), fallout.random(10, 20))
     deallocate()
 end
 
 function plasma_death()
-    fallout.explosion(fallout.tile_num(fallout.dude_obj()), fallout.elevation(fallout.dude_obj()), 0)
-    fallout.reg_anim_func(2, fallout.dude_obj())
+    local dude_obj = fallout.dude_obj()
+    fallout.explosion(fallout.tile_num(dude_obj), fallout.elevation(dude_obj), 0)
+    fallout.reg_anim_func(2, dude_obj)
     fallout.reg_anim_func(1, 1)
-    fallout.reg_anim_animate(fallout.dude_obj(), 32, -1)
+    fallout.reg_anim_animate(dude_obj, 32, -1)
     fallout.reg_anim_func(3, 0)
     fallout.game_ui_disable()
-    fallout.add_timer_event(fallout.dude_obj(), fallout.game_ticks(5), 8)
+    fallout.add_timer_event(dude_obj, fallout.game_ticks(5), 8)
 end
 
 local exports = {}
