@@ -57,49 +57,35 @@ local wake_time = 0
 local sleep_time = 0
 local home_tile = 0
 local sleep_tile = 0
-local hostile = 0
-local item = 0
-local unwield_flag = 0
-local cola2_ptr = 0
+local hostile = false
+local unwield_flag = false
+local cola2_ptr = nil
 local prev_tile = 0
 local dest_tile = 0
-local line08flag = 0
-
-local exit_line = 0
+local line08flag = false
 
 function start()
-    if fallout.script_action() == 12 then
+    local script_action = fallout.script_action()
+    if script_action == 12 then
         critter_p_proc()
-    else
-        if fallout.script_action() == 18 then
-            destroy_p_proc()
-        else
-            if fallout.script_action() == 21 then
-                look_at_p_proc()
-            else
-                if fallout.script_action() == 15 then
-                    map_enter_p_proc()
-                else
-                    if fallout.script_action() == 11 then
-                        talk_p_proc()
-                    else
-                        if fallout.script_action() == 22 then
-                            timed_event_p_proc()
-                        else
-                            if fallout.script_action() == 7 then
-                                use_obj_on_p_proc()
-                            end
-                        end
-                    end
-                end
-            end
-        end
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 15 then
+        map_enter_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 22 then
+        timed_event_p_proc()
+    elseif script_action == 7 then
+        use_obj_on_p_proc()
     end
 end
 
 function critter_p_proc()
     if hostile then
-        hostile = 0
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     else
         if fallout.global_var(121) < 2 then
@@ -127,14 +113,15 @@ function map_enter_p_proc()
     wake_time = 1600
     home_tile = 19690
     sleep_tile = 7000
-    if fallout.obj_is_carrying_obj_pid(fallout.self_obj(), 106) >= 2 then
-        cola2_ptr = fallout.obj_carrying_pid_obj(fallout.self_obj(), 106)
+    local self_obj = fallout.self_obj()
+    if fallout.obj_is_carrying_obj_pid(self_obj, 106) >= 2 then
+        cola2_ptr = fallout.obj_carrying_pid_obj(self_obj, 106)
     end
     if fallout.global_var(121) == 2 then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 0)
-        fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(1), 1)
+        fallout.critter_add_trait(self_obj, 1, 6, 0)
+        fallout.add_timer_event(self_obj, fallout.game_ticks(1), 1)
     else
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 26)
+        fallout.critter_add_trait(self_obj, 1, 6, 26)
     end
 end
 
@@ -144,24 +131,16 @@ function talk_p_proc()
     fallout.gsay_start()
     if fallout.global_var(121) == 3 then
         Tycho28()
+    elseif fallout.global_var(121) == 2 then
+        Tycho22()
+    elseif fallout.global_var(121) == 0 then
+        Tycho01()
+    elseif fallout.global_var(39) == 1 and fallout.global_var(36) == 0 then
+        Tycho19()
+    elseif fallout.local_var(1) < 2 then
+        Tycho14()
     else
-        if fallout.global_var(121) == 2 then
-            Tycho22()
-        else
-            if fallout.global_var(121) == 0 then
-                Tycho01()
-            else
-                if (fallout.global_var(39) == 1) and (fallout.global_var(36) == 0) then
-                    Tycho19()
-                else
-                    if fallout.local_var(1) < 2 then
-                        Tycho14()
-                    else
-                        Tycho15()
-                    end
-                end
-            end
-        end
+        Tycho15()
     end
     fallout.gsay_end()
     fallout.end_dialogue()
@@ -172,8 +151,8 @@ function talk_p_proc()
             fallout.set_global_var(314, 1)
         end
     end
-    if unwield_flag == 1 then
-        unwield_flag = 0
+    if unwield_flag then
+        unwield_flag = false
         fallout.inven_unwield()
     end
 end
@@ -186,18 +165,33 @@ end
 
 function use_obj_on_p_proc()
     if fallout.global_var(121) == 2 then
-        item = fallout.obj_pid(fallout.obj_being_used_with())
-        if (item ~= 40) and (item ~= 47) and (item ~= 91) then
+        local item_obj = fallout.obj_being_used_with()
+        local self_obj = fallout.self_obj()
+        local dude_obj = fallout.dude_obj()
+        local pid = fallout.obj_pid(item_obj)
+        if pid ~= 40 and pid ~= 47 and pid ~= 91 then
             fallout.script_overrides()
-            if fallout.obj_item_subtype(fallout.obj_being_used_with()) ~= 3 then
-                fallout.rm_obj_from_inven(fallout.dude_obj(), fallout.obj_being_used_with())
-                fallout.add_obj_to_inven(fallout.self_obj(), fallout.obj_being_used_with())
+            if fallout.obj_item_subtype(item_obj) ~= 3 then
+                fallout.rm_obj_from_inven(dude_obj, item_obj)
+                fallout.add_obj_to_inven(self_obj, item_obj)
             else
-                if (item == 8) or (item == 18) or (item == 143) or (item == 10) or (item == 94) or (item == 7) or (item == 21) or (item == 234) or (item == 235) or (item == 24) or (item == 16) or (item == 120) or (item == 242) then
-                    fallout.rm_obj_from_inven(fallout.dude_obj(), fallout.obj_being_used_with())
-                    fallout.add_obj_to_inven(fallout.self_obj(), fallout.obj_being_used_with())
+                if pid == 8
+                    or pid == 18
+                    or pid == 143
+                    or pid == 10
+                    or pid == 94
+                    or pid == 7
+                    or pid == 21
+                    or pid == 234
+                    or pid == 235
+                    or pid == 24
+                    or pid == 16
+                    or pid == 120
+                    or pid == 242 then
+                    fallout.rm_obj_from_inven(dude_obj, item_obj)
+                    fallout.add_obj_to_inven(self_obj, item_obj)
                 else
-                    fallout.float_msg(fallout.self_obj(), fallout.message_str(634, 109), 3)
+                    fallout.float_msg(self_obj, fallout.message_str(634, 109), 3)
                 end
             end
         end
@@ -212,8 +206,9 @@ function Tycho01()
 end
 
 function Tycho02()
-    if fallout.obj_is_carrying_obj_pid(fallout.self_obj(), fallout.obj_pid(cola2_ptr)) then
-        fallout.rm_obj_from_inven(fallout.self_obj(), cola2_ptr)
+    local self_obj = fallout.self_obj()
+    if fallout.obj_is_carrying_obj_pid(self_obj, fallout.obj_pid(cola2_ptr)) ~= 0 then
+        fallout.rm_obj_from_inven(self_obj, cola2_ptr)
         fallout.add_obj_to_inven(fallout.dude_obj(), cola2_ptr)
     end
     fallout.gsay_reply(389, 106)
@@ -250,10 +245,10 @@ end
 function Tycho08()
     fallout.gsay_reply(389, 120)
     if line08flag then
-        exit_line = reaction.Goodbyes()
+        local exit_line = reaction.Goodbyes()
         fallout.giq_option(4, 389, exit_line, TychoEnd, 50)
     else
-        line08flag = 1
+        line08flag = true
         fallout.giq_option(4, 389, 121, Tycho11, 50)
     end
 end
@@ -273,7 +268,9 @@ end
 function Tycho11()
     fallout.set_global_var(121, 1)
     fallout.gsay_reply(389, 127)
-    fallout.giq_option(4, 389, fallout.message_str(389, 128) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(389, 129), Tycho12, 50)
+    fallout.giq_option(4, 389,
+        fallout.message_str(389, 128) ..
+        fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(389, 129), Tycho12, 50)
     fallout.giq_option(4, 389, 130, Tycho13, 50)
 end
 
@@ -307,7 +304,7 @@ end
 
 function Tycho16()
     fallout.gsay_reply(389, 141)
-    exit_line = reaction.Goodbyes()
+    local exit_line = reaction.Goodbyes()
     fallout.giq_option(4, 389, exit_line, TychoEnd, 50)
 end
 
@@ -317,7 +314,7 @@ function Tycho17()
     fallout.game_time_advance(fallout.game_ticks(120))
     fallout.gsay_reply(389, 142)
     fallout.gfade_in(600)
-    exit_line = reaction.Goodbyes()
+    local exit_line = reaction.Goodbyes()
     fallout.giq_option(4, 389, exit_line, Tycho11, 50)
 end
 
@@ -405,7 +402,7 @@ end
 
 function Tycho29()
     fallout.gsay_message(235, 201, 49)
-    unwield_flag = 1
+    unwield_flag = true
     Tycho22()
 end
 
@@ -422,40 +419,49 @@ function Tycho32()
 end
 
 function follow_player()
-    local v0 = 0
+    local dude_obj = fallout.dude_obj()
+    local dude_tile_num = fallout.tile_num(dude_obj)
+    local self_obj = fallout.self_obj()
+
     prev_tile = dest_tile
-    v0 = (fallout.has_trait(1, fallout.dude_obj(), 10) + fallout.random(2, 4)) % 6
-    dest_tile = fallout.tile_num_in_direction(fallout.tile_num(fallout.dude_obj()), v0, (fallout.global_var(278) * 2) + fallout.random(1, 2))
-    if (fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) > ((fallout.global_var(278) + 1) * 2)) or (fallout.random(0, 3) == 3) then
-        if fallout.tile_distance(prev_tile, fallout.tile_num(fallout.dude_obj())) > fallout.tile_distance(dest_tile, fallout.tile_num(fallout.dude_obj())) then
-            if fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) > 8 then
-                fallout.animate_move_obj_to_tile(fallout.self_obj(), dest_tile, 1 | 16)
+    dest_tile = fallout.tile_num_in_direction(fallout.tile_num(fallout.dude_obj()),
+        (fallout.has_trait(1, fallout.dude_obj(), 10) + fallout.random(2, 4)) % 6,
+        (fallout.global_var(278) * 2) + fallout.random(1, 2))
+
+    local distance_prev_to_dude = fallout.tile_distance(prev_tile, dude_tile_num)
+    local distance_dest_to_dude = fallout.tile_distance(dest_tile, dude_tile_num)
+    local distance_self_to_dude = fallout.tile_distance_objs(self_obj, dude_obj)
+    if (distance_self_to_dude > ((fallout.global_var(278) + 1) * 2)) or (fallout.random(0, 3) == 3) then
+        if distance_prev_to_dude > distance_dest_to_dude then
+            if distance_self_to_dude > 8 then
+                fallout.animate_move_obj_to_tile(self_obj, dest_tile, 1 | 16)
             else
-                fallout.animate_move_obj_to_tile(fallout.self_obj(), dest_tile, 0 | 16)
+                fallout.animate_move_obj_to_tile(self_obj, dest_tile, 0 | 16)
             end
         else
-            if fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) > 8 then
-                fallout.animate_move_obj_to_tile(fallout.self_obj(), dest_tile, 1)
+            if distance_self_to_dude > 8 then
+                fallout.animate_move_obj_to_tile(self_obj, dest_tile, 1)
             else
-                fallout.animate_move_obj_to_tile(fallout.self_obj(), dest_tile, 0)
+                fallout.animate_move_obj_to_tile(self_obj, dest_tile, 0)
             end
         end
     end
-    fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(1), 1)
+    fallout.add_timer_event(self_obj, fallout.game_ticks(1), 1)
 end
 
 function TychoEnd()
 end
 
 function TychoCombat()
-    hostile = 1
+    hostile = true
 end
 
 function TychoJoins()
+    local self_obj = fallout.self_obj()
     fallout.set_global_var(121, 2)
-    fallout.critter_add_trait(fallout.self_obj(), 1, 6, 0)
-    fallout.party_add(fallout.self_obj())
-    fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(1), 1)
+    fallout.critter_add_trait(self_obj, 1, 6, 0)
+    fallout.party_add(self_obj)
+    fallout.add_timer_event(self_obj, fallout.game_ticks(1), 1)
 end
 
 function TychoTactics()
