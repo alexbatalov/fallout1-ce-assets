@@ -5,17 +5,17 @@ local use_p_proc
 local use_skill_on_p_proc
 
 function start()
-    if fallout.script_action() == 6 then
+    local script_action = fallout.script_action()
+    if script_action == 6 then
         use_p_proc()
-    else
-        if fallout.script_action() == 8 then
-            use_skill_on_p_proc()
-        end
+    elseif script_action == 8 then
+        use_skill_on_p_proc()
     end
 end
 
 function use_p_proc()
-    if fallout.cur_map_index() == 31 then
+    local cur_map_index = fallout.cur_map_index()
+    if cur_map_index == 31 then
         fallout.set_external_var("field_change", "toggle")
         fallout.use_obj(fallout.map_var(0))
         fallout.use_obj(fallout.map_var(1))
@@ -25,23 +25,20 @@ function use_p_proc()
         fallout.use_obj(fallout.map_var(5))
         fallout.use_obj(fallout.map_var(6))
         fallout.use_obj(fallout.map_var(7))
-    else
-        if fallout.cur_map_index() == 32 then
-            fallout.set_external_var("field_change", "toggle")
-            fallout.use_obj(fallout.map_var(5))
-        end
+    elseif cur_map_index == 32 then
+        fallout.set_external_var("field_change", "toggle")
+        fallout.use_obj(fallout.map_var(5))
     end
 end
 
 function use_skill_on_p_proc()
-    if fallout.action_being_used() == 13 then
+    local skill = fallout.action_being_used()
+    if skill == 13 then
         fallout.script_overrides()
         fallout.display_msg(fallout.message_str(864, 100))
-    else
-        if fallout.action_being_used() == 12 then
-            fallout.script_overrides()
-            fallout.display_msg(fallout.message_str(864, 101))
-        end
+    elseif skill == 12 then
+        fallout.script_overrides()
+        fallout.display_msg(fallout.message_str(864, 101))
     end
 end
 
