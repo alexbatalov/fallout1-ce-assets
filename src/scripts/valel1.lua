@@ -1,18 +1,3 @@
-local fallout = require("fallout")
+local factory = require("lib.factory")
 
-local start
-
-function start()
-    if fallout.script_action() == 6 then
-        fallout.script_overrides()
-        fallout.add_timer_event(fallout.self_obj(), 8, 1)
-    else
-        if fallout.script_action() == 22 then
-            fallout.move_to(fallout.dude_obj(), 23118, 1)
-        end
-    end
-end
-
-local exports = {}
-exports.start = start
-return exports
+return factory.create_elevator_use_scr(23118, 1)

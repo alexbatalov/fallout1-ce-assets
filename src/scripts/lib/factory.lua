@@ -67,10 +67,27 @@ local function create_elevator_spatial_scr(elevator)
     return scr
 end
 
+--- @param tile integer
+--- @param elevation integer
+local function create_elevator_use_scr(tile, elevation)
+    local scr = {}
+    scr.start = function()
+        local script_action = fallout.script_action()
+        if script_action == 6 then
+            fallout.script_overrides()
+            fallout.add_timer_event(fallout.self_obj(), 8, 1)
+        elseif script_action == 22 then
+            fallout.move_to(fallout.dude_obj(), tile, elevation)
+        end
+    end
+    return scr
+end
+
 local exports = {}
 exports.create_use_scr = create_use_scr
 exports.create_one_off_spatial_scr = create_one_off_spatial_scr
 exports.create_load_map_spatial_scr = create_load_map_spatial_scr
 exports.create_load_map_use_scr = create_load_map_use_scr
 exports.create_elevator_spatial_scr = create_elevator_spatial_scr
+exports.create_elevator_use_scr = create_elevator_use_scr
 return exports
