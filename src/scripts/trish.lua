@@ -58,67 +58,60 @@ local item = 0
 local exit_line = 0
 
 function start()
-    if fallout.script_action() == 12 then
+    local script_action = fallout.script_action()
+    if script_action == 12 then
         critter_p_proc()
-    else
-        if fallout.script_action() == 18 then
-            destroy_p_proc()
-        else
-            if fallout.script_action() == 21 then
-                look_at_p_proc()
-            else
-                if fallout.script_action() == 15 then
-                    map_enter_p_proc()
-                else
-                    if fallout.script_action() == 23 then
-                        map_update_p_proc()
-                    else
-                        if fallout.script_action() == 11 then
-                            talk_p_proc()
-                        else
-                            if fallout.script_action() == 22 then
-                                fallout.dialogue_system_enter()
-                            end
-                        end
-                    end
-                end
-            end
-        end
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 15 then
+        map_enter_p_proc()
+    elseif script_action == 23 then
+        map_update_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 22 then
+        fallout.dialogue_system_enter()
     end
 end
 
 function critter_p_proc()
+    local self_obj = fallout.self_obj()
+    local dude_obj = fallout.dude_obj()
     if fallout.cur_map_index() == 12 then
-        if fallout.obj_can_hear_obj(fallout.self_obj(), fallout.dude_obj()) then
-            if not((fallout.global_var(557) & 1) or (fallout.global_var(557) & 4)) then
-                fallout.anim(fallout.self_obj(), 37, 0)
+        if fallout.obj_can_hear_obj(self_obj, dude_obj) then
+            if fallout.global_var(557) & 1 == 0 and fallout.global_var(557) & 4 == 0 then
+                fallout.anim(self_obj, 37, 0)
                 fallout.set_local_var(4, 0)
-                fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(5), 1)
+                fallout.add_timer_event(self_obj, fallout.game_ticks(5), 1)
             end
         end
     end
-    if fallout.global_var(557) & 32 then
-        fallout.destroy_object(fallout.self_obj())
+    if fallout.global_var(557) & 32 ~= 0 then
+        fallout.destroy_object(self_obj)
     else
         behaviour.sleeping(4, night_person, wake_time, sleep_time, home_tile, sleep_tile)
     end
     if fallout.cur_map_index() == 11 then
-        if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
-            if (fallout.map_var(0) == 1) and (fallout.map_var(1) == 1) and (fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 12) then
+        if fallout.obj_can_see_obj(self_obj, dude_obj) then
+            if fallout.map_var(0) == 1
+                and fallout.map_var(1) == 1
+                and fallout.tile_distance_objs(self_obj, dude_obj) < 12 then
                 fallout.dialogue_system_enter()
             end
         end
-        if (fallout.game_time_hour() > (wake_time + 20)) or (fallout.game_time_hour() < sleep_time) then
-            if fallout.tile_num(fallout.self_obj()) ~= home_tile then
-                if (fallout.global_var(282) == 0) or (fallout.global_var(555) == 2) then
-                    fallout.animate_move_obj_to_tile(fallout.self_obj(), home_tile, 0)
+        if fallout.game_time_hour() > wake_time + 20 or fallout.game_time_hour() < sleep_time then
+            if fallout.tile_num(self_obj) ~= home_tile then
+                if fallout.global_var(282) == 0 or fallout.global_var(555) == 2 then
+                    fallout.animate_move_obj_to_tile(self_obj, home_tile, 0)
                 end
             end
         end
     end
     if fallout.global_var(247) == 1 then
-        if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
-            fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+        if fallout.obj_can_see_obj(self_obj, dude_obj) then
+            fallout.attack(dude_obj, 0, 1, 0, 0, 30000, 0, 0)
         end
     end
 end
@@ -139,7 +132,7 @@ end
 
 function look_at_p_proc()
     fallout.script_overrides()
-    if (fallout.global_var(557) & 1) or (fallout.global_var(557) & 4) then
+    if fallout.global_var(557) & 1 ~= 0 or fallout.global_var(557) & 4 ~= 0 then
         fallout.display_msg(fallout.message_str(342, 100))
     else
         fallout.display_msg(fallout.message_str(342, 167))
@@ -148,8 +141,9 @@ end
 
 function map_enter_p_proc()
     night_person = true
-    fallout.set_external_var("Trish_ptr", fallout.self_obj())
-    fallout.critter_add_trait(fallout.self_obj(), 1, 6, 26)
+    local self_obj = fallout.self_obj()
+    fallout.set_external_var("Trish_ptr", self_obj)
+    fallout.critter_add_trait(self_obj, 1, 6, 26)
     if fallout.cur_map_index() == 11 then
         sleep_tile = 7000
         home_tile = 20083
@@ -162,7 +156,7 @@ function map_enter_p_proc()
 end
 
 function map_update_p_proc()
-    if fallout.global_var(557) & 32 then
+    if fallout.global_var(557) & 32 ~= 0 then
         fallout.destroy_object(fallout.self_obj())
     end
 end
@@ -173,36 +167,28 @@ function talk_p_proc()
         fallout.float_msg(fallout.self_obj(), fallout.message_str(342, 151), 0)
     else
         if fallout.cur_map_index() == 12 then
-            if not((fallout.global_var(557) & 1) or (fallout.global_var(557) & 4)) then
+            if fallout.global_var(557) & 1 == 0 and fallout.global_var(557) & 4 == 0 then
                 Trish0()
+            elseif fallout.global_var(557) & 4 ~= 0 and fallout.global_var(557) & 1 == 0 then
+                Trish11()
+            elseif fallout.global_var(169) == 3 and fallout.local_var(7) == 0 then
+                Trish17()
+            elseif fallout.global_var(169) == 1 and fallout.local_var(5) == 0 then
+                Trish3()
+            elseif fallout.global_var(557) & 8 ~= 0 and fallout.local_var(6) == 0 then
+                Trish16()
             else
-                if (fallout.global_var(557) & 4) and not(fallout.global_var(557) & 1) then
-                    Trish11()
-                else
-                    if (fallout.global_var(169) == 3) and not(fallout.local_var(7)) then
-                        Trish17()
-                    else
-                        if (fallout.global_var(169) == 1) and not(fallout.local_var(5)) then
-                            Trish3()
-                        else
-                            if (fallout.global_var(557) & 8) and not(fallout.local_var(6)) then
-                                Trish16()
-                            else
-                                Trish15()
-                            end
-                        end
-                    end
-                end
+                Trish15()
             end
         else
-            if (fallout.game_time_hour() >= 1300) and (fallout.game_time_hour() < 1600) then
+            if fallout.game_time_hour() >= 1300 and fallout.game_time_hour() < 1600 then
                 fallout.float_msg(fallout.self_obj(), fallout.message_str(342, 152), 0)
             else
                 Trish25()
             end
         end
     end
-    if not(fallout.global_var(557) & 16) and (fallout.global_var(557) & 8) then
+    if fallout.global_var(557) & 16 == 0 and fallout.global_var(557) & 8 ~= 0 then
         fallout.set_global_var(557, fallout.global_var(557) + 16)
         fallout.display_msg(fallout.message_str(342, 173))
         fallout.set_global_var(155, fallout.global_var(155) + 2)
@@ -213,7 +199,7 @@ end
 function Trish0()
     fallout.start_gdialog(342, fallout.self_obj(), 4, -1, -1)
     fallout.gsay_start()
-    if not(fallout.global_var(557) & 1) then
+    if fallout.global_var(557) & 1 == 0 then
         fallout.set_global_var(557, fallout.global_var(557) + 1)
     end
     fallout.gsay_reply(342, 101)
@@ -273,12 +259,11 @@ function Trish7()
 end
 
 function Trish8()
-    local v0 = 0
-    v0 = fallout.message_str(342, 121)
-    if not(fallout.global_var(38)) then
-        v0 = v0 .. fallout.message_str(342, 168)
+    local message = fallout.message_str(342, 121)
+    if fallout.global_var(38) == 0 then
+        message = message .. fallout.message_str(342, 168)
     end
-    fallout.gsay_message(342, v0, 49)
+    fallout.gsay_message(342, message, 49)
     fallout.set_global_var(557, fallout.global_var(557) + 8)
 end
 
@@ -294,7 +279,7 @@ function Trish10()
 end
 
 function Trish11()
-    if not(fallout.global_var(557) & 1) then
+    if fallout.global_var(557) & 1 == 0 then
         fallout.set_global_var(557, fallout.global_var(557) + 1)
     end
     fallout.start_gdialog(342, fallout.self_obj(), 4, -1, -1)
@@ -346,10 +331,10 @@ end
 function Trish19()
     fallout.gsay_reply(342, 144)
     fallout.giq_option(6, 342, 145, Trish20, 50)
-    if not(fallout.global_var(170) == 3) then
+    if fallout.global_var(170) ~= 3 then
         fallout.giq_option(6, 342, 146, Trish21, 50)
     end
-    if (fallout.local_var(12) == 0) and (fallout.global_var(557) & 2) then
+    if fallout.local_var(12) == 0 and fallout.global_var(557) & 2 ~= 0 then
         fallout.giq_option(6, 342, 147, Trish22, 50)
     end
     fallout.giq_option(6, 342, 148, TrishEnd, 50)
@@ -362,13 +347,12 @@ function Trish20()
 end
 
 function Trish21()
-    local v0 = 0
     fallout.set_local_var(11, 1)
-    v0 = fallout.message_str(342, 154)
-    if not(fallout.global_var(37)) then
-        v0 = v0 .. fallout.message_str(342, 155)
+    local message = fallout.message_str(342, 154)
+    if fallout.global_var(37) == 0 then
+        message = message .. fallout.message_str(342, 155)
     end
-    fallout.gsay_reply(342, v0)
+    fallout.gsay_reply(342, message)
     Trish24()
 end
 
@@ -388,15 +372,15 @@ function Trish23()
 end
 
 function Trish24()
-    if not(fallout.local_var(10)) then
+    if fallout.local_var(10) == 0 then
         fallout.giq_option(6, 342, 145, Trish20, 50)
     end
-    if not(fallout.local_var(11)) then
-        if not(fallout.global_var(38)) then
+    if fallout.local_var(11) == 0 then
+        if fallout.global_var(38) == 0 then
             fallout.giq_option(6, 342, 146, Trish21, 50)
         end
     end
-    if (fallout.local_var(12) == 0) and (fallout.global_var(557) & 2) then
+    if fallout.local_var(12) == 0 and fallout.global_var(557) & 2 ~= 0 then
         fallout.giq_option(6, 342, 147, Trish22, 50)
     end
     fallout.giq_option(6, 342, 148, TrishEnd, 50)
@@ -405,7 +389,7 @@ end
 function Trish25()
     fallout.start_gdialog(342, fallout.self_obj(), 4, -1, -1)
     fallout.gsay_start()
-    if not(fallout.global_var(557) & 4) then
+    if fallout.global_var(557) & 4 == 0 then
         fallout.set_global_var(557, fallout.global_var(557) + 4)
     end
     fallout.gsay_reply(342, 156)
@@ -450,28 +434,31 @@ function TrishEnd()
 end
 
 function TrishCola()
-    if fallout.item_caps_total(fallout.dude_obj()) >= 3 then
-        fallout.item_caps_adjust(fallout.dude_obj(), -3)
-        item = fallout.create_object_sid(106, 0, 0, -1)
-        fallout.add_obj_to_inven(fallout.dude_obj(), item)
+    local dude_obj = fallout.dude_obj()
+    if fallout.item_caps_total(dude_obj) >= 3 then
+        fallout.item_caps_adjust(dude_obj, -3)
+        local item_obj = fallout.create_object_sid(106, 0, 0, -1)
+        fallout.add_obj_to_inven(dude_obj, item_obj)
         fallout.gsay_message(342, 174, 0)
     end
 end
 
 function TrishBeer()
-    if fallout.item_caps_total(fallout.dude_obj()) >= 5 then
-        fallout.item_caps_adjust(fallout.dude_obj(), -5)
-        item = fallout.create_object_sid(124, 0, 0, -1)
-        fallout.add_obj_to_inven(fallout.dude_obj(), item)
+    local dude_obj = fallout.dude_obj()
+    if fallout.item_caps_total(dude_obj) >= 5 then
+        fallout.item_caps_adjust(dude_obj, -5)
+        local item_obj = fallout.create_object_sid(124, 0, 0, -1)
+        fallout.add_obj_to_inven(dude_obj, item_obj)
         fallout.gsay_message(342, 174, 0)
     end
 end
 
 function TrishBooze()
-    if fallout.item_caps_total(fallout.dude_obj()) >= 20 then
-        fallout.item_caps_adjust(fallout.dude_obj(), -20)
-        item = fallout.create_object_sid(125, 0, 0, -1)
-        fallout.add_obj_to_inven(fallout.dude_obj(), item)
+    local dude_obj = fallout.dude_obj()
+    if fallout.item_caps_total(dude_obj) >= 20 then
+        fallout.item_caps_adjust(dude_obj, -20)
+        local item_obj = fallout.create_object_sid(125, 0, 0, -1)
+        fallout.add_obj_to_inven(dude_obj, item_obj)
         fallout.gsay_message(342, 174, 0)
     end
 end
