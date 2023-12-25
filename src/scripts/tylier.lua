@@ -1,7 +1,8 @@
 local fallout = require("fallout")
 
 local start
-local do_dialogue
+local talk_p_proc
+local look_at_p_proc
 local tylier01
 local tylier02
 local tylier03
@@ -14,17 +15,15 @@ local tylier09
 local tylierend
 
 function start()
-    if fallout.script_action() == 11 then
-        do_dialogue()
-    else
-        if (fallout.script_action() == 21) or (fallout.script_action() == 3) then
-            fallout.script_overrides()
-            fallout.float_msg(fallout.self_obj(), fallout.message_str(309, 100), 0)
-        end
+    local script_action = fallout.script_action()
+    if script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 21 or script_action == 3 then
+        look_at_p_proc()
     end
 end
 
-function do_dialogue()
+function talk_p_proc()
     fallout.start_gdialog(309, fallout.self_obj(), 4, -1, -1)
     fallout.gsay_start()
     if fallout.global_var(140) ~= 0 then
@@ -36,12 +35,19 @@ function do_dialogue()
     fallout.end_dialogue()
 end
 
+function look_at_p_proc()
+    fallout.script_overrides()
+    fallout.float_msg(fallout.self_obj(), fallout.message_str(309, 100), 0)
+end
+
 function tylier01()
     fallout.gsay_reply(309, 101)
     fallout.giq_option(-3, 309, 102, tylier02, 50)
     fallout.giq_option(-3, 309, 103, tylier02, 50)
     fallout.giq_option(4, 309, 104, tylier02, 50)
-    fallout.giq_option(5, 309, fallout.message_str(309, 105) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(309, 106), tylier02, 50)
+    fallout.giq_option(5, 309,
+        fallout.message_str(309, 105) ..
+        fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(309, 106), tylier02, 50)
     fallout.giq_option(5, 309, 107, tylier03, 50)
 end
 
@@ -98,4 +104,6 @@ end
 
 local exports = {}
 exports.start = start
+exports.talk_p_proc = talk_p_proc
+exports.look_at_p_proc = look_at_p_proc
 return exports
