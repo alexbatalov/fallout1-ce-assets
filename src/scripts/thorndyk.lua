@@ -121,7 +121,7 @@ function talk_p_proc()
         fallout.set_local_var(6, time.game_time_in_hours())
         if PlayerYellsOuch then
             PlayerYellsOuch = false
-            fallout.float_msg(fallout.dude_obj(), 168, 9)
+            fallout.float_msg(fallout.dude_obj(), fallout.message_str(603, 168), 9)
         end
         fallout.float_msg(fallout.self_obj(), fallout.message_str(603, DoctorPostTreatmentResponse), 2)
         fallout.critter_heal(fallout.dude_obj(), fallout.random(5, 15) + 10)
