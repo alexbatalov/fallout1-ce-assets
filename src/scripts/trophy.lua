@@ -6,23 +6,16 @@ local use_p_proc
 local use_obj_on_p_proc
 local use_skill_on_p_proc
 
-local item = 0
-
 function start()
-    if fallout.script_action() == 3 then
+    local script_action = fallout.script_action()
+    if script_action == 3 then
         description_p_proc()
-    else
-        if fallout.script_action() == 4 then
-            use_p_proc()
-        else
-            if fallout.script_action() == 7 then
-                use_obj_on_p_proc()
-            else
-                if fallout.script_action() == 8 then
-                    use_skill_on_p_proc()
-                end
-            end
-        end
+    elseif script_action == 4 then
+        use_p_proc()
+    elseif script_action == 7 then
+        use_obj_on_p_proc()
+    elseif script_action == 8 then
+        use_skill_on_p_proc()
     end
 end
 
@@ -34,11 +27,11 @@ end
 function use_p_proc()
     fallout.script_overrides()
     if fallout.global_var(286) == 0 then
-        if (fallout.game_time_hour() >= 410) and (fallout.game_time_hour() <= 1200) then
+        if fallout.game_time_hour() >= 410 and fallout.game_time_hour() <= 1200 then
             fallout.script_overrides()
             fallout.set_global_var(286, 1)
-            item = fallout.create_object_sid(112, 0, 0, -1)
-            fallout.add_obj_to_inven(fallout.source_obj(), item)
+            local item_obj = fallout.create_object_sid(112, 0, 0, -1)
+            fallout.add_obj_to_inven(fallout.source_obj(), item_obj)
             fallout.display_msg(fallout.message_str(527, 101))
             fallout.animate_stand_obj(fallout.self_obj())
         else
@@ -48,13 +41,14 @@ function use_p_proc()
 end
 
 function use_obj_on_p_proc()
-    if fallout.obj_pid(fallout.obj_being_used_with()) == 112 then
+    local item_obj = fallout.obj_being_used_with()
+    if fallout.obj_pid(item_obj) == 112 then
         fallout.script_overrides()
         fallout.set_global_var(286, 0)
         fallout.set_map_var(4, 0)
         fallout.animate_stand_obj(fallout.self_obj())
-        fallout.rm_obj_from_inven(fallout.source_obj(), fallout.obj_being_used_with())
-        fallout.destroy_object(fallout.obj_being_used_with())
+        fallout.rm_obj_from_inven(fallout.source_obj(), item_obj)
+        fallout.destroy_object(item_obj)
     end
 end
 
@@ -63,8 +57,8 @@ function use_skill_on_p_proc()
         if fallout.global_var(286) == 0 then
             fallout.script_overrides()
             fallout.set_global_var(286, 1)
-            item = fallout.create_object_sid(112, 0, 0, -1)
-            fallout.add_obj_to_inven(fallout.source_obj(), item)
+            local item_obj = fallout.create_object_sid(112, 0, 0, -1)
+            fallout.add_obj_to_inven(fallout.source_obj(), item_obj)
             if fallout.is_success(fallout.roll_vs_skill(fallout.source_obj(), 10, 0)) then
                 fallout.display_msg(fallout.message_str(527, 101))
             else
