@@ -37,68 +37,60 @@ local Trent23
 local Trent24
 local give_money
 
-local calm = 0
+local calm = false
 local initialized = false
-local known = 0
-local scared = 0
-local close2dude = 0
-local dest_tile = 0
-local direction = 0
-local prev_dist = 0
-
-local exit_line = 0
+local known = false
+local scared = false
+local close2dude = false
 
 function start()
-    if not initialized and fallout.metarule(14, 0) then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 35)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 2)
+    if not initialized and fallout.metarule(14, 0) ~= 0 then
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 35)
+        fallout.critter_add_trait(self_obj, 1, 5, 2)
         initialized = true
-    else
-        if fallout.script_action() == 12 then
-            critter_p_proc()
-        else
-            if fallout.script_action() == 14 then
-                damage_p_proc()
-            else
-                if fallout.script_action() == 18 then
-                    destroy_p_proc()
-                else
-                    if fallout.script_action() == 4 then
-                        pickup_p_proc()
-                    else
-                        if fallout.script_action() == 7 then
-                            use_obj_on_p_proc()
-                        else
-                            if fallout.script_action() == 11 then
-                                talk_p_proc()
-                            end
-                        end
-                    end
-                end
-            end
-        end
+    end
+
+    local script_action = fallout.script_action()
+    if script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 14 then
+        damage_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 7 then
+        use_obj_on_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
     end
 end
 
 function critter_p_proc()
-    if scared and (fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 60) then
+    local self_obj = fallout.self_obj()
+    local dude_obj = fallout.dude_obj()
+    if scared and (fallout.tile_distance_objs(self_obj, dude_obj) < 60) then
         behaviour.flee_dude(1)
     else
-        if not(close2dude) then
-            if fallout.tile_distance_objs(fallout.dude_obj(), fallout.self_obj()) <= 2 then
-                close2dude = 1
+        if not close2dude then
+            if fallout.tile_distance_objs(dude_obj, self_obj) <= 2 then
+                close2dude = true
             else
-                direction = fallout.rotation_to_tile(fallout.tile_num(fallout.dude_obj()) % 200, fallout.tile_num(fallout.dude_obj()) // 200)
-                dest_tile = fallout.tile_num_in_direction(fallout.tile_num(fallout.dude_obj()), direction, 1)
-                fallout.animate_move_obj_to_tile(fallout.self_obj(), dest_tile, 1)
-                if (fallout.random(1, 18) == 1) and not(calm) then
-                    fallout.float_msg(fallout.self_obj(), fallout.message_str(703, 141), 0)
+                local direction = fallout.rotation_to_tile(fallout.tile_num(dude_obj) % 200,
+                    fallout.tile_num(dude_obj) // 200)
+                local dest_tile = fallout.tile_num_in_direction(fallout.tile_num(dude_obj), direction, 1)
+                fallout.animate_move_obj_to_tile(self_obj, dest_tile, 1)
+                if fallout.random(1, 18) == 1 and not calm then
+                    fallout.float_msg(self_obj, fallout.message_str(703, 141), 0)
                 end
             end
         else
-            if not(scared) then
+            if not scared then
                 if fallout.random(1, 4) == 1 then
-                    fallout.anim(fallout.self_obj(), 1000, fallout.rotation_to_tile(fallout.tile_num(fallout.self_obj()), fallout.tile_num(fallout.dude_obj())))
+                    fallout.anim(self_obj, 1000,
+                        fallout.rotation_to_tile(fallout.tile_num(self_obj),
+                            fallout.tile_num(dude_obj)))
                 end
             end
         end
@@ -107,7 +99,7 @@ end
 
 function damage_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
-        scared = 1
+        scared = true
     end
     fallout.script_overrides()
     behaviour.flee_dude(1)
@@ -120,12 +112,14 @@ function destroy_p_proc()
 end
 
 function pickup_p_proc()
-    scared = 1
+    scared = true
 end
 
 function use_obj_on_p_proc()
-    if (fallout.obj_pid(fallout.obj_being_used_with()) == 81) or (fallout.obj_pid(fallout.obj_being_used_with()) == 103) or (fallout.obj_pid(fallout.obj_being_used_with()) == 126) then
-        fallout.destroy_object(fallout.obj_being_used_with())
+    local item_obj = fallout.obj_being_used_with()
+    local pid = fallout.obj_pid(item_obj)
+    if pid == 81 or pid == 103 or pid == 126 then
+        fallout.destroy_object(item_obj)
         if fallout.obj_is_carrying_obj_pid(fallout.self_obj(), 41) == 100 then
             if scared then
                 Trent21()
@@ -139,13 +133,13 @@ function use_obj_on_p_proc()
                 Trent24()
             end
         end
-        calm = 1
-        scared = 0
+        calm = true
+        scared = false
     end
 end
 
 function talk_p_proc()
-    if (scared == 1) or (fallout.global_var(155) < -20) then
+    if scared or fallout.global_var(155) < -20 then
         Trent00()
     else
         fallout.start_gdialog(703, fallout.self_obj(), 4, -1, -1)
@@ -153,12 +147,10 @@ function talk_p_proc()
         reaction.get_reaction()
         if calm then
             Trent16()
+        elseif known then
+            Trent02()
         else
-            if known then
-                Trent02()
-            else
-                Trent01()
-            end
+            Trent01()
         end
         fallout.gsay_end()
         fallout.end_dialogue()
@@ -170,7 +162,7 @@ function Trent00()
 end
 
 function Trent01()
-    known = 1
+    known = true
     fallout.gsay_reply(703, 101)
     if fallout.global_var(106) == 1 then
         fallout.giq_option(7, 703, 102, Trent03, 50)
@@ -178,7 +170,7 @@ function Trent01()
     fallout.giq_option(4, 703, 103, Trent04, 50)
     fallout.giq_option(4, 703, 104, Trent03, 50)
     fallout.giq_option(4, 703, 105, Trent05, 51)
-    if (fallout.global_var(101) == 0) and (fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 55) == 0) then
+    if fallout.global_var(101) == 0 and fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 55) == 0 then
         fallout.giq_option(4, 703, 106, Trent06, 50)
     end
     if fallout.global_var(100) == 1 then
@@ -212,30 +204,28 @@ function Trent04()
 end
 
 function Trent05()
-    local v0 = 0
-    local v1 = 0
-    calm = 0
-    scared = 1
+    calm = false
+    scared = true
     fallout.gsay_message(703, 121, 51)
-    if fallout.obj_is_carrying_obj_pid(fallout.self_obj(), 18) then
-        v0 = fallout.obj_carrying_pid_obj(fallout.self_obj(), 18)
-        fallout.rm_obj_from_inven(fallout.self_obj(), v0)
-        fallout.add_obj_to_inven(fallout.dude_obj(), v0)
+    if fallout.obj_is_carrying_obj_pid(fallout.self_obj(), 18) ~= 0 then
+        local item_obj = fallout.obj_carrying_pid_obj(fallout.self_obj(), 18)
+        fallout.rm_obj_from_inven(fallout.self_obj(), item_obj)
+        fallout.add_obj_to_inven(fallout.dude_obj(), item_obj)
     end
-    if fallout.obj_is_carrying_obj_pid(fallout.self_obj(), 31) then
-        v0 = fallout.obj_carrying_pid_obj(fallout.self_obj(), 31)
-        fallout.rm_obj_from_inven(fallout.self_obj(), v0)
-        fallout.add_obj_to_inven(fallout.dude_obj(), v0)
+    if fallout.obj_is_carrying_obj_pid(fallout.self_obj(), 31) ~= 0 then
+        local item_obj = fallout.obj_carrying_pid_obj(fallout.self_obj(), 31)
+        fallout.rm_obj_from_inven(fallout.self_obj(), item_obj)
+        fallout.add_obj_to_inven(fallout.dude_obj(), item_obj)
     end
-    if fallout.obj_is_carrying_obj_pid(fallout.self_obj(), 111) then
-        v0 = fallout.obj_carrying_pid_obj(fallout.self_obj(), 111)
-        fallout.rm_obj_from_inven(fallout.self_obj(), v0)
-        fallout.add_obj_to_inven(fallout.dude_obj(), v0)
+    if fallout.obj_is_carrying_obj_pid(fallout.self_obj(), 111) ~= 0 then
+        local item_obj = fallout.obj_carrying_pid_obj(fallout.self_obj(), 111)
+        fallout.rm_obj_from_inven(fallout.self_obj(), item_obj)
+        fallout.add_obj_to_inven(fallout.dude_obj(), item_obj)
     end
-    if fallout.obj_is_carrying_obj_pid(fallout.self_obj(), 4) then
-        v0 = fallout.obj_carrying_pid_obj(fallout.self_obj(), 4)
-        fallout.rm_obj_from_inven(fallout.self_obj(), v0)
-        fallout.add_obj_to_inven(fallout.dude_obj(), v0)
+    if fallout.obj_is_carrying_obj_pid(fallout.self_obj(), 4) ~= 0 then
+        local item_obj = fallout.obj_carrying_pid_obj(fallout.self_obj(), 4)
+        fallout.rm_obj_from_inven(fallout.self_obj(), item_obj)
+        fallout.add_obj_to_inven(fallout.dude_obj(), item_obj)
     end
 end
 
@@ -244,7 +234,7 @@ function Trent06()
 end
 
 function Trent07()
-    scared = 1
+    scared = true
     fallout.gsay_message(703, 123, 50)
 end
 
@@ -291,7 +281,7 @@ function Trent16()
     end
     fallout.giq_option(4, 703, 103, Trent18, 50)
     fallout.giq_option(4, 703, 105, Trent05, 51)
-    if (fallout.global_var(101) == 0) and (fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 55) == 0) then
+    if fallout.global_var(101) == 0 and fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 55) == 0 then
         fallout.giq_option(4, 703, 106, Trent19, 50)
     end
     if fallout.global_var(100) == 1 then
@@ -337,12 +327,10 @@ function Trent24()
 end
 
 function give_money()
-    local v0 = 0
-    local v1 = 0
-    if fallout.obj_is_carrying_obj_pid(fallout.self_obj(), 41) then
-        v0 = fallout.obj_carrying_pid_obj(fallout.self_obj(), 41)
-        v1 = fallout.rm_mult_objs_from_inven(fallout.self_obj(), v0, 100)
-        fallout.add_mult_objs_to_inven(fallout.dude_obj(), v0, v1)
+    if fallout.obj_is_carrying_obj_pid(fallout.self_obj(), 41) ~= 0 then
+        local item_obj = fallout.obj_carrying_pid_obj(fallout.self_obj(), 41)
+        local qty = fallout.rm_mult_objs_from_inven(fallout.self_obj(), item_obj, 100)
+        fallout.add_mult_objs_to_inven(fallout.dude_obj(), item_obj, qty)
     end
 end
 
