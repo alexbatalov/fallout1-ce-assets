@@ -50,56 +50,41 @@ local wake_time = 0
 local sleep_time = 0
 local home_tile = 0
 local sleep_tile = 0
-local not_at_meeting = 1
+local not_at_meeting = true
 local line = 0
-local hostile = 0
-local exp_flag = 0
-
-local exit_line = 0
+local hostile = false
+local exp_flag = false
 
 function start()
-    if fallout.script_action() == 12 then
+    local script_action = fallout.script_action()
+    if script_action == 12 then
         critter_p_proc()
-    else
-        if fallout.script_action() == 14 then
-            damage_p_proc()
-        else
-            if fallout.script_action() == 18 then
-                destroy_p_proc()
-            else
-                if fallout.script_action() == 21 then
-                    look_at_p_proc()
-                else
-                    if fallout.script_action() == 15 then
-                        map_enter_p_proc()
-                    else
-                        if fallout.script_action() == 4 then
-                            pickup_p_proc()
-                        else
-                            if fallout.script_action() == 11 then
-                                talk_p_proc()
-                            else
-                                if fallout.script_action() == 22 then
-                                    timed_event_p_proc()
-                                end
-                            end
-                        end
-                    end
-                end
-            end
-        end
+    elseif script_action == 14 then
+        damage_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 15 then
+        map_enter_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 22 then
+        timed_event_p_proc()
     end
 end
 
 function critter_p_proc()
     if hostile then
-        hostile = 0
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     else
-        if (time.game_time_in_days() > fallout.map_var(5)) and (fallout.global_var(238) ~= 2) then
+        if time.game_time_in_days() > fallout.map_var(5) and fallout.global_var(238) ~= 2 then
             fallout.destroy_object(fallout.self_obj())
         end
-        if (fallout.game_time_hour() >= 1700) and (fallout.game_time_hour() < 1710) then
+        if fallout.game_time_hour() >= 1700 and fallout.game_time_hour() < 1710 then
             if fallout.global_var(238) ~= 2 then
                 if not_at_meeting then
                     rebel_meeting()
@@ -127,18 +112,19 @@ function look_at_p_proc()
 end
 
 function map_enter_p_proc()
-    if not(fallout.local_var(4)) then
-        fallout.set_local_var(4, fallout.tile_num(fallout.self_obj()))
+    local self_obj = fallout.self_obj()
+    if fallout.local_var(4) == 0 then
+        fallout.set_local_var(4, fallout.tile_num(self_obj))
     end
     home_tile = fallout.local_var(4)
-    fallout.critter_add_trait(fallout.self_obj(), 1, 6, 87)
+    fallout.critter_add_trait(self_obj, 1, 6, 87)
     sleep_tile = home_tile
     sleep_time = 1915
     wake_time = 715
 end
 
 function pickup_p_proc()
-    hostile = 1
+    hostile = true
 end
 
 function talk_p_proc()
@@ -148,61 +134,51 @@ function talk_p_proc()
     reaction.get_reaction()
     if fallout.local_var(5) == 1 then
         fallout.float_msg(fallout.self_obj(), fallout.message_str(185, 166), 0)
+    elseif fallout.global_var(261) ~= 0 or fallout.local_var(8) ~= 0 then
+        fallout.float_msg(fallout.self_obj(), fallout.message_str(378, 174), 2)
     else
-        if fallout.global_var(261) or fallout.local_var(8) then
-            fallout.float_msg(fallout.self_obj(), fallout.message_str(378, 174), 2)
+        fallout.start_gdialog(378, fallout.self_obj(), 4, -1, -1)
+        fallout.gsay_start()
+        if fallout.global_var(101) == 2 then
+            Theresa24()
+        elseif fallout.global_var(238) == 2 then
+            Theresa23()
+        elseif fallout.global_var(238) ~= 2 and fallout.game_time_hour() > 1700 and fallout.game_time_hour() < 1710 then
+            Theresa15()
+        elseif fallout.local_var(1) >= 2 then
+            Theresa01()
         else
-            fallout.start_gdialog(378, fallout.self_obj(), 4, -1, -1)
-            fallout.gsay_start()
-            if fallout.global_var(101) == 2 then
-                Theresa24()
-            else
-                if fallout.global_var(238) == 2 then
-                    Theresa23()
-                else
-                    if (fallout.global_var(238) ~= 2) and (fallout.game_time_hour() > 1700) and (fallout.game_time_hour() < 1710) then
-                        Theresa15()
-                    else
-                        if fallout.local_var(1) >= 2 then
-                            Theresa01()
-                        else
-                            Theresa14()
-                        end
-                    end
-                end
-            end
-            fallout.gsay_end()
-            fallout.end_dialogue()
+            Theresa14()
         end
+        fallout.gsay_end()
+        fallout.end_dialogue()
     end
     if exp_flag then
-        exp_flag = 0
+        exp_flag = false
         fallout.give_exp_points(750)
         fallout.display_msg(fallout.message_str(378, 173))
     end
 end
 
 function timed_event_p_proc()
-    if fallout.fixed_param() == 1 then
-        not_at_meeting = 1
-    else
-        if fallout.fixed_param() == 2 then
-            begin_meeting()
-        else
-            if fallout.fixed_param() == 3 then
-                say_lines()
-            else
-                if fallout.fixed_param() == 4 then
-                    fallout.animate_move_obj_to_tile(fallout.self_obj(), home_tile, 0)
-                    fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(60), 2)
-                end
-            end
-        end
+    local event = fallout.fixed_param()
+    if event == 1 then
+        not_at_meeting = true
+    elseif event == 2 then
+        begin_meeting()
+    elseif event == 3 then
+        say_lines()
+    elseif event == 4 then
+        local self_obj = fallout.self_obj()
+        fallout.animate_move_obj_to_tile(self_obj, home_tile, 0)
+        fallout.add_timer_event(self_obj, fallout.game_ticks(60), 2)
     end
 end
 
 function Theresa01()
-    fallout.gsay_reply(378, fallout.message_str(378, 101) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(378, 102))
+    fallout.gsay_reply(378,
+        fallout.message_str(378, 101) ..
+        fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(378, 102))
     fallout.giq_option(4, 378, 103, Theresa02, 50)
     fallout.giq_option(4, 378, 104, Theresa03, 50)
     fallout.giq_option(-3, 378, 105, Theresa04, 50)
@@ -217,11 +193,9 @@ function Theresa02()
 end
 
 function Theresa02a()
-    local v0 = 0
-    if not(fallout.local_var(7)) then
+    if fallout.local_var(7) == 0 then
         fallout.set_local_var(7, 1)
-        v0 = fallout.roll_vs_skill(fallout.dude_obj(), 14, 0)
-        if fallout.is_success(v0) then
+        if fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), 14, 0)) then
             Theresa08()
         else
             Theresa09()
@@ -262,7 +236,7 @@ function Theresa08()
     reaction.UpReact()
     fallout.set_global_var(238, 2)
     line = 10
-    exp_flag = 1
+    exp_flag = true
     fallout.gsay_reply(378, 122)
     fallout.giq_option(4, 378, 123, TheresaEnd, 50)
 end
@@ -345,7 +319,7 @@ function Theresa21()
     else
         fallout.set_local_var(7, 1)
         if fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), 14, 0)) then
-            exp_flag = 1
+            exp_flag = true
             fallout.set_global_var(238, 2)
             line = 10
             fallout.gsay_message(378, 154, 50)
@@ -360,7 +334,7 @@ end
 function Theresa22()
     fallout.set_global_var(238, 2)
     line = 10
-    exp_flag = 1
+    exp_flag = true
     fallout.gsay_reply(378, 158)
     fallout.giq_option(4, 378, 159, TheresaEnd, 50)
 end
@@ -374,7 +348,7 @@ end
 function Theresa24()
     if fallout.global_var(238) ~= 2 then
         fallout.set_global_var(238, 2)
-        exp_flag = 0
+        exp_flag = false
         line = 10
     end
     fallout.gsay_message(378, 172, 50)
@@ -388,29 +362,29 @@ function TheresaEnd()
 end
 
 function TheresaCombat()
-    hostile = 1
+    hostile = true
 end
 
 function begin_meeting()
-    fallout.animate_move_obj_to_tile(fallout.self_obj(), home_tile, 0)
+    local self_obj = fallout.self_obj()
+    fallout.animate_move_obj_to_tile(self_obj, home_tile, 0)
     line = 1
-    fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(10), 3)
+    fallout.add_timer_event(self_obj, fallout.game_ticks(10), 3)
 end
 
 function say_lines()
-    local v0 = 0
-    v0 = fallout.message_str(378, 159 + line)
-    fallout.float_msg(fallout.self_obj(), v0, 0)
+    local self_obj = fallout.self_obj()
+    fallout.float_msg(self_obj, fallout.message_str(378, 159 + line), 0)
     line = line + 1
     if line < 11 then
-        fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(10), 3)
+        fallout.add_timer_event(self_obj, fallout.game_ticks(10), 3)
     else
-        fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(600), 1)
+        fallout.add_timer_event(self_obj, fallout.game_ticks(600), 1)
     end
 end
 
 function rebel_meeting()
-    not_at_meeting = 0
+    not_at_meeting = false
     fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(3), 4)
 end
 
