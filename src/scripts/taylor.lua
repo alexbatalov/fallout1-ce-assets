@@ -23,45 +23,33 @@ local Tine_barter1
 local Tine_barter2
 local TineEnd
 
-local hostile = 0
+local hostile = false
 local initialized = false
 local round_counter = 0
 
-local exit_line = 0
-
 function start()
     if not initialized then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 49)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 30)
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 49)
+        fallout.critter_add_trait(self_obj, 1, 5, 30)
         initialized = true
-    else
-        if fallout.script_action() == 13 then
-            combat_p_proc()
-        else
-            if fallout.script_action() == 12 then
-                critter_p_proc()
-            else
-                if fallout.script_action() == 14 then
-                    damage_p_proc()
-                else
-                    if fallout.script_action() == 18 then
-                        destroy_p_proc()
-                    else
-                        if fallout.script_action() == 21 then
-                            look_at_p_proc()
-                        else
-                            if fallout.script_action() == 4 then
-                                pickup_p_proc()
-                            else
-                                if fallout.script_action() == 11 then
-                                    talk_p_proc()
-                                end
-                            end
-                        end
-                    end
-                end
-            end
-        end
+    end
+
+    local script_action = fallout.script_action()
+    if script_action == 13 then
+        combat_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 14 then
+        damage_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
     end
 end
 
@@ -81,7 +69,7 @@ end
 
 function critter_p_proc()
     if hostile then
-        hostile = 0
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     else
         if fallout.external_var("Tine_barter") ~= 0 then
@@ -110,7 +98,7 @@ function look_at_p_proc()
 end
 
 function pickup_p_proc()
-    hostile = 1
+    hostile = true
 end
 
 function talk_p_proc()
@@ -126,7 +114,7 @@ function talk_p_proc()
     end
     if fallout.external_var("Tine_barter") == -1 then
         fallout.float_msg(fallout.self_obj(), fallout.message_str(37, 136), 2)
-        hostile = 1
+        hostile = true
     else
         if (fallout.external_var("Tine_barter") ~= 0) and ((fallout.local_var(5) == 1) or (fallout.global_var(251) == 1)) then
             fallout.float_msg(fallout.self_obj(), fallout.message_str(669, 104), 2)
@@ -135,16 +123,12 @@ function talk_p_proc()
             fallout.gsay_start()
             if fallout.external_var("Tine_barter") == 1 then
                 Tine_barter1()
+            elseif fallout.external_var("Tine_barter") == 2 then
+                Tine_barter2()
+            elseif fallout.local_var(4) ~= 0 then
+                Tine07()
             else
-                if fallout.external_var("Tine_barter") == 2 then
-                    Tine_barter2()
-                else
-                    if fallout.local_var(4) ~= 0 then
-                        Tine07()
-                    else
-                        Tine01()
-                    end
-                end
+                Tine01()
             end
             fallout.gsay_end()
             fallout.end_dialogue()
@@ -152,16 +136,12 @@ function talk_p_proc()
     end
     if fallout.external_var("Tine_barter") == 1 then
         fallout.move_obj_inven_to_obj(fallout.self_obj(), fallout.external_var("AdyStor1_ptr"))
+    elseif fallout.external_var("Tine_barter") == 2 then
+        fallout.move_obj_inven_to_obj(fallout.self_obj(), fallout.external_var("AdyStor2_ptr"))
+    elseif v0 == 1 then
+        fallout.move_obj_inven_to_obj(fallout.self_obj(), fallout.external_var("AdyStor1_ptr"))
     else
-        if fallout.external_var("Tine_barter") == 2 then
-            fallout.move_obj_inven_to_obj(fallout.self_obj(), fallout.external_var("AdyStor2_ptr"))
-        else
-            if v0 == 1 then
-                fallout.move_obj_inven_to_obj(fallout.self_obj(), fallout.external_var("AdyStor1_ptr"))
-            else
-                fallout.move_obj_inven_to_obj(fallout.self_obj(), fallout.external_var("AdyStor2_ptr"))
-            end
-        end
+        fallout.move_obj_inven_to_obj(fallout.self_obj(), fallout.external_var("AdyStor2_ptr"))
     end
     fallout.set_external_var("Tine_barter", 0)
 end
@@ -176,8 +156,10 @@ function Tine01()
 end
 
 function Tine02()
-    if not(fallout.local_var(4)) then
-        fallout.giq_option(4, 256, fallout.message_str(256, 104) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(256, 105), Tine04, 50)
+    if fallout.local_var(4) == 0 then
+        fallout.giq_option(4, 256,
+            fallout.message_str(256, 104) ..
+            fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(256, 105), Tine04, 50)
     end
     fallout.giq_option(4, 256, 106, Tine03, 50)
     fallout.giq_option(4, 256, 107, Tine05, 50)
