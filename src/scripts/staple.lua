@@ -3,7 +3,6 @@ local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
 
 local start
-local combat
 local critter_p_proc
 local pickup_p_proc
 local talk_p_proc
@@ -36,52 +35,49 @@ local StapleEnd
 local Get_Stuff
 local Put_Stuff
 
-local hostile = 0
+local hostile = false
 local initialized = false
 
-local exit_line = 0
+local STUFF <const> = {
+    [73] = 5,
+    [76] = 5,
+    [80] = 5,
+    [86] = 5,
+    [102] = 5,
+}
 
 function start()
     if not initialized then
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 70)
+        fallout.critter_add_trait(self_obj, 1, 5, 50)
         initialized = true
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 70)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 50)
     end
-    if fallout.script_action() == 21 then
-        look_at_p_proc()
-    else
-        if fallout.script_action() == 4 then
-            pickup_p_proc()
-        else
-            if fallout.script_action() == 11 then
-                talk_p_proc()
-            else
-                if fallout.script_action() == 12 then
-                    critter_p_proc()
-                else
-                    if fallout.script_action() == 18 then
-                        destroy_p_proc()
-                    end
-                end
-            end
-        end
-    end
-end
 
-function combat()
-    hostile = 1
+    local script_action = fallout.script_action()
+    if script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    end
 end
 
 function critter_p_proc()
     if hostile then
-        hostile = 0
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
 end
 
 function pickup_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
-        hostile = 1
+        hostile = true
     end
 end
 
@@ -115,9 +111,8 @@ function destroy_p_proc()
 end
 
 function damage_p_proc()
-    local v0 = 0
-    v0 = fallout.obj_pid(fallout.source_obj())
-    if fallout.party_member_obj(v0) ~= 0 then
+    local pid = fallout.obj_pid(fallout.source_obj())
+    if fallout.party_member_obj(pid) ~= nil then
         fallout.set_global_var(248, 1)
     end
 end
@@ -139,7 +134,7 @@ end
 
 function Staple02()
     fallout.giq_option(4, 862, 104, Staple03, 50)
-    if (fallout.global_var(101) ~= 2) and (fallout.local_var(5) == 0) then
+    if fallout.global_var(101) ~= 2 and fallout.local_var(5) == 0 then
         fallout.giq_option(4, 862, 105, Staple04, 50)
     end
     if fallout.global_var(615) == 1 then
@@ -185,8 +180,9 @@ function Staple06a()
 end
 
 function Staple06b()
-    if fallout.is_success(fallout.do_check(fallout.dude_obj(), 3, 0)) or fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), 15, 0)) then
-        if fallout.item_caps_total(fallout.dude_obj()) >= 500 then
+    local dude_obj = fallout.dude_obj()
+    if fallout.is_success(fallout.do_check(dude_obj, 3, 0)) or fallout.is_success(fallout.roll_vs_skill(dude_obj, 15, 0)) then
+        if fallout.item_caps_total(dude_obj) >= 500 then
             Staple10()
         else
             Staple07()
@@ -214,15 +210,13 @@ function Staple08()
 end
 
 function Staple09()
-    local v0 = 0
-    v0 = fallout.item_caps_adjust(fallout.dude_obj(), -750)
+    fallout.item_caps_adjust(fallout.dude_obj(), -750)
     fallout.gsay_message(862, 120, 50)
     Staple12()
 end
 
 function Staple10()
-    local v0 = 0
-    v0 = fallout.item_caps_adjust(fallout.dude_obj(), -500)
+    fallout.item_caps_adjust(fallout.dude_obj(), -500)
     fallout.gsay_message(862, 121, 50)
     Staple12()
 end
@@ -234,10 +228,9 @@ function Staple11()
 end
 
 function Staple12()
-    local v0 = 0
     fallout.set_local_var(5, 1)
-    v0 = fallout.create_object_sid(230, 0, 0, -1)
-    fallout.add_obj_to_inven(fallout.dude_obj(), v0)
+    local item_obj = fallout.create_object_sid(230, 0, 0, -1)
+    fallout.add_obj_to_inven(fallout.dude_obj(), item_obj)
     fallout.gsay_message(862, 123, 50)
 end
 
@@ -264,12 +257,10 @@ function Staple15a()
 end
 
 function Staple16()
-    local v0 = 0
-    local v1 = 0
-    v0 = fallout.item_caps_adjust(fallout.dude_obj(), -750)
+    fallout.item_caps_adjust(fallout.dude_obj(), -750)
     fallout.set_global_var(615, 2)
-    v1 = fallout.create_object_sid(237, 0, 0, -1)
-    fallout.add_obj_to_inven(fallout.dude_obj(), v1)
+    local item_obj = fallout.create_object_sid(237, 0, 0, -1)
+    fallout.add_obj_to_inven(fallout.dude_obj(), item_obj)
     fallout.gsay_message(862, 132, 50)
 end
 
@@ -281,51 +272,25 @@ function StapleEnd()
 end
 
 function Get_Stuff()
-    local v0 = 0
-    local v1 = 0
-    v0 = fallout.create_object_sid(73, 0, 0, -1)
-    fallout.add_mult_objs_to_inven(fallout.self_obj(), v0, 5)
-    v0 = fallout.create_object_sid(76, 0, 0, -1)
-    fallout.add_mult_objs_to_inven(fallout.self_obj(), v0, 5)
-    v0 = fallout.create_object_sid(80, 0, 0, -1)
-    fallout.add_mult_objs_to_inven(fallout.self_obj(), v0, 5)
-    v0 = fallout.create_object_sid(86, 0, 0, -1)
-    fallout.add_mult_objs_to_inven(fallout.self_obj(), v0, 5)
-    v0 = fallout.create_object_sid(102, 0, 0, -1)
-    fallout.add_mult_objs_to_inven(fallout.self_obj(), v0, 5)
-    v1 = fallout.item_caps_adjust(fallout.self_obj(), 500)
+    local self_obj = fallout.self_obj()
+    for pid, qty in ipairs(STUFF) do
+        local item_obj = fallout.create_object_sid(pid, 0, 0, -1)
+        fallout.add_mult_objs_to_inven(self_obj, item_obj, qty)
+    end
+    fallout.item_caps_adjust(self_obj, 500)
 end
 
 function Put_Stuff()
-    local v0 = 0
-    local v1 = 0
-    v0 = fallout.obj_carrying_pid_obj(fallout.self_obj(), 73)
-    if v0 ~= 0 then
-        v1 = fallout.rm_mult_objs_from_inven(fallout.self_obj(), v0, 5)
-        fallout.destroy_object(v0)
+    local self_obj = fallout.self_obj()
+    for pid, qty in ipairs(STUFF) do
+        local item_obj = fallout.obj_carrying_pid_obj(self_obj, pid)
+        if item_obj ~= nil then
+            fallout.rm_mult_objs_from_inven(self_obj, item_obj, qty)
+            fallout.destroy_object(item_obj)
+        end
     end
-    v0 = fallout.obj_carrying_pid_obj(fallout.self_obj(), 76)
-    if v0 ~= 0 then
-        v1 = fallout.rm_mult_objs_from_inven(fallout.self_obj(), v0, 5)
-        fallout.destroy_object(v0)
-    end
-    v0 = fallout.obj_carrying_pid_obj(fallout.self_obj(), 80)
-    if v0 ~= 0 then
-        v1 = fallout.rm_mult_objs_from_inven(fallout.self_obj(), v0, 5)
-        fallout.destroy_object(v0)
-    end
-    v0 = fallout.obj_carrying_pid_obj(fallout.self_obj(), 86)
-    if v0 ~= 0 then
-        v1 = fallout.rm_mult_objs_from_inven(fallout.self_obj(), v0, 5)
-        fallout.destroy_object(v0)
-    end
-    v0 = fallout.obj_carrying_pid_obj(fallout.self_obj(), 102)
-    if v0 ~= 0 then
-        v1 = fallout.rm_mult_objs_from_inven(fallout.self_obj(), v0, 5)
-        fallout.destroy_object(v0)
-    end
-    v1 = fallout.item_caps_adjust(fallout.self_obj(), -fallout.item_caps_total(fallout.self_obj()))
-    v1 = fallout.item_caps_adjust(fallout.self_obj(), 24)
+    fallout.item_caps_adjust(self_obj, -fallout.item_caps_total(self_obj))
+    fallout.item_caps_adjust(self_obj, 24)
 end
 
 local exports = {}
