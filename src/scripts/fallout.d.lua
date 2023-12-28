@@ -469,7 +469,7 @@ function fallout.anim(obj, anim, frame) end
 
 --- @param obj Object
 --- @param pid integer
---- @reutrn Object | nil
+--- @return Object | nil
 --- @nodiscard
 function fallout.obj_carrying_pid_obj(obj, pid) end
 
