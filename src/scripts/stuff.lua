@@ -4,24 +4,17 @@ local start
 local anger
 
 function start()
-    if fallout.script_action() == 22 then
+    local script_action = fallout.script_action()
+    if script_action == 22 then
         fallout.set_map_var(5, 0)
-    else
-        if fallout.script_action() == 6 then
-            anger()
-        else
-            if fallout.script_action() == 8 then
-                anger()
-            else
-                if fallout.script_action() == 7 then
-                    anger()
-                else
-                    if fallout.script_action() == 4 then
-                        anger()
-                    end
-                end
-            end
-        end
+    elseif script_action == 6 then
+        anger()
+    elseif script_action == 8 then
+        anger()
+    elseif script_action == 7 then
+        anger()
+    elseif script_action == 4 then
+        anger()
     end
 end
 
