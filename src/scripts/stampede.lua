@@ -9,26 +9,28 @@ local damage_counter = 0
 
 function start()
     if not initialized then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 3)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 4)
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 5, 3)
+        fallout.critter_add_trait(self_obj, 1, 6, 4)
         initialized = true
-    else
-        if fallout.script_action() == 12 then
-            critter_p_proc()
-        else
-            if fallout.script_action() == 14 then
-                damage_p_proc()
-            end
-        end
+    end
+
+    local script_action = fallout.script_action()
+    if script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 14 then
+        damage_p_proc()
     end
 end
 
 function critter_p_proc()
+    local self_obj = fallout.self_obj()
+    local dude_obj = fallout.dude_obj()
     fallout.script_overrides()
-    fallout.animate_move_obj_to_tile(fallout.self_obj(), fallout.tile_num_in_direction(fallout.tile_num(fallout.self_obj()), 4, 6), 1)
-    if (fallout.tile_distance_objs(fallout.dude_obj(), fallout.self_obj()) <= 1) and (fallout.random(1, 3) == 1) then
-        fallout.critter_dmg(fallout.dude_obj(), fallout.random(1, 6) + 3, 0)
-        fallout.critter_injure(fallout.dude_obj(), 2)
+    fallout.animate_move_obj_to_tile(self_obj, fallout.tile_num_in_direction(fallout.tile_num(self_obj), 4, 6), 1)
+    if fallout.tile_distance_objs(dude_obj, self_obj) <= 1 and fallout.random(1, 3) == 1 then
+        fallout.critter_dmg(dude_obj, fallout.random(1, 6) + 3, 0)
+        fallout.critter_injure(dude_obj, 2)
     end
 end
 
