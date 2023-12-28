@@ -1,60 +1,42 @@
 local fallout = require("fallout")
 local reputation = require("lib.reputation")
 
-local hostile = 0
+local hostile = false
 
 local start
 local destroy_p_proc
 local critter_p_proc
 
 local initialized = false
-local my_knife = 0
-local home_face = 2
-local temp = 0
 
 function start()
     if not initialized then
+        local self_obj = fallout.self_obj()
         if fallout.local_var(3) == 0 then
-            fallout.set_local_var(3, fallout.tile_num(fallout.self_obj()))
+            fallout.set_local_var(3, fallout.tile_num(self_obj))
         end
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 44)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 62)
-        my_knife = fallout.obj_carrying_pid_obj(fallout.self_obj(), 4)
+        fallout.critter_add_trait(self_obj, 1, 6, 44)
+        fallout.critter_add_trait(self_obj, 1, 5, 62)
         if fallout.local_var(0) ~= 0 then
             if fallout.map_var(4) == fallout.local_var(0) then
-                fallout.set_external_var("Student_ptr", fallout.self_obj())
+                fallout.set_external_var("Student_ptr", self_obj)
                 fallout.set_map_var(0, 1)
             end
         else
-            temp = fallout.map_var(5) + 1
+            local temp = fallout.map_var(5) + 1
             fallout.set_map_var(5, temp)
             fallout.set_local_var(0, temp)
-            fallout.set_external_var("Student_ptr", fallout.self_obj())
+            fallout.set_external_var("Student_ptr", self_obj)
             fallout.set_map_var(0, 1)
         end
         initialized = true
-    else
-        if fallout.script_action() == 18 then
-            destroy_p_proc()
-        else
-            if fallout.script_action() == 12 then
-                if fallout.global_var(250) ~= 0 then
-                    hostile = 1
-                end
-                if fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) > 12 then
-                    hostile = 0
-                end
-                if hostile then
-                    fallout.set_global_var(250, 1)
-                    hostile = 0
-                    fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
-                else
-                    if fallout.global_var(250) == 0 then
-                        critter_p_proc()
-                    end
-                end
-            end
-        end
+    end
+
+    local script_action = fallout.script_action()
+    if script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
     end
 end
 
@@ -65,34 +47,44 @@ function destroy_p_proc()
 end
 
 function critter_p_proc()
-    if fallout.local_var(1) == 1 then
-        if fallout.tile_num(fallout.self_obj()) ~= fallout.map_var(1) then
-            fallout.animate_move_obj_to_tile(fallout.self_obj(), fallout.map_var(1), 0)
-        else
-            fallout.set_local_var(1, 0)
-            fallout.set_map_var(0, 1)
-            fallout.anim(fallout.self_obj(), 1000, 1)
-        end
+    local self_obj = fallout.self_obj()
+    local dude_obj = fallout.dude_obj()
+    if fallout.global_var(250) ~= 0 then
+        hostile = true
+    end
+    if fallout.tile_distance_objs(self_obj, dude_obj) > 12 then
+        hostile = false
+    end
+    if hostile then
+        fallout.set_global_var(250, 1)
+        hostile = false
+        fallout.attack(dude_obj, 0, 1, 0, 0, 30000, 0, 0)
     else
-        if fallout.local_var(2) == 1 then
-            if fallout.tile_num(fallout.self_obj()) ~= fallout.local_var(3) then
-                fallout.animate_move_obj_to_tile(fallout.self_obj(), fallout.local_var(3), 0)
-            else
-                fallout.set_local_var(2, 0)
-                fallout.anim(fallout.self_obj(), 1000, home_face)
-            end
-        else
-            if fallout.map_var(2) == fallout.local_var(0) then
+        if fallout.global_var(250) == 0 then
+            if fallout.local_var(1) == 1 then
+                if fallout.tile_num(self_obj) ~= fallout.map_var(1) then
+                    fallout.animate_move_obj_to_tile(self_obj, fallout.map_var(1), 0)
+                else
+                    fallout.set_local_var(1, 0)
+                    fallout.set_map_var(0, 1)
+                    fallout.anim(self_obj, 1000, 1)
+                end
+            elseif fallout.local_var(2) == 1 then
+                if fallout.tile_num(self_obj) ~= fallout.local_var(3) then
+                    fallout.animate_move_obj_to_tile(self_obj, fallout.local_var(3), 0)
+                else
+                    fallout.set_local_var(2, 0)
+                    fallout.anim(self_obj, 1000, 2)
+                end
+            elseif fallout.map_var(2) == fallout.local_var(0) then
                 fallout.set_map_var(2, 0)
-                fallout.set_external_var("Student_ptr", fallout.self_obj())
+                fallout.set_external_var("Student_ptr", self_obj)
                 fallout.set_map_var(3, fallout.map_var(4))
                 fallout.set_map_var(4, fallout.local_var(0))
                 fallout.set_local_var(1, 1)
-            else
-                if fallout.map_var(3) == fallout.local_var(0) then
-                    fallout.set_map_var(3, 0)
-                    fallout.set_local_var(2, 1)
-                end
+            elseif fallout.map_var(3) == fallout.local_var(0) then
+                fallout.set_map_var(3, 0)
+                fallout.set_local_var(2, 1)
             end
         end
     end
