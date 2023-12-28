@@ -3,13 +3,14 @@ local fallout = require("fallout")
 local start
 local critter_p_proc
 
-local Hostile = 0
+local hostile = false
 local initialized = false
 
 function start()
     if not initialized then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 44)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 65)
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 44)
+        fallout.critter_add_trait(self_obj, 1, 5, 65)
         initialized = true
     end
     if fallout.script_action() == 12 then
@@ -18,24 +19,26 @@ function start()
 end
 
 function critter_p_proc()
+    local self_obj = fallout.self_obj()
+    local dude_obj = fallout.dude_obj()
     if fallout.map_var(18) ~= 0 then
         if fallout.map_var(18) > 2 then
-            Hostile = 1
+            hostile = true
         end
     end
-    if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
-        Hostile = 1
+    if fallout.obj_can_see_obj(self_obj, dude_obj) then
+        hostile = true
     end
     if fallout.global_var(250) ~= 0 then
-        Hostile = 1
+        hostile = true
     end
-    if fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) > 12 then
-        Hostile = 0
+    if fallout.tile_distance_objs(self_obj, dude_obj) > 12 then
+        hostile = false
     end
-    if Hostile then
+    if hostile then
         fallout.set_global_var(250, 1)
-        Hostile = 0
-        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+        hostile = false
+        fallout.attack(dude_obj, 0, 1, 0, 0, 30000, 0, 0)
     end
 end
 
