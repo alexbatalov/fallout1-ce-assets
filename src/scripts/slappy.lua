@@ -4,7 +4,6 @@ local reputation = require("lib.reputation")
 local time = require("lib.time")
 
 local start
-local combat
 local critter_p_proc
 local pickup_p_proc
 local talk_p_proc
@@ -24,82 +23,68 @@ local Slappy11
 local SlappyEnd
 local SlappyClaw
 
-local hostile = 0
+local hostile = false
 local initialized = false
 local lastBabble = 0
 
-local exit_line = 0
-
 function start()
     if not initialized then
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 41)
+        fallout.critter_add_trait(self_obj, 1, 5, 53)
         initialized = true
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 41)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 53)
     end
-    if fallout.script_action() == 21 then
-        look_at_p_proc()
-    else
-        if fallout.script_action() == 4 then
-            pickup_p_proc()
-        else
-            if fallout.script_action() == 11 then
-                talk_p_proc()
-            else
-                if fallout.script_action() == 12 then
-                    critter_p_proc()
-                else
-                    if fallout.script_action() == 18 then
-                        destroy_p_proc()
-                    end
-                end
-            end
-        end
-    end
-end
 
-function combat()
-    hostile = 1
+    local script_action = fallout.script_action()
+    if script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    end
 end
 
 function critter_p_proc()
+    local dude_obj = fallout.dude_obj()
+    local self_obj = fallout.self_obj()
+    local self_tile_num = fallout.tile_num(fallout.self_obj())
     if hostile then
-        hostile = 0
-        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+        hostile = false
+        fallout.attack(dude_obj, 0, 1, 0, 0, 30000, 0, 0)
     end
-    if fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) <= 20 then
-        if (time.game_time_in_seconds() - lastBabble) >= 10 then
+    if fallout.tile_distance_objs(self_obj, dude_obj) <= 20 then
+        if time.game_time_in_seconds() - lastBabble >= 10 then
             lastBabble = time.game_time_in_seconds()
-            fallout.float_msg(fallout.self_obj(), fallout.message_str(842, fallout.random(101, 107)), 2)
+            fallout.float_msg(self_obj, fallout.message_str(842, fallout.random(101, 107)), 2)
         end
     end
-    if fallout.tile_num(fallout.self_obj()) == 25131 then
+    if self_tile_num == 25131 then
         fallout.reg_anim_func(1, 1)
-        fallout.reg_anim_obj_move_to_tile(fallout.self_obj(), 25331, -1)
+        fallout.reg_anim_obj_move_to_tile(self_obj, 25331, -1)
         fallout.reg_anim_func(3, 0)
-    else
-        if fallout.tile_num(fallout.self_obj()) == 25331 then
-            fallout.reg_anim_func(1, 1)
-            fallout.reg_anim_obj_move_to_tile(fallout.self_obj(), 25132, -1)
-            fallout.reg_anim_func(3, 0)
-        else
-            if fallout.tile_num(fallout.self_obj()) == 25132 then
-                fallout.reg_anim_func(1, 1)
-                fallout.reg_anim_obj_move_to_tile(fallout.self_obj(), 24932, -1)
-                fallout.reg_anim_func(3, 0)
-            else
-                if fallout.tile_num(fallout.self_obj()) == 24932 then
-                    fallout.reg_anim_func(1, 1)
-                    fallout.reg_anim_obj_move_to_tile(fallout.self_obj(), 25131, -1)
-                    fallout.reg_anim_func(3, 0)
-                end
-            end
-        end
+    elseif self_tile_num == 25331 then
+        fallout.reg_anim_func(1, 1)
+        fallout.reg_anim_obj_move_to_tile(self_obj, 25132, -1)
+        fallout.reg_anim_func(3, 0)
+    elseif self_tile_num == 25132 then
+        fallout.reg_anim_func(1, 1)
+        fallout.reg_anim_obj_move_to_tile(self_obj, 24932, -1)
+        fallout.reg_anim_func(3, 0)
+    elseif self_tile_num == 24932 then
+        fallout.reg_anim_func(1, 1)
+        fallout.reg_anim_obj_move_to_tile(self_obj, 25131, -1)
+        fallout.reg_anim_func(3, 0)
     end
 end
 
 function pickup_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
-        hostile = 1
+        hostile = true
     end
 end
 
