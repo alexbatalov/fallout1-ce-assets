@@ -1,22 +1,16 @@
 local fallout = require("fallout")
 
 local start
-local chairend
 local look_at_p_proc
 local description_p_proc
 
 function start()
-    local v0 = 0
-    if fallout.script_action() == 21 then
+    local script_action = fallout.script_action()
+    if script_action == 21 then
         look_at_p_proc()
-    else
-        if fallout.script_action() == 3 then
-            description_p_proc()
-        end
+    elseif script_action == 3 then
+        description_p_proc()
     end
-end
-
-function chairend()
 end
 
 function look_at_p_proc()
