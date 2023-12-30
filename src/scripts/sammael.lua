@@ -24,50 +24,46 @@ local Sammael13
 local Sammael14
 local Sammael15
 
-local hostile = 0
+local hostile = false
 local initialized = false
 
 function start()
     if not initialized then
-        if (fallout.global_var(613) == 9103) or (fallout.global_var(613) == 9102) then
-            fallout.critter_add_trait(fallout.self_obj(), 1, 6, 0)
+        local self_obj = fallout.self_obj()
+        if fallout.global_var(613) == 9103 or fallout.global_var(613) == 9102 then
+            fallout.critter_add_trait(self_obj, 1, 6, 0)
         else
-            fallout.critter_add_trait(fallout.self_obj(), 1, 6, 49)
+            fallout.critter_add_trait(self_obj, 1, 6, 49)
         end
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 29)
+        fallout.critter_add_trait(self_obj, 1, 5, 29)
         initialized = true
-    else
-        if fallout.script_action() == 12 then
-            critter_p_proc()
-        else
-            if fallout.script_action() == 18 then
-                destroy_p_proc()
-            else
-                if fallout.script_action() == 21 then
-                    look_at_p_proc()
-                else
-                    if fallout.script_action() == 4 then
-                        pickup_p_proc()
-                    else
-                        if fallout.script_action() == 11 then
-                            talk_p_proc()
-                        end
-                    end
-                end
-            end
-        end
+    end
+
+    local script_action = fallout.script_action()
+    if script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
     end
 end
 
 function critter_p_proc()
     if hostile then
-        hostile = 0
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     else
-        if fallout.tile_distance_objs(fallout.dude_obj(), fallout.self_obj()) > fallout.get_critter_stat(fallout.dude_obj(), 1) then
-            fallout.set_obj_visibility(fallout.self_obj(), 1)
+        local self_obj = fallout.self_obj()
+        local dude_obj = fallout.dude_obj()
+        if fallout.tile_distance_objs(dude_obj, self_obj) > fallout.get_critter_stat(dude_obj, 1) then
+            fallout.set_obj_visibility(self_obj, true)
         else
-            fallout.set_obj_visibility(fallout.self_obj(), 0)
+            fallout.set_obj_visibility(self_obj, false)
         end
     end
 end
@@ -114,7 +110,9 @@ end
 
 function Sammael01()
     fallout.gsay_reply(254, 102)
-    fallout.giq_option(4, 254, fallout.message_str(254, 103) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(254, 104), Sammael02, 50)
+    fallout.giq_option(4, 254,
+        fallout.message_str(254, 103) ..
+        fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(254, 104), Sammael02, 50)
     fallout.giq_option(4, 254, 105, Sammael03, 50)
     fallout.giq_option(-3, 254, 106, Sammael15, 50)
 end
