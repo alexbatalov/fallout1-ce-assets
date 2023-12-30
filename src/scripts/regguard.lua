@@ -24,34 +24,30 @@ local DialogMain6
 local initialized = false
 local Hostile = 0
 
-local exit_line = 0
-
 function start()
-    local v0 = 0
     if not initialized then
-        if fallout.obj_is_carrying_obj_pid(fallout.self_obj(), 41) == 0 then
-            fallout.item_caps_adjust(fallout.self_obj(), fallout.random(2, 20))
+        local self_obj = fallout.self_obj()
+        if fallout.obj_is_carrying_obj_pid(self_obj, 41) == 0 then
+            fallout.item_caps_adjust(self_obj, fallout.random(2, 20))
         end
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 89)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 29)
+        fallout.critter_add_trait(self_obj, 1, 6, 89)
+        fallout.critter_add_trait(self_obj, 1, 5, 29)
         if fallout.local_var(6) == 0 then
             fallout.set_map_var(1, fallout.map_var(1) + 1)
             fallout.set_local_var(6, 1)
         end
         if fallout.global_var(613) == 9103 then
-            v0 = fallout.global_var(268)
+            local v0 = fallout.global_var(268)
             if v0 == 0 then
-                fallout.set_external_var("RegGuard1", fallout.self_obj())
-            else
-                if v0 == 1 then
-                    fallout.set_external_var("RegGuard2", fallout.self_obj())
-                end
+                fallout.set_external_var("RegGuard1", self_obj)
+            elseif v0 == 1 then
+                fallout.set_external_var("RegGuard2", self_obj)
             end
             v0 = v0 + 1
             fallout.set_global_var(268, v0)
         else
-            fallout.set_external_var("RegGuard1", 0)
-            fallout.set_external_var("RegGuard2", 0)
+            fallout.set_external_var("RegGuard1", nil)
+            fallout.set_external_var("RegGuard2", nil)
         end
         initialized = true
     end
@@ -68,7 +64,7 @@ function description_p_proc()
 end
 
 function talk_p_proc()
-    if (fallout.global_var(251) == 1) or (fallout.global_var(616) == 1) or (fallout.global_var(613) == 9103) then
+    if fallout.global_var(251) == 1 or fallout.global_var(616) == 1 or fallout.global_var(613) == 9103 then
         fallout.float_msg(fallout.self_obj(), fallout.message_str(669, fallout.random(100, 105)), 2)
     else
         reaction.get_reaction()
@@ -91,11 +87,11 @@ end
 
 function critter_p_proc()
     if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
-        if (fallout.global_var(613) == 9103) and (fallout.local_var(5) == 0) then
+        if fallout.global_var(613) == 9103 and fallout.local_var(5) == 0 then
             fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
             fallout.set_global_var(616, 1)
         else
-            if (fallout.global_var(251) == 1) or (fallout.global_var(616) == 1) then
+            if fallout.global_var(251) == 1 or fallout.global_var(616) == 1 then
                 fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
             else
                 if fallout.global_var(613) ~= 9103 then
@@ -187,12 +183,10 @@ end
 function DialogMain5()
     if fallout.global_var(128) == 0 then
         fallout.gsay_message(252, 125, 50)
+    elseif fallout.global_var(128) == 1 then
+        fallout.gsay_message(252, 126, 50)
     else
-        if fallout.global_var(128) == 1 then
-            fallout.gsay_message(252, 126, 50)
-        else
-            fallout.gsay_message(252, 127, 50)
-        end
+        fallout.gsay_message(252, 127, 50)
     end
 end
 
