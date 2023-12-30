@@ -1,16 +1,16 @@
 local fallout = require("fallout")
 
 local start
-local do_stuff
+local use_p_proc
 
 function start()
-    local v0 = 0
-    if fallout.script_action() == 6 then
-        do_stuff()
+    local script_action = fallout.script_action()
+    if script_action == 6 then
+        use_p_proc()
     end
 end
 
-function do_stuff()
+function use_p_proc()
     if fallout.local_var(0) == 1 then
         fallout.display_msg(fallout.message_str(93, 100))
     else
@@ -21,4 +21,5 @@ end
 
 local exports = {}
 exports.start = start
+exports.use_p_proc = use_p_proc
 return exports
