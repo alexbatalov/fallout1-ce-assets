@@ -20,33 +20,31 @@ local SarahEnd
 
 local initialized = false
 
-local exit_line = 0
-
 function start()
     if not initialized then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 34)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 67)
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 34)
+        fallout.critter_add_trait(self_obj, 1, 5, 67)
         initialized = true
-    else
-        if fallout.script_action() == 12 then
-            critter_p_proc()
-        else
-            if fallout.script_action() == 18 then
-                destroy_p_proc()
-            else
-                if fallout.script_action() == 11 then
-                    talk_p_proc()
-                end
-            end
-        end
+    end
+
+    local script_action = fallout.script_action()
+    if script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
     end
 end
 
 function critter_p_proc()
     if fallout.map_var(8) == 3 then
         if fallout.local_var(4) == 0 then
-            if fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 12 then
-                if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
+            local self_obj = fallout.self_obj()
+            local dude_obj = fallout.dude_obj()
+            if fallout.tile_distance_objs(self_obj, dude_obj) < 12 then
+                if fallout.obj_can_see_obj(self_obj, dude_obj) then
                     fallout.dialogue_system_enter()
                 end
             end
