@@ -5,29 +5,28 @@ local map_enter_p_proc
 local map_update_p_proc
 
 function start()
-    if fallout.script_action() == 15 then
+    local script_action = fallout.script_action()
+    if script_action == 15 then
         map_enter_p_proc()
-    else
-        if fallout.script_action() == 23 then
-            map_update_p_proc()
-        end
+    elseif script_action == 23 then
+        map_update_p_proc()
     end
 end
 
 function map_enter_p_proc()
     if fallout.map_var(7) == 0 then
-        fallout.set_obj_visibility(fallout.self_obj(), 0)
+        fallout.set_obj_visibility(fallout.self_obj(), false)
     else
-        fallout.set_obj_visibility(fallout.self_obj(), 1)
+        fallout.set_obj_visibility(fallout.self_obj(), true)
     end
 end
 
 function map_update_p_proc()
     if fallout.map_var(7) == 0 then
-        fallout.set_obj_visibility(fallout.self_obj(), 0)
+        fallout.set_obj_visibility(fallout.self_obj(), false)
     else
         fallout.set_map_var(2, 1)
-        fallout.set_obj_visibility(fallout.self_obj(), 1)
+        fallout.set_obj_visibility(fallout.self_obj(), true)
     end
 end
 
