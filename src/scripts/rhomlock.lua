@@ -5,52 +5,47 @@ local use_p_proc
 local pickup_p_proc
 local use_skill_on_p_proc
 local timed_event_p_proc
-local whoami
 
-local once_only = 1
+local initialized = false
 local Test = 0
-local bonus = 0
-local failure = 0
 
 function start()
-    if once_only then
-        once_only = 0
+    if not initialized then
         fallout.set_external_var("locker_ptr", fallout.self_obj())
+        initialized = true
     end
-    if fallout.script_action() == 22 then
+
+    local script_action = fallout.script_action()
+    if script_action == 22 then
         timed_event_p_proc()
-    else
-        if fallout.script_action() == 6 then
-            use_p_proc()
-        else
-            if fallout.script_action() == 4 then
-                pickup_p_proc()
-            else
-                if fallout.script_action() == 8 then
-                    use_skill_on_p_proc()
-                end
-            end
-        end
+    elseif script_action == 6 then
+        use_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 8 then
+        use_skill_on_p_proc()
     end
 end
 
 function use_p_proc()
-    if fallout.source_obj() == fallout.dude_obj() then
-        bonus = -35
-        failure = 1
+    local source_obj = fallout.source_obj()
+    local dude_obj = fallout.dude_obj()
+    if source_obj == dude_obj then
+        local bonus = -35
+        local failure = true
         if fallout.metarule(16, 0) > 1 then
             fallout.set_map_var(19, 2)
         else
-            if fallout.source_obj() == fallout.dude_obj() then
-                if fallout.using_skill(fallout.dude_obj(), 8) then
-                    Test = fallout.roll_vs_skill(fallout.dude_obj(), 8, bonus)
-                    if fallout.is_success(Test) then
-                        failure = 0
+            if source_obj == dude_obj then
+                if fallout.using_skill(dude_obj, 8) then
+                    local roll = fallout.roll_vs_skill(dude_obj, 8, bonus)
+                    if fallout.is_success(roll) then
+                        failure = false
                     else
-                        failure = 1
+                        failure = true
                     end
-                    if fallout.has_skill(fallout.dude_obj(), 8) < 40 then
-                        failure = 1
+                    if fallout.has_skill(dude_obj, 8) < 40 then
+                        failure = true
                     end
                 end
             end
@@ -76,13 +71,9 @@ function use_skill_on_p_proc()
 end
 
 function timed_event_p_proc()
-    if not(fallout.combat_is_initialized()) then
+    if not fallout.combat_is_initialized() then
         fallout.obj_close(fallout.self_obj())
     end
-end
-
-function whoami()
-    fallout.set_external_var("locker_ptr", fallout.self_obj())
 end
 
 local exports = {}
