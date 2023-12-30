@@ -8,24 +8,17 @@ local use_obj_on_p_proc
 local damage_p_proc
 
 function start()
-    if fallout.script_action() == 21 then
+    local script_action = fallout.script_action()
+    if script_action == 21 then
         look_at_p_proc()
-    else
-        if fallout.script_action() == 6 then
-            use_p_proc()
-        else
-            if fallout.script_action() == 8 then
-                use_skill_on_p_proc()
-            else
-                if fallout.script_action() == 7 then
-                    use_obj_on_p_proc()
-                else
-                    if fallout.script_action() == 14 then
-                        damage_p_proc()
-                    end
-                end
-            end
-        end
+    elseif script_action == 6 then
+        use_p_proc()
+    elseif script_action == 8 then
+        use_skill_on_p_proc()
+    elseif script_action == 7 then
+        use_obj_on_p_proc()
+    elseif script_action == 14 then
+        damage_p_proc()
     end
 end
 
@@ -49,9 +42,7 @@ function look_at_p_proc()
 end
 
 function use_obj_on_p_proc()
-    local v0 = 0
-    v0 = fallout.obj_being_used_with()
-    if fallout.obj_pid(v0) == 84 then
+    if fallout.obj_pid(fallout.obj_being_used_with()) == 84 then
         fallout.script_overrides()
         fallout.display_msg(fallout.message_str(526, 104))
     end
