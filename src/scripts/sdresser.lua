@@ -4,20 +4,15 @@ local start
 local pickup_p_proc
 local look_at_p_proc
 local description_p_proc
-local chairend
 
 function start()
-    local v0 = 0
-    if fallout.script_action() == 4 then
+    local script_action = fallout.script_action()
+    if script_action == 4 then
         pickup_p_proc()
-    else
-        if fallout.script_action() == 3 then
-            description_p_proc()
-        else
-            if fallout.script_action() == 21 then
-                look_at_p_proc()
-            end
-        end
+    elseif script_action == 3 then
+        description_p_proc()
+    elseif script_action == 21 then
+        look_at_p_proc()
     end
 end
 
@@ -34,9 +29,6 @@ end
 function description_p_proc()
     fallout.script_overrides()
     fallout.display_msg(fallout.message_str(120, 100))
-end
-
-function chairend()
 end
 
 local exports = {}
