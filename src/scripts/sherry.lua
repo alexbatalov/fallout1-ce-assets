@@ -47,7 +47,7 @@ local SherryCombat
 local SherryCook
 local SherryEnd
 
-local hostile = 0
+local hostile = false
 local initialized = false
 local feed_dude = 0
 
@@ -60,55 +60,48 @@ local sleep_tile = 0
 local exit_line = 0
 
 function start()
-    if fallout.script_action() == 12 then
+    local script_action = fallout.script_action()
+    if script_action == 12 then
         critter_p_proc()
-    else
-        if fallout.script_action() == 18 then
-            destroy_p_proc()
-        else
-            if fallout.script_action() == 21 then
-                look_at_p_proc()
-            else
-                if fallout.script_action() == 15 then
-                    map_enter_p_proc()
-                else
-                    if fallout.script_action() == 4 then
-                        pickup_p_proc()
-                    else
-                        if fallout.script_action() == 11 then
-                            talk_p_proc()
-                        end
-                    end
-                end
-            end
-        end
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 15 then
+        map_enter_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
     end
 end
 
 function critter_p_proc()
+    local self_obj = fallout.self_obj()
+    local dude_obj = fallout.dude_obj()
     if hostile then
-        hostile = 0
-        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+        hostile = false
+        fallout.attack(dude_obj, 0, 1, 0, 0, 30000, 0, 0)
     else
         if fallout.global_var(556) == 1 then
-            if (time.game_time_in_days() - fallout.local_var(6)) > 1 then
-                fallout.critter_add_trait(fallout.self_obj(), 1, 6, 26)
+            if time.game_time_in_days() - fallout.local_var(6) > 1 then
+                fallout.critter_add_trait(self_obj, 1, 6, 26)
                 fallout.set_global_var(556, 2)
                 fallout.set_local_var(6, 0)
                 home_tile = 18125
                 sleep_tile = 17924
             end
         end
-        if (fallout.game_time_hour() >= 700) and (fallout.game_time_hour() <= 1930) then
-            if fallout.tile_num(fallout.self_obj()) ~= home_tile then
-                fallout.animate_move_obj_to_tile(fallout.self_obj(), home_tile, 0)
+        if fallout.game_time_hour() >= 700 and fallout.game_time_hour() <= 1930 then
+            if fallout.tile_num(self_obj) ~= home_tile then
+                fallout.animate_move_obj_to_tile(self_obj, home_tile, 0)
             end
         end
         behaviour.sleeping(5, night_person, wake_time, sleep_time, home_tile, sleep_tile)
     end
     if fallout.global_var(247) == 1 then
-        if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
-            fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+        if fallout.obj_can_see_obj(self_obj, dude_obj) then
+            fallout.attack(dude_obj, 0, 1, 0, 0, 30000, 0, 0)
         end
     end
 end
@@ -151,7 +144,7 @@ end
 
 function pickup_p_proc()
     fallout.float_msg(fallout.self_obj(), fallout.message_str(388, 102), 0)
-    hostile = 1
+    hostile = true
 end
 
 function talk_p_proc()
@@ -181,7 +174,9 @@ end
 function Sherry01()
     fallout.set_local_var(4, 1)
     fallout.gsay_reply(388, 103)
-    fallout.giq_option(4, 388, fallout.message_str(388, 104) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(388, 105), Sherry02, 50)
+    fallout.giq_option(4, 388,
+        fallout.message_str(388, 104) ..
+        fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(388, 105), Sherry02, 50)
     fallout.giq_option(4, 388, 106, Sherry03, 50)
     fallout.giq_option(-3, 388, 107, Sherry04, 50)
 end
@@ -252,17 +247,16 @@ function Sherry12()
 end
 
 function Sherry13()
-    if not(fallout.local_var(7)) then
+    if fallout.local_var(7) == 0 then
         fallout.giq_option(5, 388, 133, Sherry09, 50)
     end
-    if not(fallout.local_var(8)) then
+    if fallout.local_var(8) == 0 then
         fallout.giq_option(4, 388, 132, Sherry12, 50)
     end
-    if not(fallout.local_var(9)) then
+    if fallout.local_var(9) == 0 then
         fallout.giq_option(6, 388, 134, Sherry14, 50)
     end
-    exit_line = reaction.Goodbyes()
-    fallout.giq_option(4, 388, exit_line, SherryEnd, 50)
+    fallout.giq_option(4, 388, reaction.Goodbyes(), SherryEnd, 50)
 end
 
 function Sherry14()
@@ -277,8 +271,7 @@ function Sherry15()
     if fallout.local_var(6) == 0 then
         fallout.giq_option(5, 388, 138, Sherry17, 50)
     end
-    exit_line = reaction.Goodbyes()
-    fallout.giq_option(4, 388, exit_line, SherryEnd, 50)
+    fallout.giq_option(4, 388, reaction.Goodbyes(), SherryEnd, 50)
 end
 
 function Sherry16()
@@ -377,13 +370,14 @@ function Sherry29()
 end
 
 function SherryCombat()
-    hostile = 1
+    hostile = true
 end
 
 function SherryCook()
-    fallout.use_obj(fallout.dude_obj())
+    local dude_obj = fallout.dude_obj()
+    fallout.use_obj(dude_obj)
     fallout.float_msg(fallout.self_obj(), fallout.message_str(388, 158), 0)
-    fallout.critter_heal(fallout.dude_obj(), 1)
+    fallout.critter_heal(dude_obj, 1)
     feed_dude = 0
 end
 
