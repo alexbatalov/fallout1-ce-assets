@@ -34,7 +34,7 @@ local Scout23
 local combat
 local ScoutEnd
 
-local hostile = 0
+local hostile = false
 local initialized = false
 
 local damage_p_proc
@@ -50,22 +50,17 @@ function start()
             end
         end
         initialized = true
-    else
-        if fallout.script_action() == 12 then
-            critter_p_proc()
-        else
-            if fallout.script_action() == 18 then
-                destroy_p_proc()
-            else
-                if fallout.script_action() == 21 then
-                    look_at_p_proc()
-                else
-                    if fallout.script_action() == 11 then
-                        talk_p_proc()
-                    end
-                end
-            end
-        end
+    end
+
+    local script_action = fallout.script_action()
+    if script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
     end
 end
 
@@ -74,10 +69,10 @@ function critter_p_proc()
         fallout.set_external_var("removal_ptr", fallout.self_obj())
     end
     if hostile then
-        hostile = 0
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     else
-        if fallout.local_var(1) or fallout.global_var(256) then
+        if fallout.local_var(1) ~= 0 or fallout.global_var(256) ~= 0 then
             if fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 8 then
                 behaviour.flee_dude(1)
             end
@@ -86,12 +81,14 @@ function critter_p_proc()
 end
 
 function destroy_p_proc()
-    if fallout.source_obj() == fallout.dude_obj() then
+    local source_obj = fallout.source_obj()
+    local dude_obj = fallout.dude_obj()
+    if source_obj == dude_obj then
         fallout.set_global_var(256, 1)
     end
-    if fallout.source_obj() == fallout.dude_obj() then
+    if source_obj == dude_obj then
         fallout.set_global_var(159, fallout.global_var(159) + 1)
-        if (fallout.global_var(159) % 7) == 0 then
+        if fallout.global_var(159) % 7 == 0 then
             fallout.set_global_var(155, fallout.global_var(155) - 1)
         end
     end
@@ -111,19 +108,17 @@ end
 
 function talk_p_proc()
     fallout.script_overrides()
-    if fallout.local_var(1) or fallout.global_var(256) then
+    if fallout.local_var(1) ~= 0 or fallout.global_var(256) ~= 0 then
         fallout.float_msg(fallout.self_obj(), fallout.message_str(669, fallout.random(100, 105)), 0)
     else
         fallout.start_gdialog(263, fallout.self_obj(), 4, -1, -1)
         fallout.gsay_start()
         if fallout.global_var(133) == 1 then
             Scout16()
+        elseif fallout.global_var(133) == 2 then
+            Scout22()
         else
-            if fallout.global_var(133) == 2 then
-                Scout22()
-            else
-                Scout0()
-            end
+            Scout0()
         end
         fallout.gsay_end()
         fallout.end_dialogue()
@@ -131,19 +126,21 @@ function talk_p_proc()
 end
 
 function Scout0()
+    local dude_name = fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1)
     fallout.gsay_reply(263, 110)
     fallout.giq_option(-3, 263, 111, Scout1, 50)
-    fallout.giq_option(4, 263, fallout.message_str(263, 112) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(263, 113), Scout4, 50)
-    fallout.giq_option(4, 263, fallout.message_str(263, 114) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(263, 115), combat, 50)
+    fallout.giq_option(4, 263, fallout.message_str(263, 112) .. dude_name .. fallout.message_str(263, 113), Scout4, 50)
+    fallout.giq_option(4, 263, fallout.message_str(263, 114) .. dude_name .. fallout.message_str(263, 115), combat, 50)
     fallout.giq_option(6, 263, 116, Scout11, 50)
 end
 
 function Scout1()
+    local dude_name = fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1)
     fallout.gsay_reply(263, 117)
-    fallout.giq_option(-3, 263, fallout.message_str(263, 118) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(263, 119), combat, 50)
-    fallout.giq_option(-3, 263, fallout.message_str(263, 120) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(263, 121), Scout2, 50)
+    fallout.giq_option(-3, 263, fallout.message_str(263, 118) .. dude_name .. fallout.message_str(263, 119), combat, 50)
+    fallout.giq_option(-3, 263, fallout.message_str(263, 120) .. dude_name .. fallout.message_str(263, 121), Scout2, 50)
     fallout.giq_option(-3, 263, fallout.message_str(263, 122), Scout3, 50)
-    fallout.giq_option(-3, 263, fallout.message_str(263, 123) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(263, 124), Scout3, 50)
+    fallout.giq_option(-3, 263, fallout.message_str(263, 123) .. dude_name .. fallout.message_str(263, 124), Scout3, 50)
 end
 
 function Scout2()
@@ -275,18 +272,16 @@ function Scout22()
 end
 
 function Scout23()
-    local v0 = 0
-    v0 = 4 * 3600
     fallout.set_global_var(132, 1)
     fallout.gsay_reply(263, 178)
-    fallout.game_time_advance(fallout.game_ticks(v0))
+    fallout.game_time_advance(fallout.game_ticks(4 * 3600))
     fallout.gfade_out(400)
     fallout.gfade_in(400)
     fallout.giq_option(4, 263, 179, ScoutEnd, 50)
 end
 
 function combat()
-    hostile = 1
+    hostile = true
 end
 
 function ScoutEnd()
