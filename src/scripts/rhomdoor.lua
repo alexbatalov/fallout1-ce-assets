@@ -54,18 +54,19 @@ end
 function hear_check()
     local bonus = -35
     local failure = true
-    if fallout.metarule(16, 0) > 1 and fallout.source_obj() == fallout.dude_obj() then
+    local dude_obj = fallout.dude_obj()
+    if fallout.metarule(16, 0) > 1 and fallout.source_obj() == dude_obj then
         fallout.set_map_var(19, 2)
     else
-        if fallout.source_obj() == fallout.dude_obj() then
-            if fallout.using_skill(fallout.dude_obj(), 8) then
-                local roll = fallout.roll_vs_skill(fallout.dude_obj(), 8, bonus)
+        if fallout.source_obj() == dude_obj then
+            if fallout.using_skill(dude_obj, 8) then
+                local roll = fallout.roll_vs_skill(dude_obj, 8, bonus)
                 if fallout.is_success(roll) then
                     failure = false
                 else
                     failure = true
                 end
-                if fallout.has_skill(fallout.dude_obj(), 8) < 40 then
+                if fallout.has_skill(dude_obj, 8) < 40 then
                     failure = true
                 end
             end
