@@ -5,30 +5,31 @@ local map_enter_p_proc
 local map_update_p_proc
 
 function start()
-    if fallout.script_action() == 15 then
+    local script_action = fallout.script_action()
+    if script_action == 15 then
         map_enter_p_proc()
-    else
-        if fallout.script_action() == 23 then
-            map_update_p_proc()
-        end
+    elseif script_action == 23 then
+        map_update_p_proc()
     end
 end
 
 function map_enter_p_proc()
-    fallout.set_external_var("Psy_Field_Ptr", fallout.self_obj())
+    local self_obj = fallout.self_obj()
+    fallout.set_external_var("Psy_Field_Ptr", self_obj)
     if fallout.map_var(6) == 0 then
-        fallout.set_obj_visibility(fallout.self_obj(), 0)
+        fallout.set_obj_visibility(self_obj, false)
     else
-        fallout.set_obj_visibility(fallout.self_obj(), 1)
+        fallout.set_obj_visibility(self_obj, true)
     end
 end
 
 function map_update_p_proc()
-    fallout.set_external_var("Psy_Field_Ptr", fallout.self_obj())
+    local self_obj = fallout.self_obj()
+    fallout.set_external_var("Psy_Field_Ptr", self_obj)
     if fallout.map_var(6) == 0 then
-        fallout.set_obj_visibility(fallout.self_obj(), 0)
+        fallout.set_obj_visibility(self_obj, false)
     else
-        fallout.set_obj_visibility(fallout.self_obj(), 1)
+        fallout.set_obj_visibility(self_obj, true)
     end
 end
 
