@@ -3,7 +3,6 @@ local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
 
 local start
-local combat
 local critter_p_proc
 local pickup_p_proc
 local talk_p_proc
@@ -12,53 +11,42 @@ local damage_p_proc
 local look_at_p_proc
 local Sid00
 
-local hostile = 0
+local hostile = false
 local initialized = false
-
-local exit_line = 0
 
 function start()
     if not initialized then
-        fallout.set_external_var("Sid_Ptr", fallout.self_obj())
+        local self_obj = fallout.self_obj()
+        fallout.set_external_var("Sid_Ptr", self_obj)
+        fallout.critter_add_trait(self_obj, 1, 6, 37)
+        fallout.critter_add_trait(self_obj, 1, 5, 4)
         initialized = true
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 37)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 4)
     end
-    if fallout.script_action() == 21 then
-        look_at_p_proc()
-    else
-        if fallout.script_action() == 4 then
-            pickup_p_proc()
-        else
-            if fallout.script_action() == 11 then
-                talk_p_proc()
-            else
-                if fallout.script_action() == 12 then
-                    critter_p_proc()
-                else
-                    if fallout.script_action() == 18 then
-                        destroy_p_proc()
-                    end
-                end
-            end
-        end
-    end
-end
 
-function combat()
-    hostile = 1
+    local script_action = fallout.script_action()
+    if script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    end
 end
 
 function critter_p_proc()
     if hostile then
-        hostile = 0
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
 end
 
 function pickup_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
-        hostile = 1
+        hostile = true
     end
 end
 
@@ -72,9 +60,8 @@ function destroy_p_proc()
 end
 
 function damage_p_proc()
-    local v0 = 0
-    v0 = fallout.obj_pid(fallout.source_obj())
-    if fallout.party_member_obj(v0) ~= 0 then
+    local pid = fallout.obj_pid(fallout.source_obj())
+    if fallout.party_member_obj(pid) ~= nil then
         fallout.set_global_var(248, 1)
     end
 end
@@ -85,50 +72,39 @@ function look_at_p_proc()
 end
 
 function Sid00()
-    local v0 = 0
-    v0 = fallout.random(1, 7)
-    if v0 == 1 then
-        if (fallout.game_time_hour() >= 800) and (fallout.game_time_hour() < 1200) then
-            fallout.float_msg(fallout.self_obj(), fallout.message_str(602, 101), 8)
-        else
-            if (fallout.game_time_hour() >= 1200) and (fallout.game_time_hour() < 1600) then
-                if fallout.get_critter_stat(fallout.dude_obj(), 34) == 0 then
-                    fallout.float_msg(fallout.self_obj(), fallout.message_str(602, 102), 8)
-                else
-                    fallout.float_msg(fallout.self_obj(), fallout.message_str(602, 103), 8)
-                end
+    local self_obj = fallout.self_obj()
+    local rnd = fallout.random(1, 7)
+    if rnd == 1 then
+        local game_time_hour = fallout.game_time_hour()
+        if game_time_hour >= 800 and game_time_hour < 1200 then
+            fallout.float_msg(self_obj, fallout.message_str(602, 101), 8)
+        elseif game_time_hour >= 1200 and game_time_hour < 1600 then
+            if fallout.get_critter_stat(fallout.dude_obj(), 34) == 0 then
+                fallout.float_msg(self_obj, fallout.message_str(602, 102), 8)
             else
-                fallout.float_msg(fallout.self_obj(), fallout.message_str(602, 104), 8)
+                fallout.float_msg(self_obj, fallout.message_str(602, 103), 8)
             end
+        else
+            fallout.float_msg(self_obj, fallout.message_str(602, 104), 8)
         end
+    elseif rnd == 2 then
+        fallout.float_msg(self_obj, fallout.message_str(602, 105), 8)
+    elseif rnd == 3 then
+        fallout.float_msg(self_obj, fallout.message_str(602, 106), 8)
+        fallout.float_msg(fallout.external_var("Beth_Ptr"), fallout.message_str(617, 374), 2)
+    elseif rnd == 4 then
+        fallout.float_msg(self_obj, fallout.message_str(602, 107), 8)
+        fallout.float_msg(fallout.external_var("Beth_Ptr"), fallout.message_str(617, 375), 2)
+    elseif rnd == 5 then
+        fallout.float_msg(self_obj, fallout.message_str(602, 108), 8)
+        fallout.float_msg(fallout.external_var("Beth_Ptr"), fallout.message_str(617, 376), 2)
+    elseif rnd == 6 then
+        fallout.float_msg(self_obj, fallout.message_str(602, 109), 8)
+        fallout.float_msg(fallout.external_var("Beth_Ptr"), fallout.message_str(617, 377), 2)
     else
-        if v0 == 2 then
-            fallout.float_msg(fallout.self_obj(), fallout.message_str(602, 105), 8)
-        else
-            if v0 == 3 then
-                fallout.float_msg(fallout.self_obj(), fallout.message_str(602, 106), 8)
-                fallout.float_msg(fallout.external_var("Beth_Ptr"), fallout.message_str(617, 374), 2)
-            else
-                if v0 == 4 then
-                    fallout.float_msg(fallout.self_obj(), fallout.message_str(602, 107), 8)
-                    fallout.float_msg(fallout.external_var("Beth_Ptr"), fallout.message_str(617, 375), 2)
-                else
-                    if v0 == 5 then
-                        fallout.float_msg(fallout.self_obj(), fallout.message_str(602, 108), 8)
-                        fallout.float_msg(fallout.external_var("Beth_Ptr"), fallout.message_str(617, 376), 2)
-                    else
-                        if v0 == 6 then
-                            fallout.float_msg(fallout.self_obj(), fallout.message_str(602, 109), 8)
-                            fallout.float_msg(fallout.external_var("Beth_Ptr"), fallout.message_str(617, 377), 2)
-                        else
-                            fallout.float_msg(fallout.self_obj(), fallout.message_str(602, 110), 8)
-                            fallout.float_msg(fallout.external_var("Beth_Ptr"), fallout.message_str(617, 378), 2)
-                            fallout.float_msg(fallout.self_obj(), fallout.message_str(602, 111), 8)
-                        end
-                    end
-                end
-            end
-        end
+        fallout.float_msg(self_obj, fallout.message_str(602, 110), 8)
+        fallout.float_msg(fallout.external_var("Beth_Ptr"), fallout.message_str(617, 378), 2)
+        fallout.float_msg(self_obj, fallout.message_str(602, 111), 8)
     end
 end
 
