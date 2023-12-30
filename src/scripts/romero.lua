@@ -29,18 +29,15 @@ local RomeroCombat
 local RomeroEnd
 local GiveLocket
 
-local name = 0
-local asked = 0
 local initialized = false
-local hostile = 0
 
 local damage_p_proc
 
 function start()
     if not initialized then
-        name = fallout.message_str(285, 100)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 47)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 27)
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 47)
+        fallout.critter_add_trait(self_obj, 1, 5, 27)
         initialized = true
     end
 end
@@ -57,22 +54,16 @@ function look_at_p_proc()
 end
 
 function description_p_proc()
-    if (fallout.global_var(613) == 9101) or (fallout.global_var(613) == 2) then
+    if fallout.global_var(613) == 9101 or fallout.global_var(613) == 2 then
+        show_true_name()
+    elseif fallout.get_critter_stat(fallout.dude_obj(), 6) > 6 or fallout.get_critter_stat(fallout.dude_obj(), 4) > 6 then
+        show_true_name()
+    elseif fallout.get_critter_stat(fallout.dude_obj(), 4) < 4 then
+        show_false_name()
+    elseif fallout.random(0, 1) ~= 0 then
         show_true_name()
     else
-        if (fallout.get_critter_stat(fallout.dude_obj(), 6) > 6) or (fallout.get_critter_stat(fallout.dude_obj(), 4) > 6) then
-            show_true_name()
-        else
-            if fallout.get_critter_stat(fallout.dude_obj(), 4) < 4 then
-                show_false_name()
-            else
-                if fallout.random(0, 1) then
-                    show_true_name()
-                else
-                    show_false_name()
-                end
-            end
-        end
+        show_false_name()
     end
 end
 
@@ -83,7 +74,7 @@ function talk_p_proc()
         fallout.start_gdialog(285, fallout.self_obj(), 4, -1, -1)
         fallout.gsay_start()
         fallout.set_local_var(0, 1)
-        if fallout.global_var(127 == 3) then
+        if fallout.global_var(127) == 3 then
             Romero15()
         else
             if time.is_night() then
@@ -93,7 +84,7 @@ function talk_p_proc()
                     Romero13()
                 else
                     if fallout.global_var(135) == 2 then
-                        if not(fallout.local_var(1)) then
+                        if fallout.local_var(1) == 0 then
                             Romero07()
                         else
                             Romero14()
@@ -223,10 +214,9 @@ function RomeroEnd()
 end
 
 function GiveLocket()
-    local v0 = 0
     fallout.set_global_var(127, 1)
-    v0 = fallout.create_object_sid(99, 0, 0, -1)
-    fallout.add_obj_to_inven(fallout.dude_obj(), v0)
+    local item_obj = fallout.create_object_sid(99, 0, 0, -1)
+    fallout.add_obj_to_inven(fallout.dude_obj(), item_obj)
 end
 
 function damage_p_proc()
