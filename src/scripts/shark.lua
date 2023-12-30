@@ -32,55 +32,42 @@ local sleep_time = 0
 local home_tile = 0
 local sleep_tile = 0
 local dest_tile = 7000
-local hostile = 0
-local timer_set = 0
-local sleeping_disabled = 0
+local hostile = false
+local sleeping_disabled = false
 local waypoint = 0
 
-local exit_line = 0
-
 function start()
-    if fallout.script_action() == 12 then
+    local script_action = fallout.script_action()
+    if script_action == 12 then
         critter_p_proc()
-    else
-        if fallout.script_action() == damage_p_proc() then
-            damage_p_proc()
-        else
-            if fallout.script_action() == 18 then
-                destroy_p_proc()
-            else
-                if fallout.script_action() == 21 then
-                    look_at_p_proc()
-                else
-                    if fallout.script_action() == 4 then
-                        pickup_p_proc()
-                    else
-                        if fallout.script_action() == 11 then
-                            talk_p_proc()
-                        else
-                            if fallout.script_action() == 22 then
-                                timed_event_p_proc()
-                            end
-                        end
-                    end
-                end
-            end
-        end
+    elseif script_action == 14 then
+        damage_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 22 then
+        timed_event_p_proc()
     end
 end
 
 function critter_p_proc()
     if hostile then
-        hostile = 0
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     else
-        if (fallout.global_var(282) == 1) and (fallout.local_var(6) == 0) then
+        if fallout.global_var(282) == 1 and fallout.local_var(6) == 0 then
             fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(3), 3)
             fallout.set_local_var(6, 1)
         else
             if fallout.global_var(555) ~= 2 then
-                if fallout.tile_num(fallout.self_obj()) ~= dest_tile then
-                    fallout.animate_move_obj_to_tile(fallout.self_obj(), dest_tile, 0)
+                local self_obj = fallout.self_obj()
+                if fallout.tile_num(self_obj) ~= dest_tile then
+                    fallout.animate_move_obj_to_tile(self_obj, dest_tile, 0)
                 else
                     if waypoint == 1 then
                         waypoint = 0
@@ -96,7 +83,7 @@ function critter_p_proc()
 end
 
 function damage_p_proc()
-    if (fallout.source_obj() == fallout.dude_obj()) and (fallout.map_var(0) == 1) then
+    if fallout.source_obj() == fallout.dude_obj() and fallout.map_var(0) == 1 then
         fallout.set_map_var(1, 1)
     end
 end
@@ -119,20 +106,21 @@ function map_enter_p_proc()
     wake_time = 1530
     home_tile = 20486
     sleep_tile = 7000
-    fallout.critter_add_trait(fallout.self_obj(), 1, 6, 14)
-    fallout.critter_add_trait(fallout.self_obj(), 1, 5, 58)
-    if (fallout.global_var(555) == 2) or (fallout.global_var(282) == 1) then
-        fallout.move_to(fallout.self_obj(), 7000, 0)
-        fallout.set_obj_visibility(fallout.self_obj(), 1)
-        sleeping_disabled = 1
-        fallout.set_external_var("removal_ptr", fallout.self_obj())
+    local self_obj = fallout.self_obj()
+    fallout.critter_add_trait(self_obj, 1, 6, 14)
+    fallout.critter_add_trait(self_obj, 1, 5, 58)
+    if fallout.global_var(555) == 2 or fallout.global_var(282) == 1 then
+        fallout.move_to(self_obj, 7000, 0)
+        fallout.set_obj_visibility(self_obj, true)
+        sleeping_disabled = true
+        fallout.set_external_var("removal_ptr", self_obj)
     else
         dest_tile = home_tile
     end
 end
 
 function pickup_p_proc()
-    hostile = 1
+    hostile = true
 end
 
 function talk_p_proc()
@@ -152,21 +140,19 @@ function talk_p_proc()
 end
 
 function timed_event_p_proc()
-    if fallout.fixed_param() == 1 then
+    local event = fallout.fixed_param()
+    if event == 1 then
         waypoint = 1
         dest_tile = 26495
-    else
-        if fallout.fixed_param() == 2 then
-            if fallout.external_var("Trish_ptr") ~= 0 then
-                fallout.attack(fallout.external_var("Trish_ptr"), 0, 1, 0, 0, 30000, 0, 0)
-            end
-        else
-            if fallout.fixed_param() == 3 then
-                fallout.float_msg(fallout.self_obj(), fallout.message_str(387, 126), 2)
-                fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(5), 1)
-                sleeping_disabled = 1
-            end
+    elseif event == 2 then
+        if fallout.external_var("Trish_ptr") ~= nil then
+            fallout.attack(fallout.external_var("Trish_ptr"), 0, 1, 0, 0, 30000, 0, 0)
         end
+    elseif event == 3 then
+        local self_obj = fallout.self_obj()
+        fallout.float_msg(self_obj, fallout.message_str(387, 126), 2)
+        fallout.add_timer_event(self_obj, fallout.game_ticks(5), 1)
+        sleeping_disabled = true
     end
 end
 
@@ -194,14 +180,13 @@ function Shark02()
 end
 
 function Shark03()
-    local v0 = 0
-    v0 = fallout.message_str(387, 110)
+    local message = fallout.message_str(387, 110)
     if fallout.get_critter_stat(fallout.dude_obj(), 34) == 1 then
-        v0 = v0 .. fallout.message_str(387, 111)
+        message = message .. fallout.message_str(387, 111)
     else
-        v0 = v0 .. fallout.message_str(387, 112)
+        message = message .. fallout.message_str(387, 112)
     end
-    fallout.gsay_reply(387, v0)
+    fallout.gsay_reply(387, message)
     fallout.giq_option(4, 387, 113, SharkCombat, 50)
 end
 
@@ -215,7 +200,7 @@ function Shark04()
 end
 
 function Shark04a()
-    if not(fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), 14, 0))) then
+    if not fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), 14, 0)) then
         reaction.DownReactLevel()
     end
     Shark05()
@@ -248,7 +233,7 @@ function Shark08()
 end
 
 function SharkCombat()
-    hostile = 1
+    hostile = true
 end
 
 function SharkEnd()
