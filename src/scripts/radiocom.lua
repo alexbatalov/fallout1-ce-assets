@@ -10,33 +10,33 @@ function start()
     if not initialized then
         fallout.set_external_var("radio_computer", fallout.self_obj())
         initialized = true
-    else
-        if fallout.script_action() == 3 then
-            description_p_proc()
-        else
-            if fallout.script_action() == 6 then
-                use_p_proc()
-            end
-        end
+    end
+
+    local script_action = fallout.script_action()
+    if script_action == 3 then
+        description_p_proc()
+    elseif script_action == 6 then
+        use_p_proc()
     end
 end
 
 function description_p_proc()
-    local v0 = 0
-    v0 = fallout.message_str(607, 100)
-    if fallout.is_success(fallout.do_check(fallout.dude_obj(), 1, fallout.has_trait(0, fallout.dude_obj(), 0))) then
+    local msg = fallout.message_str(607, 100)
+    local dude_obj = fallout.dude_obj()
+    if fallout.is_success(fallout.do_check(dude_obj, 1, fallout.has_trait(0, dude_obj, 0))) then
         if fallout.global_var(608) ~= 0 then
-            v0 = v0 .. fallout.message_str(607, 101)
+            msg = msg .. fallout.message_str(607, 101)
         else
-            v0 = v0 .. fallout.message_str(607, 102)
+            msg = msg .. fallout.message_str(607, 102)
         end
     end
-    fallout.display_msg(v0)
+    fallout.display_msg(msg)
 end
 
 function use_p_proc()
-    if fallout.source_obj() == fallout.dude_obj() then
-        if fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), 12, 0)) then
+    local dude_obj = fallout.dude_obj()
+    if fallout.source_obj() == dude_obj then
+        if fallout.is_success(fallout.roll_vs_skill(dude_obj, 12, 0)) then
             if fallout.global_var(608) ~= 0 then
                 fallout.display_msg(fallout.message_str(607, 103))
                 fallout.set_global_var(608, 0)
