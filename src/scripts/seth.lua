@@ -3,10 +3,13 @@ local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
 
 local start
+local pickup_p_proc
 local combat_p_proc
 local map_update_p_proc
 local talk_p_proc
+local critter_p_proc
 local destroy_p_proc
+local look_at_p_proc
 local travel
 local no_travel
 local pick_start
@@ -40,57 +43,35 @@ local wake_time = 0
 local sleep_time = 0
 local home_tile = 0
 local sleep_tile = 0
-local hostile = 0
+local hostile = false
 local initialized = false
 local round_counter = 0
 
-local exit_line = 0
-
 function start()
-    if fallout.script_action() == 13 then
+    local script_action = fallout.script_action()
+    if script_action == 13 then
         combat_p_proc()
-    else
-        if fallout.script_action() == 23 then
-            map_update_p_proc()
-        else
-            if fallout.script_action() == 11 then
-                talk_p_proc()
-            else
-                if fallout.script_action() == 18 then
-                    destroy_p_proc()
-                else
-                    if (fallout.script_action() == 21) or (fallout.script_action() == 3) then
-                        fallout.script_overrides()
-                        fallout.display_msg(fallout.message_str(183, 100))
-                    else
-                        if fallout.script_action() == 4 then
-                            hostile = 1
-                        else
-                            if fallout.script_action() == 18 then
-                                fallout.set_global_var(124, 3)
-                                reputation.inc_good_critter()
-                            else
-                                if fallout.script_action() == 12 then
-                                    if fallout.local_var(6) == 0 then
-                                        fallout.set_local_var(6, 1)
-                                        if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) then
-                                            fallout.float_msg(fallout.self_obj(), fallout.message_str(183, 204), 8)
-                                        else
-                                            fallout.float_msg(fallout.self_obj(), fallout.message_str(183, 205), 8)
-                                        end
-                                    end
-                                    if hostile then
-                                        hostile = 0
-                                        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
-                                    end
-                                end
-                            end
-                        end
-                    end
-                end
-            end
-        end
+    elseif script_action == 23 then
+        map_update_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 21 or script_action == 3 then
+        look_at_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 18 then
+        -- FIXME: Conflicts with `destroy_p_proc`.
+        fallout.set_global_var(124, 3)
+        reputation.inc_good_critter()
+    elseif script_action == 12 then
+        critter_p_proc()
     end
+end
+
+function pickup_p_proc()
+    hostile = true
 end
 
 function combat_p_proc()
@@ -121,9 +102,9 @@ function talk_p_proc()
     reaction.get_reaction()
     if fallout.local_var(9) == 1 then
         fallout.float_msg(fallout.self_obj(), fallout.message_str(183, 320), 2)
-        hostile = 1
+        hostile = true
     else
-        if (fallout.global_var(26) == 1) and (fallout.get_critter_stat(fallout.dude_obj(), 4) > 3) then
+        if fallout.global_var(26) == 1 and fallout.get_critter_stat(fallout.dude_obj(), 4) > 3 then
             fallout.set_global_var(218, 1)
             if fallout.local_var(8) == 0 then
                 fallout.set_local_var(8, 1)
@@ -145,7 +126,7 @@ function talk_p_proc()
             else
                 if fallout.global_var(246) == 1 then
                     fallout.float_msg(fallout.self_obj(), fallout.message_str(183, 101), 2)
-                    hostile = 1
+                    hostile = true
                 else
                     fallout.start_gdialog(183, fallout.self_obj(), 4, -1, -1)
                     fallout.gsay_start()
@@ -158,6 +139,21 @@ function talk_p_proc()
     end
 end
 
+function critter_p_proc()
+    if fallout.local_var(6) == 0 then
+        fallout.set_local_var(6, 1)
+        if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) then
+            fallout.float_msg(fallout.self_obj(), fallout.message_str(183, 204), 8)
+        else
+            fallout.float_msg(fallout.self_obj(), fallout.message_str(183, 205), 8)
+        end
+    end
+    if hostile then
+        hostile = false
+        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+    end
+end
+
 function destroy_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
         fallout.set_global_var(246, 1)
@@ -165,9 +161,14 @@ function destroy_p_proc()
     reputation.inc_good_critter()
 end
 
+function look_at_p_proc()
+    fallout.script_overrides()
+    fallout.display_msg(fallout.message_str(183, 100))
+end
+
 function travel()
     fallout.game_time_advance(fallout.game_ticks(60 * 30))
-    if (fallout.global_var(43) == 0) and (fallout.global_var(43) ~= 2) then
+    if fallout.global_var(43) == 0 and fallout.global_var(43) ~= 2 then
         fallout.set_global_var(43, 1)
     end
     fallout.load_map("caves.map", 1)
@@ -207,12 +208,12 @@ end
 
 function Seth01()
     fallout.gsay_message(183, 101, 50)
-    hostile = 1
+    hostile = true
 end
 
 function Seth02()
     fallout.gsay_message(183, 102, 50)
-    hostile = 1
+    hostile = true
 end
 
 function Seth03()
@@ -255,7 +256,7 @@ function Seth08()
         fallout.giq_option(4, 183, 116, Seth11, 50)
     end
     fallout.giq_option(4, 183, 117, Seth12, 50)
-    if (fallout.local_var(4) == 1) and (fallout.global_var(43) ~= 2) then
+    if fallout.local_var(4) == 1 and fallout.global_var(43) ~= 2 then
         fallout.giq_option(4, 183, 118, Seth13, 50)
         fallout.giq_option(-3, 183, 119, Seth13, 50)
     end
@@ -391,7 +392,7 @@ end
 
 function TanSeth05()
     fallout.set_local_var(9, 1)
-    hostile = 1
+    hostile = true
     fallout.gsay_message(183, 320, 51)
 end
 
@@ -408,8 +409,11 @@ end
 
 local exports = {}
 exports.start = start
+exports.pickup_p_proc = pickup_p_proc
 exports.combat_p_proc = combat_p_proc
 exports.map_update_p_proc = map_update_p_proc
 exports.talk_p_proc = talk_p_proc
+exports.critter_p_proc = critter_p_proc
 exports.destroy_p_proc = destroy_p_proc
+exports.look_at_p_proc = look_at_p_proc
 return exports
