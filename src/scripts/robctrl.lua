@@ -45,28 +45,18 @@ local Control24
 local Control25
 local Controlend
 
-local rndx = 0
-local chance = 0
-
 function start()
-    if fallout.script_action() == 3 then
+    local script_action = fallout.script_action()
+    if script_action == 3 then
         description_p_proc()
-    else
-        if fallout.script_action() == 11 then
-            talk_p_proc()
-        else
-            if fallout.script_action() == 6 then
-                use_p_proc()
-            else
-                if fallout.script_action() == 7 then
-                    use_obj_on_p_proc()
-                else
-                    if fallout.script_action() == 8 then
-                        use_skill_on_p_proc()
-                    end
-                end
-            end
-        end
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 6 then
+        use_p_proc()
+    elseif script_action == 7 then
+        use_obj_on_p_proc()
+    elseif script_action == 8 then
+        use_skill_on_p_proc()
     end
 end
 
@@ -80,12 +70,10 @@ function talk_p_proc()
     fallout.gsay_start()
     if fallout.local_var(0) == 1 then
         fallout.gsay_message(368, 101, 50)
+    elseif fallout.local_var(1) == 1 then
+        Control14()
     else
-        if fallout.local_var(1) == 1 then
-            Control14()
-        else
-            Control00()
-        end
+        Control00()
     end
     fallout.gsay_end()
     fallout.end_dialogue()
@@ -103,14 +91,13 @@ function use_obj_on_p_proc()
 end
 
 function use_skill_on_p_proc()
-    if fallout.action_being_used() == 13 then
+    local skill = fallout.action_being_used()
+    if skill == 13 then
         fallout.script_overrides()
         fallout.display_msg(fallout.message_str(368, 197))
-    else
-        if fallout.action_being_used() == 12 then
-            fallout.script_overrides()
-            fallout.dialogue_system_enter()
-        end
+    elseif skill == 12 then
+        fallout.script_overrides()
+        fallout.dialogue_system_enter()
     end
 end
 
@@ -244,14 +231,14 @@ function Control10e()
 end
 
 function Control11()
-    chance = 4 * 10
+    local chance = 4 * 10
     if chance < 5 then
         chance = 5
     end
     if chance > 95 then
         chance = 95
     end
-    rndx = fallout.random(1, 100)
+    local rndx = fallout.random(1, 100)
     if rndx < chance then
         fallout.gsay_message(368, 147, 50)
     else
