@@ -9,124 +9,92 @@ local talk_p_proc
 local destroy_p_proc
 local look_at_p_proc
 
-local hostile = 0
+local hostile = false
 local initialized = false
 
 function start()
     if not initialized then
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 44)
+        fallout.critter_add_trait(self_obj, 1, 5, 63)
         initialized = true
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 44)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 63)
     end
-    if fallout.script_action() == 21 then
+
+    local script_action = fallout.script_action()
+    if script_action == 21 then
         look_at_p_proc()
-    else
-        if fallout.script_action() == 4 then
-            pickup_p_proc()
-        else
-            if fallout.script_action() == 11 then
-                talk_p_proc()
-            else
-                if fallout.script_action() == 12 then
-                    critter_p_proc()
-                else
-                    if fallout.script_action() == 18 then
-                        destroy_p_proc()
-                    end
-                end
-            end
-        end
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
     end
 end
 
 function ScribeBRandom()
     local v0 = 0
-    local v1 = 0
-    if not(v0) then
+    if v0 == 0 then
         v0 = fallout.random(1, 15)
     end
     if v0 > 15 then
         v0 = 1
     end
-    v1 = fallout.message_str(290, 101)
+    local msg = fallout.message_str(290, 101)
     if v0 == 2 then
-        v1 = fallout.message_str(290, 102)
+        msg = fallout.message_str(290, 102)
+    elseif v0 == 3 then
+        msg = fallout.message_str(290, 103)
+    elseif v0 == 4 then
+        msg = fallout.message_str(290, 104)
+    elseif v0 == 5 then
+        msg = fallout.message_str(290, 105)
+    elseif v0 == 6 then
+        msg = fallout.message_str(290, 106)
+    elseif v0 == 7 then
+        msg = fallout.message_str(290, 107)
+    elseif v0 == 8 then
+        msg = fallout.message_str(290, 108)
+    elseif v0 == 9 then
+        msg = fallout.message_str(290, 109)
+    elseif v0 == 10 then
+        msg = fallout.message_str(290, 110)
+    elseif v0 == 11 then
+        msg = fallout.message_str(290, 111)
+    elseif v0 == 12 then
+        msg = fallout.message_str(290, 112)
+    elseif v0 == 13 then
+        msg = fallout.message_str(290, 113)
+    elseif v0 == 14 then
+        msg = fallout.message_str(290, 114)
+    elseif v0 == 15 then
+        msg = fallout.message_str(290, 115)
     else
-        if v0 == 3 then
-            v1 = fallout.message_str(290, 103)
-        else
-            if v0 == 4 then
-                v1 = fallout.message_str(290, 104)
-            else
-                if v0 == 5 then
-                    v1 = fallout.message_str(290, 105)
-                else
-                    if v0 == 6 then
-                        v1 = fallout.message_str(290, 106)
-                    else
-                        if v0 == 7 then
-                            v1 = fallout.message_str(290, 107)
-                        else
-                            if v0 == 8 then
-                                v1 = fallout.message_str(290, 108)
-                            else
-                                if v0 == 9 then
-                                    v1 = fallout.message_str(290, 109)
-                                else
-                                    if v0 == 10 then
-                                        v1 = fallout.message_str(290, 110)
-                                    else
-                                        if v0 == 11 then
-                                            v1 = fallout.message_str(290, 111)
-                                        else
-                                            if v0 == 12 then
-                                                v1 = fallout.message_str(290, 112)
-                                            else
-                                                if v0 == 13 then
-                                                    v1 = fallout.message_str(290, 113)
-                                                else
-                                                    if v0 == 14 then
-                                                        v1 = fallout.message_str(290, 114)
-                                                    else
-                                                        if v0 == 15 then
-                                                            v1 = fallout.message_str(290, 115)
-                                                        else
-                                                            v0 = 1
-                                                        end
-                                                    end
-                                                end
-                                            end
-                                        end
-                                    end
-                                end
-                            end
-                        end
-                    end
-                end
-            end
-        end
+        v0 = 1
     end
     v0 = v0 + 1
-    fallout.float_msg(fallout.self_obj(), v1, 0)
+    fallout.float_msg(fallout.self_obj(), msg, 0)
 end
 
 function critter_p_proc()
     if fallout.global_var(250) ~= 0 then
-        hostile = 1
+        hostile = true
     end
     if fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) > 12 then
-        hostile = 0
+        hostile = false
     end
     if hostile then
         fallout.set_global_var(250, 1)
-        hostile = 0
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
 end
 
 function pickup_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
-        hostile = 1
+        hostile = true
     end
 end
 
