@@ -1,8 +1,10 @@
 local fallout = require("fallout")
 
 local start
-local trap_stuff
-local see_stuff
+local pickup_p_proc
+local use_p_proc
+local use_skill_on_p_proc
+local look_at_p_proc
 local find_trap
 local find_iq
 local disarm_trap
@@ -12,51 +14,48 @@ local explode
 local close_cooler
 local open_cooler
 
-local damage = 0
-local test = 0
-local use_skill = 0
-
 function start()
-    if (fallout.script_action() == 3) or (fallout.script_action() == 21) then
-        see_stuff()
+    local script_action = fallout.script_action()
+    if script_action == 3 or script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 8 then
+        use_skill_on_p_proc()
+    elseif script_action == 6 then
+        use_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    end
+end
+
+function pickup_p_proc()
+    if fallout.local_var(2) == 0 then
+        fallout.script_overrides()
+    end
+end
+
+function use_p_proc()
+    if fallout.local_var(1) == 0 then
+        find_iq()
     else
-        if fallout.script_action() == 8 then
-            trap_stuff()
+        if fallout.local_var(2) ~= 0 then
+            close_cooler()
         else
-            if fallout.script_action() == 6 then
-                if fallout.local_var(1) == 0 then
-                    find_iq()
-                else
-                    if fallout.local_var(2) ~= 0 then
-                        close_cooler()
-                    else
-                        open_cooler()
-                    end
-                end
-            else
-                if fallout.script_action() == 4 then
-                    if fallout.local_var(2) == 0 then
-                        fallout.script_overrides()
-                    end
-                end
-            end
+            open_cooler()
         end
     end
 end
 
-function trap_stuff()
+function use_skill_on_p_proc()
     fallout.script_overrides()
-    use_skill = fallout.action_being_used()
+    local skill = fallout.action_being_used()
     if fallout.local_var(0) ~= 0 then
         if fallout.local_var(1) == 0 then
-            if use_skill == 11 then
+            if skill == 11 then
                 disarm_trap()
+            elseif skill == 13 then
+                disarm_mech()
             else
-                if use_skill == 13 then
-                    disarm_mech()
-                else
-                    fallout.display_msg(fallout.message_str(92, 100))
-                end
+                fallout.display_msg(fallout.message_str(92, 100))
             end
         end
     else
@@ -64,15 +63,15 @@ function trap_stuff()
     end
 end
 
-function see_stuff()
+function look_at_p_proc()
     fallout.script_overrides()
     fallout.display_msg(fallout.message_str(92, 109))
 end
 
 function find_trap()
     if fallout.has_skill(fallout.dude_obj(), 11) then
-        test = fallout.roll_vs_skill(fallout.dude_obj(), 11, -10)
-        if fallout.is_success(test) then
+        local roll = fallout.roll_vs_skill(fallout.dude_obj(), 11, -10)
+        if fallout.is_success(roll) then
             fallout.display_msg(fallout.message_str(92, 101))
             fallout.set_local_var(0, 1)
         else
@@ -87,8 +86,8 @@ function find_iq()
     if fallout.local_var(0) ~= 0 then
         failure()
     else
-        test = fallout.do_check(fallout.dude_obj(), 4, 0)
-        if fallout.is_success(test) then
+        local roll = fallout.do_check(fallout.dude_obj(), 4, 0)
+        if fallout.is_success(roll) then
             fallout.display_msg(fallout.message_str(92, 101))
             fallout.set_local_var(0, 1)
         else
@@ -100,12 +99,12 @@ end
 
 function disarm_trap()
     fallout.script_overrides()
-    test = fallout.roll_vs_skill(fallout.dude_obj(), 11, 10)
-    if fallout.is_success(test) then
+    local roll = fallout.roll_vs_skill(fallout.dude_obj(), 11, 10)
+    if fallout.is_success(roll) then
         fallout.display_msg(fallout.message_str(92, 103))
         fallout.set_local_var(1, 1)
     else
-        if fallout.is_critical(test) then
+        if fallout.is_critical(roll) then
             fallout.display_msg(fallout.message_str(92, 105))
             explode()
         else
@@ -116,12 +115,12 @@ end
 
 function disarm_mech()
     fallout.script_overrides()
-    test = fallout.roll_vs_skill(fallout.dude_obj(), 13, 30)
-    if fallout.is_success(test) then
+    local roll = fallout.roll_vs_skill(fallout.dude_obj(), 13, 30)
+    if fallout.is_success(roll) then
         fallout.display_msg(fallout.message_str(92, 103))
         fallout.set_local_var(1, 1)
     else
-        if fallout.is_critical(test) then
+        if fallout.is_critical(roll) then
             fallout.display_msg(fallout.message_str(92, 105))
             explode()
         else
@@ -137,8 +136,9 @@ function failure()
 end
 
 function explode()
-    fallout.explosion(fallout.tile_num(fallout.self_obj()), fallout.elevation(fallout.self_obj()), 0)
-    damage = fallout.random(1, 6) + fallout.random(1, 6) + fallout.random(1, 6)
+    local self_obj = fallout.self_obj()
+    fallout.explosion(fallout.tile_num(self_obj), fallout.elevation(self_obj), 0)
+    local damage = fallout.random(1, 6) + fallout.random(1, 6) + fallout.random(1, 6)
     fallout.critter_dmg(fallout.dude_obj(), damage, 0)
     fallout.set_local_var(1, 1)
     fallout.set_local_var(0, 1)
@@ -158,4 +158,8 @@ end
 
 local exports = {}
 exports.start = start
+exports.pickup_p_proc = pickup_p_proc
+exports.use_p_proc = use_p_proc
+exports.use_skill_on_p_proc = use_skill_on_p_proc
+exports.look_at_p_proc = look_at_p_proc
 return exports
