@@ -67,15 +67,13 @@ local RazorEnd
 local RemoveBlades
 
 local initialized = false
-local DisplayMessage = 100
-
-local exit_line = 0
 
 function start()
     if not initialized then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 47)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 27)
-        fallout.set_external_var("RazorPtr", fallout.self_obj())
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 47)
+        fallout.critter_add_trait(self_obj, 1, 5, 27)
+        fallout.set_external_var("RazorPtr", self_obj)
         if fallout.global_var(352) == 1 then
             fallout.set_local_var(4, 1)
         end
@@ -105,10 +103,10 @@ function talk_p_proc()
     if fallout.global_var(253) == 1 then
         fallout.float_msg(fallout.self_obj(), fallout.message_str(669, fallout.random(100, 105)), 2)
     else
-        if (fallout.global_var(613) == 2) and (fallout.local_var(6) == 1) then
+        if fallout.global_var(613) == 2 and fallout.local_var(6) == 1 then
             fallout.float_msg(fallout.self_obj(), fallout.message_str(278, fallout.random(215, 217)), 0)
         else
-            if (fallout.local_var(4) == 1) and (fallout.get_critter_stat(fallout.dude_obj(), 4) < 4) then
+            if fallout.local_var(4) == 1 and fallout.get_critter_stat(fallout.dude_obj(), 4) < 4 then
                 fallout.float_msg(fallout.self_obj(), fallout.message_str(278, 222), 0)
             else
                 reaction.get_reaction()
@@ -118,12 +116,10 @@ function talk_p_proc()
                     if fallout.global_var(350) == 1 then
                         if fallout.global_var(353) == 1 then
                             Razor45()
+                        elseif fallout.local_var(4) == 0 then
+                            Razor42()
                         else
-                            if fallout.local_var(4) == 0 then
-                                Razor42()
-                            else
-                                Razor48()
-                            end
+                            Razor48()
                         end
                     else
                         RazorFin()
@@ -132,28 +128,18 @@ function talk_p_proc()
                 else
                     if fallout.global_var(614) == 9202 then
                         Razor33()
+                    elseif fallout.global_var(612) == 9001 then
+                        Razor20()
+                    elseif fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 238) ~= 0 and fallout.global_var(265) ~= 2 then
+                        Razor26()
+                    elseif fallout.global_var(612) == 9003 then
+                        Razor30()
+                    elseif fallout.global_var(353) == 1 then
+                        Razor46()
+                    elseif fallout.global_var(612) == 0 then
+                        Razor01()
                     else
-                        if fallout.global_var(612) == 9001 then
-                            Razor20()
-                        else
-                            if fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 238) and (fallout.global_var(265) ~= 2) then
-                                Razor26()
-                            else
-                                if fallout.global_var(612) == 9003 then
-                                    Razor30()
-                                else
-                                    if fallout.global_var(353) == 1 then
-                                        Razor46()
-                                    else
-                                        if fallout.global_var(612) == 0 then
-                                            Razor01()
-                                        else
-                                            Razor37()
-                                        end
-                                    end
-                                end
-                            end
-                        end
+                        Razor37()
                     end
                 end
                 fallout.gsay_end()
@@ -210,7 +196,8 @@ function Razor02()
     fallout.gsay_reply(278, 105)
     fallout.gsay_option(278, 106, Razor03, 50)
     fallout.gsay_option(278, 107, Razor04, 50)
-    fallout.gsay_option(278, fallout.message_str(278, 108) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. ".", Razor05, 50)
+    fallout.gsay_option(278,
+        fallout.message_str(278, 108) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. ".", Razor05, 50)
     fallout.gsay_option(278, 109, RazorEnd, 50)
     fallout.set_local_var(4, 1)
 end
@@ -307,11 +294,10 @@ function Razor15()
 end
 
 function Razor16()
-    local v0 = 0
     fallout.gsay_reply(278, 154)
     fallout.gsay_option(278, 155, RazorEnd, 50)
-    v0 = fallout.create_object_sid(238, 0, 0, -1)
-    fallout.add_obj_to_inven(fallout.dude_obj(), v0)
+    local item_obj = fallout.create_object_sid(238, 0, 0, -1)
+    fallout.add_obj_to_inven(fallout.dude_obj(), item_obj)
 end
 
 function Razor17()
@@ -447,7 +433,7 @@ function Razor37()
     fallout.gsay_reply(278, 205)
     fallout.giq_option(4, 278, 206, RazorEnd, 50)
     fallout.giq_option(4, 278, 207, RazorEnd, 50)
-    if fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 238) then
+    if fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 238) ~= 0 then
         fallout.giq_option(4, 278, 208, Razor38, 50)
     end
     fallout.giq_option(4, 278, 209, Razor22a, 50)
