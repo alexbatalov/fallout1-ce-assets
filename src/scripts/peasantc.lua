@@ -29,24 +29,17 @@ local home_tile = 0
 local sleep_tile = 0
 
 function start()
-    if fallout.script_action() == 18 then
+    local script_action = fallout.script_action()
+    if script_action == 18 then
         destroy_p_proc()
-    else
-        if fallout.script_action() == 15 then
-            map_enter_p_proc()
-        else
-            if fallout.script_action() == 23 then
-                map_update_p_proc()
-            else
-                if fallout.script_action() == 4 then
-                    pickup_p_proc()
-                else
-                    if fallout.script_action() == 11 then
-                        talk_p_proc()
-                    end
-                end
-            end
-        end
+    elseif script_action == 15 then
+        map_enter_p_proc()
+    elseif script_action == 23 then
+        map_update_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
     end
 end
 
@@ -65,7 +58,7 @@ end
 
 function map_enter_p_proc()
     if fallout.map_var(2) == 1 then
-        fallout.set_obj_visibility(fallout.self_obj(), 1)
+        fallout.set_obj_visibility(fallout.self_obj(), true)
         fallout.set_external_var("removal_ptr", fallout.self_obj())
     else
         sleep_time = fallout.random(2215, 2230)
@@ -92,34 +85,28 @@ end
 function talk_p_proc()
     if fallout.local_var(2) == 1 then
         fallout.float_msg(fallout.self_obj(), fallout.message_str(185, 166), 0)
-    else
-        if fallout.local_var(1) == 1 then
-            fallout.float_msg(fallout.self_obj(), fallout.message_str(438, 124), 2)
+    elseif fallout.local_var(1) == 1 then
+        fallout.float_msg(fallout.self_obj(), fallout.message_str(438, 124), 2)
+    elseif time.game_time_in_days() < 80 then
+        fallout.set_local_var(0, 1)
+        if fallout.global_var(247) == 1 then
+            fallout.float_msg(fallout.self_obj(), fallout.message_str(438, 100), 2)
+        elseif fallout.global_var(155) < -10 then
+            fallout.float_msg(fallout.self_obj(), fallout.message_str(438, 101), 7)
         else
-            if time.game_time_in_days() < 80 then
-                fallout.set_local_var(0, 1)
-                if fallout.global_var(247) == 1 then
-                    fallout.float_msg(fallout.self_obj(), fallout.message_str(438, 100), 2)
-                else
-                    if fallout.global_var(155) < -10 then
-                        fallout.float_msg(fallout.self_obj(), fallout.message_str(438, 101), 7)
-                    else
-                        if fallout.get_critter_stat(fallout.dude_obj(), 34) == 0 then
-                            fallout.float_msg(fallout.self_obj(), fallout.message_str(438, fallout.random(102, 103)), 3)
-                        else
-                            fallout.float_msg(fallout.self_obj(), fallout.message_str(438, fallout.random(102, 104)), 3)
-                        end
-                    end
-                end
+            if fallout.get_critter_stat(fallout.dude_obj(), 34) == 0 then
+                fallout.float_msg(fallout.self_obj(), fallout.message_str(438, fallout.random(102, 103)), 3)
             else
-                fallout.set_map_var(2, 1)
-                fallout.start_gdialog(438, fallout.self_obj(), 4, -1, -1)
-                fallout.gsay_start()
-                PeasantC00()
-                fallout.gsay_end()
-                fallout.end_dialogue()
+                fallout.float_msg(fallout.self_obj(), fallout.message_str(438, fallout.random(102, 104)), 3)
             end
         end
+    else
+        fallout.set_map_var(2, 1)
+        fallout.start_gdialog(438, fallout.self_obj(), 4, -1, -1)
+        fallout.gsay_start()
+        PeasantC00()
+        fallout.gsay_end()
+        fallout.end_dialogue()
     end
 end
 
@@ -171,22 +158,21 @@ function PeasantC05()
 end
 
 function PeasantC06()
-    local v0 = 0
-    v0 = fallout.message_str(438, 116)
+    local msg = fallout.message_str(438, 116)
     if fallout.global_var(37) == 1 then
         if fallout.global_var(38) == 1 then
-            v0 = v0 .. fallout.message_str(438, 120)
+            msg = msg .. fallout.message_str(438, 120)
         else
-            v0 = v0 .. fallout.message_str(438, 119)
+            msg = msg .. fallout.message_str(438, 119)
         end
     else
         if fallout.global_var(38) == 1 then
-            v0 = v0 .. fallout.message_str(438, 118)
+            msg = msg .. fallout.message_str(438, 118)
         else
-            v0 = v0 .. fallout.message_str(438, 117)
+            msg = msg .. fallout.message_str(438, 117)
         end
     end
-    fallout.gsay_reply(438, v0)
+    fallout.gsay_reply(438, msg)
     fallout.giq_option(5, 438, 121, PeasantC07, 50)
     fallout.giq_option(5, 438, 122, PeasantCEnd, 50)
 end
