@@ -24,27 +24,26 @@ local initialized = false
 
 function start()
     if not initialized then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 46)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 33)
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 46)
+        fallout.critter_add_trait(self_obj, 1, 5, 33)
         initialized = true
         if fallout.global_var(129) == 2 then
-            if fallout.random(0, 1) then
-                fallout.kill_critter(fallout.self_obj(), 59)
+            if fallout.random(0, 1) ~= 0 then
+                fallout.kill_critter(self_obj, 59)
             else
-                fallout.kill_critter(fallout.self_obj(), 57)
+                fallout.kill_critter(self_obj, 57)
             end
         end
-    else
-        if fallout.script_action() == 18 then
-            destroy_p_proc()
-        end
     end
-    if fallout.script_action() == 21 then
+
+    local script_action = fallout.script_action()
+    if script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 21 then
         look_at_p_proc()
-    else
-        if fallout.script_action() == 11 then
-            talk_p_proc()
-        end
+    elseif script_action == 11 then
+        talk_p_proc()
     end
 end
 
@@ -137,16 +136,14 @@ function peter9()
 end
 
 function peter10()
-    local v0 = 0
     fallout.float_msg(fallout.self_obj(), fallout.message_str(267, 122), 0)
     if fallout.local_var(1) == 0 then
         fallout.set_local_var(1, 1)
-        v0 = fallout.create_object_sid(40, 0, 0, -1)
-        fallout.add_obj_to_inven(fallout.dude_obj(), v0)
-        v0 = fallout.create_object_sid(40, 0, 0, -1)
-        fallout.add_obj_to_inven(fallout.dude_obj(), v0)
-        v0 = fallout.create_object_sid(40, 0, 0, -1)
-        fallout.add_obj_to_inven(fallout.dude_obj(), v0)
+        local dude_obj = fallout.dude_obj()
+        for i = 1, 3 do
+            local item_obj = fallout.create_object_sid(40, 0, 0, -1)
+            fallout.add_obj_to_inven(dude_obj, item_obj)
+        end
     end
 end
 
