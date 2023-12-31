@@ -25,59 +25,48 @@ local Phil08
 local Phil09
 local PhilEnd
 
-local hostile = 0
+local hostile = false
 local home_tile = 28684
 
-local exit_line = 0
-
 function start()
-    if fallout.script_action() == 12 then
+    local script_action = fallout.script_action()
+    if script_action == 12 then
         critter_p_proc()
-    else
-        if fallout.script_action() == 18 then
-            destroy_p_proc()
-        else
-            if fallout.script_action() == 21 then
-                look_at_p_proc()
-            else
-                if fallout.script_action() == 15 then
-                    map_enter_p_proc()
-                else
-                    if fallout.script_action() == 4 then
-                        pickup_p_proc()
-                    else
-                        if fallout.script_action() == 11 then
-                            talk_p_proc()
-                        else
-                            if fallout.script_action() == 22 then
-                                timed_event_p_proc()
-                            end
-                        end
-                    end
-                end
-            end
-        end
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 15 then
+        map_enter_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 22 then
+        timed_event_p_proc()
     end
 end
 
 function critter_p_proc()
+    local self_obj = fallout.self_obj()
+    local dude_obj = fallout.dude_obj()
     if hostile then
-        hostile = 0
-        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+        hostile = false
+        fallout.attack(dude_obj, 0, 1, 0, 0, 30000, 0, 0)
     end
     if fallout.map_var(9) == 1 then
         run_away()
     end
     if fallout.map_var(6) == 1 then
-        fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(2), 2)
+        fallout.add_timer_event(self_obj, fallout.game_ticks(2), 2)
         fallout.set_map_var(6, 0)
     end
     if fallout.map_var(5) == 0 then
-        fallout.animate_move_obj_to_tile(fallout.self_obj(), home_tile, 0)
+        fallout.animate_move_obj_to_tile(self_obj, home_tile, 0)
     end
     if fallout.global_var(247) == 1 then
-        if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
-            fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+        if fallout.obj_can_see_obj(self_obj, dude_obj) then
+            fallout.attack(dude_obj, 0, 1, 0, 0, 30000, 0, 0)
         end
     end
 end
@@ -105,21 +94,22 @@ function look_at_p_proc()
 end
 
 function map_enter_p_proc()
-    fallout.critter_add_trait(fallout.self_obj(), 1, 6, 5)
+    local self_obj = fallout.self_obj()
+    fallout.critter_add_trait(self_obj, 1, 6, 5)
     if fallout.map_var(5) == 1 then
-        fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(10), 1)
+        fallout.add_timer_event(self_obj, fallout.game_ticks(10), 1)
     end
 end
 
 function pickup_p_proc()
-    hostile = 1
+    hostile = true
 end
 
 function talk_p_proc()
     if fallout.global_var(5) ~= 0 then
         Phil01()
     else
-        if not(fallout.map_var(5)) then
+        if fallout.map_var(5) == 0 then
             Phil09()
         else
             if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) then
@@ -150,9 +140,10 @@ function timed_event_p_proc()
 end
 
 function run_away()
-    fallout.animate_move_obj_to_tile(fallout.self_obj(), 31096, 1)
+    local self_obj = fallout.self_obj()
+    fallout.animate_move_obj_to_tile(self_obj, 31096, 1)
     fallout.set_map_var(9, 0)
-    fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(fallout.random(10, 30)), 1)
+    fallout.add_timer_event(self_obj, fallout.game_ticks(fallout.random(10, 30)), 1)
 end
 
 function go_forward()
@@ -169,14 +160,14 @@ function Phil01()
 end
 
 function Phil02()
-    local v0 = 0
     fallout.set_local_var(4, 1)
+    local msg
     if fallout.get_critter_stat(fallout.dude_obj(), 34) == 0 then
-        v0 = fallout.message_str(352, 105)
+        msg = fallout.message_str(352, 105)
     else
-        v0 = fallout.message_str(352, 106)
+        msg = fallout.message_str(352, 106)
     end
-    fallout.gsay_reply(352, v0 .. fallout.message_str(352, 107))
+    fallout.gsay_reply(352, msg .. fallout.message_str(352, 107))
     fallout.giq_option(4, 352, 108, Phil04, 50)
     fallout.giq_option(4, 352, 109, PhilEnd, 50)
     fallout.giq_option(6, 352, 110, Phil05, 50)
@@ -203,9 +194,8 @@ end
 function Phil06()
     fallout.gsay_message(352, 120, 50)
     fallout.gsay_reply(352, 121)
-    exit_line = reaction.Goodbyes()
     fallout.giq_option(7, 352, 122, Phil07, 50)
-    fallout.giq_option(4, 634, exit_line, PhilEnd, 50)
+    fallout.giq_option(4, 634, reaction.Goodbyes(), PhilEnd, 50)
 end
 
 function Phil07()
