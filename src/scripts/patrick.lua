@@ -29,36 +29,29 @@ local Patrick17
 local PatrickCombat
 local PatrickEnd
 
-local hostile = 0
+local hostile = false
 local initialized = false
-local known = 0
-local scared = 0
+local scared = false
 
 function start()
     if not initialized then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 87)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 2)
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 87)
+        fallout.critter_add_trait(self_obj, 1, 5, 2)
         initialized = true
-    else
-        if fallout.script_action() == 12 then
-            critter_p_proc()
-        else
-            if fallout.script_action() == 18 then
-                destroy_p_proc()
-            else
-                if fallout.script_action() == 21 then
-                    look_at_p_proc()
-                else
-                    if fallout.script_action() == 4 then
-                        pickup_p_proc()
-                    else
-                        if fallout.script_action() == 11 then
-                            talk_p_proc()
-                        end
-                    end
-                end
-            end
-        end
+    end
+
+    local script_action = fallout.script_action()
+    if script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
     end
 end
 
@@ -69,8 +62,8 @@ function critter_p_proc()
         end
     else
         if hostile then
-            hostile = 0
-            scared = 1
+            hostile = false
+            scared = true
             fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
         end
     end
@@ -83,8 +76,7 @@ end
 
 function look_at_p_proc()
     fallout.script_overrides()
-    known = fallout.global_var(330)
-    if known then
+    if fallout.global_var(330) ~= 0 then
         fallout.display_msg(fallout.message_str(667, 101))
     else
         fallout.display_msg(fallout.message_str(667, 100))
@@ -92,17 +84,16 @@ function look_at_p_proc()
 end
 
 function pickup_p_proc()
-    hostile = 1
+    hostile = true
 end
 
 function talk_p_proc()
-    known = fallout.global_var(330)
     if scared then
         fallout.float_msg(fallout.self_obj(), fallout.message_str(669, fallout.random(100, 105)), 2)
     else
         fallout.start_gdialog(667, fallout.self_obj(), 4, -1, -1)
         fallout.gsay_start()
-        if known then
+        if fallout.global_var(330) ~= 0 then
             Patrick17()
         else
             Patrick01()
@@ -113,12 +104,11 @@ function talk_p_proc()
 end
 
 function Patrick01()
-    known = 1
-    fallout.set_global_var(330, known)
+    fallout.set_global_var(330, 1)
     fallout.gsay_reply(667, 102)
     fallout.giq_option(4, 667, 103, Patrick02, 50)
     fallout.giq_option(4, 667, 104, Patrick03, 50)
-    if (fallout.global_var(101) == 0) and (fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 55) == 0) then
+    if fallout.global_var(101) == 0 and fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 55) == 0 then
         fallout.giq_option(4, 667, 105, Patrick04, 50)
     end
     if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
@@ -191,7 +181,7 @@ end
 
 function Patrick08()
     fallout.gsay_reply(667, 129)
-    if (fallout.global_var(101) == 0) and (fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 55) == 0) then
+    if fallout.global_var(101) == 0 and fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 55) == 0 then
         fallout.giq_option(4, 667, 130, Patrick07, 50)
     end
     fallout.giq_option(4, 667, 110, Patrick05, 50)
@@ -285,7 +275,7 @@ function Patrick17()
 end
 
 function PatrickCombat()
-    hostile = 1
+    hostile = true
 end
 
 function PatrickEnd()
