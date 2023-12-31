@@ -19,12 +19,13 @@ local timed_event_p_proc
 
 function start()
     if not initialized then
-        if fallout.obj_is_carrying_obj_pid(fallout.self_obj(), 41) == 0 then
-            fallout.item_caps_adjust(fallout.self_obj(), fallout.random(1, 10))
+        local self_obj = fallout.self_obj()
+        if fallout.obj_is_carrying_obj_pid(self_obj, 41) == 0 then
+            fallout.item_caps_adjust(self_obj, fallout.random(1, 10))
         end
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 89)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 29)
-        fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(fallout.random(1, 3)), 1)
+        fallout.critter_add_trait(self_obj, 1, 6, 89)
+        fallout.critter_add_trait(self_obj, 1, 5, 29)
+        fallout.add_timer_event(self_obj, fallout.game_ticks(fallout.random(1, 3)), 1)
         if fallout.local_var(5) == 0 then
             fallout.set_map_var(1, fallout.map_var(1) + 1)
             fallout.set_local_var(5, 1)
@@ -44,7 +45,7 @@ function description_p_proc()
 end
 
 function talk_p_proc()
-    if (fallout.global_var(251) == 1) or (fallout.global_var(616) == 1) then
+    if fallout.global_var(251) == 1 or fallout.global_var(616) == 1 then
         fallout.float_msg(fallout.self_obj(), fallout.message_str(669, fallout.random(100, 105)), 2)
     else
         fallout.float_msg(fallout.self_obj(), fallout.message_str(252, fallout.random(134, 138)), 0)
@@ -52,13 +53,18 @@ function talk_p_proc()
 end
 
 function critter_p_proc()
-    if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
-        if (fallout.global_var(251) == 1) or (fallout.global_var(616) == 1) then
-            fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+    local self_obj = fallout.self_obj()
+    local dude_obj = fallout.dude_obj()
+    if fallout.obj_can_see_obj(self_obj, dude_obj) then
+        if fallout.global_var(251) == 1 or fallout.global_var(616) == 1 then
+            fallout.attack(dude_obj, 0, 1, 0, 0, 30000, 0, 0)
         end
     end
-    if ((time.game_time_in_seconds() - PsstTime) >= 30) and (fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) <= 4) and (fallout.global_var(251) == 0) and (fallout.global_var(616) == 0) then
-        fallout.float_msg(fallout.self_obj(), fallout.message_str(252, fallout.random(134, 138)), 0)
+    if time.game_time_in_seconds() - PsstTime >= 30
+        and fallout.tile_distance_objs(self_obj, dude_obj) <= 4
+        and fallout.global_var(251) == 0
+        and fallout.global_var(616) == 0 then
+        fallout.float_msg(self_obj, fallout.message_str(252, fallout.random(134, 138)), 0)
         PsstTime = time.game_time_in_seconds()
     end
 end
@@ -85,7 +91,7 @@ function pickup_p_proc()
 end
 
 function timed_event_p_proc()
-    if (fallout.global_var(612) == 9003) or (fallout.global_var(613) == 9103) then
+    if fallout.global_var(612) == 9003 or fallout.global_var(613) == 9103 then
         if fallout.local_var(4) == 0 then
             fallout.set_local_var(4, 1)
             fallout.float_msg(fallout.self_obj(), fallout.message_str(252, 139), 2)
