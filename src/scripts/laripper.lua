@@ -10,7 +10,6 @@ local map_exit_p_proc
 local PlaceCritter
 
 local party_elevation = 0
-local dude_start_hex = 0
 
 fallout.create_external_var("Ian_ptr")
 fallout.create_external_var("Dog_ptr")
@@ -18,45 +17,43 @@ fallout.create_external_var("Tycho_ptr")
 fallout.create_external_var("Katja_ptr")
 fallout.create_external_var("Tandi_ptr")
 
+fallout.set_external_var("Ian_ptr", nil)
+fallout.set_external_var("Dog_ptr", nil)
+fallout.set_external_var("Tycho_ptr", nil)
+fallout.set_external_var("Katja_ptr", nil)
+fallout.set_external_var("Tandi_ptr", nil)
+
 function start()
-    if fallout.script_action() == 15 then
+    local script_action = fallout.script_action()
+    if script_action == 15 then
         map_enter_p_proc()
-    else
-        if fallout.script_action() == 23 then
-            map_update_p_proc()
-        else
-            if fallout.script_action() == 16 then
-                map_exit_p_proc()
-            end
-        end
+    elseif script_action == 23 then
+        map_update_p_proc()
+    elseif script_action == 16 then
+        map_exit_p_proc()
     end
 end
 
 function map_enter_p_proc()
-    local v0 = 0
     fallout.set_global_var(598, 1)
     if fallout.metarule(22, 0) == 0 then
-        if (fallout.map_var(0) == 0) and ((time.game_time_in_seconds() - fallout.global_var(270)) > (60 * 60)) then
+        if fallout.map_var(0) == 0 and time.game_time_in_seconds() - fallout.global_var(270) > 60 * 60 then
             fallout.set_global_var(270, time.game_time_in_seconds())
             if fallout.map_var(1) == 0 then
-                v0 = fallout.random(2, 3)
+                local v0 = fallout.random(2, 3)
                 fallout.set_map_var(1, v0)
                 fallout.set_map_var(3, v0)
                 PlaceCritter()
-            else
-                if fallout.map_var(1) == 1 then
-                    v0 = fallout.random(1, 2)
-                    fallout.set_map_var(1, v0 + 1)
-                    fallout.set_map_var(3, v0)
+            elseif fallout.map_var(1) == 1 then
+                local v0 = fallout.random(1, 2)
+                fallout.set_map_var(1, v0 + 1)
+                fallout.set_map_var(3, v0)
+                PlaceCritter()
+            elseif fallout.map_var(1) == 2 then
+                if fallout.random(0, 1) ~= 0 then
+                    fallout.set_map_var(1, 3)
+                    fallout.set_map_var(3, 1)
                     PlaceCritter()
-                else
-                    if fallout.map_var(1) == 2 then
-                        if fallout.random(0, 1) then
-                            fallout.set_map_var(1, 3)
-                            fallout.set_map_var(3, 1)
-                            PlaceCritter()
-                        end
-                    end
                 end
             end
         end
@@ -77,49 +74,28 @@ end
 
 function map_exit_p_proc()
     party.remove_party()
-    if (fallout.map_var(0) == 1) and (fallout.map_var(1) == 0) and (fallout.map_var(2) == 0) then
+    if fallout.map_var(0) == 1 and fallout.map_var(1) == 0 and fallout.map_var(2) == 0 then
         fallout.set_global_var(265, 9250)
     end
 end
 
+local HEXES <const> = {
+    16890,
+    17269,
+    23492,
+    15885,
+    12287,
+    17511,
+    15475,
+}
+
 function PlaceCritter()
-    local v0 = 0
-    local v1 = 0
-    local v2 = 0
-    local v3 = 0
-    v3 = fallout.map_var(3)
-    while v3 > 0 do
-        v2 = fallout.random(1, 7)
-        if v2 == 1 then
-            v1 = 16890
-        else
-            if v2 == 2 then
-                v1 = 17269
-            else
-                if v2 == 3 then
-                    v1 = 23492
-                else
-                    if v2 == 4 then
-                        v1 = 15885
-                    else
-                        if v2 == 5 then
-                            v1 = 12287
-                        else
-                            if v2 == 6 then
-                                v1 = 17511
-                            else
-                                if v2 == 7 then
-                                    v1 = 15475
-                                end
-                            end
-                        end
-                    end
-                end
-            end
-        end
-        v0 = fallout.create_object_sid(16777267, 0, 0, 922)
-        fallout.critter_attempt_placement(v0, v1, 0)
-        v3 = v3 - 1
+    local count = fallout.map_var(3)
+    while count > 0 do
+        local num = fallout.random(1, #HEXES)
+        local critter_obj = fallout.create_object_sid(16777267, 0, 0, 922)
+        fallout.critter_attempt_placement(critter_obj, HEXES[num], 0)
+        count = count - 1
     end
 end
 
