@@ -9,20 +9,23 @@ function start()
     if not initialized then
         fallout.set_external_var("ladder_up", fallout.self_obj())
         initialized = true
-    else
-        if fallout.script_action() == 6 then
-            use_p_proc()
-        end
+    end
+
+    local script_action = fallout.script_action()
+    if script_action == 6 then
+        use_p_proc()
     end
 end
 
 function use_p_proc()
-    fallout.move_to(fallout.source_obj(), 12898, 0)
-    if fallout.source_obj() == fallout.dude_obj() then
-        fallout.anim(fallout.source_obj(), 0, 0)
+    local source_obj = fallout.source_obj()
+    local dude_obj = fallout.dude_obj()
+    fallout.move_to(source_obj, 12898, 0)
+    if source_obj == dude_obj then
+        fallout.anim(source_obj, 0, 0)
     end
-    if fallout.combat_is_initialized() and (fallout.source_obj() ~= fallout.dude_obj()) then
-        fallout.critter_stop_attacking(fallout.source_obj())
+    if fallout.combat_is_initialized() and source_obj ~= dude_obj then
+        fallout.critter_stop_attacking(source_obj)
     end
 end
 
