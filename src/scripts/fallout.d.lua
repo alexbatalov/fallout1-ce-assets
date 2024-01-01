@@ -299,9 +299,10 @@ function fallout.set_obj_visibility(obj, invisible) end
 --- @param param integer
 function fallout.load_map(map, param) end
 
+--- @param obj Object
 --- @return integer
 --- @nodiscard
-function fallout.anim_busy() end
+function fallout.anim_busy(obj) end
 
 --- @param obj Object
 --- @param amount integer
