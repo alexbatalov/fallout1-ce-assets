@@ -3,7 +3,6 @@ local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
 
 local start
-local combat
 local critter_p_proc
 local pickup_p_proc
 local talk_p_proc
@@ -16,52 +15,41 @@ local HubWMHost03
 local HubWMHost04
 local HubWMHost05
 
-local hostile = 0
+local hostile = false
 local initialized = false
-
-local exit_line = 0
 
 function start()
     if not initialized then
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 40)
+        fallout.critter_add_trait(self_obj, 1, 5, 86)
         initialized = true
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 40)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 86)
     end
-    if fallout.script_action() == 21 then
-        look_at_p_proc()
-    else
-        if fallout.script_action() == 4 then
-            pickup_p_proc()
-        else
-            if fallout.script_action() == 11 then
-                talk_p_proc()
-            else
-                if fallout.script_action() == 12 then
-                    critter_p_proc()
-                else
-                    if fallout.script_action() == 18 then
-                        destroy_p_proc()
-                    end
-                end
-            end
-        end
-    end
-end
 
-function combat()
-    hostile = 1
+    local script_action = fallout.script_action()
+    if script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    end
 end
 
 function critter_p_proc()
     if hostile then
-        hostile = 0
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
 end
 
 function pickup_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
-        hostile = 1
+        hostile = true
     end
 end
 
