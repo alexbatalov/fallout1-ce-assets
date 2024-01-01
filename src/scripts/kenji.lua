@@ -8,36 +8,28 @@ local destroy_p_proc
 local look_at_p_proc
 local talk_p_proc
 
-local hostile = 0
-
 function start()
-    if fallout.script_action() == 12 then
+    local script_action = fallout.script_action()
+    if script_action == 12 then
         critter_p_proc()
-    else
-        if fallout.script_action() == 14 then
-            damage_p_proc()
-        else
-            if fallout.script_action() == 18 then
-                destroy_p_proc()
-            else
-                if fallout.script_action() == 21 then
-                    look_at_p_proc()
-                else
-                    if fallout.script_action() == 11 then
-                        talk_p_proc()
-                    end
-                end
-            end
-        end
+    elseif script_action == 14 then
+        damage_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
     end
 end
 
 function critter_p_proc()
-    if fallout.tile_distance(fallout.tile_num(fallout.self_obj()), 26281) > 3 then
-        fallout.animate_move_obj_to_tile(fallout.self_obj(), 26281, 0)
+    local self_obj = fallout.self_obj()
+    if fallout.tile_distance(fallout.tile_num(self_obj), 26281) > 3 then
+        fallout.animate_move_obj_to_tile(self_obj, 26281, 0)
     else
-        if fallout.obj_on_screen(fallout.self_obj()) then
-            fallout.float_msg(fallout.self_obj(), fallout.message_str(510, 103), 2)
+        if fallout.obj_on_screen(self_obj) then
+            fallout.float_msg(self_obj, fallout.message_str(510, 103), 2)
             fallout.attack(fallout.external_var("Killian_ptr"), 0, 1, 0, 0, 30000, 0, 0)
         end
     end
