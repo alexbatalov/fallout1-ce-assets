@@ -29,52 +29,45 @@ local Jasmine16
 local Jasmine17
 local JasmineEnd
 
-local hostile = 0
+local hostile = false
 local initialized = false
-
-local exit_line = 0
 
 function start()
     if not initialized then
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 39)
+        fallout.critter_add_trait(self_obj, 1, 5, 52)
         initialized = true
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 39)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 52)
     end
-    if fallout.script_action() == 21 then
+
+    local script_action = fallout.script_action()
+    if script_action == 21 then
         look_at_p_proc()
-    else
-        if fallout.script_action() == 4 then
-            pickup_p_proc()
-        else
-            if fallout.script_action() == 11 then
-                talk_p_proc()
-            else
-                if fallout.script_action() == 12 then
-                    critter_p_proc()
-                else
-                    if fallout.script_action() == 18 then
-                        destroy_p_proc()
-                    end
-                end
-            end
-        end
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
     end
 end
 
 function combat()
-    hostile = 1
+    hostile = true
 end
 
 function critter_p_proc()
     if hostile then
-        hostile = 0
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
 end
 
 function pickup_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
-        hostile = 1
+        hostile = true
     end
 end
 
@@ -82,32 +75,24 @@ function talk_p_proc()
     reaction.get_reaction()
     if fallout.map_var(1) == 1 then
         Jasmine01()
+    elseif fallout.global_var(107) == 0 then
+        Jasmine02()
+    elseif fallout.global_var(107) == 1 and fallout.local_var(6) == 0 then
+        fallout.start_gdialog(592, fallout.self_obj(), 4, -1, -1)
+        fallout.gsay_start()
+        Jasmine03()
+        fallout.gsay_end()
+        fallout.end_dialogue()
+    elseif fallout.global_var(107) == 1 then
+        Jasmine05()
+    elseif fallout.map_var(3) == 1 and fallout.local_var(5) == 0 then
+        fallout.start_gdialog(592, fallout.self_obj(), 4, -1, -1)
+        fallout.gsay_start()
+        Jasmine06()
+        fallout.gsay_end()
+        fallout.end_dialogue()
     else
-        if fallout.global_var(107) == 0 then
-            Jasmine02()
-        else
-            if (fallout.global_var(107) == 1) and (fallout.local_var(6) == 0) then
-                fallout.start_gdialog(592, fallout.self_obj(), 4, -1, -1)
-                fallout.gsay_start()
-                Jasmine03()
-                fallout.gsay_end()
-                fallout.end_dialogue()
-            else
-                if fallout.global_var(107) == 1 then
-                    Jasmine05()
-                else
-                    if (fallout.map_var(3) == 1) and (fallout.local_var(5) == 0) then
-                        fallout.start_gdialog(592, fallout.self_obj(), 4, -1, -1)
-                        fallout.gsay_start()
-                        Jasmine06()
-                        fallout.gsay_end()
-                        fallout.end_dialogue()
-                    else
-                        Jasmine07()
-                    end
-                end
-            end
-        end
+        Jasmine07()
     end
 end
 
@@ -134,13 +119,13 @@ function Jasmine02()
 end
 
 function Jasmine03()
-    local v0 = 0
-    v0 = fallout.create_object_sid(84, 0, 0, -1)
-    fallout.add_obj_to_inven(fallout.dude_obj(), v0)
-    v0 = fallout.create_object_sid(79, 0, 0, -1)
-    fallout.add_mult_objs_to_inven(fallout.dude_obj(), v0, 2)
-    v0 = fallout.create_object_sid(106, 0, 0, -1)
-    fallout.add_obj_to_inven(fallout.dude_obj(), v0)
+    local item_obj
+    item_obj = fallout.create_object_sid(84, 0, 0, -1)
+    fallout.add_obj_to_inven(fallout.dude_obj(), item_obj)
+    item_obj = fallout.create_object_sid(79, 0, 0, -1)
+    fallout.add_mult_objs_to_inven(fallout.dude_obj(), item_obj, 2)
+    item_obj = fallout.create_object_sid(106, 0, 0, -1)
+    fallout.add_obj_to_inven(fallout.dude_obj(), item_obj)
     fallout.set_local_var(6, 1)
     fallout.gsay_reply(592, 105)
     fallout.giq_option(4, 592, 106, Jasmine08, 50)
@@ -164,12 +149,10 @@ function Jasmine05()
 end
 
 function Jasmine06()
-    local v0 = 0
-    local v1 = 0
     fallout.set_local_var(5, 1)
-    v0 = fallout.item_caps_adjust(fallout.dude_obj(), 3000)
-    v1 = fallout.create_object_sid(77, 0, 0, -1)
-    fallout.add_obj_to_inven(fallout.dude_obj(), v1)
+    fallout.item_caps_adjust(fallout.dude_obj(), 3000)
+    local item_obj = fallout.create_object_sid(77, 0, 0, -1)
+    fallout.add_obj_to_inven(fallout.dude_obj(), item_obj)
     if fallout.get_critter_stat(fallout.dude_obj(), 34) == 0 then
         fallout.gsay_message(592, 118, 50)
     else
