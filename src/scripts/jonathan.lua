@@ -2,82 +2,78 @@ local fallout = require("fallout")
 local reputation = require("lib.reputation")
 
 local start
-local spar
-local weapon_check
+local critter_p_proc
+local destroy_p_proc
+local timed_event_p_proc
 
 local initialized = false
-local armed = 0
 local round = 0
-local v = 0
 
 function start()
     if not initialized then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 44)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 64)
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 44)
+        fallout.critter_add_trait(self_obj, 1, 5, 64)
         initialized = true
     end
-    if (fallout.script_action() == 22) and (round < 7) then
-        spar()
-    else
-        if fallout.script_action() == 18 then
-            reputation.inc_good_critter()
-        else
-            if fallout.script_action() == 12 then
-                if round < 1 then
-                    round = round + 1
-                    fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(5), 0)
-                end
-            end
-        end
+
+    local script_action = fallout.script_action()
+    if script_action == 22 then
+        timed_event_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
     end
 end
 
-function spar()
-    if round == 1 then
-        fallout.anim(fallout.external_var("Student_ptr"), 16, 0)
-        fallout.anim(fallout.self_obj(), 13, 0)
-        v = 2
-    else
-        if round == 2 then
-            fallout.anim(fallout.self_obj(), 16, 0)
-            fallout.anim(fallout.external_var("Student_ptr"), 14, 0)
-            v = 2
-        else
-            if round == 3 then
-                fallout.anim(fallout.self_obj(), 16, 0)
-                fallout.anim(fallout.external_var("Student_ptr"), 13, 0)
-                v = 2
-            else
-                if round == 4 then
-                    fallout.anim(fallout.self_obj(), 17, 0)
-                    v = 1
-                else
-                    if round == 5 then
-                        fallout.anim(fallout.external_var("Student_ptr"), 20, 0)
-                        v = 2
-                    else
-                        if round == 6 then
-                            fallout.anim(fallout.self_obj(), 0, 0)
-                            fallout.anim(fallout.external_var("Student_ptr"), 37, 0)
-                            v = 2
-                        end
-                    end
-                end
-            end
-        end
+function critter_p_proc()
+    if round < 1 then
+        round = round + 1
+        fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(5), 0)
     end
-    round = round + 1
-    fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(v), 0)
 end
 
-function weapon_check()
-    if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.external_var("Student_ptr"), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.external_var("Student_ptr"), 2)) == 3) then
-        armed = 1
-    else
-        armed = 0
+function destroy_p_proc()
+    reputation.inc_good_critter()
+end
+
+function timed_event_p_proc()
+    if round < 7 then
+        local self_obj = fallout.self_obj()
+        local student_obj = fallout.external_var("Student_ptr")
+        local delay
+        if round == 1 then
+            fallout.anim(student_obj, 16, 0)
+            fallout.anim(self_obj, 13, 0)
+            delay = 2
+        elseif round == 2 then
+            fallout.anim(self_obj, 16, 0)
+            fallout.anim(student_obj, 14, 0)
+            delay = 2
+        elseif round == 3 then
+            fallout.anim(self_obj, 16, 0)
+            fallout.anim(student_obj, 13, 0)
+            delay = 2
+        elseif round == 4 then
+            fallout.anim(self_obj, 17, 0)
+            delay = 1
+        elseif round == 5 then
+            fallout.anim(student_obj, 20, 0)
+            delay = 2
+        elseif round == 6 then
+            fallout.anim(self_obj, 0, 0)
+            fallout.anim(student_obj, 37, 0)
+            delay = 2
+        end
+        round = round + 1
+        fallout.add_timer_event(self_obj, fallout.game_ticks(delay), 0)
     end
 end
 
 local exports = {}
 exports.start = start
+exports.critter_p_proc = critter_p_proc
+exports.destroy_p_proc = destroy_p_proc
+exports.timed_event_p_proc = timed_event_p_proc
 return exports
