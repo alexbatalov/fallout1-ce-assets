@@ -31,29 +31,24 @@ local Jason22
 local Jason23
 local follow_player
 
-local following = 0
+local following = false
 local initialized = false
 
 function start()
     if not initialized then
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 49)
         initialized = true
-    else
-        if fallout.script_action() == 12 then
-            critter_p_proc()
-        else
-            if fallout.script_action() == 18 then
-                destroy_p_proc()
-            else
-                if fallout.script_action() == 21 then
-                    look_at_p_proc()
-                else
-                    if fallout.script_action() == 11 then
-                        talk_p_proc()
-                    end
-                end
-            end
-        end
+    end
+
+    local script_action = fallout.script_action()
+    if script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
     end
 end
 
@@ -69,7 +64,7 @@ end
 
 function look_at_p_proc()
     fallout.script_overrides()
-    if not(fallout.local_var(1)) then
+    if not (fallout.local_var(1)) then
         fallout.display_msg(fallout.message_str(382, 101))
     else
         fallout.display_msg(fallout.message_str(382, 100))
@@ -88,12 +83,10 @@ function talk_p_proc()
     end
     if fallout.local_var(0) ~= 0 then
         Jason18()
+    elseif fallout.local_var(1) ~= 0 then
+        Jason16()
     else
-        if fallout.local_var(1) ~= 0 then
-            Jason16()
-        else
-            Jason01()
-        end
+        Jason01()
     end
     fallout.gsay_end()
     fallout.end_dialogue()
@@ -204,7 +197,7 @@ end
 function Jason20()
     fallout.gsay_message(382, 144, 50)
     fallout.critter_add_trait(fallout.self_obj(), 1, 6, 0)
-    following = 1
+    following = true
 end
 
 function Jason21()
@@ -222,14 +215,15 @@ function Jason23()
 end
 
 function follow_player()
-    if fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) > 7 then
-        fallout.animate_move_obj_to_tile(fallout.self_obj(), fallout.tile_num(fallout.dude_obj()), 1)
+    local self_obj = fallout.self_obj()
+    local dude_obj = fallout.dude_obj()
+    local distance_self_to_dude = fallout.tile_distance_objs(self_obj, dude_obj)
+    if distance_self_to_dude > 7 then
+        fallout.animate_move_obj_to_tile(self_obj, fallout.tile_num(dude_obj), 1)
+    elseif distance_self_to_dude > 3 then
+        fallout.animate_move_obj_to_tile(self_obj, fallout.tile_num(dude_obj), 0)
     else
-        if fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) > 3 then
-            fallout.animate_move_obj_to_tile(fallout.self_obj(), fallout.tile_num(fallout.dude_obj()), 0)
-        else
-            fallout.animate_move_obj_to_tile(fallout.self_obj(), fallout.tile_num(fallout.self_obj()), 0)
-        end
+        fallout.animate_move_obj_to_tile(self_obj, fallout.tile_num(self_obj), 0)
     end
 end
 
