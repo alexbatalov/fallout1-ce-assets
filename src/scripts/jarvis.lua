@@ -22,57 +22,34 @@ local pickup_p_proc
 local timed_event_p_proc
 local map_exit_p_proc
 
-local use_skill = 0
-local initialized = false
-local hostile = 0
+local hostile = false
 
 function start()
-    if fallout.script_action() == 11 then
+    local script_action = fallout.script_action()
+    if script_action == 11 then
         talk_p_proc()
-    else
-        if fallout.script_action() == 16 then
-            map_exit_p_proc()
-        else
-            if fallout.script_action() == 15 then
-                map_enter_p_proc()
-            else
-                if (fallout.script_action() == 21) or (fallout.script_action() == 3) then
-                    look_at_p_proc()
-                else
-                    if fallout.script_action() == 7 then
-                        use_obj_on_p_proc()
-                    else
-                        if fallout.script_action() == 4 then
-                            pickup_p_proc()
-                        else
-                            if fallout.script_action() == 18 then
-                                destroy_p_proc()
-                            else
-                                if fallout.script_action() == 13 then
-                                    combat_p_proc()
-                                else
-                                    if fallout.script_action() == 8 then
-                                        use_skill_on_p_proc()
-                                    else
-                                        if fallout.script_action() == 18 then
-                                            destroy_p_proc()
-                                        else
-                                            if fallout.script_action() == 12 then
-                                                critter_p_proc()
-                                            else
-                                                if fallout.script_action() == 22 then
-                                                    timed_event_p_proc()
-                                                end
-                                            end
-                                        end
-                                    end
-                                end
-                            end
-                        end
-                    end
-                end
-            end
-        end
+    elseif script_action == 16 then
+        map_exit_p_proc()
+    elseif script_action == 15 then
+        map_enter_p_proc()
+    elseif script_action == 21 or script_action == 3 then
+        look_at_p_proc()
+    elseif script_action == 7 then
+        use_obj_on_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 13 then
+        combat_p_proc()
+    elseif script_action == 8 then
+        use_skill_on_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 22 then
+        timed_event_p_proc()
     end
 end
 
@@ -86,12 +63,13 @@ function look_at_p_proc()
 end
 
 function map_enter_p_proc()
+    local self_obj = fallout.self_obj()
     if fallout.local_var(5) == 0 then
-        fallout.anim(fallout.self_obj(), 48, 0)
-        fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(3600), 1)
+        fallout.anim(self_obj, 48, 0)
+        fallout.add_timer_event(self_obj, fallout.game_ticks(3600), 1)
     end
-    fallout.critter_add_trait(fallout.self_obj(), 1, 6, 2)
-    fallout.critter_add_trait(fallout.self_obj(), 1, 5, 6)
+    fallout.critter_add_trait(self_obj, 1, 6, 2)
+    fallout.critter_add_trait(self_obj, 1, 5, 6)
 end
 
 function talk_p_proc()
@@ -111,37 +89,36 @@ function talk_p_proc()
 end
 
 function use_skill_on_p_proc()
-    local v0 = 0
-    v0 = fallout.roll_vs_skill(fallout.dude_obj(), fallout.action_being_used(), 0)
+    local skill = fallout.action_being_used()
+    local roll = fallout.roll_vs_skill(fallout.dude_obj(), skill, 0)
     if fallout.local_var(5) == 0 then
         fallout.script_overrides()
-        if fallout.action_being_used() == 6 then
-            if fallout.is_success(v0) then
+        if skill == 6 then
+            if fallout.is_success(roll) then
                 fallout.display_msg(fallout.message_str(440, 112))
             else
                 fallout.display_msg(fallout.message_str(440, 113))
             end
-        else
-            if fallout.action_being_used() == 7 then
-                if fallout.is_success(v0) then
-                    fallout.display_msg(fallout.message_str(440, 114))
-                else
-                    fallout.display_msg(fallout.message_str(440, 115))
-                end
+        elseif skill == 7 then
+            if fallout.is_success(roll) then
+                fallout.display_msg(fallout.message_str(440, 114))
             else
-                fallout.display_msg(fallout.message_str(440, 116))
+                fallout.display_msg(fallout.message_str(440, 115))
             end
+        else
+            fallout.display_msg(fallout.message_str(440, 116))
         end
     end
 end
 
 function use_obj_on_p_proc()
-    if (fallout.obj_pid(fallout.obj_being_used_with()) == 49) and (fallout.local_var(5) == 0) then
+    local item_obj = fallout.obj_being_used_with()
+    if fallout.obj_pid(item_obj) == 49 and fallout.local_var(5) == 0 then
         fallout.script_overrides()
         fallout.rm_timer_event(fallout.self_obj())
         fallout.set_local_var(5, 1)
-        fallout.rm_obj_from_inven(fallout.dude_obj(), fallout.obj_being_used_with())
-        fallout.destroy_object(fallout.obj_being_used_with())
+        fallout.rm_obj_from_inven(fallout.dude_obj(), item_obj)
+        fallout.destroy_object(item_obj)
         fallout.display_msg(fallout.message_str(440, 117))
         fallout.give_exp_points(400)
         fallout.set_global_var(155, fallout.global_var(155) + 1)
@@ -158,7 +135,7 @@ function destroy_p_proc()
 end
 
 function combat_p_proc()
-    if (fallout.fixed_param() == 4) and (fallout.local_var(5) == 0) then
+    if fallout.fixed_param() == 4 and fallout.local_var(5) == 0 then
         fallout.script_overrides()
     end
 end
@@ -211,22 +188,24 @@ end
 
 function critter_p_proc()
     if hostile then
-        hostile = 0
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
 end
 
 function pickup_p_proc()
-    hostile = 1
+    hostile = true
 end
 
 function timed_event_p_proc()
+    local self_obj = fallout.self_obj()
+    local dude_obj = fallout.dude_obj()
     if fallout.local_var(5) == 0 then
-        fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(7200), 1)
+        fallout.add_timer_event(self_obj, fallout.game_ticks(7200), 1)
     end
-    if fallout.tile_distance_objs(fallout.dude_obj(), fallout.self_obj()) < fallout.get_critter_stat(fallout.dude_obj(), 1) then
+    if fallout.tile_distance_objs(dude_obj, self_obj) < fallout.get_critter_stat(dude_obj, 1) then
         fallout.display_msg(fallout.message_str(440, 100))
-        fallout.float_msg(fallout.self_obj(), fallout.message_str(440, 101), 0)
+        fallout.float_msg(self_obj, fallout.message_str(440, 101), 0)
     end
 end
 
