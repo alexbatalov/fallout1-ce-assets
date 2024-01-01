@@ -10,63 +10,57 @@ local talk_p_proc
 local destroy_p_proc
 local look_at_p_proc
 
-local hostile = 0
+local hostile = false
 local initialized = false
-local GunLine = 0
-
-local exit_line = 0
 
 function start()
     if not initialized then
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 38)
+        fallout.critter_add_trait(self_obj, 1, 5, 85)
         initialized = true
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 38)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 85)
     end
-    if fallout.script_action() == 21 then
+
+    local script_action = fallout.script_action()
+    if script_action == 21 then
         look_at_p_proc()
-    else
-        if fallout.script_action() == 4 then
-            pickup_p_proc()
-        else
-            if fallout.script_action() == 11 then
-                talk_p_proc()
-            else
-                if fallout.script_action() == 12 then
-                    critter_p_proc()
-                else
-                    if fallout.script_action() == 18 then
-                        destroy_p_proc()
-                    end
-                end
-            end
-        end
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
     end
 end
 
 function combat()
-    hostile = 1
+    hostile = true
 end
 
 function critter_p_proc()
+    local self_obj = fallout.self_obj()
+    local dude_obj = fallout.dude_obj()
     if hostile then
-        hostile = 0
-        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+        hostile = false
+        fallout.attack(dude_obj, 0, 1, 0, 0, 30000, 0, 0)
     end
-    if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
-        hostile = 1
-        GunLine = fallout.random(105, 108)
-        if GunLine == 108 then
-            if fallout.get_critter_stat(fallout.dude_obj(), 34) ~= 0 then
-                GunLine = 109
+    if fallout.obj_can_see_obj(self_obj, dude_obj) then
+        hostile = true
+        local num = fallout.random(105, 108)
+        if num == 108 then
+            if fallout.get_critter_stat(dude_obj, 34) ~= 0 then
+                num = 109
             end
         end
-        fallout.float_msg(fallout.self_obj(), fallout.message_str(652, GunLine), 8)
+        fallout.float_msg(self_obj, fallout.message_str(652, num), 8)
     end
 end
 
 function pickup_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
-        hostile = 1
+        hostile = true
     end
 end
 
