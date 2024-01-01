@@ -32,104 +32,90 @@ local Barter
 local Get_Stuff
 local Put_Stuff
 
-local hostile = 0
+local hostile = false
 local initialized = false
 
-local exit_line = 0
-
 function start()
-    local v0 = 0
     fallout.gdialog_set_barter_mod(-15)
     if not initialized then
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 48)
+        fallout.critter_add_trait(self_obj, 1, 5, 50)
         initialized = true
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 48)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 50)
     end
-    if fallout.script_action() == 21 then
+
+    local script_action = fallout.script_action()
+    if script_action == 21 then
         look_at_p_proc()
-    else
-        if fallout.script_action() == 4 then
-            pickup_p_proc()
-        else
-            if fallout.script_action() == 11 then
-                talk_p_proc()
-            else
-                if fallout.script_action() == 12 then
-                    critter_p_proc()
-                else
-                    if fallout.script_action() == 18 then
-                        destroy_p_proc()
-                    end
-                end
-            end
-        end
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
     end
 end
 
 function combat()
-    hostile = 1
+    hostile = true
     fallout.set_local_var(5, 1)
 end
 
 function critter_p_proc()
     if hostile then
-        hostile = 0
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
 end
 
 function pickup_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
-        hostile = 1
+        hostile = true
     end
 end
 
 function talk_p_proc()
-    local v0 = 0
+    local self_obj = fallout.self_obj()
     Get_Stuff()
     reaction.get_reaction()
-    if ((time.game_time_in_days() - fallout.local_var(6)) >= 1) or (fallout.local_var(6) == 0) then
+    if time.game_time_in_days() - fallout.local_var(6) >= 1 or fallout.local_var(6) == 0 then
         fallout.set_local_var(6, time.game_time_in_days())
         fallout.set_local_var(7, 2000 + fallout.random(0, 1000))
-        v0 = fallout.item_caps_adjust(fallout.self_obj(), fallout.local_var(7))
+        fallout.item_caps_adjust(self_obj, fallout.local_var(7))
     else
-        v0 = fallout.item_caps_adjust(fallout.self_obj(), fallout.local_var(7))
+        fallout.item_caps_adjust(self_obj, fallout.local_var(7))
     end
     if fallout.local_var(5) == 1 then
         combat()
+    elseif fallout.global_var(248) == 1 then
+        fallout.start_gdialog(589, self_obj, 4, -1, -1)
+        fallout.gsay_start()
+        Jake10()
+        fallout.gsay_end()
+        fallout.end_dialogue()
+    elseif fallout.local_var(4) == 0 then
+        fallout.set_local_var(4, 1)
+        fallout.start_gdialog(589, self_obj, 4, -1, -1)
+        fallout.gsay_start()
+        Jake01()
+        fallout.gsay_end()
+        fallout.end_dialogue()
+    elseif fallout.local_var(1) == 1 then
+        fallout.start_gdialog(589, self_obj, 4, -1, -1)
+        fallout.gsay_start()
+        Jake10()
+        fallout.gsay_end()
+        fallout.end_dialogue()
     else
-        if fallout.global_var(248) == 1 then
-            fallout.start_gdialog(589, fallout.self_obj(), 4, -1, -1)
-            fallout.gsay_start()
-            Jake10()
-            fallout.gsay_end()
-            fallout.end_dialogue()
-        else
-            if fallout.local_var(4) == 0 then
-                fallout.set_local_var(4, 1)
-                fallout.start_gdialog(589, fallout.self_obj(), 4, -1, -1)
-                fallout.gsay_start()
-                Jake01()
-                fallout.gsay_end()
-                fallout.end_dialogue()
-            else
-                if fallout.local_var(1) == 1 then
-                    fallout.start_gdialog(589, fallout.self_obj(), 4, -1, -1)
-                    fallout.gsay_start()
-                    Jake10()
-                    fallout.gsay_end()
-                    fallout.end_dialogue()
-                else
-                    fallout.start_gdialog(589, fallout.self_obj(), 4, -1, -1)
-                    fallout.gsay_start()
-                    Jake09()
-                    fallout.gsay_end()
-                    fallout.end_dialogue()
-                end
-            end
-        end
+        fallout.start_gdialog(589, self_obj, 4, -1, -1)
+        fallout.gsay_start()
+        Jake09()
+        fallout.gsay_end()
+        fallout.end_dialogue()
     end
-    v0 = fallout.item_caps_adjust(fallout.self_obj(), -1 * fallout.item_caps_total(fallout.self_obj()))
+    fallout.item_caps_adjust(self_obj, -1 * fallout.item_caps_total(self_obj))
     Put_Stuff()
 end
 
@@ -144,9 +130,8 @@ function look_at_p_proc()
 end
 
 function damage_p_proc()
-    local v0 = 0
-    v0 = fallout.obj_pid(fallout.source_obj())
-    if fallout.party_member_obj(v0) ~= 0 then
+    local pid = fallout.obj_pid(fallout.source_obj())
+    if fallout.party_member_obj(pid) ~= nil then
         fallout.set_global_var(248, 1)
     end
 end
