@@ -3,14 +3,16 @@ local fallout = require("fallout")
 local start
 local use_p_proc
 
-local OnlyOnce = 1
+local initialized = false
 
 function start()
-    if OnlyOnce then
-        OnlyOnce = 0
+    if not initialized then
         fallout.obj_close(fallout.self_obj())
+        initialized = true
     end
-    if fallout.script_action() == 6 then
+
+    local script_action = fallout.script_action()
+    if script_action == 6 then
         use_p_proc()
     end
 end
