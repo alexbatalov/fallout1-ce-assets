@@ -5,12 +5,11 @@ local use_p_proc
 local pickup_p_proc
 
 function start()
-    if fallout.script_action() == 6 then
+    local script_action = fallout.script_action()
+    if script_action == 6 then
         use_p_proc()
-    else
-        if fallout.script_action() == 4 then
-            pickup_p_proc()
-        end
+    elseif script_action == 4 then
+        pickup_p_proc()
     end
 end
 
