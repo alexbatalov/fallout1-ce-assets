@@ -13,63 +13,58 @@ local Hunter03
 local Hunter04
 local Hunter05
 
-local mad = 0
-local hostile = 0
+local mad = false
+local hostile = false
 local initialized = false
-local my_script_mode = 0
-local pre_fight = 0
+local my_script_mode = false
+local pre_fight = false
 
 function start()
     if not initialized then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 29)
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 29)
         if fallout.cur_map_index() ~= 29 then
             Hunter05()
             fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
-            my_script_mode = 1
-        else
-            if fallout.global_var(123) == 3 then
-                fallout.move_to(fallout.self_obj(), 7000, 0)
-                fallout.set_external_var("removal_ptr", fallout.self_obj())
-            end
+            my_script_mode = true
+        elseif fallout.global_var(123) == 3 then
+            fallout.move_to(self_obj, 7000, 0)
+            fallout.set_external_var("removal_ptr", self_obj)
         end
         initialized = true
+    end
+
+    local script_action = fallout.script_action()
+    if not my_script_mode then
+        if script_action == 12 then
+            critter_p_proc()
+        elseif script_action == 18 then
+            destroy_p_proc()
+        elseif script_action == 21 then
+            look_at_p_proc()
+        elseif script_action == 4 then
+            pickup_p_proc()
+        elseif script_action == 11 then
+            talk_p_proc()
+        end
     else
-        if not(my_script_mode) then
-            if fallout.script_action() == 12 then
-                critter_p_proc()
-            else
-                if fallout.script_action() == 18 then
-                    destroy_p_proc()
-                else
-                    if fallout.script_action() == 21 then
-                        look_at_p_proc()
-                    else
-                        if fallout.script_action() == 4 then
-                            pickup_p_proc()
-                        else
-                            if fallout.script_action() == 11 then
-                                talk_p_proc()
-                            end
-                        end
-                    end
-                end
-            end
-        else
-            if fallout.script_action() == 18 then
-                destroy_p_proc()
-            end
+        if script_action == 18 then
+            destroy_p_proc()
         end
     end
 end
 
 function critter_p_proc()
     if hostile then
-        hostile = 0
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     else
-        if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) and not(my_script_mode) and not(pre_fight) and (fallout.global_var(158) > 2) then
+        if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj())
+            and not my_script_mode
+            and not pre_fight
+            and fallout.global_var(158) > 2 then
             Hunter05()
-            pre_fight = 1
+            pre_fight = true
         end
     end
 end
@@ -85,7 +80,7 @@ function look_at_p_proc()
 end
 
 function pickup_p_proc()
-    hostile = 1
+    hostile = true
 end
 
 function talk_p_proc()
@@ -105,12 +100,12 @@ function Hunter01()
 end
 
 function Hunter02()
-    if not(mad) then
+    if not mad then
         fallout.gsay_message(241, 106, 50)
-        mad = 1
+        mad = true
     else
         fallout.gsay_message(241, 107, 50)
-        hostile = 1
+        hostile = true
     end
 end
 
@@ -124,7 +119,7 @@ end
 
 function Hunter05()
     fallout.float_msg(fallout.self_obj(), fallout.message_str(241, 110), 0)
-    hostile = 1
+    hostile = true
 end
 
 local exports = {}
