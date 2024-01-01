@@ -45,24 +45,23 @@ local ZimEnd
 local initialized = false
 local DisplayMessage = 0
 
-local exit_line = 0
-
 function start()
     if not initialized then
-        if fallout.obj_is_carrying_obj_pid(fallout.self_obj(), 41) == 0 then
-            fallout.item_caps_adjust(fallout.self_obj(), fallout.random(50, 150))
+        local self_obj = fallout.self_obj()
+        if fallout.obj_is_carrying_obj_pid(self_obj, 41) == 0 then
+            fallout.item_caps_adjust(self_obj, fallout.random(50, 150))
         end
         if fallout.global_var(613) == 9103 then
             if fallout.global_var(612) ~= 9003 then
-                fallout.critter_add_trait(fallout.self_obj(), 1, 6, 89)
+                fallout.critter_add_trait(self_obj, 1, 6, 89)
             else
-                fallout.critter_add_trait(fallout.self_obj(), 1, 6, 0)
+                fallout.critter_add_trait(self_obj, 1, 6, 0)
             end
         else
-            fallout.critter_add_trait(fallout.self_obj(), 1, 6, 49)
+            fallout.critter_add_trait(self_obj, 1, 6, 49)
         end
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 6)
-        fallout.set_external_var("JonPtr", fallout.self_obj())
+        fallout.critter_add_trait(self_obj, 1, 5, 6)
+        fallout.set_external_var("JonPtr", self_obj)
         initialized = true
     end
 end
@@ -89,46 +88,34 @@ function talk_p_proc()
     if fallout.global_var(251) == 1 then
         fallout.float_msg(fallout.self_obj(), fallout.message_str(669, fallout.random(100, 105)), 2)
     else
-        if (fallout.local_var(4) == 1) and (fallout.get_critter_stat(fallout.dude_obj(), 4) < 4) then
+        if fallout.local_var(4) == 1 and fallout.get_critter_stat(fallout.dude_obj(), 4) < 4 then
             fallout.float_msg(fallout.self_obj(), fallout.message_str(288, 139), 0)
+        elseif fallout.global_var(612) == 2 then
+            fallout.float_msg(fallout.self_obj(), fallout.message_str(288, fallout.random(183, 187)), 0)
         else
-            if fallout.global_var(612) == 2 then
-                fallout.float_msg(fallout.self_obj(), fallout.message_str(288, fallout.random(183, 187)), 0)
-            else
-                reaction.get_reaction()
-                fallout.start_gdialog(288, fallout.self_obj(), -1, -1, -1)
-                fallout.gsay_start()
-                DisplayMessage = 100
-                if fallout.local_var(4) == 0 then
-                    Zim00()
+            reaction.get_reaction()
+            fallout.start_gdialog(288, fallout.self_obj(), -1, -1, -1)
+            fallout.gsay_start()
+            DisplayMessage = 100
+            if fallout.local_var(4) == 0 then
+                Zim00()
+            elseif fallout.global_var(612) == 0 then
+                Zim01()
+            elseif fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 238) ~= 0 then
+                if fallout.global_var(612) == 9001 then
+                    Zim24()
                 else
-                    if fallout.global_var(612) == 0 then
-                        Zim01()
-                    else
-                        if fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 238) then
-                            if fallout.global_var(612) == 9001 then
-                                Zim24()
-                            else
-                                Zim27()
-                            end
-                        else
-                            if fallout.global_var(612) == 1 then
-                                Zim17()
-                            else
-                                if fallout.global_var(612) == 9001 then
-                                    Zim19()
-                                else
-                                    if fallout.global_var(612) == 9002 then
-                                        Zim21()
-                                    end
-                                end
-                            end
-                        end
-                    end
+                    Zim27()
                 end
-                fallout.gsay_end()
-                fallout.end_dialogue()
+            elseif fallout.global_var(612) == 1 then
+                Zim17()
+            elseif fallout.global_var(612) == 9001 then
+                Zim19()
+            elseif fallout.global_var(612) == 9002 then
+                Zim21()
             end
+            fallout.gsay_end()
+            fallout.end_dialogue()
         end
     end
 end
@@ -153,20 +140,22 @@ function destroy_p_proc()
 end
 
 function critter_p_proc()
-    if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
-        if (fallout.global_var(613) == 9103) and (fallout.global_var(612) ~= 9003) then
-            fallout.critter_add_trait(fallout.self_obj(), 1, 6, 89)
-            fallout.float_msg(fallout.self_obj(), fallout.message_str(288, 174), 2)
-            fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+    local self_obj = fallout.self_obj()
+    local dude_obj = fallout.dude_obj()
+    if fallout.obj_can_see_obj(self_obj, dude_obj) then
+        if fallout.global_var(613) == 9103 and fallout.global_var(612) ~= 9003 then
+            fallout.critter_add_trait(self_obj, 1, 6, 89)
+            fallout.float_msg(self_obj, fallout.message_str(288, 174), 2)
+            fallout.attack(dude_obj, 0, 1, 0, 0, 30000, 0, 0)
         else
             if fallout.global_var(251) == 1 then
-                fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+                fallout.attack(dude_obj, 0, 1, 0, 0, 30000, 0, 0)
             end
         end
     end
     if fallout.global_var(616) == 1 then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 89)
-        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+        fallout.critter_add_trait(self_obj, 1, 6, 89)
+        fallout.attack(dude_obj, 0, 1, 0, 0, 30000, 0, 0)
     end
 end
 
@@ -186,7 +175,7 @@ function Zim01()
     fallout.gsay_reply(288, DisplayMessage)
     fallout.giq_option(4, 288, 101, Zim02, 50)
     fallout.giq_option(4, 288, 102, Zim14, 50)
-    if fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 238) then
+    if fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 238) ~= 0 then
         fallout.giq_option(4, 288, 178, Zim26, 50)
     end
     fallout.giq_option(4, 288, 103, ZimEnd, 50)
@@ -356,9 +345,9 @@ function Zim25()
 end
 
 function Zim26()
-    local v0 = 0
-    v0 = fallout.obj_carrying_pid_obj(fallout.dude_obj(), 238)
-    fallout.rm_obj_from_inven(fallout.dude_obj(), v0)
+    local dude_obj = fallout.dude_obj()
+    local item_obj = fallout.obj_carrying_pid_obj(dude_obj, 238)
+    fallout.rm_obj_from_inven(dude_obj, item_obj)
     fallout.gsay_message(288, 173, 50)
     fallout.set_global_var(612, 9003)
     if fallout.global_var(613) == 9102 then
