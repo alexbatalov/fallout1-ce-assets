@@ -35,7 +35,7 @@ local exit_line = 0
 
 function start()
     if not initialized then
-        if (fallout.global_var(613) == 9103) or (fallout.global_var(613) == 9102) then
+        if fallout.global_var(613) == 9103 or fallout.global_var(613) == 9102 then
             fallout.critter_add_trait(fallout.self_obj(), 1, 6, 0)
         else
             fallout.critter_add_trait(fallout.self_obj(), 1, 6, 49)
@@ -45,39 +45,28 @@ function start()
         sleep_tile = 23151
         home_tile = 22749
         initialized = true
-    else
-        if fallout.script_action() == 12 then
-            critter_p_proc()
-        else
-            if fallout.script_action() == 14 then
-                damage_p_proc()
-            else
-                if fallout.script_action() == 18 then
-                    destroy_p_proc()
-                else
-                    if fallout.script_action() == 21 then
-                        look_at_p_proc()
-                    else
-                        if fallout.script_action() == 4 then
-                            pickup_p_proc()
-                        else
-                            if fallout.script_action() == 11 then
-                                talk_p_proc()
-                            else
-                                if fallout.script_action() == 22 then
-                                    timed_event_p_proc()
-                                end
-                            end
-                        end
-                    end
-                end
-            end
-        end
+    end
+
+    local script_action = fallout.script_action()
+    if script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 14 then
+        damage_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 22 then
+        timed_event_p_proc()
     end
 end
 
 function critter_p_proc()
-    if fallout.local_var(5) and (fallout.local_var(6) == 0) and (fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 8) then
+    if fallout.local_var(5) ~= 0 and fallout.local_var(6) == 0 and fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 8 then
         behaviour.flee_dude(0)
     else
         behaviour.sleeping(6, night_person, wake_time, sleep_time, home_tile, sleep_tile)
@@ -148,7 +137,7 @@ function Julianna01()
     if fallout.global_var(127) == 1 then
         fallout.giq_option(0, 257, 105, Julianna06, 50)
     end
-    if not(fallout.local_var(4)) then
+    if not (fallout.local_var(4)) then
         fallout.giq_option(4, 257, 106, Julianna02, 50)
     end
 end
@@ -163,27 +152,24 @@ end
 function Julianna03()
     fallout.gsay_reply(257, 110)
     fallout.giq_option(4, 257, 111, Julianna05, 50)
-    exit_line = reaction.Goodbyes()
-    fallout.giq_option(4, 634, exit_line, JuliannaEnd, 50)
+    fallout.giq_option(4, 634, reaction.Goodbyes(), JuliannaEnd, 50)
 end
 
 function Julianna04()
     fallout.gsay_reply(257, 112)
-    exit_line = reaction.Goodbyes()
-    fallout.giq_option(4, 634, exit_line, JuliannaEnd, 50)
+    fallout.giq_option(4, 634, reaction.Goodbyes(), JuliannaEnd, 50)
 end
 
 function Julianna05()
     fallout.gsay_reply(257, 113)
-    exit_line = reaction.Goodbyes()
-    fallout.giq_option(4, 634, exit_line, JuliannaEnd, 50)
+    fallout.giq_option(4, 634, reaction.Goodbyes(), JuliannaEnd, 50)
 end
 
 function Julianna06()
     fallout.gsay_reply(257, 114)
     fallout.giq_option(0, 257, 115, Julianna07, 50)
     fallout.giq_option(0, 257, 116, Julianna08, 50)
-    if fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 99) then
+    if fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 99) ~= 0 then
         fallout.giq_option(0, 257, 117, Julianna09, 50)
     end
 end
@@ -196,16 +182,15 @@ end
 function Julianna08()
     fallout.gsay_reply(257, 119)
     fallout.giq_option(4, 257, 120, JuliannaEnd, 50)
-    if fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 99) then
+    if fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 99) ~= 0 then
         fallout.giq_option(4, 257, 121, Julianna09, 50)
     end
 end
 
 function Julianna09()
-    local v0 = 0
-    v0 = fallout.obj_carrying_pid_obj(fallout.dude_obj(), 99)
-    fallout.rm_obj_from_inven(fallout.dude_obj(), fallout.obj_carrying_pid_obj(fallout.dude_obj(), 99))
-    fallout.add_obj_to_inven(fallout.self_obj(), v0)
+    local item_obj = fallout.obj_carrying_pid_obj(fallout.dude_obj(), 99)
+    fallout.rm_obj_from_inven(fallout.dude_obj(), item_obj)
+    fallout.add_obj_to_inven(fallout.self_obj(), item_obj)
     fallout.gsay_message(257, 122, 50)
     fallout.set_global_var(127, 2)
 end
