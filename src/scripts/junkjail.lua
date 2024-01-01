@@ -9,34 +9,24 @@ local use_obj_on_p_proc
 local use_skill_on_p_proc
 local lockpicking
 
-local skill_test = 0
-local triggered = 0
+local triggered = false
 
 local use_p_proc
 
 function start()
-    if fallout.script_action() == 14 then
+    local script_action = fallout.script_action()
+    if script_action == 14 then
         damage_p_proc()
-    else
-        if fallout.script_action() == 3 then
-            description_p_proc()
-        else
-            if fallout.script_action() == 15 then
-                map_enter_p_proc()
-            else
-                if fallout.script_action() == 2 then
-                    spatial_p_proc()
-                else
-                    if fallout.script_action() == 7 then
-                        use_obj_on_p_proc()
-                    else
-                        if fallout.script_action() == 8 then
-                            use_skill_on_p_proc()
-                        end
-                    end
-                end
-            end
-        end
+    elseif script_action == 3 then
+        description_p_proc()
+    elseif script_action == 15 then
+        map_enter_p_proc()
+    elseif script_action == 2 then
+        spatial_p_proc()
+    elseif script_action == 7 then
+        use_obj_on_p_proc()
+    elseif script_action == 8 then
+        use_skill_on_p_proc()
     end
 end
 
@@ -50,15 +40,16 @@ function description_p_proc()
 end
 
 function map_enter_p_proc()
-    if fallout.tile_num(fallout.self_obj()) == 18666 then
-        fallout.obj_close(fallout.self_obj())
-        fallout.obj_lock(fallout.self_obj())
-        fallout.set_external_var("jail_door_ptr", fallout.self_obj())
+    local self_obj = fallout.self_obj()
+    if fallout.tile_num(self_obj) == 18666 then
+        fallout.obj_close(self_obj)
+        fallout.obj_lock(self_obj)
+        fallout.set_external_var("jail_door_ptr", self_obj)
     end
 end
 
 function spatial_p_proc()
-    if (fallout.source_obj() == fallout.dude_obj()) and (triggered == 0) and (fallout.map_var(1) == 1) then
+    if fallout.source_obj() == fallout.dude_obj() and not triggered and fallout.map_var(1) == 1 then
         fallout.display_msg(fallout.message_str(789, 100))
         fallout.set_map_var(1, 0)
         fallout.set_global_var(155, fallout.global_var(155) - 3)
@@ -68,38 +59,39 @@ function spatial_p_proc()
             fallout.set_global_var(247, 1)
             fallout.set_global_var(155, fallout.global_var(155) - 5)
         end
-        triggered = 1
+        triggered = true
         fallout.destroy_object(fallout.self_obj())
     end
 end
 
 function use_obj_on_p_proc()
     if fallout.obj_pid(fallout.obj_being_used_with()) == 84 then
-        skill_test = fallout.roll_vs_skill(fallout.dude_obj(), 9, -20)
-        lockpicking()
+        local roll = fallout.roll_vs_skill(fallout.dude_obj(), 9, -20)
+        lockpicking(roll)
     end
 end
 
 function use_skill_on_p_proc()
     if fallout.action_being_used() == 9 then
-        skill_test = fallout.roll_vs_skill(fallout.dude_obj(), 9, 0)
-        lockpicking()
+        local roll = fallout.roll_vs_skill(fallout.dude_obj(), 9, 0)
+        lockpicking(roll)
     end
 end
 
-function lockpicking()
+function lockpicking(roll)
     fallout.script_overrides()
     fallout.set_map_var(3, fallout.map_var(3) + 1)
-    if fallout.is_success(skill_test) then
-        if fallout.obj_is_locked(fallout.self_obj()) then
-            fallout.obj_unlock(fallout.self_obj())
+    local self_obj = fallout.self_obj()
+    if fallout.is_success(roll) then
+        if fallout.obj_is_locked(self_obj) then
+            fallout.obj_unlock(self_obj)
             fallout.display_msg(fallout.message_str(789, 103))
         else
-            fallout.obj_lock(fallout.self_obj())
+            fallout.obj_lock(self_obj)
             fallout.display_msg(fallout.message_str(789, 104))
         end
     else
-        if fallout.obj_is_locked(fallout.self_obj()) then
+        if fallout.obj_is_locked(self_obj) then
             fallout.display_msg(fallout.message_str(789, 105))
         else
             fallout.display_msg(fallout.message_str(789, 106))
