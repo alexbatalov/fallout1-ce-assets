@@ -32,57 +32,49 @@ local Jake18
 local JakeCombat
 local JakeEnd
 
-local hostile = 0
+local hostile = false
 local initialized = false
 
 function start()
     if not initialized then
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 34)
         initialized = true
-    else
-        if fallout.script_action() == 12 then
-            critter_p_proc()
-        else
-            if fallout.script_action() == 22 then
-                timed_event_p_proc()
-            else
-                if fallout.script_action() == 18 then
-                    destroy_p_proc()
-                else
-                    if fallout.script_action() == 21 then
-                        look_at_p_proc()
-                    else
-                        if fallout.script_action() == 23 then
-                            map_update_p_proc()
-                        else
-                            if fallout.script_action() == 4 then
-                                pickup_p_proc()
-                            else
-                                if fallout.script_action() == 11 then
-                                    talk_p_proc()
-                                end
-                            end
-                        end
-                    end
-                end
-            end
-        end
+    end
+
+    local script_action = fallout.script_action()
+    if script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 22 then
+        timed_event_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 23 then
+        map_update_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
     end
 end
 
 function critter_p_proc()
-    if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) and (fallout.map_var(1) == 1) then
-        fallout.float_msg(fallout.self_obj(), fallout.message_str(268, 143), 3)
-        fallout.animate_move_obj_to_tile(fallout.self_obj(), 15484, 0)
-        fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(15), 1)
+    local self_obj = fallout.self_obj()
+    local dude_obj = fallout.dude_obj()
+    local self_can_see_dude = fallout.obj_can_see_obj(self_obj, dude_obj)
+    if self_can_see_dude and fallout.map_var(1) == 1 then
+        fallout.float_msg(self_obj, fallout.message_str(268, 143), 3)
+        fallout.animate_move_obj_to_tile(self_obj, 15484, 0)
+        fallout.add_timer_event(self_obj, fallout.game_ticks(15), 1)
     end
-    if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) and (fallout.map_var(1) == 2) then
-        fallout.float_msg(fallout.self_obj(), fallout.message_str(268, 144), 3)
-        hostile = 1
+    if self_can_see_dude and fallout.map_var(1) == 2 then
+        fallout.float_msg(self_obj, fallout.message_str(268, 144), 3)
+        hostile = true
     end
     if hostile then
-        hostile = 0
-        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+        hostile = false
+        fallout.attack(dude_obj, 0, 1, 0, 0, 30000, 0, 0)
     end
 end
 
@@ -106,30 +98,24 @@ function map_update_p_proc()
 end
 
 function pickup_p_proc()
-    hostile = 1
+    hostile = true
 end
 
 function talk_p_proc()
-    if not(fallout.local_var(5)) then
+    if fallout.local_var(5) == 0 then
         fallout.start_gdialog(268, fallout.self_obj(), 4, -1, -1)
         fallout.gsay_start()
         fallout.set_local_var(4, 1)
         if time.is_night() then
             Jake14()
+        elseif fallout.global_var(132) ~= 0 then
+            Jake17()
+        elseif fallout.global_var(133) == 2 then
+            Jake16()
+        elseif fallout.global_var(133) == 1 then
+            Jake15()
         else
-            if fallout.global_var(132) ~= 0 then
-                Jake17()
-            else
-                if fallout.global_var(133) == 2 then
-                    Jake16()
-                else
-                    if fallout.global_var(133) == 1 then
-                        Jake15()
-                    else
-                        Jake00()
-                    end
-                end
-            end
+            Jake00()
         end
         fallout.gsay_end()
         fallout.end_dialogue()
@@ -147,7 +133,7 @@ function Jake00()
     fallout.giq_option(4, 268, 104, Jake02, 50)
     fallout.giq_option(4, 268, 105, Jake12, 50)
     fallout.giq_option(4, 268, 106, Jake13, 50)
-    if (fallout.global_var(129) == 1) and (fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 72) ~= 0) then
+    if fallout.global_var(129) == 1 and fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 72) ~= 0 then
         fallout.giq_option(4, 268, 141, Jake18, 50)
     end
 end
@@ -241,15 +227,14 @@ function Jake17()
 end
 
 function Jake18()
-    local v0 = 0
-    v0 = fallout.obj_carrying_pid_obj(fallout.dude_obj(), 72)
-    fallout.rm_obj_from_inven(fallout.dude_obj(), v0)
-    fallout.destroy_object(v0)
+    local item_obj = fallout.obj_carrying_pid_obj(fallout.dude_obj(), 72)
+    fallout.rm_obj_from_inven(fallout.dude_obj(), item_obj)
+    fallout.destroy_object(item_obj)
     fallout.gsay_message(268, 142, 50)
 end
 
 function JakeCombat()
-    hostile = 1
+    hostile = true
 end
 
 function JakeEnd()
