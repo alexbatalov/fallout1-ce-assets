@@ -54,67 +54,56 @@ local JustinCombat
 local JustinTravel
 local GoToDecker
 
-local hostile = 0
+local hostile = false
 local initialized = false
-local travel = 0
-
-local exit_line = 0
-
-local Justin22
+local travel = false
 
 function start()
     if not initialized then
-        initialized = true
-        fallout.set_external_var("Justin_Ptr", fallout.self_obj())
+        local self_obj = fallout.self_obj()
+        fallout.set_external_var("Justin_Ptr", self_obj)
         if fallout.global_var(221) == 1 then
-            fallout.set_obj_visibility(fallout.self_obj(), 0)
+            fallout.set_obj_visibility(self_obj, false)
         end
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 40)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 86)
+        fallout.critter_add_trait(self_obj, 1, 6, 40)
+        fallout.critter_add_trait(self_obj, 1, 5, 86)
+        initialized = true
     end
-    if fallout.script_action() == 21 then
+
+    local script_action = fallout.script_action()
+    if script_action == 21 then
         look_at_p_proc()
-    else
-        if fallout.script_action() == 4 then
-            pickup_p_proc()
-        else
-            if fallout.script_action() == 11 then
-                talk_p_proc()
-            else
-                if fallout.script_action() == 12 then
-                    critter_p_proc()
-                else
-                    if fallout.script_action() == 18 then
-                        destroy_p_proc()
-                    else
-                        if fallout.script_action() == 13 then
-                            combat_p_proc()
-                        end
-                    end
-                end
-            end
-        end
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 13 then
+        combat_p_proc()
     end
 end
 
 function combat()
-    hostile = 1
+    hostile = true
 end
 
 function critter_p_proc()
     if hostile then
-        hostile = 0
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
-    if travel == 1 then
-        travel = 0
+    if travel then
+        travel = false
         GoToDecker()
     end
 end
 
 function pickup_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
-        hostile = 1
+        hostile = true
     end
 end
 
@@ -127,75 +116,57 @@ function talk_p_proc()
         Justin35()
         fallout.gsay_end()
         fallout.end_dialogue()
-    else
-        if fallout.local_var(7) == 1 then
-            fallout.start_gdialog(696, fallout.self_obj(), 4, -1, -1)
-            fallout.gsay_start()
-            Justin29()
-            fallout.gsay_end()
-            fallout.end_dialogue()
-        else
-            if fallout.global_var(203) == 1 then
-                fallout.start_gdialog(696, fallout.self_obj(), 4, -1, -1)
-                fallout.gsay_start()
-                Justin27()
-                fallout.gsay_end()
-                fallout.end_dialogue()
-            else
-                if fallout.local_var(6) == 1 then
-                    fallout.start_gdialog(696, fallout.self_obj(), 4, -1, -1)
-                    fallout.gsay_start()
-                    Justin26()
-                    fallout.gsay_end()
-                    fallout.end_dialogue()
-                else
-                    if fallout.local_var(6) == 2 then
-                        fallout.start_gdialog(696, fallout.self_obj(), 4, -1, -1)
-                        fallout.gsay_start()
-                        Justin28()
-                        fallout.gsay_end()
-                        fallout.end_dialogue()
-                    else
-                        if fallout.local_var(4) == 0 then
-                            fallout.set_local_var(4, 1)
-                            fallout.start_gdialog(696, fallout.self_obj(), 4, -1, -1)
-                            fallout.gsay_start()
-                            Justin00()
-                            fallout.gsay_end()
-                            fallout.end_dialogue()
-                        else
-                            if fallout.global_var(158) > 2 then
-                                Justin03()
-                            else
-                                if (fallout.local_var(1) == 3) or (fallout.local_var(1) == 0) then
-                                    fallout.start_gdialog(696, fallout.self_obj(), 4, -1, -1)
-                                    fallout.gsay_start()
-                                    Justin31()
-                                    fallout.gsay_end()
-                                    fallout.end_dialogue()
-                                else
-                                    if fallout.local_var(1) == 2 then
-                                        fallout.start_gdialog(696, fallout.self_obj(), 4, -1, -1)
-                                        fallout.gsay_start()
-                                        Justin32()
-                                        fallout.gsay_end()
-                                        fallout.end_dialogue()
-                                    else
-                                        if fallout.local_var(1) == 1 then
-                                            fallout.start_gdialog(696, fallout.self_obj(), 4, -1, -1)
-                                            fallout.gsay_start()
-                                            Justin33()
-                                            fallout.gsay_end()
-                                            fallout.end_dialogue()
-                                        end
-                                    end
-                                end
-                            end
-                        end
-                    end
-                end
-            end
-        end
+    elseif fallout.local_var(7) == 1 then
+        fallout.start_gdialog(696, fallout.self_obj(), 4, -1, -1)
+        fallout.gsay_start()
+        Justin29()
+        fallout.gsay_end()
+        fallout.end_dialogue()
+    elseif fallout.global_var(203) == 1 then
+        fallout.start_gdialog(696, fallout.self_obj(), 4, -1, -1)
+        fallout.gsay_start()
+        Justin27()
+        fallout.gsay_end()
+        fallout.end_dialogue()
+    elseif fallout.local_var(6) == 1 then
+        fallout.start_gdialog(696, fallout.self_obj(), 4, -1, -1)
+        fallout.gsay_start()
+        Justin26()
+        fallout.gsay_end()
+        fallout.end_dialogue()
+    elseif fallout.local_var(6) == 2 then
+        fallout.start_gdialog(696, fallout.self_obj(), 4, -1, -1)
+        fallout.gsay_start()
+        Justin28()
+        fallout.gsay_end()
+        fallout.end_dialogue()
+    elseif fallout.local_var(4) == 0 then
+        fallout.set_local_var(4, 1)
+        fallout.start_gdialog(696, fallout.self_obj(), 4, -1, -1)
+        fallout.gsay_start()
+        Justin00()
+        fallout.gsay_end()
+        fallout.end_dialogue()
+    elseif fallout.global_var(158) > 2 then
+        Justin03()
+    elseif fallout.local_var(1) == 3 or fallout.local_var(1) == 0 then
+        fallout.start_gdialog(696, fallout.self_obj(), 4, -1, -1)
+        fallout.gsay_start()
+        Justin31()
+        fallout.gsay_end()
+        fallout.end_dialogue()
+    elseif fallout.local_var(1) == 2 then
+        fallout.start_gdialog(696, fallout.self_obj(), 4, -1, -1)
+        fallout.gsay_start()
+        Justin32()
+        fallout.gsay_end()
+        fallout.end_dialogue()
+    elseif fallout.local_var(1) == 1 then
+        fallout.start_gdialog(696, fallout.self_obj(), 4, -1, -1)
+        fallout.gsay_start()
+        Justin33()
+        fallout.gsay_end()
+        fallout.end_dialogue()
     end
 end
 
@@ -216,9 +187,8 @@ function combat_p_proc()
 end
 
 function damage_p_proc()
-    local v0 = 0
-    v0 = fallout.obj_pid(fallout.source_obj())
-    if (fallout.party_member_obj(v0) ~= 0) and (fallout.map_var(52) == 0) then
+    local pid = fallout.obj_pid(fallout.source_obj())
+    if fallout.party_member_obj(pid) ~= nil and fallout.map_var(52) == 0 then
         fallout.set_global_var(248, 1)
     end
 end
@@ -492,24 +462,27 @@ function JustinCombat()
 end
 
 function JustinTravel()
-    travel = 1
+    travel = true
 end
 
 function GoToDecker()
+    local fry_obj = fallout.external_var("Fry_Stub_Ptr")
+    local decker_obj = fallout.external_var("Decker_Ptr")
+    local decker_tile_num = fallout.tile_num(decker_obj)
+    local kane_obj = fallout.external_var("Kane_Ptr")
+    local self_obj = fallout.self_obj()
+    local dude_obj = fallout.dude_obj()
     fallout.set_map_var(52, 1)
     fallout.gfade_out(1000)
-    fallout.set_obj_visibility(fallout.external_var("Fry_Stub_Ptr"), 0)
-    fallout.move_to(fallout.self_obj(), 23926, 1)
-    fallout.anim(fallout.self_obj(), 1000, fallout.rotation_to_tile(fallout.tile_num(fallout.self_obj()), fallout.tile_num(fallout.external_var("Decker_Ptr"))))
-    fallout.critter_add_trait(fallout.self_obj(), 1, 6, 0)
-    fallout.move_to(fallout.external_var("Kane_Ptr"), 22526, 1)
-    fallout.anim(fallout.external_var("Kane_Ptr"), 1000, fallout.rotation_to_tile(fallout.tile_num(fallout.external_var("Kane_Ptr")), fallout.tile_num(fallout.external_var("Decker_Ptr"))))
-    fallout.move_to(fallout.dude_obj(), 23924, 1)
-    fallout.anim(fallout.dude_obj(), 1000, fallout.rotation_to_tile(fallout.tile_num(fallout.dude_obj()), fallout.tile_num(fallout.external_var("Decker_Ptr"))))
+    fallout.set_obj_visibility(fry_obj, false)
+    fallout.move_to(self_obj, 23926, 1)
+    fallout.anim(self_obj, 1000, fallout.rotation_to_tile(fallout.tile_num(self_obj), decker_tile_num))
+    fallout.critter_add_trait(self_obj, 1, 6, 0)
+    fallout.move_to(kane_obj, 22526, 1)
+    fallout.anim(kane_obj, 1000, fallout.rotation_to_tile(fallout.tile_num(kane_obj), decker_tile_num))
+    fallout.move_to(dude_obj, 23924, 1)
+    fallout.anim(dude_obj, 1000, fallout.rotation_to_tile(fallout.tile_num(dude_obj), decker_tile_num))
     fallout.gfade_in(1000)
-end
-
-function Justin22()
 end
 
 local exports = {}
