@@ -30,76 +30,67 @@ local Flower12
 local Flower13
 local Flower14
 
-local hostile = 0
+local hostile = false
 local initialized = false
-
-local exit_line = 0
 
 function start()
     if not initialized then
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 72)
+        fallout.critter_add_trait(self_obj, 1, 5, 68)
         initialized = true
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 72)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 68)
     end
-    if fallout.script_action() == 21 then
+
+    local script_action = fallout.script_action()
+    if script_action == 21 then
         look_at_p_proc()
-    else
-        if fallout.script_action() == 4 then
-            pickup_p_proc()
-        else
-            if fallout.script_action() == 11 then
-                talk_p_proc()
-            else
-                if fallout.script_action() == 12 then
-                    critter_p_proc()
-                else
-                    if fallout.script_action() == 18 then
-                        destroy_p_proc()
-                    end
-                end
-            end
-        end
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
     end
 end
 
 function combat()
-    hostile = 1
+    hostile = true
 end
 
 function critter_p_proc()
+    local self_obj = fallout.self_obj()
+    local dude_obj = fallout.dude_obj()
     if hostile then
-        hostile = 0
-        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+        hostile = false
+        fallout.attack(dude_obj, 0, 1, 0, 0, 30000, 0, 0)
     end
-    if (fallout.map_var(6) == 1) and (fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) == 1) then
-        fallout.critter_set_flee_state(fallout.self_obj(), 1)
+    if fallout.map_var(6) == 1 and fallout.obj_can_see_obj(self_obj, dude_obj) == 1 then
+        fallout.critter_set_flee_state(self_obj, true)
     end
 end
 
 function pickup_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
-        hostile = 1
+        hostile = true
     end
 end
 
 function talk_p_proc()
     reaction.get_reaction()
-    if (fallout.global_var(195) == 1) or (fallout.map_var(0) == 1) then
+    if fallout.global_var(195) == 1 or fallout.map_var(0) == 1 then
         Flower00()
+    elseif fallout.global_var(158) == 1 then
+        Flower01()
+    elseif fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 117) == 1 then
+        fallout.float_msg(fallout.self_obj(), fallout.message_str(588, 114), 2)
     else
-        if fallout.global_var(158) == 1 then
-            Flower01()
-        else
-            if fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 117) == 1 then
-                fallout.float_msg(fallout.self_obj(), fallout.message_str(588, 114), 2)
-            else
-                fallout.start_gdialog(588, fallout.self_obj(), 4, -1, -1)
-                fallout.gsay_start()
-                Flower02()
-                fallout.gsay_end()
-                fallout.end_dialogue()
-            end
-        end
+        fallout.start_gdialog(588, fallout.self_obj(), 4, -1, -1)
+        fallout.gsay_start()
+        Flower02()
+        fallout.gsay_end()
+        fallout.end_dialogue()
     end
 end
 
@@ -117,9 +108,8 @@ function look_at_p_proc()
 end
 
 function damage_p_proc()
-    local v0 = 0
-    v0 = fallout.obj_pid(fallout.source_obj())
-    if fallout.party_member_obj(v0) ~= 0 then
+    local pid = fallout.obj_pid(fallout.source_obj())
+    if fallout.party_member_obj(pid) ~= nil then
         fallout.set_map_var(6, 1)
     end
 end
@@ -160,7 +150,7 @@ function Flower03()
 end
 
 function Flower03a()
-    if fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), 14, 20)) == 1 then
+    if fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), 14, 20)) then
         Flower10()
     else
         Flower11()
@@ -178,7 +168,7 @@ function Flower04()
 end
 
 function Flower04a()
-    if fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), 14, 0)) == 1 then
+    if fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), 14, 0)) then
         Flower13()
     else
         Flower11()
@@ -195,7 +185,7 @@ function Flower05()
 end
 
 function Flower05a()
-    if fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), 14, 0)) == 1 then
+    if fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), 14, 0)) then
         Flower14()
     else
         Flower11()
@@ -203,9 +193,8 @@ function Flower05a()
 end
 
 function Flower06()
-    local v0 = 0
-    v0 = fallout.create_object_sid(117, 0, 0, -1)
-    fallout.add_obj_to_inven(fallout.dude_obj(), v0)
+    local item_obj = fallout.create_object_sid(117, 0, 0, -1)
+    fallout.add_obj_to_inven(fallout.dude_obj(), item_obj)
     fallout.gsay_message(588, 135, 49)
 end
 
@@ -215,9 +204,8 @@ function Flower07()
 end
 
 function Flower08()
-    local v0 = 0
-    v0 = fallout.create_object_sid(117, 0, 0, -1)
-    fallout.add_obj_to_inven(fallout.dude_obj(), v0)
+    local item_obj = fallout.create_object_sid(117, 0, 0, -1)
+    fallout.add_obj_to_inven(fallout.dude_obj(), item_obj)
     fallout.gsay_message(588, 137, 49)
 end
 
@@ -227,9 +215,8 @@ function Flower09()
 end
 
 function Flower10()
-    local v0 = 0
-    v0 = fallout.create_object_sid(117, 0, 0, -1)
-    fallout.add_obj_to_inven(fallout.dude_obj(), v0)
+    local item_obj = fallout.create_object_sid(117, 0, 0, -1)
+    fallout.add_obj_to_inven(fallout.dude_obj(), item_obj)
     fallout.gsay_message(588, 139, 49)
 end
 
