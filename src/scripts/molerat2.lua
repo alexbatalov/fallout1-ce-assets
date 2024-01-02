@@ -9,18 +9,18 @@ local initialized = false
 
 function start()
     if not initialized then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 13)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 8)
-        fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(fallout.random(1, 5)), 0)
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 5, 13)
+        fallout.critter_add_trait(self_obj, 1, 6, 8)
+        fallout.add_timer_event(self_obj, fallout.game_ticks(fallout.random(1, 5)), 0)
         initialized = true
-    else
-        if fallout.script_action() == 12 then
-            critter_p_proc()
-        else
-            if fallout.script_action() == 22 then
-                timed_event_p_proc()
-            end
-        end
+    end
+
+    local script_action = fallout.script_action()
+    if script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 22 then
+        timed_event_p_proc()
     end
 end
 
@@ -32,8 +32,12 @@ function critter_p_proc()
 end
 
 function timed_event_p_proc()
-    fallout.animate_move_obj_to_tile(fallout.self_obj(), fallout.tile_num_in_direction(fallout.tile_num(fallout.self_obj()), fallout.random(0, 5), fallout.random(1, 4)), 0)
-    fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(fallout.random(1, 5)), 0)
+    local self_obj = fallout.self_obj()
+    local self_tile_num = fallout.tile_num(self_obj)
+    local rotation = fallout.random(0, 5)
+    local distance = fallout.random(1, 4)
+    fallout.animate_move_obj_to_tile(self_obj, fallout.tile_num_in_direction(self_tile_num, rotation, distance), 0)
+    fallout.add_timer_event(self_obj, fallout.game_ticks(fallout.random(1, 5)), 0)
 end
 
 local exports = {}
