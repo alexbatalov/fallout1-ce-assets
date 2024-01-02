@@ -46,78 +46,68 @@ local madsci13b
 local madsci14
 local madsci14a
 
-local hostile = 0
+local hostile = false
 local initialized = false
 local home_tile = 0
 local sleep_tile = 0
 
-local exit_line = 0
-
-local madscinull
-
 function start()
     if not initialized then
-        initialized = true
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 34)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 69)
-        home_tile = fallout.tile_num(fallout.self_obj())
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 34)
+        fallout.critter_add_trait(self_obj, 1, 5, 69)
+        home_tile = fallout.tile_num(self_obj)
         if home_tile == 22093 then
             sleep_tile = 21881
+        elseif home_tile == 22704 then
+            sleep_tile = 22281
         else
-            if home_tile == 22704 then
-                sleep_tile = 22281
-            else
-                sleep_tile = 22083
-            end
+            sleep_tile = 22083
         end
+        initialized = true
     end
-    if fallout.script_action() == 21 then
+
+    local script_action = fallout.script_action()
+    if script_action == 21 then
         look_at_p_proc()
-    else
-        if fallout.script_action() == 4 then
-            pickup_p_proc()
-        else
-            if fallout.script_action() == 11 then
-                talk_p_proc()
-            else
-                if fallout.script_action() == 12 then
-                    critter_p_proc()
-                else
-                    if fallout.script_action() == 18 then
-                        destroy_p_proc()
-                    end
-                end
-            end
-        end
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
     end
 end
 
 function combat()
-    hostile = 1
+    hostile = true
 end
 
 function critter_p_proc()
     if hostile then
-        hostile = 0
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     else
+        local self_obj = fallout.self_obj()
         if time.is_day() then
             if fallout.local_var(6) ~= 0 then
                 fallout.set_local_var(6, 0)
-                fallout.animate_move_obj_to_tile(fallout.self_obj(), home_tile, 0)
+                fallout.animate_move_obj_to_tile(self_obj, home_tile, 0)
             else
-                if fallout.tile_num(fallout.self_obj()) ~= home_tile then
-                    fallout.animate_move_obj_to_tile(fallout.self_obj(), home_tile, 0)
+                if fallout.tile_num(self_obj) ~= home_tile then
+                    fallout.animate_move_obj_to_tile(self_obj, home_tile, 0)
                 end
             end
         else
             if fallout.local_var(6) ~= 0 then
-                if fallout.tile_num(fallout.self_obj()) ~= sleep_tile then
-                    fallout.animate_move_obj_to_tile(fallout.self_obj(), sleep_tile, 0)
+                if fallout.tile_num(self_obj) ~= sleep_tile then
+                    fallout.animate_move_obj_to_tile(self_obj, sleep_tile, 0)
                 end
             else
                 fallout.set_local_var(6, 1)
-                fallout.animate_move_obj_to_tile(fallout.self_obj(), sleep_tile, 0)
+                fallout.animate_move_obj_to_tile(self_obj, sleep_tile, 0)
             end
         end
     end
@@ -125,16 +115,17 @@ end
 
 function pickup_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
-        hostile = 1
+        hostile = true
     end
 end
 
 function talk_p_proc()
-    if fallout.tile_num(fallout.self_obj()) == sleep_tile then
-        fallout.float_msg(fallout.self_obj(), fallout.message_str(679, 303), 2)
+    local self_obj = fallout.self_obj()
+    if fallout.tile_num(self_obj) == sleep_tile then
+        fallout.float_msg(self_obj, fallout.message_str(679, 303), 2)
     else
         reaction.get_reaction()
-        fallout.start_gdialog(679, fallout.self_obj(), 4, -1, -1)
+        fallout.start_gdialog(679, self_obj, 4, -1, -1)
         fallout.gsay_start()
         if fallout.obj_pid(fallout.critter_inven_obj(fallout.dude_obj(), 0)) == 113 then
             if fallout.local_var(5) == 1 then
@@ -454,9 +445,6 @@ function madsci14a()
     else
         madsci08()
     end
-end
-
-function madscinull()
 end
 
 local exports = {}
