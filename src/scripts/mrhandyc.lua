@@ -1,13 +1,5 @@
 local fallout = require("fallout")
 
---
--- Some unreferenced imported varables found.
--- Because of it it is impossible to specify
--- the real names of global variables.
---
-
-local g0 = 0
-
 local start
 local combat_p_proc
 local critter_p_proc
@@ -19,89 +11,88 @@ local MrHandyC01
 local MrHandyC02
 local MrHandyC03
 
--- ?import? variable initialized
--- ?import? variable removal_ptr
--- ?import? variable FieldH_Ptr
+local initialized = false
 
 function start()
-    if not(g0) then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 34)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 71)
-        g0 = 1
+    if not initialized then
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 34)
+        fallout.critter_add_trait(self_obj, 1, 5, 71)
+        initialized = true
     end
-    if fallout.script_action() == 12 then
+
+    local script_action = fallout.script_action()
+    if script_action == 12 then
         critter_p_proc()
-    else
-        if fallout.script_action() == 13 then
-            combat_p_proc()
-        else
-            if fallout.script_action() == 3 then
-                description_p_proc()
-            else
-                if fallout.script_action() == 11 then
-                    talk_p_proc()
-                else
-                    if fallout.script_action() == 8 then
-                        use_skill_on_p_proc()
-                    end
-                end
-            end
-        end
+    elseif script_action == 13 then
+        combat_p_proc()
+    elseif script_action == 3 then
+        description_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 8 then
+        use_skill_on_p_proc()
     end
 end
 
 function combat_p_proc()
     if fallout.fixed_param() == 4 then
-        if (fallout.local_var(0) == 0) or (fallout.local_var(1) == 0) then
+        if fallout.local_var(0) == 0 or fallout.local_var(1) == 0 then
             fallout.script_overrides()
         end
     end
 end
 
 function critter_p_proc()
-    if fallout.local_var(0) and fallout.local_var(1) and (fallout.local_var(2) == 0) and (fallout.local_var(3) == 0) and (fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 12) then
+    local self_obj = fallout.self_obj()
+    if fallout.local_var(0) ~= 0
+        and fallout.local_var(1) ~= 0
+        and fallout.local_var(2) == 0
+        and fallout.local_var(3) == 0
+        and fallout.tile_distance_objs(self_obj, fallout.dude_obj()) < 12 then
         fallout.set_local_var(2, 1)
         fallout.dialogue_system_enter()
     end
     if fallout.local_var(3) == 1 then
-        if fallout.tile_num(fallout.self_obj()) ~= 20530 then
-            fallout.animate_move_obj_to_tile(fallout.self_obj(), 20530, 0)
+        if fallout.tile_num(self_obj) ~= 20530 then
+            fallout.animate_move_obj_to_tile(self_obj, 20530, 0)
         else
+            local self_tile_num = fallout.tile_num(self_obj)
+            local self_elevation = fallout.elevation(self_obj)
             fallout.set_external_var("field_change", "off")
-            fallout.explosion(fallout.tile_num(fallout.self_obj()), fallout.elevation(fallout.self_obj()), 0)
-            fallout.explosion(fallout.tile_num_in_direction(fallout.tile_num(fallout.self_obj()), 5, 1), fallout.elevation(fallout.self_obj()), 0)
-            fallout.explosion(fallout.tile_num_in_direction(fallout.tile_num(fallout.self_obj()), 0, 1), fallout.elevation(fallout.self_obj()), 0)
-            fallout.explosion(fallout.tile_num_in_direction(fallout.tile_num(fallout.self_obj()), 5, 2), fallout.elevation(fallout.self_obj()), 0)
-            fallout.explosion(fallout.tile_num_in_direction(fallout.tile_num(fallout.self_obj()), 0, 2), fallout.elevation(fallout.self_obj()), 0)
+            fallout.explosion(self_tile_num, fallout.elevation(self_obj), 0)
+            fallout.explosion(fallout.tile_num_in_direction(self_tile_num, 5, 1), self_elevation, 0)
+            fallout.explosion(fallout.tile_num_in_direction(self_tile_num, 0, 1), self_elevation, 0)
+            fallout.explosion(fallout.tile_num_in_direction(self_tile_num, 5, 2), self_elevation, 0)
+            fallout.explosion(fallout.tile_num_in_direction(self_tile_num, 0, 2), self_elevation, 0)
             fallout.display_msg(fallout.message_str(631, 117))
             fallout.give_exp_points(1000)
-            fallout.critter_dmg(fallout.self_obj(), 250, 6)
+            fallout.critter_dmg(self_obj, 250, 6)
             fallout.set_local_var(3, 2)
         end
     end
 end
 
 function description_p_proc()
-    if not(fallout.local_var(0)) then
+    if fallout.local_var(0) == 0 then
         fallout.display_msg(fallout.message_str(631, 100))
-    else
-        if not(fallout.local_var(1)) then
-            fallout.display_msg(fallout.message_str(631, 101))
-            if fallout.get_critter_stat(fallout.dude_obj(), 4) > (fallout.get_critter_stat(fallout.dude_obj(), 1) + fallout.has_trait(0, fallout.dude_obj(), 0)) then
-                if fallout.is_success(fallout.do_check(fallout.dude_obj(), 4, 0)) then
-                    fallout.display_msg(fallout.message_str(631, 102))
-                end
-            else
-                if fallout.is_success(fallout.do_check(fallout.dude_obj(), 1, fallout.has_trait(0, fallout.dude_obj(), 0))) then
-                    fallout.display_msg(fallout.message_str(631, 102))
-                end
+    elseif fallout.local_var(1) == 0 then
+        fallout.display_msg(fallout.message_str(631, 101))
+        local dude_obj = fallout.dude_obj()
+        if fallout.get_critter_stat(dude_obj, 4) > fallout.get_critter_stat(dude_obj, 1) + fallout.has_trait(0, dude_obj, 0) then
+            if fallout.is_success(fallout.do_check(dude_obj, 4, 0)) then
+                fallout.display_msg(fallout.message_str(631, 102))
+            end
+        else
+            if fallout.is_success(fallout.do_check(dude_obj, 1, fallout.has_trait(0, dude_obj, 0))) then
+                fallout.display_msg(fallout.message_str(631, 102))
             end
         end
     end
 end
 
 function talk_p_proc()
-    if fallout.local_var(0) and fallout.local_var(1) then
+    if fallout.local_var(0) ~= 0 and fallout.local_var(1) ~= 0 then
         fallout.start_gdialog(631, fallout.self_obj(), 4, -1, -1)
         fallout.gsay_start()
         MrHandyC00()
@@ -111,36 +102,32 @@ function talk_p_proc()
 end
 
 function use_skill_on_p_proc()
-    if fallout.action_being_used() == 10 then
+    local skill = fallout.action_being_used()
+    if skill == 10 then
         fallout.script_overrides()
-    end
-    if fallout.action_being_used() == 12 then
-        if not(fallout.local_var(0)) then
+    elseif skill == 12 then
+        if fallout.local_var(0) == 0 then
             fallout.script_overrides()
             fallout.display_msg(fallout.message_str(631, 103))
-        else
-            if not(fallout.local_var(1)) then
-                fallout.script_overrides()
-                fallout.game_time_advance(fallout.game_ticks(300))
-                if fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), 12, 0)) then
-                    fallout.display_msg(fallout.message_str(631, 105))
-                    fallout.set_local_var(1, 1)
-                else
-                    fallout.display_msg(fallout.message_str(631, 106))
-                end
+        elseif fallout.local_var(1) == 0 then
+            fallout.script_overrides()
+            fallout.game_time_advance(fallout.game_ticks(300))
+            if fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), 12, 0)) then
+                fallout.display_msg(fallout.message_str(631, 105))
+                fallout.set_local_var(1, 1)
+            else
+                fallout.display_msg(fallout.message_str(631, 106))
             end
         end
-    else
-        if fallout.action_being_used() == 13 then
-            if not(fallout.local_var(0)) then
-                fallout.script_overrides()
-                fallout.game_time_advance(fallout.game_ticks(12000))
-                if fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), 13, 0)) then
-                    fallout.display_msg(fallout.message_str(631, 101))
-                    fallout.set_local_var(0, 1)
-                else
-                    fallout.display_msg(fallout.message_str(631, 104))
-                end
+    elseif skill == 13 then
+        if fallout.local_var(0) == 0 then
+            fallout.script_overrides()
+            fallout.game_time_advance(fallout.game_ticks(12000))
+            if fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), 13, 0)) then
+                fallout.display_msg(fallout.message_str(631, 101))
+                fallout.set_local_var(0, 1)
+            else
+                fallout.display_msg(fallout.message_str(631, 104))
             end
         end
     end
