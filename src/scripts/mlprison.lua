@@ -3,7 +3,6 @@ local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
 
 local start
-local combat
 local critter_p_proc
 local pickup_p_proc
 local talk_p_proc
@@ -24,61 +23,46 @@ local explode
 local escape
 local dialog_end
 
-local hostile = 0
+local hostile = false
 local initialized = false
-local target_hex = 0
-local said = 0
-
-local exit_line = 0
+local said = false
 
 function start()
     if not initialized then
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 2)
+        fallout.critter_add_trait(self_obj, 1, 5, 6)
         initialized = true
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 2)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 6)
     end
-    if fallout.script_action() == 21 then
-        look_at_p_proc()
-    else
-        if fallout.script_action() == 4 then
-            pickup_p_proc()
-        else
-            if fallout.script_action() == 11 then
-                talk_p_proc()
-            else
-                if fallout.script_action() == 12 then
-                    critter_p_proc()
-                else
-                    if fallout.script_action() == 18 then
-                        destroy_p_proc()
-                    end
-                end
-            end
-        end
-    end
-end
 
-function combat()
-    hostile = 1
+    local script_action = fallout.script_action()
+    if script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    end
 end
 
 function critter_p_proc()
     if fallout.tile_num(fallout.self_obj()) < 25000 then
         explode()
-    else
-        if (fallout.map_var(2) == 1) or (fallout.map_var(7) == 1) then
-            escape()
-        else
-            if hostile == 1 then
-                fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
-            end
-        end
+    elseif fallout.map_var(2) == 1 or fallout.map_var(7) == 1 then
+        escape()
+    elseif hostile then
+        -- FIXME: `hostile` is usually reset here.
+        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
 end
 
 function pickup_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
-        hostile = 1
+        hostile = true
     end
 end
 
@@ -180,12 +164,11 @@ function explode()
 end
 
 function escape()
-    if said == 0 then
-        said = 1
+    if not said then
+        said = true
         fallout.float_msg(fallout.self_obj(), fallout.message_str(682, 107), 2)
     end
-    target_hex = 22912
-    fallout.animate_move_obj_to_tile(fallout.self_obj(), target_hex, 1)
+    fallout.animate_move_obj_to_tile(fallout.self_obj(), 22912, 1)
 end
 
 function dialog_end()
