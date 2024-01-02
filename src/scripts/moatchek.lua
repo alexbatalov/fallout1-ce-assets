@@ -10,8 +10,9 @@ function start()
 end
 
 function spatial_p_proc()
-    if not(fallout.is_success(fallout.do_check(fallout.source_obj(), 5, 0))) then
-        fallout.critter_dmg(fallout.source_obj(), fallout.random(15, 40), 3)
+    local source_obj = fallout.source_obj()
+    if not fallout.is_success(fallout.do_check(source_obj, 5, 0)) then
+        fallout.critter_dmg(source_obj, fallout.random(15, 40), 3)
     end
 end
 
