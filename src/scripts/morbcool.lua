@@ -5,19 +5,14 @@ local pickup_p_proc
 local use_p_proc
 local use_skill_on_p_proc
 
-local test = 0
-
 function start()
-    if fallout.script_action() == 4 then
+    local script_action = fallout.script_action()
+    if script_action == 4 then
         pickup_p_proc()
-    else
-        if fallout.script_action() == 6 then
-            use_p_proc()
-        else
-            if fallout.script_action() == 8 then
-                use_skill_on_p_proc()
-            end
-        end
+    elseif script_action == 6 then
+        use_p_proc()
+    elseif script_action == 8 then
+        use_skill_on_p_proc()
     end
 end
 
@@ -38,23 +33,22 @@ function use_p_proc()
 end
 
 function use_skill_on_p_proc()
-    if fallout.action_being_used() == 10 then
+    local skill = fallout.action_being_used()
+    if skill == 10 then
         fallout.script_overrides()
         fallout.display_msg(fallout.message_str(877, 101))
-    else
-        if fallout.action_being_used() == 7 then
-            test = fallout.roll_vs_skill(fallout.source_obj(), fallout.action_being_used(), 0)
-            if fallout.is_success(test) then
-                fallout.script_overrides()
-                if fallout.is_critical(test) then
-                    fallout.display_msg(fallout.message_str(877, 102))
-                else
-                    fallout.display_msg(fallout.message_str(877, 104))
-                end
+    elseif skill == 7 then
+        local roll = fallout.roll_vs_skill(fallout.source_obj(), skill, 0)
+        if fallout.is_success(roll) then
+            fallout.script_overrides()
+            if fallout.is_critical(roll) then
+                fallout.display_msg(fallout.message_str(877, 102))
             else
-                fallout.script_overrides()
-                fallout.display_msg(fallout.message_str(877, 103))
+                fallout.display_msg(fallout.message_str(877, 104))
             end
+        else
+            fallout.script_overrides()
+            fallout.display_msg(fallout.message_str(877, 103))
         end
     end
 end
