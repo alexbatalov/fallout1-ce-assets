@@ -32,47 +32,39 @@ local Michelle17
 local MichelleCombat
 local MichelleEnd
 
-local hostile = 0
+local hostile = false
 local initialized = false
 
 function start()
     if not initialized then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 47)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 27)
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 47)
+        fallout.critter_add_trait(self_obj, 1, 5, 27)
         initialized = true
-    else
-        if fallout.script_action() == 12 then
-            critter_p_proc()
-        else
-            if fallout.script_action() == 18 then
-                destroy_p_proc()
-            else
-                if fallout.script_action() == 21 then
-                    look_at_p_proc()
-                else
-                    if fallout.script_action() == 4 then
-                        pickup_p_proc()
-                    else
-                        if fallout.script_action() == 11 then
-                            talk_p_proc()
-                        else
-                            if fallout.script_action() == 22 then
-                                timed_event_p_proc()
-                            end
-                        end
-                    end
-                end
-            end
-        end
+    end
+
+    local script_action = fallout.script_action()
+    if script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 22 then
+        timed_event_p_proc()
     end
 end
 
 function critter_p_proc()
-    if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) and (fallout.global_var(136) < 41) then
-        hostile = 1
+    if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) and fallout.global_var(136) < 41 then
+        hostile = true
     end
     if hostile then
-        hostile = 0
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
 end
@@ -83,32 +75,29 @@ function destroy_p_proc()
 end
 
 function look_at_p_proc()
-    if ((fallout.global_var(135) == 2) or fallout.get_critter_stat(fallout.dude_obj(), 6)) > 6 then
+    local dude_obj = fallout.dude_obj()
+    if fallout.global_var(135) == 2 or fallout.get_critter_stat(dude_obj, 6) > 6 then
         show_true_name()
+    elseif fallout.get_critter_stat(dude_obj, 6) < 4 then
+        show_false_name()
+    elseif fallout.get_critter_stat(dude_obj, 4) < 5 then
+        show_false_name()
     else
-        if fallout.get_critter_stat(fallout.dude_obj(), 6) < 4 then
+        if fallout.random(0, 1) ~= 0 then
             show_false_name()
         else
-            if fallout.get_critter_stat(fallout.dude_obj(), 4) < 5 then
-                show_false_name()
-            else
-                if fallout.random(0, 1) then
-                    show_false_name()
-                else
-                    show_true_name()
-                end
-            end
+            show_true_name()
         end
     end
 end
 
 function pickup_p_proc()
-    hostile = 1
+    hostile = true
 end
 
 function timed_event_p_proc()
     if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
-        hostile = 1
+        hostile = true
     end
 end
 
@@ -118,16 +107,12 @@ function talk_p_proc()
     fallout.set_local_var(0, 1)
     if time.is_night() then
         Michelle15()
+    elseif fallout.global_var(135) == 1 then
+        Michelle16()
+    elseif fallout.global_var(135) == 2 then
+        Michelle17()
     else
-        if fallout.global_var(135) == 1 then
-            Michelle16()
-        else
-            if fallout.global_var(135) == 2 then
-                Michelle17()
-            else
-                Michelle00()
-            end
-        end
+        Michelle00()
     end
     fallout.gsay_end()
     fallout.end_dialogue()
@@ -251,7 +236,7 @@ function Michelle17()
 end
 
 function MichelleCombat()
-    hostile = 1
+    hostile = true
 end
 
 function MichelleEnd()
