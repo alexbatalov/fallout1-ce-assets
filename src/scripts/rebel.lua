@@ -32,56 +32,39 @@ local sleep_time = 0
 local home_tile = 0
 local sleep_tile = 0
 local dest_tile = 0
-local hostile = 0
-local gword1 = 0
-local gword2 = 0
-local not_at_meeting = 1
-
-local exit_line = 0
+local hostile = false
+local not_at_meeting = true
 
 function start()
-    if fallout.script_action() == 12 then
+    local script_action = fallout.script_action()
+    if script_action == 12 then
         critter_p_proc()
-    else
-        if fallout.script_action() == 14 then
-            damage_p_proc()
-        else
-            if fallout.script_action() == 18 then
-                destroy_p_proc()
-            else
-                if fallout.script_action() == 21 then
-                    look_at_p_proc()
-                else
-                    if fallout.script_action() == 15 then
-                        map_enter_p_proc()
-                    else
-                        if fallout.script_action() == 4 then
-                            pickup_p_proc()
-                        else
-                            if fallout.script_action() == 11 then
-                                talk_p_proc()
-                            else
-                                if fallout.script_action() == 22 then
-                                    timed_event_p_proc()
-                                end
-                            end
-                        end
-                    end
-                end
-            end
-        end
+    elseif script_action == 14 then
+        damage_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 15 then
+        map_enter_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 22 then
+        timed_event_p_proc()
     end
 end
 
 function critter_p_proc()
     if hostile then
-        hostile = 0
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     else
-        if (time.game_time_in_days() > fallout.map_var(5)) and (fallout.global_var(238) ~= 2) then
+        if time.game_time_in_days() > fallout.map_var(5) and fallout.global_var(238) ~= 2 then
             fallout.destroy_object(fallout.self_obj())
         end
-        if (fallout.game_time_hour() > 1700) and (fallout.game_time_hour() < 1710) then
+        if fallout.game_time_hour() > 1700 and fallout.game_time_hour() < 1710 then
             if fallout.global_var(238) ~= 2 then
                 if not_at_meeting then
                     rebel_meeting()
@@ -125,7 +108,7 @@ function map_enter_p_proc()
 end
 
 function pickup_p_proc()
-    hostile = 1
+    hostile = true
 end
 
 function talk_p_proc()
@@ -167,48 +150,38 @@ end
 
 function timed_event_p_proc()
     fallout.animate_move_obj_to_tile(fallout.self_obj(), home_tile, 0)
-    not_at_meeting = 1
+    not_at_meeting = true
 end
 
 function Rebel01()
-    local v0 = 0
-    v0 = fallout.random(1, 5)
-    if v0 == 1 then
-        v0 = fallout.message_str(379, 105)
-    else
-        if v0 == 2 then
-            v0 = fallout.message_str(379, 106)
+    local rnd = fallout.random(1, 5)
+    local msg
+    if rnd == 1 then
+        msg = fallout.message_str(379, 105)
+    elseif rnd == 2 then
+        msg = fallout.message_str(379, 106)
+    elseif rnd == 3 then
+        msg = fallout.message_str(379, 107)
+    elseif rnd == 4 then
+        if fallout.get_critter_stat(fallout.dude_obj(), 34) == 0 then
+            msg = fallout.message_str(379, 108)
         else
-            if v0 == 3 then
-                v0 = fallout.message_str(379, 107)
-            else
-                if v0 == 4 then
-                    if fallout.get_critter_stat(fallout.dude_obj(), 34) == 0 then
-                        v0 = fallout.message_str(379, 108)
-                    else
-                        v0 = fallout.message_str(379, 109)
-                    end
-                else
-                    if v0 == 5 then
-                        if fallout.get_critter_stat(fallout.dude_obj(), 34) == 0 then
-                            v0 = fallout.message_str(379, 110)
-                        else
-                            v0 = fallout.message_str(379, 111)
-                        end
-                    end
-                end
-            end
+            msg = fallout.message_str(379, 109)
+        end
+    elseif rnd == 5 then
+        if fallout.get_critter_stat(fallout.dude_obj(), 34) == 0 then
+            msg = fallout.message_str(379, 110)
+        else
+            msg = fallout.message_str(379, 111)
         end
     end
-    fallout.float_msg(fallout.self_obj(), v0, 0)
+    fallout.float_msg(fallout.self_obj(), msg, 0)
 end
 
 function Rebel02()
-    local v0 = 0
-    local v1 = 0
     reaction.DownReact()
-    v1 = fallout.message_str(379, fallout.random(112, 115))
-    fallout.float_msg(fallout.self_obj(), v1, 2)
+    local msg = fallout.message_str(379, fallout.random(112, 115))
+    fallout.float_msg(fallout.self_obj(), msg, 2)
 end
 
 function Rebel03()
@@ -262,17 +235,18 @@ function RebelEnd()
 end
 
 function RebelCombat()
-    hostile = 1
+    hostile = true
 end
 
 function rebel_meeting()
     if dest_tile == 0 then
         dest_tile = fallout.tile_num_in_direction(18310, fallout.random(0, 5), 1)
     end
-    fallout.animate_move_obj_to_tile(fallout.self_obj(), dest_tile, 0)
-    fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(240), 0)
-    if fallout.tile_num(fallout.self_obj()) == dest_tile then
-        not_at_meeting = 0
+    local self_obj = fallout.self_obj()
+    fallout.animate_move_obj_to_tile(self_obj, dest_tile, 0)
+    fallout.add_timer_event(self_obj, fallout.game_ticks(240), 0)
+    if fallout.tile_num(self_obj) == dest_tile then
+        not_at_meeting = false
     end
 end
 
