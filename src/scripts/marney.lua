@@ -21,25 +21,21 @@ local initialized = false
 
 function start()
     if not initialized then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 46)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 34)
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 46)
+        fallout.critter_add_trait(self_obj, 1, 5, 34)
         initialized = true
-    else
-        if fallout.script_action() == 12 then
-            critter_p_proc()
-        else
-            if fallout.script_action() == 18 then
-                destroy_p_proc()
-            else
-                if fallout.script_action() == 21 then
-                    look_at_p_proc()
-                else
-                    if fallout.script_action() == 11 then
-                        talk_p_proc()
-                    end
-                end
-            end
-        end
+    end
+
+    local script_action = fallout.script_action()
+    if script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
     end
 end
 
@@ -80,15 +76,14 @@ function talk_p_proc()
 end
 
 function Marney00()
-    local v0 = 0
-    v0 = fallout.get_critter_stat(fallout.dude_obj(), 7) - fallout.get_critter_stat(fallout.dude_obj(), 35)
+    local v0 = fallout.get_critter_stat(fallout.dude_obj(), 7) - fallout.get_critter_stat(fallout.dude_obj(), 35)
     fallout.gsay_reply(270, 104)
     fallout.giq_option(-3, 270, 105, Marney01, 50)
     fallout.giq_option(4, 270, 125, MarneyEnd, 50)
     if v0 > 0 then
         fallout.giq_option(4, 270, 106, Marney01, 50)
     end
-    if not(fallout.local_var(2)) then
+    if fallout.local_var(2) == 0 then
         fallout.giq_option(5, 270, 107, Marney06, 50)
     end
 end
@@ -102,14 +97,13 @@ function Marney01()
 end
 
 function Marney02()
-    local v0 = 0
     fallout.gfade_out(600)
     fallout.gfade_in(600)
-    v0 = fallout.get_critter_stat(fallout.dude_obj(), 7) - fallout.get_critter_stat(fallout.dude_obj(), 35)
+    local v0 = fallout.get_critter_stat(fallout.dude_obj(), 7) - fallout.get_critter_stat(fallout.dude_obj(), 35)
     fallout.game_time_advance(fallout.game_ticks(60 * 20 * v0))
     fallout.critter_heal(fallout.dude_obj(), v0)
     fallout.gsay_message(270, 113, 50)
-    if not(fallout.local_var(1)) then
+    if fallout.local_var(1) == 0 then
         fallout.giq_option(4, 270, 114, Marney03, 50)
     end
     fallout.giq_option(4, 270, 115, MarneyEnd, 50)
