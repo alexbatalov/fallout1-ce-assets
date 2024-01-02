@@ -3,7 +3,6 @@ local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
 
 local start
-local combat
 local critter_p_proc
 local pickup_p_proc
 local talk_p_proc
@@ -17,53 +16,41 @@ local lucy03
 local lucy04
 local lucy05
 
-local hostile = 0
+local hostile = false
 local initialized = false
-local temp = 0
-
-local exit_line = 0
 
 function start()
     if not initialized then
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 50)
+        fallout.critter_add_trait(self_obj, 1, 5, 67)
         initialized = true
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 50)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 67)
     end
-    if fallout.script_action() == 21 then
-        look_at_p_proc()
-    else
-        if fallout.script_action() == 4 then
-            pickup_p_proc()
-        else
-            if fallout.script_action() == 11 then
-                talk_p_proc()
-            else
-                if fallout.script_action() == 12 then
-                    critter_p_proc()
-                else
-                    if fallout.script_action() == 18 then
-                        destroy_p_proc()
-                    end
-                end
-            end
-        end
-    end
-end
 
-function combat()
-    hostile = 1
+    local script_action = fallout.script_action()
+    if script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    end
 end
 
 function critter_p_proc()
     if hostile then
-        hostile = 0
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
 end
 
 function pickup_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
-        hostile = 1
+        hostile = true
     end
 end
 
@@ -73,16 +60,12 @@ function talk_p_proc()
     fallout.gsay_start()
     if fallout.local_var(4) == 0 then
         lucy00()
-    else
-        if fallout.local_var(4) == 1 then
-            lucy04()
-        else
-            if fallout.local_var(4) > 1 then
-                lucy05()
-            end
-        end
+    elseif fallout.local_var(4) == 1 then
+        lucy04()
+    elseif fallout.local_var(4) > 1 then
+        lucy05()
     end
-    temp = fallout.local_var(4)
+    local temp = fallout.local_var(4)
     if temp < 2 then
         fallout.set_local_var(4, temp + 1)
     end
