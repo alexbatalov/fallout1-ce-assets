@@ -28,57 +28,46 @@ local Mat6
 local Mat7
 local Mat8
 
-local hostile = 0
+local hostile = false
 local initialized = false
-local SetDayNight = 0
+local SetDayNight = false
 local Sleeping = 0
 local LastMove = 0
-local CaravanAgain = 1
-
-local exit_line = 0
+local CaravanAgain = true
 
 function start()
     if not initialized then
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 64)
+        fallout.critter_add_trait(self_obj, 1, 5, 50)
         initialized = true
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 64)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 50)
     end
-    if fallout.script_action() == 21 then
+
+    local script_action = fallout.script_action()
+    if script_action == 21 then
         look_at_p_proc()
-    else
-        if fallout.script_action() == 4 then
-            pickup_p_proc()
-        else
-            if fallout.script_action() == 11 then
-                talk_p_proc()
-            else
-                if fallout.script_action() == 12 then
-                    critter_p_proc()
-                else
-                    if fallout.script_action() == 18 then
-                        destroy_p_proc()
-                    else
-                        if fallout.script_action() == 22 then
-                            timed_event_p_proc()
-                        else
-                            if fallout.script_action() == 15 then
-                                map_enter_p_proc()
-                            end
-                        end
-                    end
-                end
-            end
-        end
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 22 then
+        timed_event_p_proc()
+    elseif script_action == 15 then
+        map_enter_p_proc()
     end
 end
 
 function combat()
-    hostile = 1
+    hostile = true
 end
 
 function critter_p_proc()
     if hostile then
-        hostile = 0
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
     if time.is_morning() or time.is_day() then
@@ -87,10 +76,11 @@ function critter_p_proc()
         SendToSleep()
     end
     if Sleeping == 1 then
-        if fallout.tile_num(fallout.self_obj()) ~= 10114 then
-            fallout.animate_move_obj_to_tile(fallout.self_obj(), 10114, 0)
+        local self_obj = fallout.self_obj()
+        if fallout.tile_num(self_obj) ~= 10114 then
+            fallout.animate_move_obj_to_tile(self_obj, 10114, 0)
         else
-            fallout.set_obj_visibility(fallout.self_obj(), 1)
+            fallout.set_obj_visibility(self_obj, true)
             Sleeping = 2
             LastMove = 10114
         end
@@ -99,7 +89,7 @@ end
 
 function pickup_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
-        hostile = 1
+        hostile = true
     end
 end
 
@@ -127,91 +117,59 @@ end
 
 function map_enter_p_proc()
     if time.is_night() then
-        fallout.move_to(fallout.self_obj(), 10114, 0)
-        fallout.set_obj_visibility(fallout.self_obj(), 1)
+        local self_obj = fallout.self_obj()
+        fallout.move_to(self_obj, 10114, 0)
+        fallout.set_obj_visibility(self_obj, true)
         Sleeping = 2
         LastMove = 10114
     end
 end
 
 function damage_p_proc()
-    local v0 = 0
-    v0 = fallout.obj_pid(fallout.source_obj())
-    if fallout.party_member_obj(v0) ~= 0 then
+    local pid = fallout.obj_pid(fallout.source_obj())
+    if fallout.party_member_obj(pid) ~= nil then
         fallout.set_global_var(248, 1)
     end
 end
 
+local WORK_TILES <const> = {
+    10518,
+    11117,
+    11115,
+    10913,
+    10711,
+    10313,
+    10115,
+    9913,
+    10111,
+    9918,
+    11317,
+    11111,
+}
+
 function SendToWork()
-    local v0 = 0
-    local v1 = 0
-    v0 = 0
-    v1 = fallout.random(15, 45)
-    while v0 == 0 do
-        v0 = fallout.random(1, 12)
-        if v0 == 1 then
-            v0 = 10518
-        else
-            if v0 == 2 then
-                v0 = 11117
-            else
-                if v0 == 3 then
-                    v0 = 11115
-                else
-                    if v0 == 4 then
-                        v0 = 10913
-                    else
-                        if v0 == 5 then
-                            v0 = 10711
-                        else
-                            if v0 == 6 then
-                                v0 = 10313
-                            else
-                                if v0 == 7 then
-                                    v0 = 10115
-                                else
-                                    if v0 == 8 then
-                                        v0 = 9913
-                                    else
-                                        if v0 == 9 then
-                                            v0 = 10111
-                                        else
-                                            if v0 == 10 then
-                                                v0 = 9918
-                                            else
-                                                if v0 == 11 then
-                                                    v0 = 11317
-                                                else
-                                                    if v0 == 12 then
-                                                        v0 = 11111
-                                                    end
-                                                end
-                                            end
-                                        end
-                                    end
-                                end
-                            end
-                        end
-                    end
-                end
-            end
-        end
-        if v0 == LastMove then
-            v0 = 0
+    local destination = 0
+    local delay = fallout.random(15, 45)
+    while destination == 0 do
+        destination = fallout.random(1, #WORK_TILES)
+        if destination == LastMove then
+            destination = 0
         end
     end
-    LastMove = v0
-    fallout.reg_anim_func(2, fallout.self_obj())
+    LastMove = destination
+
+    local self_obj = fallout.self_obj()
+    fallout.reg_anim_func(2, self_obj)
     fallout.reg_anim_func(1, 1)
-    fallout.reg_anim_obj_move_to_tile(fallout.self_obj(), v0, -1)
+    fallout.reg_anim_obj_move_to_tile(self_obj, destination, -1)
     fallout.reg_anim_func(3, 0)
-    fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(v1), 1)
+    fallout.add_timer_event(self_obj, fallout.game_ticks(delay), 1)
 end
 
 function SendToSleep()
     if Sleeping == 0 then
         Sleeping = 1
-        SetDayNight = 0
+        SetDayNight = false
         if fallout.random(0, 100) >= 90 then
             fallout.float_msg(fallout.self_obj(), fallout.message_str(609, 201), 2)
         end
@@ -219,13 +177,14 @@ function SendToSleep()
 end
 
 function WakeUpCall()
-    if SetDayNight == 0 then
+    if not SetDayNight then
         Sleeping = 0
-        SetDayNight = 1
-        fallout.set_obj_visibility(fallout.self_obj(), 0)
-        fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(1), 1)
+        SetDayNight = true
+        local self_obj = fallout.self_obj()
+        fallout.set_obj_visibility(self_obj, false)
+        fallout.add_timer_event(self_obj, fallout.game_ticks(1), 1)
         if fallout.random(0, 100) >= 90 then
-            fallout.float_msg(fallout.self_obj(), fallout.message_str(609, 202), 2)
+            fallout.float_msg(self_obj, fallout.message_str(609, 202), 2)
         end
     end
 end
@@ -242,7 +201,7 @@ function MatEnd()
 end
 
 function MatCombat()
-    hostile = 1
+    hostile = true
 end
 
 function Mat1()
@@ -293,9 +252,9 @@ function Mat5()
         fallout.set_global_var(76, 1)
     end
     fallout.gsay_reply(609, 220)
-    if CaravanAgain == 1 then
+    if CaravanAgain then
         fallout.giq_option(4, 609, 221, Mat8, 50)
-        CaravanAgain = 0
+        CaravanAgain = false
     end
     fallout.giq_option(4, 609, 222, Mat6, 50)
     fallout.giq_option(4, 609, 223, Mat3, 50)
