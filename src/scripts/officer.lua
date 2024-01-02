@@ -46,55 +46,46 @@ local Officer31
 local OfficerCombat
 local OfficerEnd
 
-local hostile = 0
-
-local exit_line = 0
+local hostile = false
 
 function start()
-    if fallout.script_action() == 12 then
+    local script_action = fallout.script_action()
+    if script_action == 12 then
         critter_p_proc()
-    else
-        if fallout.script_action() == 18 then
-            destroy_p_proc()
-        else
-            if fallout.script_action() == 15 then
-                map_enter_p_proc()
-            else
-                if fallout.script_action() == 4 then
-                    pickup_p_proc()
-                else
-                    if fallout.script_action() == 11 then
-                        talk_p_proc()
-                    end
-                end
-            end
-        end
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 15 then
+        map_enter_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
     end
 end
 
 function critter_p_proc()
     if hostile then
-        hostile = 0
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     else
+        local self_obj = fallout.self_obj()
+        local dude_obj = fallout.dude_obj()
         if fallout.global_var(261) ~= 0 then
-            if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
+            if fallout.obj_can_see_obj(self_obj, dude_obj) then
                 fallout.dialogue_system_enter()
             end
         else
-            if (fallout.external_var("armory_access") == 1) and not(fallout.obj_is_open(fallout.external_var("SecDoor_ptr"))) then
-                fallout.use_obj(fallout.external_var("SecDoor_ptr"))
-            else
-                if fallout.external_var("armory_access") == 2 then
-                    fallout.anim(fallout.self_obj(), 1000, 5)
-                    fallout.float_msg(fallout.self_obj(), fallout.message_str(178, 159), 0)
-                    fallout.set_external_var("armory_access", 0)
-                else
-                    if not(fallout.external_var("armory_access")) and (fallout.elevation(fallout.dude_obj()) == fallout.elevation(fallout.self_obj())) then
-                        if fallout.tile_distance(fallout.tile_num(fallout.dude_obj()), 21292) < 2 then
-                            hostile = 1
-                        end
-                    end
+            local armory_access = fallout.external_var("armory_access")
+            local sec_door_obj = fallout.external_var("SecDoor_ptr")
+            if armory_access == 1 and not fallout.obj_is_open(sec_door_obj) then
+                fallout.use_obj(sec_door_obj)
+            elseif armory_access == 2 then
+                fallout.anim(self_obj, 1000, 5)
+                fallout.float_msg(self_obj, fallout.message_str(178, 159), 0)
+                fallout.set_external_var("armory_access", 0)
+            elseif armory_access == 0 and fallout.elevation(dude_obj) == fallout.elevation(self_obj) then
+                if fallout.tile_distance(fallout.tile_num(dude_obj), 21292) < 2 then
+                    hostile = true
                 end
             end
         end
@@ -108,7 +99,7 @@ function damage_p_proc()
 end
 
 function destroy_p_proc()
-    fallout.set_external_var("Officer_ptr", 0)
+    fallout.set_external_var("Officer_ptr", nil)
     reputation.inc_good_critter()
     if fallout.source_obj() == fallout.dude_obj() then
         fallout.set_global_var(261, 1)
@@ -121,7 +112,7 @@ function map_enter_p_proc()
 end
 
 function pickup_p_proc()
-    hostile = 1
+    hostile = true
 end
 
 function talk_p_proc()
@@ -134,17 +125,17 @@ function talk_p_proc()
         if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) then
             Officer27()
         else
-            if (fallout.global_var(101) ~= 0) and (fallout.global_var(101) ~= 1) then
+            if fallout.global_var(101) ~= 0 and fallout.global_var(101) ~= 1 then
                 Officer01()
             else
                 if fallout.local_var(1) > 1 then
-                    if fallout.external_var("armory_access") then
+                    if fallout.external_var("armory_access") ~= 0 then
                         Officer25()
                     else
                         Officer02()
                     end
                 else
-                    if fallout.external_var("armory_access") then
+                    if fallout.external_var("armory_access") ~= 0 then
                         Officer26()
                     else
                         Officer18()
@@ -159,7 +150,7 @@ end
 
 function Officer00()
     fallout.gsay_message(178, 100, 51)
-    hostile = 1
+    hostile = true
 end
 
 function Officer01()
@@ -259,7 +250,9 @@ function Officer17()
 end
 
 function Officer18()
-    fallout.gsay_reply(178, fallout.message_str(178, 134) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(178, 135))
+    fallout.gsay_reply(178,
+        fallout.message_str(178, 134) ..
+        fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(178, 135))
     fallout.giq_option(4, 178, 136, Officer20, 0)
     fallout.giq_option(5, 178, 137, Officer21, 0)
     fallout.giq_option(-3, 178, 138, Officer19, 0)
@@ -333,7 +326,7 @@ function Officer31()
 end
 
 function OfficerCombat()
-    hostile = 1
+    hostile = true
 end
 
 function OfficerEnd()
