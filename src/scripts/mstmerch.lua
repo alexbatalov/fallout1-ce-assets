@@ -33,49 +33,40 @@ local MasterMerch19
 local MasterMerch20
 local MasterMerchEnd
 
-local hostile = 0
+local hostile = false
 local initialized = false
-
-local exit_line = 0
 
 function start()
     if not initialized then
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 35)
+        fallout.critter_add_trait(self_obj, 1, 5, 50)
         initialized = true
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 35)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 50)
     end
-    if fallout.script_action() == 21 then
+
+    local script_action = fallout.script_action()
+    if script_action == 21 then
         look_at_p_proc()
-    else
-        if fallout.script_action() == 4 then
-            pickup_p_proc()
-        else
-            if fallout.script_action() == 11 then
-                talk_p_proc()
-            else
-                if fallout.script_action() == 12 then
-                    critter_p_proc()
-                else
-                    if fallout.script_action() == 18 then
-                        destroy_p_proc()
-                    else
-                        if fallout.script_action() == 14 then
-                            damage_p_proc()
-                        end
-                    end
-                end
-            end
-        end
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 14 then
+        damage_p_proc()
     end
 end
 
 function combat()
-    hostile = 1
+    hostile = true
 end
 
 function critter_p_proc()
     if hostile then
-        hostile = 0
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
 end
@@ -83,7 +74,7 @@ end
 function pickup_p_proc()
     MasterMerch00()
     if fallout.source_obj() == fallout.dude_obj() then
-        hostile = 1
+        hostile = true
     end
 end
 
@@ -100,7 +91,7 @@ function talk_p_proc()
             fallout.gsay_end()
             fallout.end_dialogue()
         else
-            if (fallout.local_var(5) > 0) and (fallout.global_var(101) ~= 1) then
+            if fallout.local_var(5) > 0 and fallout.global_var(101) ~= 1 then
                 fallout.start_gdialog(598, fallout.self_obj(), 4, -1, -1)
                 fallout.gsay_start()
                 MasterMerch19()
@@ -127,9 +118,8 @@ function look_at_p_proc()
 end
 
 function damage_p_proc()
-    local v0 = 0
-    v0 = fallout.obj_pid(fallout.source_obj())
-    if fallout.party_member_obj(v0) ~= 0 then
+    local pid = fallout.obj_pid(fallout.source_obj())
+    if fallout.party_member_obj(pid) ~= nil then
         fallout.set_global_var(248, 1)
     end
 end
@@ -142,7 +132,7 @@ end
 function MasterMerch01()
     fallout.gsay_reply(598, 102)
     fallout.giq_option(4, 598, 103, MasterMerch02, 50)
-    if (fallout.global_var(101) ~= 2) or ((fallout.global_var(30) == 1) and (fallout.global_var(31) == 0)) then
+    if fallout.global_var(101) ~= 2 or (fallout.global_var(30) == 1 and fallout.global_var(31) == 0) then
         fallout.giq_option(4, 598, 104, MasterMerch04, 50)
     end
     fallout.giq_option(4, 598, 105, MasterMerchEnd, 50)
@@ -153,7 +143,7 @@ function MasterMerch02()
     fallout.set_map_var(1, 1)
     fallout.gsay_reply(598, 107)
     fallout.giq_option(4, 598, 108, MasterMerchEnd, 50)
-    if (fallout.global_var(101) ~= 2) or ((fallout.global_var(30) == 1) and (fallout.global_var(31) == 0)) then
+    if fallout.global_var(101) ~= 2 or (fallout.global_var(30) == 1 and fallout.global_var(31) == 0) then
         fallout.giq_option(4, 598, 109, MasterMerch04, 50)
     end
     fallout.giq_option(-3, 598, 110, MasterMerch03, 50)
@@ -202,12 +192,10 @@ end
 
 function MasterMerch10()
     fallout.gsay_reply(598, 127)
-    if (fallout.global_var(101) ~= 2) and (fallout.global_var(101) ~= 1) and (fallout.local_var(6) == 0) then
+    if fallout.global_var(101) ~= 2 and fallout.global_var(101) ~= 1 and fallout.local_var(6) == 0 then
         fallout.giq_option(4, 598, 128, MasterMerch04, 50)
-    else
-        if (fallout.global_var(101) ~= 2) and (fallout.global_var(101) ~= 1) and (fallout.local_var(6) == 1) then
-            fallout.giq_option(4, 598, 129, MasterMerch12, 50)
-        end
+    elseif fallout.global_var(101) ~= 2 and fallout.global_var(101) ~= 1 and fallout.local_var(6) == 1 then
+        fallout.giq_option(4, 598, 129, MasterMerch12, 50)
     end
     fallout.giq_option(4, 598, 130, MasterMerch11, 50)
     fallout.giq_option(4, 598, 131, MasterMerchEnd, 50)
@@ -253,7 +241,8 @@ end
 
 function MasterMerch16()
     if fallout.item_caps_total(fallout.dude_obj()) < fallout.local_var(5) then
-        fallout.gsay_message(598, fallout.message_str(598, 145) .. fallout.local_var(5) .. fallout.message_str(598, 146), 50)
+        fallout.gsay_message(598, fallout.message_str(598, 145) .. fallout.local_var(5) .. fallout.message_str(598, 146),
+            50)
         MasterMerchEnd()
     else
         fallout.gsay_reply(598, 147)
@@ -292,8 +281,7 @@ function MasterMerch19()
 end
 
 function MasterMerch20()
-    local v0 = 0
-    v0 = fallout.item_caps_adjust(fallout.dude_obj(), -1 * fallout.local_var(5))
+    fallout.item_caps_adjust(fallout.dude_obj(), -1 * fallout.local_var(5))
     fallout.set_global_var(101, 1)
     fallout.set_global_var(10, fallout.global_var(10) + 100)
     if fallout.global_var(154) >= 100 then
