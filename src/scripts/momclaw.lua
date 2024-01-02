@@ -4,14 +4,7 @@ local start
 local destroy_p_proc
 local critter_p_proc
 
-local initialized = false
-
-local exit_line = 0
-
 function start()
-    if not initialized then
-        initialized = true
-    end
 end
 
 function destroy_p_proc()
