@@ -1,47 +1,41 @@
 local fallout = require("fallout")
 
 local start
-local do_stuff
+local use_p_proc
+local use_skill_on_p_proc
+local look_at_p_proc
 
 function start()
-    if fallout.script_action() == 21 then
-        fallout.script_overrides()
-        fallout.display_msg(fallout.message_str(110, 100))
-    else
-        if fallout.script_action() == 6 then
-            fallout.script_overrides()
-            do_stuff()
-        else
-            if fallout.script_action() == 8 then
-                if fallout.action_being_used() == 12 then
-                    fallout.script_overrides()
-                    do_stuff()
-                end
-            end
-        end
+    local script_action = fallout.script_action()
+    if script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 6 then
+        use_p_proc()
+    elseif script_action == 8 then
+        use_skill_on_p_proc()
     end
 end
 
-function do_stuff()
-    local v0 = 0
-    v0 = fallout.random(1, 4)
-    if v0 == 1 then
-        fallout.display_msg(fallout.message_str(110, 101))
-    else
-        if v0 == 2 then
-            fallout.display_msg(fallout.message_str(110, 102))
-        else
-            if v0 == 3 then
-                fallout.display_msg(fallout.message_str(110, 103))
-            else
-                if v0 == 4 then
-                    fallout.display_msg(fallout.message_str(110, 104))
-                end
-            end
-        end
+function use_p_proc()
+    fallout.script_overrides()
+    fallout.display_msg(fallout.message_str(110, fallout.random(101, 104)))
+end
+
+function use_skill_on_p_proc()
+    if fallout.action_being_used() == 12 then
+        fallout.script_overrides()
+        use_p_proc()
     end
+end
+
+function look_at_p_proc()
+    fallout.script_overrides()
+    fallout.display_msg(fallout.message_str(110, 100))
 end
 
 local exports = {}
 exports.start = start
+exports.use_p_proc = use_p_proc
+exports.use_skill_on_p_proc = use_skill_on_p_proc
+exports.look_at_p_proc = look_at_p_proc
 return exports
