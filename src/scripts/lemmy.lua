@@ -57,85 +57,73 @@ local Lemmy27
 local LemmyEnd
 local LemmyCombat
 
-local hostile = 0
+local hostile = false
 local initialized = false
 local lastPsst = 0
-local Destination = 0
 local LastMove = 0
-local SetDayNight = 0
-
-local exit_line = 0
+local SetDayNight = false
 
 function start()
-    local v0 = 0
     if not initialized then
-        initialized = true
+        local self_obj = fallout.self_obj()
         if fallout.local_var(7) == 0 then
             fallout.set_local_var(7, 1)
-            v0 = fallout.item_caps_adjust(fallout.self_obj(), 500)
+            fallout.item_caps_adjust(self_obj, 500)
         end
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 41)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 51)
+        fallout.critter_add_trait(self_obj, 1, 6, 41)
+        fallout.critter_add_trait(self_obj, 1, 5, 51)
         LastMove = 21325
+        initialized = true
     end
-    if fallout.script_action() == 21 then
+
+    local script_action = fallout.script_action()
+    if script_action == 21 then
         look_at_p_proc()
-    else
-        if fallout.script_action() == 4 then
-            pickup_p_proc()
-        else
-            if fallout.script_action() == 11 then
-                talk_p_proc()
-            else
-                if fallout.script_action() == 12 then
-                    critter_p_proc()
-                else
-                    if fallout.script_action() == 18 then
-                        destroy_p_proc()
-                    else
-                        if fallout.script_action() == 22 then
-                            timed_event_p_proc()
-                        end
-                    end
-                end
-            end
-        end
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 22 then
+        timed_event_p_proc()
     end
 end
 
 function combat()
-    hostile = 1
+    hostile = true
 end
 
 function critter_p_proc()
-    local v0 = 0
+    local self_obj = fallout.self_obj()
+    local dude_obj = fallout.dude_obj()
     if hostile then
-        hostile = 0
-        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+        hostile = false
+        fallout.attack(dude_obj, 0, 1, 0, 0, 30000, 0, 0)
     end
-    if SetDayNight == 0 then
-        fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(fallout.random(5, 20)), 1)
-        SetDayNight = 1
+    if not SetDayNight then
+        fallout.add_timer_event(self_obj, fallout.game_ticks(fallout.random(5, 20)), 1)
+        SetDayNight = true
     end
     if fallout.local_var(6) == 0 then
-        if ((time.game_time_in_seconds() - lastPsst) >= 10) and (fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) <= 6) then
+        if time.game_time_in_seconds() - lastPsst >= 10 and fallout.tile_distance_objs(self_obj, dude_obj) <= 6 then
             lastPsst = time.game_time_in_seconds()
-            fallout.float_msg(fallout.self_obj(), fallout.message_str(846, 101), 2)
+            fallout.float_msg(self_obj, fallout.message_str(846, 101), 2)
         end
     end
-    v0 = fallout.tile_num(fallout.self_obj())
-    if (v0 == 21917) or (v0 == 20116) or (v0 == 25318) then
-        if fallout.anim_busy(fallout.self_obj()) == 0 then
-            if fallout.has_trait(1, fallout.self_obj(), 10) ~= 3 then
-                fallout.anim(fallout.self_obj(), 1000, 3)
+    local self_tile_num = fallout.tile_num(self_obj)
+    if self_tile_num == 21917 or self_tile_num == 20116 or self_tile_num == 25318 then
+        if fallout.anim_busy(self_obj) == 0 then
+            if fallout.has_trait(1, self_obj, 10) ~= 3 then
+                fallout.anim(self_obj, 1000, 3)
             end
         end
-    else
-        if v0 == 26327 then
-            if fallout.anim_busy(fallout.self_obj()) == 0 then
-                if fallout.has_trait(1, fallout.self_obj(), 10) ~= 2 then
-                    fallout.anim(fallout.self_obj(), 1000, 2)
-                end
+    elseif self_tile_num == 26327 then
+        if fallout.anim_busy(self_obj) == 0 then
+            if fallout.has_trait(1, self_obj, 10) ~= 2 then
+                fallout.anim(self_obj, 1000, 2)
             end
         end
     end
@@ -143,7 +131,7 @@ end
 
 function pickup_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
-        hostile = 1
+        hostile = true
     end
 end
 
@@ -157,20 +145,18 @@ function talk_p_proc()
         Lemmy01()
         fallout.gsay_end()
         fallout.end_dialogue()
+    elseif fallout.local_var(5) == 1 then
+        fallout.start_gdialog(846, fallout.self_obj(), 4, -1, -1)
+        fallout.gsay_start()
+        Lemmy26()
+        fallout.gsay_end()
+        fallout.end_dialogue()
     else
-        if fallout.local_var(5) == 1 then
-            fallout.start_gdialog(846, fallout.self_obj(), 4, -1, -1)
-            fallout.gsay_start()
-            Lemmy26()
-            fallout.gsay_end()
-            fallout.end_dialogue()
-        else
-            fallout.start_gdialog(846, fallout.self_obj(), 4, -1, -1)
-            fallout.gsay_start()
-            Lemmy27()
-            fallout.gsay_end()
-            fallout.end_dialogue()
-        end
+        fallout.start_gdialog(846, fallout.self_obj(), 4, -1, -1)
+        fallout.gsay_start()
+        Lemmy27()
+        fallout.gsay_end()
+        fallout.end_dialogue()
     end
 end
 
@@ -179,9 +165,8 @@ function destroy_p_proc()
 end
 
 function damage_p_proc()
-    local v0 = 0
-    v0 = fallout.obj_pid(fallout.source_obj())
-    if fallout.party_member_obj(v0) ~= 0 then
+    local pid = fallout.obj_pid(fallout.source_obj())
+    if fallout.party_member_obj(pid) ~= nil then
         fallout.set_global_var(248, 1)
     end
 end
@@ -195,58 +180,36 @@ function timed_event_p_proc()
     SendLemmyAtDay()
 end
 
+local WORK_TILES <const> = {
+    25931,
+    25551,
+    21325,
+    21917,
+    18925,
+    23322,
+    26327,
+    20116,
+    25318,
+}
+
 function SendLemmyAtDay()
-    local v0 = 0
-    Destination = 0
-    v0 = fallout.random(25, 45)
-    while Destination == 0 do
-        Destination = fallout.random(1, 9)
-        if Destination == 1 then
-            Destination = 25931
-        else
-            if Destination == 2 then
-                Destination = 25551
-            else
-                if Destination == 3 then
-                    Destination = 21325
-                else
-                    if Destination == 4 then
-                        Destination = 21917
-                    else
-                        if Destination == 5 then
-                            Destination = 18925
-                        else
-                            if Destination == 6 then
-                                Destination = 23322
-                            else
-                                if Destination == 7 then
-                                    Destination = 26327
-                                else
-                                    if Destination == 8 then
-                                        Destination = 20116
-                                    else
-                                        if Destination == 9 then
-                                            Destination = 25318
-                                        end
-                                    end
-                                end
-                            end
-                        end
-                    end
-                end
-            end
-        end
-        if Destination == LastMove then
-            Destination = 0
+    local destination = 0
+    local delay = fallout.random(25, 45)
+    while destination == 0 do
+        destination = WORK_TILES[fallout.random(1, #WORK_TILES)]
+        if destination == LastMove then
+            destination = 0
         end
     end
-    LastMove = Destination
-    fallout.reg_anim_func(2, fallout.self_obj())
+    LastMove = destination
+
+    local self_obj = fallout.self_obj()
+    fallout.reg_anim_func(2, self_obj)
     fallout.reg_anim_func(1, 1)
-    fallout.reg_anim_obj_move_to_tile(fallout.self_obj(), Destination, -1)
+    fallout.reg_anim_obj_move_to_tile(self_obj, destination, -1)
     fallout.reg_anim_func(3, 0)
-    fallout.rm_timer_event(fallout.self_obj())
-    fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(v0), 1)
+    fallout.rm_timer_event(self_obj)
+    fallout.add_timer_event(self_obj, fallout.game_ticks(delay), 1)
 end
 
 function Lemmy01()
@@ -310,9 +273,9 @@ function Lemmy10()
 end
 
 function Lemmy10a()
-    local v0 = 0
-    if fallout.item_caps_total(fallout.dude_obj()) >= 500 then
-        v0 = fallout.item_caps_adjust(fallout.dude_obj(), -500)
+    local dude_obj = fallout.dude_obj()
+    if fallout.item_caps_total(dude_obj) >= 500 then
+        fallout.item_caps_adjust(dude_obj, -500)
         Lemmy13()
     else
         Lemmy11()
@@ -320,10 +283,10 @@ function Lemmy10a()
 end
 
 function Lemmy10b()
-    local v0 = 0
-    if fallout.is_success(fallout.do_check(fallout.dude_obj(), 3, -3)) or fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), 15, -30)) then
-        if fallout.item_caps_total(fallout.dude_obj()) >= 400 then
-            v0 = fallout.item_caps_adjust(fallout.dude_obj(), -400)
+    local dude_obj = fallout.dude_obj()
+    if fallout.is_success(fallout.do_check(dude_obj, 3, -3)) or fallout.is_success(fallout.roll_vs_skill(dude_obj, 15, -30)) then
+        if fallout.item_caps_total(dude_obj) >= 400 then
+            fallout.item_caps_adjust(dude_obj, -400)
             Lemmy14()
         else
             Lemmy11()
@@ -406,9 +369,9 @@ function Lemmy20()
 end
 
 function Lemmy20a()
-    local v0 = 0
-    if fallout.item_caps_total(fallout.dude_obj()) >= 300 then
-        v0 = fallout.item_caps_adjust(fallout.dude_obj(), -300)
+    local dude_obj = fallout.dude_obj()
+    if fallout.item_caps_total(dude_obj) >= 300 then
+        fallout.item_caps_adjust(dude_obj, -300)
         Lemmy20d()
     else
         Lemmy11()
@@ -416,10 +379,10 @@ function Lemmy20a()
 end
 
 function Lemmy20b()
-    local v0 = 0
-    if fallout.is_success(fallout.do_check(fallout.dude_obj(), 3, -3)) or fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), 15, -30)) then
-        if fallout.item_caps_total(fallout.dude_obj()) >= 240 then
-            v0 = fallout.item_caps_adjust(fallout.dude_obj(), -240)
+    local dude_obj = fallout.dude_obj()
+    if fallout.is_success(fallout.do_check(dude_obj, 3, -3)) or fallout.is_success(fallout.roll_vs_skill(dude_obj, 15, -30)) then
+        if fallout.item_caps_total(dude_obj) >= 240 then
+            fallout.item_caps_adjust(dude_obj, -240)
             Lemmy20e()
         else
             Lemmy11()
@@ -481,9 +444,9 @@ function Lemmy24()
 end
 
 function Lemmy24a()
-    local v0 = 0
-    if fallout.item_caps_total(fallout.dude_obj()) >= 1000 then
-        v0 = fallout.item_caps_adjust(fallout.dude_obj(), -1000)
+    local dude_obj = fallout.dude_obj()
+    if fallout.item_caps_total(dude_obj) >= 1000 then
+        fallout.item_caps_adjust(dude_obj, -1000)
         Lemmy24d()
     else
         Lemmy11()
@@ -491,10 +454,10 @@ function Lemmy24a()
 end
 
 function Lemmy24b()
-    local v0 = 0
-    if fallout.is_success(fallout.do_check(fallout.dude_obj(), 3, -3)) or fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), 15, -30)) then
-        if fallout.item_caps_total(fallout.dude_obj()) >= 800 then
-            v0 = fallout.item_caps_adjust(fallout.dude_obj(), -800)
+    local dude_obj = fallout.dude_obj()
+    if fallout.is_success(fallout.do_check(dude_obj, 3, -3)) or fallout.is_success(fallout.roll_vs_skill(dude_obj, 15, -30)) then
+        if fallout.item_caps_total(dude_obj) >= 800 then
+            fallout.item_caps_adjust(dude_obj, -800)
             Lemmy24e()
         else
             Lemmy11()
