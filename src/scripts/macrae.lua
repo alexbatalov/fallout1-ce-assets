@@ -31,12 +31,11 @@ local MacRaeEnd
 local initialized = false
 local DisplayMessage = 100
 
-local exit_line = 0
-
 function start()
     if not initialized then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 47)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 27)
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 47)
+        fallout.critter_add_trait(self_obj, 1, 5, 27)
         initialized = true
     end
 end
@@ -186,7 +185,7 @@ end
 
 function MacRae12()
     fallout.gsay_reply(918, 128)
-    if fallout.local_var(5 == 1) then
+    if fallout.local_var(5) == 1 then
         fallout.gsay_option(918, 129, MacRae15, 50)
     end
     if fallout.local_var(4) == 1 then
@@ -210,11 +209,8 @@ function MacRae14()
 end
 
 function MacRae15()
-    local v0 = 0
     fallout.gsay_message(918, 138, 50)
-    v0 = fallout.get_critter_stat(fallout.dude_obj(), 24)
     fallout.set_critter_stat(fallout.dude_obj(), 24, 5)
-    v0 = fallout.get_critter_stat(fallout.dude_obj(), 11)
     fallout.set_critter_stat(fallout.dude_obj(), 11, 1)
     fallout.gfade_out(600)
     fallout.game_time_advance(10 * 60 * 60 * 24)
