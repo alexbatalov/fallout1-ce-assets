@@ -101,81 +101,58 @@ local over202
 local over203
 local destroy_p_proc
 
-local rndx = 0
-local rndy = 0
-local rndz = 0
-local HOSTILE = 0
-local HEREBEFORE = 0
-local stealing = 0
-local SEED = 0
+local hostile = false
+local stealing = false
 local Visits_without_chip = 1
 local Visits_with_caravans = 1
 local Visits_master_alive = 1
 local Visits_with_chip = 1
 local Visits_vats_blown = 1
-local initialized = false
-
-local exit_line = 0
 
 function start()
-    if fallout.script_action() == 13 then
+    local script_action = fallout.script_action()
+    if script_action == 13 then
         combat_p_proc()
-    else
-        if fallout.script_action() == 12 then
-            critter_p_proc()
-        else
-            if fallout.script_action() == 14 then
-                damage_p_proc()
-            else
-                if fallout.script_action() == 18 then
-                    destroy_p_proc()
-                else
-                    if fallout.script_action() == 21 then
-                        look_at_p_proc()
-                    else
-                        if fallout.script_action() == 15 then
-                            map_enter_p_proc()
-                        else
-                            if fallout.script_action() == 4 then
-                                pickup_p_proc()
-                            else
-                                if fallout.script_action() == 11 then
-                                    talk_p_proc()
-                                else
-                                    if fallout.script_action() == 8 then
-                                        use_skill_on_p_proc()
-                                    end
-                                end
-                            end
-                        end
-                    end
-                end
-            end
-        end
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 14 then
+        damage_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 15 then
+        map_enter_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 8 then
+        use_skill_on_p_proc()
     end
 end
 
 function combat_p_proc()
-    local v0 = 0
     if fallout.fixed_param() == 4 then
-        if fallout.obj_is_carrying_obj_pid(fallout.self_obj(), 36) == 0 then
-            v0 = fallout.create_object_sid(36, 0, 0, -1)
-            fallout.add_mult_objs_to_inven(fallout.self_obj(), v0, 2)
+        local self_obj = fallout.self_obj()
+        if fallout.obj_is_carrying_obj_pid(self_obj, 36) == 0 then
+            local item_obj = fallout.create_object_sid(36, 0, 0, -1)
+            fallout.add_mult_objs_to_inven(self_obj, item_obj, 2)
         end
     end
 end
 
 function critter_p_proc()
-    if HOSTILE then
-        HOSTILE = 0
+    if hostile then
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 100, 250, 300, 0, 128)
     else
-        if (fallout.global_var(261) == 1) and (fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 12) then
+        if fallout.global_var(261) == 1 and fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 12 then
             if fallout.local_var(8) == 0 then
                 fallout.dialogue_system_enter()
             end
         else
-            if fallout.global_var(17) and fallout.global_var(18) and (fallout.local_var(6) == 0) then
+            if fallout.global_var(17) ~= 0 and fallout.global_var(18) ~= 0 and fallout.local_var(6) == 0 then
                 fallout.dialogue_system_enter()
             end
         end
@@ -200,7 +177,7 @@ function map_enter_p_proc()
 end
 
 function pickup_p_proc()
-    stealing = 1
+    stealing = true
     fallout.dialogue_system_enter()
 end
 
@@ -208,8 +185,7 @@ function talk_p_proc()
     reaction.get_reaction()
     fallout.start_gdialog(55, fallout.self_obj(), 4, 1, 10)
     fallout.gsay_start()
-    SEED = 0
-    if fallout.global_var(17) and fallout.global_var(18) then
+    if fallout.global_var(17) ~= 0 and fallout.global_var(18) ~= 0 then
         over81()
     else
         if fallout.global_var(261) ~= 0 then
@@ -219,57 +195,45 @@ function talk_p_proc()
                 over71()
             else
                 if fallout.global_var(101) == 0 then
-                    if fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 55) then
+                    if fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 55) ~= 0 then
                         over28()
                     else
                         if Visits_without_chip == 1 then
                             over07()
-                        else
-                            if Visits_without_chip == 2 then
-                                over12()
-                            else
-                                if Visits_without_chip > 2 then
-                                    over19()
-                                end
-                            end
+                        elseif Visits_without_chip == 2 then
+                            over12()
+                        elseif Visits_without_chip > 2 then
+                            over19()
                         end
                         Visits_without_chip = Visits_without_chip + 1
                     end
                 else
                     if fallout.global_var(101) == 1 then
-                        if fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 55) then
+                        if fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 55) ~= 0 then
                             over28()
-                        else
-                            if Visits_with_caravans == 1 then
-                                over73()
-                            else
-                                if Visits_with_caravans > 1 then
-                                    over80()
-                                end
-                            end
+                        elseif Visits_with_caravans == 1 then
+                            over73()
+                        elseif Visits_with_caravans > 1 then
+                            over80()
                         end
                         Visits_with_caravans = Visits_with_caravans + 1
                     else
-                        if not(fallout.global_var(17)) then
+                        if fallout.global_var(17) == 0 then
                             if fallout.global_var(18) ~= 0 then
                                 over54()
+                            elseif Visits_master_alive == 1 then
+                                over42()
                             else
-                                if Visits_master_alive == 1 then
-                                    over42()
-                                else
-                                    over50()
-                                end
+                                over50()
                             end
                             Visits_master_alive = Visits_master_alive + 1
                         else
                             if fallout.global_var(18) ~= 0 then
                                 over81()
+                            elseif Visits_vats_blown == 1 then
+                                over62()
                             else
-                                if Visits_vats_blown == 1 then
-                                    over62()
-                                else
-                                    over68()
-                                end
+                                over68()
                             end
                             Visits_vats_blown = Visits_vats_blown + 1
                         end
@@ -280,7 +244,7 @@ function talk_p_proc()
     end
     fallout.gsay_end()
     fallout.end_dialogue()
-    if fallout.external_var("Ian_ptr") ~= 0 then
+    if fallout.external_var("Ian_ptr") ~= nil then
         if fallout.local_var(7) == 0 then
             fallout.float_msg(fallout.external_var("Ian_ptr"), fallout.message_str(235, 171), 0)
             fallout.set_local_var(7, 1)
@@ -300,7 +264,7 @@ end
 function use_skill_on_p_proc()
     if fallout.action_being_used() == 10 then
         fallout.script_overrides()
-        stealing = 1
+        stealing = true
         fallout.dialogue_system_enter()
     end
 end
@@ -309,11 +273,10 @@ function overend()
 end
 
 function overcbt()
-    HOSTILE = 1
+    hostile = true
 end
 
 function over00()
-    HEREBEFORE = 1
     fallout.gsay_message(55, 101, 50)
     fallout.gsay_message(55, 102, 50)
     over01()
@@ -417,7 +380,7 @@ end
 function over22()
     fallout.gsay_reply(55, 137)
     fallout.giq_option(6, 55, 138, over23, 50)
-    if not(fallout.local_var(5)) then
+    if fallout.local_var(5) == 0 then
         fallout.giq_option(6, 55, 139, over24, 50)
     end
     fallout.giq_option(6, 55, 140, over25, 50)
@@ -428,16 +391,16 @@ function over23()
 end
 
 function over24()
-    local v0 = 0
+    local item_obj
     fallout.set_local_var(5, 1)
-    v0 = fallout.create_object_sid(40, 0, 0, -1)
-    fallout.add_obj_to_inven(fallout.dude_obj(), v0)
-    v0 = fallout.create_object_sid(40, 0, 0, -1)
-    fallout.add_obj_to_inven(fallout.dude_obj(), v0)
-    v0 = fallout.create_object_sid(29, 0, 0, -1)
-    fallout.add_obj_to_inven(fallout.dude_obj(), v0)
-    v0 = fallout.create_object_sid(29, 0, 0, -1)
-    fallout.add_obj_to_inven(fallout.dude_obj(), v0)
+    item_obj = fallout.create_object_sid(40, 0, 0, -1)
+    fallout.add_obj_to_inven(fallout.dude_obj(), item_obj)
+    item_obj = fallout.create_object_sid(40, 0, 0, -1)
+    fallout.add_obj_to_inven(fallout.dude_obj(), item_obj)
+    item_obj = fallout.create_object_sid(29, 0, 0, -1)
+    fallout.add_obj_to_inven(fallout.dude_obj(), item_obj)
+    item_obj = fallout.create_object_sid(29, 0, 0, -1)
+    fallout.add_obj_to_inven(fallout.dude_obj(), item_obj)
     fallout.gsay_message(55, 142, 50)
 end
 
@@ -489,9 +452,8 @@ function over30()
 end
 
 function over31()
-    local v0 = 0
-    v0 = fallout.obj_carrying_pid_obj(fallout.dude_obj(), 55)
-    fallout.destroy_object(v0)
+    local item_obj = fallout.obj_carrying_pid_obj(fallout.dude_obj(), 55)
+    fallout.destroy_object(item_obj)
     fallout.gsay_reply(55, 156)
     fallout.giq_option(6, 55, 157, over32, 50)
     fallout.giq_option(4, 55, 158, over33, 50)
@@ -537,9 +499,8 @@ function over39()
 end
 
 function over40()
-    local v0 = 0
-    v0 = fallout.obj_carrying_pid_obj(fallout.dude_obj(), 55)
-    fallout.destroy_object(v0)
+    local item_obj = fallout.obj_carrying_pid_obj(fallout.dude_obj(), 55)
+    fallout.destroy_object(item_obj)
     fallout.set_local_var(4, 1)
     fallout.gsay_reply(55, 170)
     fallout.giq_option(-3, 55, 171, over41, 50)
@@ -689,7 +650,7 @@ function over70()
 end
 
 function over71()
-    stealing = 0
+    stealing = false
     fallout.gsay_message(55, 230, 51)
 end
 
