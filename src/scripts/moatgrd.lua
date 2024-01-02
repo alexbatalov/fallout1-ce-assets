@@ -24,17 +24,16 @@ local MoatEnd
 local initialized = false
 local DestTile = 0
 
-local exit_line = 0
-
 function start()
     if not initialized then
-        if fallout.obj_is_carrying_obj_pid(fallout.self_obj(), 41) == 0 then
-            fallout.item_caps_adjust(fallout.self_obj(), fallout.random(2, 20))
+        local self_obj = fallout.self_obj()
+        if fallout.obj_is_carrying_obj_pid(self_obj, 41) == 0 then
+            fallout.item_caps_adjust(self_obj, fallout.random(2, 20))
         end
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 48)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 28)
+        fallout.critter_add_trait(self_obj, 1, 6, 48)
+        fallout.critter_add_trait(self_obj, 1, 5, 28)
         if fallout.local_var(4) == 0 then
-            DestTile = fallout.tile_num(fallout.self_obj())
+            DestTile = fallout.tile_num(self_obj)
             fallout.set_local_var(4, DestTile)
         end
         initialized = true
@@ -65,14 +64,16 @@ function talk_p_proc()
 end
 
 function critter_p_proc()
-    if fallout.tile_num(fallout.self_obj()) ~= DestTile then
-        fallout.animate_move_obj_to_tile(fallout.self_obj(), DestTile, 0)
+    local self_obj = fallout.self_obj()
+    local dude_obj = fallout.dude_obj()
+    if fallout.tile_num(self_obj) ~= DestTile then
+        fallout.animate_move_obj_to_tile(self_obj, DestTile, 0)
     else
-        fallout.anim(fallout.self_obj(), 1000, 2)
+        fallout.anim(self_obj, 1000, 2)
     end
-    if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
+    if fallout.obj_can_see_obj(self_obj, dude_obj) then
         if fallout.global_var(253) == 1 then
-            fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+            fallout.attack(dude_obj, 0, 1, 0, 0, 30000, 0, 0)
         end
     end
 end
@@ -92,16 +93,18 @@ end
 
 function timed_event_p_proc()
     if fallout.fixed_param() == 1 then
-        if fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 5 then
+        local dude_obj = fallout.dude_obj()
+        if fallout.tile_distance_objs(fallout.self_obj(), dude_obj) < 5 then
             fallout.set_global_var(617, 1)
-            fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+            fallout.attack(dude_obj, 0, 1, 0, 0, 30000, 0, 0)
         end
     end
 end
 
 function map_enter_p_proc()
-    fallout.move_to(fallout.self_obj(), fallout.local_var(4), 0)
-    fallout.anim(fallout.self_obj(), 1000, 2)
+    local self_obj = fallout.self_obj()
+    fallout.move_to(self_obj, fallout.local_var(4), 0)
+    fallout.anim(self_obj, 1000, 2)
 end
 
 function pickup_p_proc()
