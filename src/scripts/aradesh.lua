@@ -3,7 +3,13 @@ local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
 
 local start
+local pickup_p_proc
+local talk_p_proc
 local do_dialogue
+local critter_p_proc
+local damage_p_proc
+local destroy_p_proc
+local look_at_p_proc
 local aradeshleave
 local aradeshend
 local aradeshcbt
@@ -87,16 +93,8 @@ local aradeshx2
 local aradeshx3
 local aradeshx5
 
-local TRESPASS = 0
-local ILLEGAL = 0
-local ILLEGBEFORE = 0
-local hostile = 0
-local rndx = 0
-local rndy = 0
-local rndz = 0
-local MALE = 0
-
-local exit_line = 0
+local hostile = false
+local initialized = false
 
 local aradesh49
 local aradesh49a
@@ -126,54 +124,46 @@ local aradesh72
 local aradesh73
 
 function start()
-    fallout.critter_add_trait(fallout.self_obj(), 1, 6, 2)
-    fallout.critter_add_trait(fallout.self_obj(), 1, 5, 6)
-    if fallout.script_action() == 11 then
-        if fallout.local_var(9) > 2 then
-            fallout.display_msg(fallout.message_str(766, 170))
-            hostile = 1
-        else
-            if fallout.global_var(246) == 1 then
-                fallout.float_msg(fallout.self_obj(), fallout.message_str(33, 277), 2)
-            else
-                do_dialogue()
-            end
-        end
-        if fallout.local_var(7) == 1 then
-            fallout.animate_move_obj_to_tile(fallout.self_obj(), 32945, 0)
-        end
+    if not initialized then
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 2)
+        fallout.critter_add_trait(self_obj, 1, 5, 6)
+        initialized = true
+    end
+
+    local script_action = fallout.script_action()
+    if script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 14 then
+        damage_p_proc()
+    elseif script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    end
+end
+
+function pickup_p_proc()
+    hostile = true
+end
+
+function talk_p_proc()
+    if fallout.local_var(9) > 2 then
+        fallout.display_msg(fallout.message_str(766, 170))
+        hostile = true
     else
-        if fallout.script_action() == 12 then
-            if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
-                if fallout.global_var(246) == 1 then
-                    hostile = 1
-                end
-            end
-            if hostile then
-                hostile = 0
-                fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
-            end
+        if fallout.global_var(246) == 1 then
+            fallout.float_msg(fallout.self_obj(), fallout.message_str(33, 277), 2)
         else
-            if fallout.script_action() == 14 then
-                if fallout.source_obj() == fallout.dude_obj() then
-                    fallout.set_global_var(246, 1)
-                end
-            else
-                if fallout.script_action() == 21 then
-                    fallout.script_overrides()
-                    fallout.display_msg(fallout.message_str(33, 100))
-                else
-                    if fallout.script_action() == 18 then
-                        fallout.set_global_var(604, 1)
-                        reputation.inc_good_critter()
-                    else
-                        if fallout.script_action() == 4 then
-                            hostile = 1
-                        end
-                    end
-                end
-            end
+            do_dialogue()
         end
+    end
+    if fallout.local_var(7) == 1 then
+        fallout.animate_move_obj_to_tile(fallout.self_obj(), 32945, 0)
     end
 end
 
@@ -183,7 +173,7 @@ function do_dialogue()
     else
         if fallout.local_var(9) > 2 then
             fallout.display_msg(fallout.message_str(766, 170))
-            hostile = 1
+            hostile = true
         else
             reaction.get_reaction()
             fallout.start_gdialog(33, fallout.self_obj(), 4, 13, 9)
@@ -242,6 +232,34 @@ function do_dialogue()
     end
 end
 
+function critter_p_proc()
+    if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
+        if fallout.global_var(246) == 1 then
+            hostile = true
+        end
+    end
+    if hostile then
+        hostile = false
+        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+    end
+end
+
+function damage_p_proc()
+    if fallout.source_obj() == fallout.dude_obj() then
+        fallout.set_global_var(246, 1)
+    end
+end
+
+function destroy_p_proc()
+    fallout.set_global_var(604, 1)
+    reputation.inc_good_critter()
+end
+
+function look_at_p_proc()
+    fallout.script_overrides()
+    fallout.display_msg(fallout.message_str(33, 100))
+end
+
 function aradeshleave()
     fallout.gsay_message(33, 276, 50)
 end
@@ -250,7 +268,7 @@ function aradeshend()
 end
 
 function aradeshcbt()
-    hostile = 1
+    hostile = true
 end
 
 function aradesh01()
@@ -443,20 +461,14 @@ end
 function aradesh16_2()
     if fallout.global_var(43) == 0 then
         aradesh28()
+    elseif fallout.global_var(43) == 1 then
+        aradesh30a()
+    elseif fallout.global_var(43) == 2 and fallout.global_var(26) ~= 2 then
+        aradesh31()
+    elseif fallout.global_var(26) == 2 then
+        aradesh35()
     else
-        if fallout.global_var(43) == 1 then
-            aradesh30a()
-        else
-            if (fallout.global_var(43) == 2) and not(fallout.global_var(26) == 2) then
-                aradesh31()
-            else
-                if fallout.global_var(26) == 2 then
-                    aradesh35()
-                else
-                    aradesh26()
-                end
-            end
-        end
+        aradesh26()
     end
 end
 
@@ -520,12 +532,10 @@ end
 function aradesh20()
     if fallout.local_var(1) >= 3 then
         fallout.gsay_message(33, 168, 50)
+    elseif fallout.local_var(1) >= 2 then
+        fallout.gsay_message(33, 169, 50)
     else
-        if fallout.local_var(1) >= 2 then
-            fallout.gsay_message(33, 169, 50)
-        else
-            fallout.gsay_message(33, 170, 50)
-        end
+        fallout.gsay_message(33, 170, 50)
     end
     aradeshx()
 end
@@ -732,11 +742,10 @@ function aradesh39c()
 end
 
 function aradesh40()
-    local v0 = 0
     fallout.gsay_reply(33, 235)
     fallout.set_global_var(103, 1)
-    v0 = fallout.create_object_sid(7, 0, 0, -1)
-    fallout.add_obj_to_inven(fallout.dude_obj(), v0)
+    local item_obj = fallout.create_object_sid(7, 0, 0, -1)
+    fallout.add_obj_to_inven(fallout.dude_obj(), item_obj)
     fallout.giq_option(4, 33, 236, aradesh40a, 50)
 end
 
@@ -757,11 +766,10 @@ function aradesh42()
 end
 
 function aradesh43()
-    local v0 = 0
     if fallout.local_var(8) == 0 then
         fallout.set_local_var(8, 1)
-        v0 = fallout.create_object_sid(41, 0, 0, -1)
-        fallout.add_mult_objs_to_inven(fallout.dude_obj(), v0, 500)
+        local item_obj = fallout.create_object_sid(41, 0, 0, -1)
+        fallout.add_mult_objs_to_inven(fallout.dude_obj(), item_obj, 500)
     end
     reaction.TopReact()
     fallout.set_global_var(103, 2)
@@ -926,4 +934,10 @@ end
 
 local exports = {}
 exports.start = start
+exports.pickup_p_proc = pickup_p_proc
+exports.talk_p_proc = talk_p_proc
+exports.critter_p_proc = critter_p_proc
+exports.damage_p_proc = damage_p_proc
+exports.destroy_p_proc = destroy_p_proc
+exports.look_at_p_proc = look_at_p_proc
 return exports
