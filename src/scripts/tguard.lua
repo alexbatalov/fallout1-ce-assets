@@ -29,57 +29,38 @@ local guard06a
 local guard07a
 local guard07_1
 local guardend
-local set_sleep_tile
 
-local night_person = false
-local wake_time = 0
-local sleep_time = 0
-local home_tile = 0
-local sleep_tile = 0
-local hostile = 0
+local hostile = false
 local initialized = false
 local round_counter = 0
 local Warned_Tile = 0
 
-local exit_line = 0
-
 function start()
     if not initialized then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 2)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 4)
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 2)
+        fallout.critter_add_trait(self_obj, 1, 5, 4)
         if fallout.local_var(10) == 0 then
-            fallout.set_local_var(10, fallout.tile_num(fallout.self_obj()))
+            fallout.set_local_var(10, fallout.tile_num(self_obj))
         end
-        home_tile = fallout.local_var(10)
         initialized = true
-    else
-        if fallout.script_action() == 13 then
-            combat_p_proc()
-        else
-            if fallout.script_action() == 12 then
-                critter_p_proc()
-            else
-                if fallout.script_action() == 18 then
-                    destroy_p_proc()
-                else
-                    if fallout.script_action() == 21 then
-                        look_at_p_proc()
-                    else
-                        if fallout.script_action() == 4 then
-                            pickup_p_proc()
-                        else
-                            if fallout.script_action() == 11 then
-                                talk_p_proc()
-                            else
-                                if fallout.script_action() == 22 then
-                                    timed_event_p_proc()
-                                end
-                            end
-                        end
-                    end
-                end
-            end
-        end
+    end
+
+    local script_action = fallout.script_action()
+    if script_action == 13 then
+        combat_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 22 then
+        timed_event_p_proc()
     end
 end
 
@@ -96,28 +77,31 @@ function combat_p_proc()
 end
 
 function critter_p_proc()
-    if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
+    local self_obj = fallout.self_obj()
+    local dude_obj = fallout.dude_obj()
+    if fallout.obj_can_see_obj(self_obj, dude_obj) then
         if fallout.global_var(246) == 1 then
-            hostile = 1
+            hostile = true
         end
     end
     if hostile then
-        hostile = 0
-        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+        hostile = false
+        fallout.attack(dude_obj, 0, 1, 0, 0, 30000, 0, 0)
     else
-        if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
-            if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) then
+        if fallout.obj_can_see_obj(self_obj, dude_obj) then
+            if (fallout.obj_item_subtype(fallout.critter_inven_obj(dude_obj, 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(dude_obj, 2)) == 3) then
                 if fallout.map_var(0) == 1 then
                     guard11()
                 end
             end
             if fallout.global_var(246) ~= 0 then
-                hostile = 1
+                hostile = true
             end
         end
         if fallout.local_var(7) == 1 then
-            if fallout.tile_distance(fallout.tile_num(fallout.self_obj()), fallout.tile_num(fallout.dude_obj())) < fallout.tile_distance(fallout.tile_num(fallout.self_obj()), Warned_Tile) then
-                hostile = 1
+            local self_tile_num = fallout.tile_num(self_obj)
+            if fallout.tile_distance(self_tile_num, fallout.tile_num(dude_obj)) < fallout.tile_distance(self_tile_num, Warned_Tile) then
+                hostile = true
             end
         end
     end
@@ -141,7 +125,7 @@ function look_at_p_proc()
 end
 
 function pickup_p_proc()
-    hostile = 1
+    hostile = true
 end
 
 function talk_p_proc()
@@ -152,51 +136,41 @@ function talk_p_proc()
     reaction.get_reaction()
     if fallout.local_var(9) == 1 then
         fallout.float_msg(fallout.self_obj(), fallout.message_str(185, 166), 0)
-    else
-        if fallout.global_var(246) ~= 0 then
-            fallout.set_local_var(4, 1)
-            guard00()
+    elseif fallout.global_var(246) ~= 0 then
+        fallout.set_local_var(4, 1)
+        guard00()
+    elseif fallout.global_var(26) == 1 then
+        fallout.set_local_var(4, 1)
+        guard01()
+    elseif fallout.global_var(26) == 2 and fallout.local_var(8) == 0 then
+        fallout.set_local_var(4, 1)
+        guard02()
+    elseif fallout.global_var(26) == 3 then
+        fallout.set_local_var(4, 1)
+        guard03()
+    elseif fallout.local_var(4) == 1 then
+        if fallout.local_var(1) < 2 then
+            guard13()
         else
-            if fallout.global_var(26) == 1 then
-                fallout.set_local_var(4, 1)
-                guard01()
-            else
-                if (fallout.global_var(26) == 2) and (fallout.local_var(8) == 0) then
-                    fallout.set_local_var(4, 1)
-                    guard02()
-                else
-                    if fallout.global_var(26) == 3 then
-                        fallout.set_local_var(4, 1)
-                        guard03()
-                    else
-                        if fallout.local_var(4) == 1 then
-                            if fallout.local_var(1) < 2 then
-                                guard13()
-                            else
-                                guard12()
-                            end
-                        else
-                            fallout.set_local_var(4, 1)
-                            if fallout.local_var(1) < 2 then
-                                guard10()
-                            else
-                                fallout.start_gdialog(113, fallout.self_obj(), 4, -1, -1)
-                                fallout.gsay_start()
-                                guard04()
-                                fallout.gsay_end()
-                                fallout.end_dialogue()
-                            end
-                        end
-                    end
-                end
-            end
+            guard12()
+        end
+    else
+        fallout.set_local_var(4, 1)
+        if fallout.local_var(1) < 2 then
+            guard10()
+        else
+            fallout.start_gdialog(113, fallout.self_obj(), 4, -1, -1)
+            fallout.gsay_start()
+            guard04()
+            fallout.gsay_end()
+            fallout.end_dialogue()
         end
     end
 end
 
 function timed_event_p_proc()
     if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) then
-        hostile = 1
+        hostile = true
     else
         fallout.set_map_var(0, 0)
     end
@@ -248,14 +222,13 @@ end
 
 function guard08()
     fallout.gsay_reply(113, 118)
-    fallout.giq_option(4, 113, 120, DownReact, 50)
+    fallout.giq_option(4, 113, 120, reaction.DownReact, 50)
     fallout.giq_option(4, 113, 119, guardend, 50)
 end
 
 function guard09()
     fallout.gsay_reply(113, 121)
-    exit_line = reaction.Goodbyes()
-    fallout.giq_option(4, 113, exit_line, guardend, 50)
+    fallout.giq_option(4, 113, reaction.Goodbyes(), guardend, 50)
 end
 
 function guard10()
@@ -263,8 +236,9 @@ function guard10()
 end
 
 function guard11()
-    fallout.float_msg(fallout.self_obj(), fallout.message_str(113, 123), 7)
-    fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(10), 1)
+    local self_obj = fallout.self_obj()
+    fallout.float_msg(self_obj, fallout.message_str(113, 123), 7)
+    fallout.add_timer_event(self_obj, fallout.game_ticks(10), 1)
     fallout.set_map_var(0, 1)
 end
 
@@ -277,7 +251,7 @@ function guard13()
 end
 
 function guard06a()
-    hostile = 1
+    hostile = true
     reaction.BottomReact()
 end
 
@@ -295,22 +269,6 @@ function guard07_1()
 end
 
 function guardend()
-end
-
-function set_sleep_tile()
-    if home_tile == 15283 then
-        sleep_tile = 14685
-    else
-        if home_tile == 15886 then
-            sleep_tile = 14479
-        else
-            if home_tile == 15881 then
-                sleep_tile = 15479
-            end
-        end
-    end
-    wake_time = fallout.random(610, 650)
-    sleep_time = fallout.random(2110, 2150)
 end
 
 local exports = {}
