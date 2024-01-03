@@ -22,49 +22,33 @@ local Curtis06
 local Curtis07
 local Curtis08
 local CurtisEnd
-local movement
 
 local night_person = false
 local wake_time = 0
 local sleep_time = 0
 local home_tile = 0
 local sleep_tile = 0
-local initialized = false
-local new_tile = 0
 local round_counter = 0
-local hostile = 0
+local hostile = false
 
 function start()
-    if fallout.script_action() == 13 then
+    local script_action = fallout.script_action()
+    if script_action == 13 then
         combat_p_proc()
-    else
-        if fallout.script_action() == 12 then
-            critter_p_proc()
-        else
-            if fallout.script_action() == 18 then
-                destroy_p_proc()
-            else
-                if fallout.script_action() == 21 then
-                    look_at_p_proc()
-                else
-                    if fallout.script_action() == 15 then
-                        map_enter_p_proc()
-                    else
-                        if fallout.script_action() == 4 then
-                            pickup_p_proc()
-                        else
-                            if fallout.script_action() == 11 then
-                                talk_p_proc()
-                            else
-                                if fallout.script_action() == 22 then
-                                    timed_event_p_proc()
-                                end
-                            end
-                        end
-                    end
-                end
-            end
-        end
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 15 then
+        map_enter_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 22 then
+        timed_event_p_proc()
     end
 end
 
@@ -81,17 +65,19 @@ function combat_p_proc()
 end
 
 function critter_p_proc()
-    if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
+    local self_obj = fallout.self_obj()
+    local dude_obj = fallout.dude_obj()
+    if fallout.obj_can_see_obj(self_obj, dude_obj) then
         if fallout.global_var(246) == 1 then
-            hostile = 1
+            hostile = true
         end
     end
     if hostile then
-        hostile = 0
-        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+        hostile = false
+        fallout.attack(dude_obj, 0, 1, 0, 0, 30000, 0, 0)
     end
     if fallout.local_var(5) == 1 then
-        if fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 8 then
+        if fallout.tile_distance_objs(self_obj, dude_obj) < 8 then
             behaviour.flee_dude(1)
         end
     end
@@ -117,9 +103,10 @@ function map_enter_p_proc()
     wake_time = 615
     sleep_time = 2115
     sleep_tile = 27702
-    fallout.critter_add_trait(fallout.self_obj(), 1, 6, 2)
-    fallout.critter_add_trait(fallout.self_obj(), 1, 5, 6)
-    fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(5), 1)
+    local self_obj = fallout.self_obj()
+    fallout.critter_add_trait(self_obj, 1, 6, 2)
+    fallout.critter_add_trait(self_obj, 1, 5, 6)
+    fallout.add_timer_event(self_obj, fallout.game_ticks(5), 1)
 end
 
 function pickup_p_proc()
@@ -127,7 +114,7 @@ function pickup_p_proc()
 end
 
 function talk_p_proc()
-    if (fallout.local_var(5) == 1) or (fallout.global_var(246) == 1) then
+    if fallout.local_var(5) == 1 or fallout.global_var(246) == 1 then
         fallout.float_msg(fallout.self_obj(), fallout.message_str(669, fallout.random(100, 105)), 2)
     else
         fallout.start_gdialog(236, fallout.self_obj(), 4, -1, -1)
@@ -148,14 +135,19 @@ function talk_p_proc()
 end
 
 function timed_event_p_proc()
+    local self_obj = fallout.self_obj()
     if fallout.local_var(4) == 0 then
         if fallout.random(0, 3) == 3 then
-            fallout.anim(fallout.self_obj(), 10, 0)
+            fallout.anim(self_obj, 10, 0)
         else
-            movement()
+            local rotation = fallout.random(0, 5)
+            local new_tile = fallout.tile_num_in_direction(fallout.tile_num(self_obj), rotation, 1)
+            if fallout.tile_distance(home_tile, new_tile) < 6 then
+                fallout.animate_move_obj_to_tile(self_obj, new_tile, 0)
+            end
         end
     end
-    fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(fallout.random(3, 7)), 1)
+    fallout.add_timer_event(self_obj, fallout.game_ticks(fallout.random(3, 7)), 1)
 end
 
 function Curtis01()
@@ -202,7 +194,7 @@ end
 function Curtis06()
     fallout.gsay_reply(236, 112)
     fallout.giq_option(4, 236, 113, Curtis03, 50)
-    if (fallout.has_skill(fallout.dude_obj(), 12) >= 40) and (fallout.local_var(1) == 0) then
+    if fallout.has_skill(fallout.dude_obj(), 12) >= 40 and fallout.local_var(1) == 0 then
         fallout.giq_option(5, 236, 114, Curtis07, 50)
     end
 end
@@ -221,15 +213,6 @@ function Curtis08()
 end
 
 function CurtisEnd()
-end
-
-function movement()
-    local v0 = 0
-    v0 = fallout.random(0, 5)
-    new_tile = fallout.tile_num_in_direction(fallout.tile_num(fallout.self_obj()), v0, 1)
-    if fallout.tile_distance(home_tile, new_tile) < 6 then
-        fallout.animate_move_obj_to_tile(fallout.self_obj(), new_tile, 0)
-    end
 end
 
 local exports = {}
