@@ -71,56 +71,30 @@ local look_at_p_proc
 local destroy_p_proc
 local pickup_p_proc
 
-local night_person = false
-local wake_time = 0
-local sleep_time = 0
-local home_tile = 0
-local sleep_tile = 0
-local STIM = 0
-local FRUIT = 0
 local damage = 0
-local HOSTILE = 0
-local heal = 0
+local hostile = false
 local COST = 0
-local BONUS = 0
-local NIGHT = 0
 local round_counter = 0
-local dummyvar = 0
-local MONEY = 0
 local MAX_HITS = 0
 local HITS = 0
 local initialized = false
-local tail = 0
-
-local exit_line = 0
 
 function start()
-    if fallout.script_action() == 13 then
+    local script_action = fallout.script_action()
+    if script_action == 13 then
         combat_p_proc()
-    else
-        if fallout.script_action() == 23 then
-            map_update_p_proc()
-        else
-            if fallout.script_action() == 11 then
-                talk_p_proc()
-            else
-                if fallout.script_action() == 4 then
-                    pickup_p_proc()
-                else
-                    if fallout.script_action() == 12 then
-                        critter_p_proc()
-                    else
-                        if fallout.script_action() == 21 then
-                            look_at_p_proc()
-                        else
-                            if fallout.script_action() == 18 then
-                                destroy_p_proc()
-                            end
-                        end
-                    end
-                end
-            end
-        end
+    elseif script_action == 23 then
+        map_update_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
     end
 end
 
@@ -138,19 +112,17 @@ end
 
 function map_update_p_proc()
     if not initialized then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 2)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 6)
-        home_tile = 24529
-        sleep_tile = 23133
-        wake_time = 630
-        sleep_time = 2230
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 2)
+        fallout.critter_add_trait(self_obj, 1, 5, 6)
         initialized = false
     end
 end
 
 function talk_p_proc()
-    MAX_HITS = fallout.get_critter_stat(fallout.dude_obj(), 7)
-    HITS = fallout.get_critter_stat(fallout.dude_obj(), 35)
+    local dude_obj = fallout.dude_obj()
+    MAX_HITS = fallout.get_critter_stat(dude_obj, 7)
+    HITS = fallout.get_critter_stat(dude_obj, 35)
     reaction.get_reaction()
     if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
         fallout.set_global_var(156, 1)
@@ -162,104 +134,82 @@ function talk_p_proc()
     end
     if fallout.local_var(9) == 1 then
         fallout.float_msg(fallout.self_obj(), fallout.message_str(185, 166), 0)
-    else
-        if time.is_night() then
-            fallout.set_local_var(6, 1)
+    elseif time.is_night() then
+        fallout.set_local_var(6, 1)
+        fallout.start_gdialog(129, fallout.self_obj(), 4, -1, -1)
+        fallout.gsay_start()
+        razlo00n()
+        fallout.gsay_end()
+        fallout.end_dialogue()
+    elseif fallout.global_var(43) == 1 then
+        if (fallout.global_var(26) == 1) and (fallout.local_var(4) == 0) and (fallout.global_var(218) == 1) then
+            fallout.set_local_var(4, 1)
             fallout.start_gdialog(129, fallout.self_obj(), 4, -1, -1)
             fallout.gsay_start()
-            razlo00n()
+            razlo01()
             fallout.gsay_end()
             fallout.end_dialogue()
         else
-            if fallout.global_var(43) == 1 then
-                if (fallout.global_var(26) == 1) and (fallout.local_var(4) == 0) and (fallout.global_var(218) == 1) then
-                    fallout.set_local_var(4, 1)
-                    fallout.start_gdialog(129, fallout.self_obj(), 4, -1, -1)
-                    fallout.gsay_start()
-                    razlo01()
-                    fallout.gsay_end()
-                    fallout.end_dialogue()
-                else
-                    fallout.start_gdialog(129, fallout.self_obj(), 4, -1, -1)
-                    fallout.gsay_start()
-                    razlo23()
-                    fallout.gsay_end()
-                    fallout.end_dialogue()
-                end
-            else
-                if fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 92) then
-                    fallout.start_gdialog(129, fallout.self_obj(), 4, -1, -1)
-                    fallout.gsay_start()
-                    razlo23()
-                    fallout.gsay_end()
-                    fallout.end_dialogue()
-                else
-                    if (fallout.local_var(6) == 0) and (fallout.local_var(1) >= 2) then
-                        fallout.set_local_var(6, 1)
-                        fallout.start_gdialog(129, fallout.self_obj(), 4, -1, -1)
-                        fallout.gsay_start()
-                        razlo10()
-                        fallout.gsay_end()
-                        fallout.end_dialogue()
-                    else
-                        if fallout.local_var(6) == 0 then
-                            fallout.set_local_var(6, 1)
-                            fallout.start_gdialog(129, fallout.self_obj(), 4, -1, -1)
-                            fallout.gsay_start()
-                            razlo18()
-                            fallout.gsay_end()
-                            fallout.end_dialogue()
-                        else
-                            if fallout.global_var(26) == 3 then
-                                razlo09()
-                            else
-                                if (fallout.global_var(26) == 2) and (fallout.local_var(5) == 0) then
-                                    fallout.set_local_var(5, 1)
-                                    razlo08()
-                                else
-                                    if (fallout.global_var(26) == 1) and (fallout.local_var(4) == 0) and (fallout.global_var(218) == 1) then
-                                        fallout.set_local_var(4, 1)
-                                        fallout.start_gdialog(129, fallout.self_obj(), 4, -1, -1)
-                                        fallout.gsay_start()
-                                        razlo01()
-                                        fallout.gsay_end()
-                                        fallout.end_dialogue()
-                                    else
-                                        if (fallout.global_var(26) == 1) and (fallout.global_var(218) == 1) and (fallout.local_var(4) == 1) then
-                                            fallout.set_local_var(4, 2)
-                                            razlo07()
-                                        else
-                                            if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) or (fallout.global_var(158) > 2) then
-                                                fallout.start_gdialog(129, fallout.self_obj(), 4, -1, -1)
-                                                fallout.gsay_start()
-                                                razlo00()
-                                                fallout.gsay_end()
-                                                fallout.end_dialogue()
-                                                fallout.display_msg(fallout.message_str(129, 103))
-                                            else
-                                                if fallout.local_var(1) >= 2 then
-                                                    fallout.start_gdialog(129, fallout.self_obj(), 4, -1, -1)
-                                                    fallout.gsay_start()
-                                                    razlo19()
-                                                    fallout.gsay_end()
-                                                    fallout.end_dialogue()
-                                                else
-                                                    fallout.start_gdialog(129, fallout.self_obj(), 4, -1, -1)
-                                                    fallout.gsay_start()
-                                                    razlo21()
-                                                    fallout.gsay_end()
-                                                    fallout.end_dialogue()
-                                                end
-                                            end
-                                        end
-                                    end
-                                end
-                            end
-                        end
-                    end
-                end
-            end
+            fallout.start_gdialog(129, fallout.self_obj(), 4, -1, -1)
+            fallout.gsay_start()
+            razlo23()
+            fallout.gsay_end()
+            fallout.end_dialogue()
         end
+    elseif fallout.obj_is_carrying_obj_pid(dude_obj, 92) ~= 0 then
+        fallout.start_gdialog(129, fallout.self_obj(), 4, -1, -1)
+        fallout.gsay_start()
+        razlo23()
+        fallout.gsay_end()
+        fallout.end_dialogue()
+    elseif fallout.local_var(6) == 0 and fallout.local_var(1) >= 2 then
+        fallout.set_local_var(6, 1)
+        fallout.start_gdialog(129, fallout.self_obj(), 4, -1, -1)
+        fallout.gsay_start()
+        razlo10()
+        fallout.gsay_end()
+        fallout.end_dialogue()
+    elseif fallout.local_var(6) == 0 then
+        fallout.set_local_var(6, 1)
+        fallout.start_gdialog(129, fallout.self_obj(), 4, -1, -1)
+        fallout.gsay_start()
+        razlo18()
+        fallout.gsay_end()
+        fallout.end_dialogue()
+    elseif fallout.global_var(26) == 3 then
+        razlo09()
+    elseif fallout.global_var(26) == 2 and fallout.local_var(5) == 0 then
+        fallout.set_local_var(5, 1)
+        razlo08()
+    elseif fallout.global_var(26) == 1 and fallout.local_var(4) == 0 and fallout.global_var(218) == 1 then
+        fallout.set_local_var(4, 1)
+        fallout.start_gdialog(129, fallout.self_obj(), 4, -1, -1)
+        fallout.gsay_start()
+        razlo01()
+        fallout.gsay_end()
+        fallout.end_dialogue()
+    elseif fallout.global_var(26) == 1 and fallout.global_var(218) == 1 and fallout.local_var(4) == 1 then
+        fallout.set_local_var(4, 2)
+        razlo07()
+    elseif ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) or (fallout.global_var(158) > 2) then
+        fallout.start_gdialog(129, fallout.self_obj(), 4, -1, -1)
+        fallout.gsay_start()
+        razlo00()
+        fallout.gsay_end()
+        fallout.end_dialogue()
+        fallout.display_msg(fallout.message_str(129, 103))
+    elseif fallout.local_var(1) >= 2 then
+        fallout.start_gdialog(129, fallout.self_obj(), 4, -1, -1)
+        fallout.gsay_start()
+        razlo19()
+        fallout.gsay_end()
+        fallout.end_dialogue()
+    else
+        fallout.start_gdialog(129, fallout.self_obj(), 4, -1, -1)
+        fallout.gsay_start()
+        razlo21()
+        fallout.gsay_end()
+        fallout.end_dialogue()
     end
     remove_items()
 end
@@ -274,7 +224,7 @@ end
 
 function razlo01()
     fallout.gsay_reply(129, 104)
-    if (fallout.global_var(26) == 1) and (fallout.global_var(218) == 1) then
+    if fallout.global_var(26) == 1 and fallout.global_var(218) == 1 then
         fallout.giq_option(4, 129, 105, razlo03, 50)
     end
     fallout.giq_option(4, 129, 143, razlo22, 50)
@@ -316,14 +266,13 @@ function razlo06na()
 end
 
 function razlo06nb()
-    local v0 = 0
-    local v1 = 0
+    local item_obj
     fallout.gsay_message(129, 307, 50)
-    v0 = fallout.create_object_sid(49, 0, 0, -1)
-    fallout.add_obj_to_inven(fallout.dude_obj(), v0)
-    v1 = fallout.obj_carrying_pid_obj(fallout.dude_obj(), 92)
-    fallout.rm_obj_from_inven(fallout.dude_obj(), v1)
-    fallout.destroy_object(v1)
+    item_obj = fallout.create_object_sid(49, 0, 0, -1)
+    fallout.add_obj_to_inven(fallout.dude_obj(), item_obj)
+    item_obj = fallout.obj_carrying_pid_obj(fallout.dude_obj(), 92)
+    fallout.rm_obj_from_inven(fallout.dude_obj(), item_obj)
+    fallout.destroy_object(item_obj)
     if fallout.local_var(7) == 0 then
         fallout.set_local_var(7, 1)
         fallout.give_exp_points(250)
@@ -372,18 +321,14 @@ end
 function razlo14()
     fallout.gsay_message(129, 126, 50)
     damage = MAX_HITS - HITS
-    if damage < (MAX_HITS // 4) then
+    if damage < MAX_HITS // 4 then
         razlowmpa()
+    elseif damage < MAX_HITS // 2 then
+        razlofixa()
+    elseif damage < 3 * MAX_HITS // 4 then
+        razlofixb()
     else
-        if damage < (MAX_HITS // 2) then
-            razlofixa()
-        else
-            if damage < (3 * MAX_HITS // 4) then
-                razlofixb()
-            else
-                razlofixc()
-            end
-        end
+        razlofixc()
     end
 end
 
@@ -392,18 +337,16 @@ function razlo15()
 end
 
 function Razlo17()
-    local v0 = 0
-    if damage < (MAX_HITS // 2) then
-        v0 = fallout.create_object_sid(218, 0, 0, -1)
-        fallout.add_obj_to_inven(fallout.self_obj(), v0)
+    local item_obj
+    if damage < MAX_HITS // 2 then
+        item_obj = fallout.create_object_sid(218, 0, 0, -1)
+        fallout.add_obj_to_inven(fallout.self_obj(), item_obj)
+    elseif damage < 3 * MAX_HITS // 4 then
+        item_obj = fallout.create_object_sid(219, 0, 0, -1)
+        fallout.add_obj_to_inven(fallout.self_obj(), item_obj)
     else
-        if damage < (3 * MAX_HITS // 4) then
-            v0 = fallout.create_object_sid(219, 0, 0, -1)
-            fallout.add_obj_to_inven(fallout.self_obj(), v0)
-        else
-            v0 = fallout.create_object_sid(220, 0, 0, -1)
-            fallout.add_obj_to_inven(fallout.self_obj(), v0)
-        end
+        item_obj = fallout.create_object_sid(220, 0, 0, -1)
+        fallout.add_obj_to_inven(fallout.self_obj(), item_obj)
     end
     fallout.gdialog_mod_barter(0)
     fallout.gsay_message(129, 126, 50)
@@ -447,7 +390,7 @@ function razlo23()
     fallout.giq_option(4, 129, 143, razlo22, 50)
     fallout.giq_option(4, 129, 144, razlo23a, 50)
     fallout.giq_option(5, 129, 145, razlo27, 50)
-    if fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 92) then
+    if fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 92) ~= 0 then
         fallout.giq_option(4, 129, 146, razlo30, 50)
         fallout.giq_option(-3, 129, 303, razlo30, 50)
     end
@@ -469,14 +412,15 @@ end
 
 function razlo25()
     fallout.gsay_message(129, 149, 50)
-    if fallout.get_poison(fallout.dude_obj()) > 0 then
+    local dude_obj = fallout.dude_obj()
+    if fallout.get_poison(dude_obj) > 0 then
         fallout.gsay_message(129, 150, 50)
-        fallout.poison(fallout.dude_obj(), -fallout.get_poison(fallout.dude_obj()))
+        fallout.poison(dude_obj, -fallout.get_poison(dude_obj))
         razlo26()
     else
         fallout.gsay_message(129, 151, 50)
     end
-    fallout.poison(fallout.dude_obj(), -fallout.get_poison(fallout.dude_obj()))
+    fallout.poison(dude_obj, -fallout.get_poison(dude_obj))
 end
 
 function razlo26()
@@ -514,13 +458,13 @@ function razlo30()
 end
 
 function razlo31()
-    local v0 = 0
+    local item_obj
     fallout.gsay_message(129, 162, 50)
-    v0 = fallout.create_object_sid(49, 0, 0, -1)
-    fallout.add_obj_to_inven(fallout.dude_obj(), v0)
-    tail = fallout.obj_carrying_pid_obj(fallout.dude_obj(), 92)
-    fallout.rm_obj_from_inven(fallout.dude_obj(), tail)
-    fallout.destroy_object(tail)
+    item_obj = fallout.create_object_sid(49, 0, 0, -1)
+    fallout.add_obj_to_inven(fallout.dude_obj(), item_obj)
+    item_obj = fallout.obj_carrying_pid_obj(fallout.dude_obj(), 92)
+    fallout.rm_obj_from_inven(fallout.dude_obj(), item_obj)
+    fallout.destroy_object(item_obj)
     if fallout.local_var(7) == 0 then
         fallout.set_local_var(7, 1)
         fallout.give_exp_points(250)
@@ -534,7 +478,7 @@ function razlo00n()
     if fallout.global_var(43) == 1 then
         fallout.giq_option(5, 129, 165, razlo09n, 50)
     end
-    if (fallout.global_var(26) == 1) and (fallout.global_var(218) == 1) then
+    if fallout.global_var(26) == 1 and fallout.global_var(218) == 1 then
         fallout.giq_option(5, 129, 166, razlo15n, 50)
     end
     fallout.giq_option(-3, 129, 167, razlo01n, 50)
@@ -563,25 +507,21 @@ end
 
 function razlo05n()
     damage = MAX_HITS - HITS
-    if damage < (MAX_HITS // 4) then
+    if damage < MAX_HITS // 4 then
         razlowmpb()
+    elseif damage < MAX_HITS // 2 then
+        razlofixa()
+    elseif damage < 3 * MAX_HITS // 4 then
+        razlofixb()
     else
-        if damage < (MAX_HITS // 2) then
-            razlofixa()
-        else
-            if damage < (3 * MAX_HITS // 4) then
-                razlofixb()
-            else
-                razlofixc()
-            end
-        end
+        razlofixc()
     end
 end
 
 function razlo06n()
     fallout.gsay_reply(129, 186)
     fallout.giq_option(4, 129, 187, Razlo17, 50)
-    if fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 92) then
+    if fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 92) ~= 0 then
         fallout.giq_option(4, 129, 305, razlo06na, 50)
         fallout.giq_option(-3, 129, 303, razlo06na, 50)
     end
@@ -595,11 +535,13 @@ function razlo07n()
 end
 
 function razlo08n()
-    if fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 218) or fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 219) or fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 220) then
+    if fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 218) ~= 0
+        or fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 219) ~= 0
+        or fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 220) ~= 0 then
         razlo14n()
     else
         if fallout.item_caps_total(fallout.dude_obj()) >= COST then
-            dummyvar = fallout.item_caps_adjust(fallout.dude_obj(), -COST)
+            fallout.item_caps_adjust(fallout.dude_obj(), -COST)
             razlo14n()
         else
             razlo06n()
@@ -685,50 +627,58 @@ function razloend()
 end
 
 function givestuff()
-    local v0 = 0
-    v0 = fallout.create_object_sid(40, 0, 0, -1)
-    fallout.add_obj_to_inven(fallout.dude_obj(), v0)
-    v0 = fallout.create_object_sid(40, 0, 0, -1)
-    fallout.add_obj_to_inven(fallout.dude_obj(), v0)
-    v0 = fallout.create_object_sid(71, 0, 0, -1)
-    fallout.add_obj_to_inven(fallout.dude_obj(), v0)
+    local item_obj
+    item_obj = fallout.create_object_sid(40, 0, 0, -1)
+    fallout.add_obj_to_inven(fallout.dude_obj(), item_obj)
+    item_obj = fallout.create_object_sid(40, 0, 0, -1)
+    fallout.add_obj_to_inven(fallout.dude_obj(), item_obj)
+    item_obj = fallout.create_object_sid(71, 0, 0, -1)
+    fallout.add_obj_to_inven(fallout.dude_obj(), item_obj)
     if fallout.local_var(8) == 1 then
-        v0 = fallout.create_object_sid(49, 0, 0, -1)
-        fallout.add_obj_to_inven(fallout.dude_obj(), v0)
+        item_obj = fallout.create_object_sid(49, 0, 0, -1)
+        fallout.add_obj_to_inven(fallout.dude_obj(), item_obj)
     end
 end
 
+local PIDS <const> = {
+    218,
+    219,
+    220,
+}
+
 function remove_items()
-    local v0 = 0
-    if fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 218) then
-        v0 = fallout.obj_carrying_pid_obj(fallout.dude_obj(), 218)
-        fallout.rm_obj_from_inven(fallout.dude_obj(), v0)
-        fallout.destroy_object(v0)
+    local self_obj = fallout.self_obj()
+    local dude_obj = fallout.dude_obj()
+    local item_obj
+    if fallout.obj_is_carrying_obj_pid(dude_obj, 218) ~= 0 then
+        item_obj = fallout.obj_carrying_pid_obj(dude_obj, 218)
+        fallout.rm_obj_from_inven(dude_obj, item_obj)
+        fallout.destroy_object(item_obj)
     end
-    if fallout.obj_is_carrying_obj_pid(fallout.self_obj(), 218) then
-        v0 = fallout.obj_carrying_pid_obj(fallout.self_obj(), 218)
-        fallout.rm_obj_from_inven(fallout.self_obj(), v0)
-        fallout.destroy_object(v0)
+    if fallout.obj_is_carrying_obj_pid(self_obj, 218) ~= 0 then
+        item_obj = fallout.obj_carrying_pid_obj(self_obj, 218)
+        fallout.rm_obj_from_inven(self_obj, item_obj)
+        fallout.destroy_object(item_obj)
     end
-    if fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 219) then
-        v0 = fallout.obj_carrying_pid_obj(fallout.dude_obj(), 219)
-        fallout.rm_obj_from_inven(fallout.dude_obj(), v0)
-        fallout.destroy_object(v0)
+    if fallout.obj_is_carrying_obj_pid(dude_obj, 219) ~= 0 then
+        item_obj = fallout.obj_carrying_pid_obj(dude_obj, 219)
+        fallout.rm_obj_from_inven(dude_obj, item_obj)
+        fallout.destroy_object(item_obj)
     end
-    if fallout.obj_is_carrying_obj_pid(fallout.self_obj(), 219) then
-        v0 = fallout.obj_carrying_pid_obj(fallout.self_obj(), 219)
-        fallout.rm_obj_from_inven(fallout.self_obj(), v0)
-        fallout.destroy_object(v0)
+    if fallout.obj_is_carrying_obj_pid(self_obj, 219) ~= 0 then
+        item_obj = fallout.obj_carrying_pid_obj(self_obj, 219)
+        fallout.rm_obj_from_inven(self_obj, item_obj)
+        fallout.destroy_object(item_obj)
     end
-    if fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 220) then
-        v0 = fallout.obj_carrying_pid_obj(fallout.dude_obj(), 220)
-        fallout.rm_obj_from_inven(fallout.dude_obj(), v0)
-        fallout.destroy_object(v0)
+    if fallout.obj_is_carrying_obj_pid(dude_obj, 220) ~= 0 then
+        item_obj = fallout.obj_carrying_pid_obj(dude_obj, 220)
+        fallout.rm_obj_from_inven(dude_obj, item_obj)
+        fallout.destroy_object(item_obj)
     end
-    if fallout.obj_is_carrying_obj_pid(fallout.self_obj(), 220) then
-        v0 = fallout.obj_carrying_pid_obj(fallout.self_obj(), 220)
-        fallout.rm_obj_from_inven(fallout.self_obj(), v0)
-        fallout.destroy_object(v0)
+    if fallout.obj_is_carrying_obj_pid(self_obj, 220) ~= 0 then
+        item_obj = fallout.obj_carrying_pid_obj(self_obj, 220)
+        fallout.rm_obj_from_inven(self_obj, item_obj)
+        fallout.destroy_object(item_obj)
     end
 end
 
@@ -739,16 +689,16 @@ function critter_p_proc()
         if fallout.local_var(10) < 3 then
             fallout.float_msg(fallout.self_obj(), fallout.message_str(129, 308), 2)
         else
-            HOSTILE = 1
+            hostile = true
         end
     end
     if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
         if fallout.global_var(246) == 1 then
-            HOSTILE = 1
+            hostile = true
         end
     end
-    if HOSTILE then
-        HOSTILE = 0
+    if hostile then
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
 end
@@ -766,7 +716,7 @@ function destroy_p_proc()
 end
 
 function pickup_p_proc()
-    HOSTILE = 1
+    hostile = true
 end
 
 local exports = {}
