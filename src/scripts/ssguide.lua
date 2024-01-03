@@ -35,24 +35,22 @@ local DialogSpecial3
 local DialogSpecial4
 
 local initialized = false
-local Hostile = 0
 local DisplayMessage = 0
-local Hurt = 0
-local Equipment = 0
-local Barter = 0
-local Bartered = 0
-local Place = 0
-local World = 0
-local Yourself = 0
-local Vault = 0
-local Vaulted = 0
-
-local exit_line = 0
+local Hurt = false
+local Equipment = false
+local Barter = false
+local Bartered = false
+local Place = false
+local World = false
+local Yourself = false
+local Vault = false
+local Vaulted = false
 
 function start()
     if not initialized then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 2)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 6)
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 2)
+        fallout.critter_add_trait(self_obj, 1, 5, 6)
         initialized = true
     end
 end
@@ -86,15 +84,15 @@ function talk_p_proc()
         end
         fallout.gsay_end()
         fallout.end_dialogue()
-        Hurt = 0
-        Equipment = 0
-        Barter = 0
-        Bartered = 0
-        Place = 0
-        World = 0
-        Yourself = 0
-        Vault = 0
-        Vaulted = 0
+        Hurt = false
+        Equipment = false
+        Barter = false
+        Bartered = false
+        Place = false
+        World = false
+        Yourself = false
+        Vault = false
+        Vaulted = false
     end
 end
 
@@ -153,12 +151,11 @@ function DialogFirstTime()
 end
 
 function DialogSubsequent()
-    local v0 = 0
-    v0 = fallout.game_time_hour()
+    local game_time_hour = fallout.game_time_hour()
     fallout.gsay_reply(211, 144)
     DisplayMessage = 125
     fallout.giq_option(-3, 211, 112, DialogSpecial1, 50)
-    if (v0 > 1800) or (v0 < 800) then
+    if game_time_hour > 1800 or game_time_hour < 800 then
         fallout.giq_option(4, 211, 145, DialogSpecial4, 50)
     else
         fallout.giq_option(4, 211, 113, DialogMain5, 50)
@@ -198,31 +195,27 @@ end
 
 function DialogMain()
     fallout.gsay_reply(211, DisplayMessage)
-    if Hurt == 0 then
+    if not Hurt then
         fallout.giq_option(4, 211, 126, DialogMain1, 50)
     end
-    if Equipment == 0 then
+    if not Equipment then
         fallout.giq_option(4, 211, 127, DialogMain2, 50)
-    else
-        if Barter == 1 then
-            fallout.giq_option(4, 211, 134, DialogMain6, 50)
-        end
+    elseif Barter then
+        fallout.giq_option(4, 211, 134, DialogMain6, 50)
     end
-    if Place == 0 then
+    if not Place then
         fallout.giq_option(4, 211, 128, DialogMain3, 50)
     end
-    if World == 0 then
+    if not World then
         fallout.giq_option(4, 211, 129, DialogMain4, 50)
     end
-    if Yourself == 0 then
+    if not Yourself then
         fallout.giq_option(4, 211, 130, DialogMain5, 50)
-    else
-        if Vault == 1 then
-            fallout.giq_option(4, 211, 138, DialogMain7, 50)
-        end
+    elseif Vault then
+        fallout.giq_option(4, 211, 138, DialogMain7, 50)
     end
     fallout.giq_option(4, 211, 131, DialogExit, 50)
-    if (fallout.local_var(5) == 0) and ((Hurt == 1) and (Equipment == 1) and (Place == 1) and (World == 1) and (Yourself == 1) and (Bartered == 1) and (Vaulted == 1)) then
+    if fallout.local_var(5) == 0 and Hurt and Equipment and Place and World and Yourself and Bartered and Vaulted then
         fallout.set_local_var(5, 1)
         fallout.give_exp_points(250)
         fallout.display_msg(fallout.message_str(211, 150))
@@ -230,48 +223,48 @@ function DialogMain()
 end
 
 function DialogMain1()
-    Hurt = 1
+    Hurt = true
     DisplayMessage = 132
     DialogMain()
 end
 
 function DialogMain2()
-    Equipment = 1
+    Equipment = true
     DisplayMessage = 133
-    Barter = 1
+    Barter = true
     DialogMain()
 end
 
 function DialogMain3()
-    Place = 1
+    Place = true
     DisplayMessage = 135
     DialogMain()
 end
 
 function DialogMain4()
-    World = 1
+    World = true
     DisplayMessage = 136
     DialogMain()
 end
 
 function DialogMain5()
-    Yourself = 1
+    Yourself = true
     DisplayMessage = 137
-    Vault = 1
+    Vault = true
     DialogMain()
 end
 
 function DialogMain6()
-    Barter = 0
+    Barter = false
     DisplayMessage = 139
-    Bartered = 1
+    Bartered = true
     DialogMain()
 end
 
 function DialogMain7()
-    Vault = 0
+    Vault = false
     DisplayMessage = 140
-    Vaulted = 1
+    Vaulted = true
     DialogMain()
 end
 
