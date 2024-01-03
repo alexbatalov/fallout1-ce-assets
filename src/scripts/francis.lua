@@ -79,7 +79,7 @@ function talk_p_proc()
             if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) then
                 fallout.float_msg(fallout.self_obj(), fallout.message_str(399, 103), 0)
             else
-                if not (fallout.obj_pid(fallout.critter_inven_obj(fallout.dude_obj(), 0)) == 113) and (((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) or (fallout.global_var(158) > 2)) then
+                if not (fallout.obj_pid(fallout.critter_inven_obj(fallout.dude_obj(), 0)) == 113) and (reputation.has_rep_berserker() or (fallout.global_var(158) > 2)) then
                     fallout.float_msg(fallout.self_obj(), fallout.message_str(399, 104), 0)
                 else
                     fallout.start_gdialog(399, fallout.self_obj(), 4, -1, -1)
@@ -122,7 +122,7 @@ function Francis04()
     if fallout.global_var(194) == 1 then
         fallout.giq_option(4, 399, 110, Francis11_1, 50)
     end
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 399, 111, Francis12_1, 50)
     end
     fallout.giq_option(-3, 399, 112, Francis13, 50)
@@ -141,7 +141,7 @@ function Francis05()
     if fallout.global_var(194) == 1 then
         fallout.giq_option(4, 399, 119, Francis18, 50)
     end
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 399, 120, Francis19, 50)
     end
     fallout.giq_option(-3, 399, 121, Francis20, 50)
@@ -160,7 +160,7 @@ function Francis06()
     if fallout.global_var(194) == 1 then
         fallout.giq_option(4, 399, 126, Francis11_1, 50)
     end
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 399, 127, Francis12_1, 50)
     end
     fallout.giq_option(-3, 399, 128, Francis13, 50)

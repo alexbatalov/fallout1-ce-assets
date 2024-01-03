@@ -254,7 +254,7 @@ end
 function mutan08()
     fallout.gsay_reply(525, 125)
     fallout.giq_option(4, 525, 126, mutan08a, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 525, 127, mutancbt, 51)
     end
     fallout.giq_option(7, 525, 128, mutan08b, 50)

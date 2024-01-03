@@ -203,7 +203,7 @@ function Luke1()
     fallout.giq_option(4, 609, 206, Luke4, 50)
     fallout.giq_option(4, 609, 207, Luke5, 50)
     fallout.giq_option(4, 609, 208, LukeEnd, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 609, 209, LukeCombat, 51)
     end
 end
@@ -256,7 +256,7 @@ end
 
 function Luke8()
     fallout.gsay_reply(609, 235)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 609, 236, LukeCombat, 51)
     end
     fallout.giq_option(4, 609, 237, Luke7, 50)

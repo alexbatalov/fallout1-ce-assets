@@ -111,7 +111,7 @@ function Patrick01()
     if fallout.global_var(101) == 0 and fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 55) == 0 then
         fallout.giq_option(4, 667, 105, Patrick04, 50)
     end
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 667, 106, PatrickCombat, 51)
     end
     fallout.giq_option(-3, 667, 107, PatrickEnd, 50)

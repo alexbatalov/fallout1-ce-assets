@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local reputation = require("lib.reputation")
 
 --
 -- Some unreferenced imported varables found.
@@ -230,10 +231,10 @@ function get_reaction()
         if fallout.global_var(158) > 2 then
             fallout.set_local_var(0, fallout.local_var(0) - 30)
         end
-        if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(160) > (3 * fallout.global_var(159))) or (fallout.global_var(157) == 1)) then
+        if reputation.has_rep_champion() then
             fallout.set_local_var(0, fallout.local_var(0) + 20)
         end
-        if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+        if reputation.has_rep_berserker() then
             fallout.set_local_var(0, fallout.local_var(0) - 20)
         end
         ReactToLevel()

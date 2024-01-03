@@ -132,7 +132,7 @@ function start()
                                         fallout.gsay_end()
                                         fallout.end_dialogue()
                                     else
-                                        if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+                                        if reputation.has_rep_berserker() then
                                             fallout.start_gdialog(384, fallout.self_obj(), 4, -1, -1)
                                             fallout.gsay_start()
                                             lasher02()
@@ -198,7 +198,7 @@ function lasher04()
     if Lasher_Abuse then
         fallout.giq_option(4, 384, 111, lasher12, 50)
     end
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 384, 112, lasher02, 50)
     end
     fallout.giq_option(-3, 384, 113, lasher13, 50)
@@ -214,7 +214,7 @@ function lasher05()
     fallout.giq_option(4, 384, 118, lasher16, 50)
     fallout.giq_option(4, 384, 119, lasher11, 50)
     fallout.giq_option(4, 384, 109, lasher10, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 384, 120, lasher02, 50)
     end
     fallout.giq_option(-3, 384, 121, lasher13, 50)
@@ -234,7 +234,7 @@ function lasher06()
     fallout.giq_option(4, 384, 127, lasher16, 50)
     fallout.giq_option(4, 384, 128, lasher11, 50)
     fallout.giq_option(4, 384, 109, lasher10, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 384, 129, lasher02, 50)
     end
     fallout.giq_option(-3, 384, 130, lasher13, 50)
@@ -257,7 +257,7 @@ function lasher07()
     fallout.giq_option(4, 384, 134, lasher19, 50)
     fallout.giq_option(4, 384, 109, lasher10, 50)
     fallout.giq_option(4, 384, 135, lasher11, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 384, 136, lasher02, 50)
     end
     fallout.giq_option(-3, 384, 137, lasher13, 50)
@@ -279,7 +279,7 @@ function lasher08()
     end
     fallout.giq_option(4, 384, 141, lasher19, 50)
     fallout.giq_option(4, 384, 142, lasher22, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 384, 143, lasher13, 50)
     end
 end
@@ -305,7 +305,7 @@ function lasher10()
     end
     fallout.giq_option(4, 384, 148, lasher27, 50)
     fallout.giq_option(4, 384, 149, lasher28, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 384, 150, lasher29, 50)
     end
 end
@@ -322,7 +322,7 @@ function lasher11()
     fallout.gsay_reply(384, 151)
     fallout.giq_option(4, 384, 152, lasher09, 50)
     fallout.giq_option(4, 384, 153, lasher30, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 384, 154, lasher02, 50)
     end
 end
@@ -333,7 +333,7 @@ function lasher12()
     fallout.giq_option(4, 384, 157, lasher30, 50)
     fallout.giq_option(4, 384, 158, lasher02, 50)
     fallout.giq_option(4, 384, 159, lasher32, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 384, 160, lasher33, 50)
     end
 end
@@ -351,7 +351,7 @@ function lasher14()
     fallout.giq_option(7, 384, 164, lasher31, 50)
     fallout.giq_option(4, 384, 165, lasher30, 50)
     fallout.giq_option(4, 384, 166, lasher02, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 384, 167, lasher33, 50)
     end
 end
@@ -370,7 +370,7 @@ function lasher15()
     fallout.giq_option(4, 384, 170, lasher35, 50)
     fallout.giq_option(4, 384, 171, lasher36, 50)
     fallout.giq_option(4, 384, 172, lasher09, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 384, 173, lasher37, 50)
     end
 end
@@ -387,7 +387,7 @@ function lasher17()
     fallout.giq_option(4, 384, 177, lasher40_1, 50)
     fallout.giq_option(4, 384, 178, lasher41_1, 50)
     fallout.giq_option(4, 384, 179, lasher12, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 384, 180, lasher35, 50)
     end
 end
@@ -444,7 +444,7 @@ function lasher26()
     fallout.giq_option(4, 384, 193, lasher25, 50)
     fallout.giq_option(4, 384, 194, lasher27, 50)
     fallout.giq_option(4, 384, 195, lasher28, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 384, 196, lasher23, 50)
     end
 end
@@ -487,7 +487,7 @@ function lasher32()
     fallout.giq_option(4, 384, 205, lasher43, 50)
     fallout.giq_option(4, 384, 206, lasher44, 50)
     fallout.giq_option(4, 384, 207, lasher28, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 384, 208, lasher35, 50)
     end
 end

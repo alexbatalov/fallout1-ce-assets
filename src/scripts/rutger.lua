@@ -295,13 +295,13 @@ function Rutger00()
 end
 
 function Rutger00a()
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         Rutger10()
     else
         if fallout.global_var(158) > 2 then
             Rutger11()
         else
-            if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(160) > (3 * fallout.global_var(159))) or (fallout.global_var(157) == 1)) then
+            if reputation.has_rep_champion() then
                 Rutger15()
             else
                 if (fallout.map_var(35) == 1) or (fallout.map_var(40) == 1) then
@@ -786,10 +786,10 @@ end
 
 function Rutger55()
     fallout.gsay_reply(401, 243)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 401, 244, Rutger59, 50)
     else
-        if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(160) > (3 * fallout.global_var(159))) or (fallout.global_var(157) == 1)) then
+        if reputation.has_rep_champion() then
             fallout.giq_option(4, 401, 245, Rutger59, 50)
         else
             fallout.giq_option(4, 401, 246, Rutger59, 50)
@@ -841,10 +841,10 @@ end
 
 function Rutger58()
     fallout.gsay_reply(401, 258)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 401, 259, Rutger60, 50)
     else
-        if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(160) > (3 * fallout.global_var(159))) or (fallout.global_var(157) == 1)) then
+        if reputation.has_rep_champion() then
             fallout.giq_option(4, 401, 260, Rutger60, 50)
             fallout.giq_option(4, 401, 261, Rutger60, 50)
         else

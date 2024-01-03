@@ -146,7 +146,7 @@ function talk_p_proc()
                 fallout.end_dialogue()
             end
         else
-            if fallout.global_var(246) or (fallout.global_var(155) < -30) or (((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1))) or (fallout.global_var(158) > 2) then
+            if fallout.global_var(246) or (fallout.global_var(155) < -30) or (reputation.has_rep_berserker()) or (fallout.global_var(158) > 2) then
                 if (fallout.global_var(103) == 2) and (fallout.global_var(43) == 2) then
                     fallout.start_gdialog(699, fallout.self_obj(), 4, -1, -1)
                     fallout.gsay_start()

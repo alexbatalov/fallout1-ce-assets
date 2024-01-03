@@ -170,7 +170,7 @@ end
 
 function Darrel05()
     fallout.gsay_reply(316, 119)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 316, 120, DarrelEnd, 50)
     end
     fallout.giq_option(4, 316, 121, Darrel08, 50)
@@ -227,7 +227,7 @@ end
 
 function Darrel14()
     fallout.gsay_reply(316, 143)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 316, 144, combat, 51)
     end
     fallout.giq_option(4, 316, 141, Darrel07, 50)

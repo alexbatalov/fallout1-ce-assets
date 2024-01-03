@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local reputation = require("lib.reputation")
 
 local start
 local timed_event_p_proc
@@ -27,7 +28,7 @@ function timed_event_p_proc()
         local shoot_overseer = false
         if fallout.has_trait(2, dude_obj, 8) then
             shoot_overseer = true
-        elseif ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+        elseif reputation.has_rep_berserker() then
             shoot_overseer = true
         elseif fallout.global_var(155) < -1 then
             shoot_overseer = true

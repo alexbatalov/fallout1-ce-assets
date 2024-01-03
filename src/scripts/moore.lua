@@ -88,7 +88,7 @@ function moore00()
     fallout.gsay_reply(671, 202)
     fallout.giq_option(8, 671, 203, moore03, 49 + fallout.random(0, 2))
     fallout.giq_option(4, 671, 204, moore02, 49 + fallout.random(0, 2))
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 671, 205, moore04, 49 + fallout.random(0, 2))
     end
     fallout.giq_option(4, 671, 206, dialog_end, 49 + fallout.random(0, 2))
@@ -100,7 +100,7 @@ function moore01()
     fallout.giq_option(8, 671, 209, moore03, 49 + fallout.random(0, 2))
     fallout.giq_option(4, 671, 210, moore04, 49 + fallout.random(0, 2))
     fallout.giq_option(4, 671, 211, moore02, 49 + fallout.random(0, 2))
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 671, 212, moore02, 49 + fallout.random(0, 2))
     end
     fallout.giq_option(4, 671, 213, dialog_end, 49 + fallout.random(0, 2))

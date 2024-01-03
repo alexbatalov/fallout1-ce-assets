@@ -138,7 +138,7 @@ function calder00()
     fallout.giq_option(4, 393, 103, calder03, 50)
     fallout.giq_option(4, 393, 104, calder04, 50)
     fallout.giq_option(4, 393, 105, calder05, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 393, 106, caldercombat, 50)
     end
 end
@@ -190,7 +190,7 @@ function calder05()
     fallout.giq_option(4, 393, 118, calder08, 50)
     fallout.giq_option(4, 393, 119, calder09, 50)
     fallout.giq_option(-3, 393, 120, calder10, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 393, 121, calder11, 50)
     end
 end
@@ -210,7 +210,7 @@ function calder06()
     fallout.giq_option(4, 393, 124, calder12, 50)
     fallout.giq_option(4, 393, 125, calder09, 50)
     fallout.giq_option(-3, 393, 126, calder10, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 393, 127, calder11, 50)
     end
 end
@@ -230,7 +230,7 @@ function calder07()
     fallout.giq_option(7, 393, 129, calder07a, 50)
     fallout.giq_option(4, 393, 130, calder07b, 50)
     fallout.giq_option(-3, 393, 131, calder16, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 393, 132, calder15, 50)
     end
 end
@@ -262,7 +262,7 @@ function calder09()
     fallout.giq_option(7, 393, 135, calder15, 50)
     fallout.giq_option(4, 393, 136, calder16, 50)
     fallout.giq_option(4, 393, 137, calder17, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 393, 138, calder09a, 50)
     end
 end
@@ -314,7 +314,7 @@ function calder14()
     fallout.giq_option(4, 393, 150, calder21, 50)
     fallout.giq_option(4, 393, 151, calder22, 50)
     fallout.giq_option(-3, 393, 152, calder15, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 393, 153, calder02, 50)
     end
 end
@@ -345,7 +345,7 @@ function calder20()
     fallout.giq_option(4, 393, 161, calder24, 50)
     fallout.giq_option(4, 393, 162, calder25, 50)
     fallout.giq_option(-3, 393, 163, calder15, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 393, 164, calder25, 50)
     end
 end
@@ -402,7 +402,7 @@ function calder28()
     fallout.giq_option(4, 393, 182, calder27, 50)
     fallout.giq_option(4, 393, 183, calder15, 50)
     fallout.giq_option(-3, 393, 184, calder15, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 393, 185, calder15, 50)
     end
 end
@@ -412,7 +412,7 @@ function calder29()
     fallout.giq_option(7, 393, 187, calder29a, 50)
     fallout.giq_option(4, 393, 188, calder29b, 50)
     fallout.giq_option(4, 393, 189, calder29c, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 393, 190, calder02, 50)
     end
     fallout.giq_option(-3, 393, 191, calder15, 50)
@@ -447,7 +447,7 @@ function calder30()
     fallout.giq_option(4, 393, 193, calder30a, 50)
     fallout.giq_option(4, 393, 194, calder30b, 50)
     fallout.giq_option(4, 393, 195, calder11, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 393, 196, calder03, 50)
     end
 end
@@ -473,7 +473,7 @@ function calder31()
     fallout.giq_option(7, 393, 198, calder13, 50)
     fallout.giq_option(4, 393, 199, calder08, 50)
     fallout.giq_option(4, 393, 200, calder09, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 393, 201, calder11, 50)
     end
 end
@@ -491,7 +491,7 @@ function calder33()
     fallout.giq_option(7, 393, 204, calder34, 50)
     fallout.giq_option(4, 393, 205, calder14, 50)
     fallout.giq_option(4, 393, 206, calder34, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 393, 207, calder15, 50)
     end
 end

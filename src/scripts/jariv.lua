@@ -1,6 +1,7 @@
 local fallout = require("fallout")
 local behaviour = require("lib.behaviour")
 local reaction = require("lib.reaction")
+local reputation = require("lib.reputation")
 
 local start
 local combat_p_proc
@@ -133,11 +134,11 @@ function destroy_p_proc()
         fallout.set_global_var(246, 1)
     end
     if fallout.source_obj() == fallout.dude_obj() then
-        if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+        if reputation.has_rep_berserker() then
             fallout.set_global_var(156, 1)
             fallout.set_global_var(157, 0)
         end
-        if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(160) > (3 * fallout.global_var(159))) or (fallout.global_var(157) == 1)) then
+        if reputation.has_rep_champion() then
             fallout.set_global_var(157, 1)
             fallout.set_global_var(156, 0)
         end
@@ -158,7 +159,7 @@ function pickup_p_proc()
 end
 
 function talk_p_proc()
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.set_global_var(156, 1)
         fallout.set_global_var(157, 0)
     end

@@ -200,7 +200,7 @@ end
 
 function Demetre01()
     fallout.gsay_reply(566, 110)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 566, 112, Demetre13, 50)
     else
         fallout.giq_option(4, 566, 111, Demetre02, 50)
@@ -385,7 +385,7 @@ end
 
 function Demetre27()
     fallout.gsay_reply(566, 184)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 566, 186, Demetre13, 50)
     else
         fallout.giq_option(4, 566, 185, Demetre02, 50)

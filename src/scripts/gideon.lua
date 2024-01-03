@@ -140,7 +140,7 @@ function gideon00()
     fallout.giq_option(8, 671, 102, gideon03, 49 + fallout.random(0, 2))
     fallout.giq_option(4, 671, 103, gideon02, 49 + fallout.random(0, 2))
     fallout.giq_option(4, 671, 104, gideon07, 49 + fallout.random(0, 2))
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 671, 105, gideon07, 49 + fallout.random(0, 2))
     end
     fallout.giq_option(-3, 671, 106, gideon08, 49 + fallout.random(0, 2))
@@ -219,7 +219,7 @@ function gideon05()
     fallout.gsay_reply(671, 125)
     fallout.giq_option(8, 671, 126, gideon06, 49 + fallout.random(0, 2))
     fallout.giq_option(4, 671, 127, gideon05a, 49 + fallout.random(0, 2))
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 671, 128, gideon05b, 49 + fallout.random(0, 2))
     end
     fallout.giq_option(4, 671, 129, dialog_end, 49 + fallout.random(0, 2))
@@ -244,7 +244,7 @@ end
 function gideon06()
     fallout.gsay_reply(671, 130)
     fallout.giq_option(8, 671, 131, gideonnull, 49 + fallout.random(0, 2))
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 671, 132, combat, 49 + fallout.random(0, 2))
     end
     fallout.giq_option(4, 671, 133, gideon06a, 49 + fallout.random(0, 2))
@@ -261,7 +261,7 @@ end
 
 function gideon07()
     fallout.gsay_reply(671, 135)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 671, 136, gideon07b, 49 + fallout.random(0, 2))
     end
     fallout.giq_option(4, 671, 137, gideon07c, 49 + fallout.random(0, 2))
@@ -343,7 +343,7 @@ function gideon12()
     fallout.giq_option(8, 671, 146, gideon06, 49 + fallout.random(0, 2))
     fallout.giq_option(4, 671, 147, gideon12a, 49 + fallout.random(0, 2))
     fallout.giq_option(4, 671, 148, gideon13, 49 + fallout.random(0, 2))
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 671, 136, gideon12a, 49 + fallout.random(0, 2))
     end
     fallout.giq_option(4, 671, 150, dialog_end, 49 + fallout.random(0, 2))
@@ -368,7 +368,7 @@ end
 function gideon13()
     fallout.gsay_reply(671, 130)
     fallout.giq_option(8, 671, 131, gideonnull, 49 + fallout.random(0, 2))
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 671, 132, combat, 49 + fallout.random(0, 2))
     end
     fallout.giq_option(4, 671, 133, gideon13a, 49 + fallout.random(0, 2))

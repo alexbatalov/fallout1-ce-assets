@@ -365,7 +365,7 @@ function jerem02()
     fallout.giq_option(7, 672, 107, jerem02a, 50)
     fallout.giq_option(4, 672, 108, jerem04, 50)
     fallout.giq_option(4, 672, 109, jerem04, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 672, 110, jerem02b, 50)
     end
 end
@@ -409,7 +409,7 @@ function jerem05()
     fallout.gsay_reply(672, 116)
     fallout.giq_option(4, 672, 117, jerem03, 50)
     fallout.giq_option(4, 672, 118, jerem05a, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 672, 119, jeremcbt, 51)
     end
 end
@@ -432,7 +432,7 @@ function jerem07()
     fallout.giq_option(4, 672, 122, jerem06, 51)
     fallout.giq_option(-4, 672, 103, jerem01, 50)
     fallout.giq_option(7, 672, 124, jerem10, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 672, 125, jeremcbt, 51)
     end
 end
@@ -467,7 +467,7 @@ function jerem09a()
     fallout.giq_option(4, 672, 127, jerem08a, 50)
     fallout.giq_option(4, 672, 128, jerem12, 51)
     fallout.giq_option(8, 672, 129, jerem11, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 672, 130, jerem08b, 50)
     end
 end
@@ -497,7 +497,7 @@ function jerem14()
     fallout.gsay_reply(672, 141)
     fallout.giq_option(4, 672, 142, jeremret, 50)
     fallout.giq_option(4, 672, 143, jerem14a, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 672, 144, jeremcbt, 51)
     end
 end
@@ -528,7 +528,7 @@ end
 function jerem18a()
     fallout.giq_option(4, 672, 151, jeremret, 50)
     fallout.giq_option(4, 672, 152, jerem12, 51)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 672, 153, jeremcbt, 51)
     end
 end
@@ -541,7 +541,7 @@ end
 function jerem19a()
     fallout.giq_option(4, 672, 137, jerem14, 50)
     fallout.giq_option(4, 672, 138, jerem15, 51)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 672, 139, jeremcbt, 51)
     end
     fallout.giq_option(-3, 672, 140, jerem16, 50)
@@ -553,7 +553,7 @@ function jerem20()
     fallout.giq_option(4, 672, 159, jerem12, 51)
     fallout.giq_option(4, 672, 160, jerem15, 51)
     fallout.giq_option(7, 672, 161, jerem20a, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 672, 162, jeremcbt, 51)
     end
 end
@@ -571,7 +571,7 @@ function jerem21()
     fallout.giq_option(4, 672, 164, jerem12, 51)
     fallout.giq_option(4, 672, 165, jerem12, 51)
     fallout.giq_option(4, 672, 166, jerem21a, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 672, 167, jeremcbt, 51)
     end
 end
@@ -614,7 +614,7 @@ function jerem25()
     fallout.gsay_reply(672, 182)
     fallout.giq_option(4, 672, 183, jeremend, 50)
     fallout.giq_option(4, 672, 184, jerem26, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 672, 185, jerem26, 50)
     end
 end
@@ -633,7 +633,7 @@ function jerem27()
     fallout.giq_option(4, 672, 174, jerem28, 51)
     fallout.giq_option(4, 672, 175, jeremend, 50)
     fallout.giq_option(4, 672, 176, jeremend, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 672, 177, jeremcbt, 51)
     end
 end

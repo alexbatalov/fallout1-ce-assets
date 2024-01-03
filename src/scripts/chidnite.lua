@@ -105,7 +105,7 @@ function Nightkin01()
     if fallout.global_var(194) == 1 then
         fallout.giq_option(4, 394, 106, Nightkin05, 50)
     end
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 394, 107, Nightkin04, 50)
     end
     fallout.giq_option(-3, 394, 108, Nightkinend, 50)
@@ -141,7 +141,7 @@ function Nightkin05()
     fallout.giq_option(4, 394, 115, Nightkin07, 50)
     fallout.giq_option(4, 394, 116, Nightkin07, 50)
     fallout.giq_option(4, 394, 117, Nightkinend, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 394, 118, Nightkin04, 50)
     end
 end
@@ -164,7 +164,7 @@ function Nightkin07()
     fallout.giq_option(4, 394, 121, Nightkin04, 50)
     fallout.giq_option(4, 394, 122, Nightkin04, 50)
     fallout.giq_option(4, 394, 123, Nightkinend, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 394, 124, Combat, 50)
     end
 end

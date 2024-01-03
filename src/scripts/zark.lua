@@ -148,17 +148,17 @@ function talk_p_proc()
             zark00()
         else
             if armed then
-                if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(160) > (3 * fallout.global_var(159))) or (fallout.global_var(157) == 1)) or (fallout.global_var(155) > 50) then
+                if reputation.has_rep_champion() or (fallout.global_var(155) > 50) then
                     zark02()
-                elseif (fallout.global_var(158) > 2) or (((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1))) or (fallout.global_var(155) < -50) then
+                elseif (fallout.global_var(158) > 2) or (reputation.has_rep_berserker()) or (fallout.global_var(155) < -50) then
                     zark45()
                 else
                     zark03()
                 end
             else
-                if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(160) > (3 * fallout.global_var(159))) or (fallout.global_var(157) == 1)) or (fallout.global_var(155) > 50) then
+                if reputation.has_rep_champion() or (fallout.global_var(155) > 50) then
                     zark02()
-                elseif (fallout.global_var(158) > 2) or (((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1))) or (fallout.global_var(155) < -50) then
+                elseif (fallout.global_var(158) > 2) or (reputation.has_rep_berserker()) or (fallout.global_var(155) < -50) then
                     zark45()
                 else
                     zark04()
@@ -195,7 +195,7 @@ function zark00()
     fallout.giq_option(4, 392, 103, zark00a, 50)
     fallout.giq_option(4, 392, 104, zark00b, 50)
     fallout.giq_option(4, 392, 105, zark11, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 392, 106, zark00c, 50)
     end
     fallout.giq_option(-3, 392, 107, zark11, 50)
@@ -231,7 +231,7 @@ function zark01()
     fallout.giq_option(7, 392, 110, zark39, 50)
     fallout.giq_option(4, 392, 111, zark46, 50)
     fallout.giq_option(4, 392, 112, zark08, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 392, 113, zark12, 50)
     end
     fallout.giq_option(3, 392, 114, zark18, 50)
@@ -329,7 +329,7 @@ function zark06()
     fallout.giq_option(4, 392, 139, zark06b, 50)
     fallout.giq_option(4, 392, 140, zark20, 50)
     fallout.giq_option(4, 392, 141, zark46, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 392, 142, zark11, 50)
     end
 end
@@ -357,7 +357,7 @@ function zark07()
         fallout.giq_option(7, 392, 144, zark07a, 50)
     end
     fallout.giq_option(4, 392, 145, zark33, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 392, 146, zark36, 50)
     end
 end
@@ -376,7 +376,7 @@ function zark08()
     fallout.giq_option(7, 392, 148, zark08a, 50)
     fallout.giq_option(4, 392, 149, zark49, 50)
     fallout.giq_option(4, 392, 150, zark31, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 392, 151, zark18, 50)
     end
 end
@@ -394,7 +394,7 @@ function zark09()
     fallout.giq_option(7, 392, 153, zark31, 50)
     fallout.giq_option(4, 392, 154, zark47, 50)
     fallout.giq_option(4, 392, 155, zark29, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 392, 156, zark12, 50)
     end
 end
@@ -428,7 +428,7 @@ function zark14()
     fallout.giq_option(4, 392, 166, zark18, 50)
     fallout.giq_option(4, 392, 167, zark16, 50)
     fallout.giq_option(4, 392, 168, zark17, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 392, 169, zark16, 50)
     end
     fallout.giq_option(-3, 392, 170, zark18, 50)
@@ -448,7 +448,7 @@ function zark15()
     fallout.giq_option(4, 392, 173, zark15a, 50)
     fallout.giq_option(4, 392, 174, zark20, 50)
     fallout.giq_option(4, 392, 175, zark46, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 392, 176, zark15c, 50)
     end
 end
@@ -488,7 +488,7 @@ function zark19()
     fallout.giq_option(4, 392, 182, zark24, 50)
     fallout.giq_option(4, 392, 183, zark25, 50)
     fallout.giq_option(4, 392, 184, zark24, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 392, 185, zark18, 50)
     end
 end
@@ -511,7 +511,7 @@ function zark20()
     if fallout.global_var(194) == 1 then
         fallout.giq_option(4, 392, 191, zark30, 50)
     end
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 392, 192, zark21, 50)
     end
 end
@@ -525,7 +525,7 @@ function zark22()
     fallout.giq_option(4, 392, 195, zark19, 50)
     fallout.giq_option(4, 392, 196, zark20, 50)
     fallout.giq_option(4, 392, 197, zark31, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 392, 198, zark21, 50)
     end
 end
@@ -552,7 +552,7 @@ function zark27()
     fallout.giq_option(4, 392, 205, zark33, 50)
     fallout.giq_option(4, 392, 206, zark34, 50)
     fallout.giq_option(4, 392, 207, zark35, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 392, 208, zark21, 50)
     end
 end
@@ -566,7 +566,7 @@ function zark28()
         fallout.giq_option(7, 392, 211, zark28a, 50)
     end
     fallout.giq_option(4, 392, 212, zark33, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 392, 213, zark36, 50)
     end
 end
@@ -590,7 +590,7 @@ function zark30()
     fallout.gsay_reply(392, 215)
     fallout.giq_option(4, 392, 216, zark37, 50)
     fallout.giq_option(4, 392, 217, zark37, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 392, 218, zark21, 50)
     end
 end
@@ -605,7 +605,7 @@ function zark31()
     if fallout.global_var(194) == 1 then
         fallout.giq_option(4, 392, 224, zark30, 50)
     end
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 392, 225, zark21, 50)
     end
 end
@@ -661,7 +661,7 @@ function zark38()
     if fallout.global_var(194) == 1 then
         fallout.giq_option(4, 392, 237, zark30, 50)
     end
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 392, 238, zark38c, 50)
     end
 end
@@ -696,7 +696,7 @@ function zark39()
     fallout.giq_option(7, 392, 241, zark39b, 50)
     fallout.giq_option(4, 392, 242, zark40, 50)
     fallout.giq_option(4, 392, 243, zark29, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 392, 244, zark18, 50)
     end
 end
@@ -723,7 +723,7 @@ function zark40()
     fallout.giq_option(7, 392, 247, zark41, 50)
     fallout.giq_option(4, 392, 248, zark42, 50)
     fallout.giq_option(4, 392, 249, zark43, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 392, 250, zark42, 50)
     end
 end
@@ -746,7 +746,7 @@ function zark41()
     end
     fallout.giq_option(4, 392, 255, zark41b, 50)
     fallout.giq_option(4, 392, 256, zark47, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 392, 257, zarkcombat, 50)
     end
 end

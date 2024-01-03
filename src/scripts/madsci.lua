@@ -171,7 +171,7 @@ function madsci00()
     end
     fallout.giq_option(7, 679, 103, madsci00a, 50)
     fallout.giq_option(4, 679, 104, madsci04, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 679, 105, madsci00b, 50)
     end
     fallout.giq_option(-3, 679, 106, madsci06, 50)
@@ -197,7 +197,7 @@ function madsci01()
     fallout.gsay_reply(679, 107)
     fallout.giq_option(4, 679, 108, madsci01a, 50)
     fallout.giq_option(4, 679, 109, madsci02, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 679, 110, combat, 51)
     end
     fallout.giq_option(-3, 679, 111, madsci06, 50)
@@ -243,7 +243,7 @@ function madsci03()
     end
     fallout.giq_option(4, 679, 103, madsci03a, 50)
     fallout.giq_option(4, 679, 104, madsci04, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 679, 119, madsci03b, 50)
     end
 end
@@ -268,7 +268,7 @@ function madsci04()
     fallout.gsay_reply(679, 120)
     fallout.giq_option(4, 679, 121, madsci04a, 50)
     fallout.giq_option(4, 679, 122, madsci05, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 679, 123, combat, 51)
     end
 end
@@ -285,7 +285,7 @@ function madsci05()
     fallout.gsay_reply(679, 124)
     fallout.giq_option(4, 679, 125, dialog_end, 50)
     fallout.giq_option(4, 679, 126, madsci09, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 679, 127, combat, 51)
     end
 end
@@ -298,7 +298,7 @@ function madsci07()
     fallout.gsay_reply(679, 129)
     fallout.giq_option(4, 679, 130, madsci05, 50)
     fallout.giq_option(4, 679, 131, dialog_end, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 679, 132, combat, 51)
     end
 end
@@ -312,7 +312,7 @@ function madsci09()
     fallout.giq_option(4, 679, 135, madsci09a, 50)
     fallout.giq_option(4, 679, 136, madsci09b, 51)
     fallout.giq_option(4, 679, 137, madsci09c, 51)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 679, 138, combat, 51)
     end
 end
@@ -349,7 +349,7 @@ function madsci10()
     end
     fallout.giq_option(4, 679, 139, madsci10a, 50)
     fallout.giq_option(4, 679, 140, dialog_end, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 679, 119, madsci10b, 50)
     end
 end
@@ -434,7 +434,7 @@ function madsci14()
     fallout.gsay_reply(679, 150)
     fallout.giq_option(4, 679, 151, madsci14a, 50)
     fallout.giq_option(4, 679, 122, madsci05, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 679, 123, combat, 50)
     end
 end

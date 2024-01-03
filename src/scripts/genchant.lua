@@ -78,7 +78,7 @@ function Chant01()
     fallout.giq_option(7, 396, 103, Chant02, 50)
     fallout.giq_option(4, 396, 104, Chant03, 50)
     fallout.giq_option(4, 396, 105, Chant04, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 396, 106, Chant05, 50)
     end
     fallout.giq_option(-3, 396, 107, Chant06, 50)

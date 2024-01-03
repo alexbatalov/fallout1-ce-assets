@@ -246,10 +246,10 @@ function talk_p_proc()
             if fallout.global_var(158) > 2 then
                 JTGenGrd19()
             else
-                if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) or (fallout.local_var(1) == 1) then
+                if reputation.has_rep_berserker() or (fallout.local_var(1) == 1) then
                     JTGenGrd09()
                 else
-                    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(160) > (3 * fallout.global_var(159))) or (fallout.global_var(157) == 1)) or (fallout.local_var(1) == 3) then
+                    if reputation.has_rep_champion() or (fallout.local_var(1) == 3) then
                         JTGenGrd16()
                     else
                         JTGenGrd20()
@@ -438,10 +438,10 @@ function get_reaction()
         if fallout.global_var(158) > 2 then
             fallout.set_local_var(0, fallout.local_var(0) - 30)
         end
-        if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(160) > (3 * fallout.global_var(159))) or (fallout.global_var(157) == 1)) then
+        if reputation.has_rep_champion() then
             fallout.set_local_var(0, fallout.local_var(0) + 20)
         end
-        if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+        if reputation.has_rep_berserker() then
             fallout.set_local_var(0, fallout.local_var(0) - 20)
         end
         ReactToLevel()

@@ -111,14 +111,14 @@ function Cop00()
         if fallout.global_var(158) > 2 then
             fallout.float_msg(fallout.self_obj(), fallout.message_str(573, fallout.random(113, 116)), 2)
         else
-            if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+            if reputation.has_rep_berserker() then
                 if fallout.get_critter_stat(fallout.dude_obj(), 34) == 0 then
                     fallout.float_msg(fallout.self_obj(), fallout.message_str(573, fallout.random(110, 112)), 2)
                 else
                     fallout.float_msg(fallout.self_obj(), fallout.message_str(573, fallout.random(110, 111)), 2)
                 end
             else
-                if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(160) > (3 * fallout.global_var(159))) or (fallout.global_var(157) == 1)) then
+                if reputation.has_rep_champion() then
                     fallout.float_msg(fallout.self_obj(), fallout.message_str(573, fallout.random(117, 118)), 2)
                 else
                     if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) then

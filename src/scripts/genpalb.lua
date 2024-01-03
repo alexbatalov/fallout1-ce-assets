@@ -141,7 +141,7 @@ function talk_p_proc()
                             GenPalB04()
                         end
                     else
-                        if (fallout.global_var(155) < 20) or (((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1))) or (fallout.global_var(158) > 2) then
+                        if (fallout.global_var(155) < 20) or (reputation.has_rep_berserker()) or (fallout.global_var(158) > 2) then
                             GenPalB06()
                         else
                             GenPalB05()

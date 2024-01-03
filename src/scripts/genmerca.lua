@@ -74,7 +74,7 @@ function pickup_p_proc()
 end
 
 function talk_p_proc()
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.set_global_var(156, 1)
         fallout.set_global_var(157, 0)
     end
@@ -93,7 +93,7 @@ function GenMercA00()
     fallout.gsay_reply(752, 100)
     fallout.giq_option(4, 752, 101, GenMercA01, 50)
     fallout.giq_option(4, 752, 102, GenMercA02, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 752, 103, GenMercA03, 51)
     end
     fallout.giq_option(-3, 752, 104, GenMercAEnd, 50)
@@ -118,7 +118,7 @@ function GenMercA03()
 end
 
 function GenMercA04()
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) or (fallout.global_var(158) > 2) or (fallout.global_var(155) < -20) then
+    if reputation.has_rep_berserker() or (fallout.global_var(158) > 2) or (fallout.global_var(155) < -20) then
         fallout.gsay_message(752, 117, 51)
     else
         if fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), 14, 0)) then

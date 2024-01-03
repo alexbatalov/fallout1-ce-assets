@@ -218,14 +218,14 @@ function talk_p_proc()
             if fallout.local_var(4) == 0 then
                 fallout.set_local_var(4, 1)
                 if ((fallout.global_var(37) == 0) and (fallout.global_var(38) == 0)) == 1 then
-                    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+                    if reputation.has_rep_berserker() then
                         fallout.start_gdialog(594, fallout.self_obj(), 4, -1, -1)
                         fallout.gsay_start()
                         Kane11()
                         fallout.gsay_end()
                         fallout.end_dialogue()
                     else
-                        if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(160) > (3 * fallout.global_var(159))) or (fallout.global_var(157) == 1)) then
+                        if reputation.has_rep_champion() then
                             fallout.start_gdialog(594, fallout.self_obj(), 4, -1, -1)
                             fallout.gsay_start()
                             Kane15()
@@ -1032,7 +1032,7 @@ end
 function Kane93()
     fallout.gsay_reply(594, 310)
     fallout.giq_option(4, 594, 311, Kane95, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 594, 312, Kane148, 51)
     end
     fallout.giq_option(4, 594, 313, Kane93a, 50)

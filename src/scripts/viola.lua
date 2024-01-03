@@ -159,10 +159,10 @@ function do_dialogue()
                             if fallout.obj_pid(fallout.critter_inven_obj(fallout.dude_obj(), 0)) == 113 then
                                 viola05()
                             else
-                                if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(160) > (3 * fallout.global_var(159))) or (fallout.global_var(157) == 1)) then
+                                if reputation.has_rep_champion() then
                                     viola06()
                                 else
-                                    if (fallout.global_var(158) > 2) and (((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1))) then
+                                    if (fallout.global_var(158) > 2) and (reputation.has_rep_berserker()) then
                                         viola07()
                                     else
                                         viola08()
@@ -203,7 +203,7 @@ function viola01()
     fallout.giq_option(7, 496, 110, viola13, 50)
     fallout.giq_option(4, 496, 111, viola14, 50)
     fallout.giq_option(4, 496, 112, viola15, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 496, 113, violacombat, 50)
     end
     fallout.giq_option(-3, 496, 114, violaend, 50)
@@ -225,7 +225,7 @@ function viola04()
     if fallout.global_var(194) == 1 then
         fallout.giq_option(4, 496, 121, viola18, 50)
     end
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 496, 122, viola19, 50)
     end
     fallout.giq_option(-3, 496, 299, violaend, 50)
@@ -237,7 +237,7 @@ function viola05()
     fallout.giq_option(4, 496, 125, viola46, 50)
     fallout.giq_option(4, 496, 126, viola47, 50)
     fallout.giq_option(4, 496, 127, viola48, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 496, 128, viola49, 50)
     end
 end
@@ -260,7 +260,7 @@ function viola06()
     fallout.giq_option(4, 496, 132, viola52, 50)
     fallout.giq_option(4, 496, 133, viola47, 50)
     fallout.giq_option(4, 496, 134, viola48, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 496, 135, viola49, 50)
     end
 end
@@ -283,7 +283,7 @@ function viola07()
     fallout.giq_option(4, 496, 139, viola52, 50)
     fallout.giq_option(4, 496, 140, viola47, 50)
     fallout.giq_option(4, 496, 141, viola48, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 496, 142, viola49, 50)
     end
 end
@@ -300,7 +300,7 @@ function viola08()
     fallout.gsay_reply(496, 143)
     fallout.giq_option(7, 496, 144, viola08a, 50)
     fallout.giq_option(4, 496, 145, viola55, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 496, 146, viola40, 50)
     end
     fallout.giq_option(-3, 496, 299, violaend, 50)
@@ -335,7 +335,7 @@ function viola13()
     fallout.giq_option(7, 496, 152, viola20, 50)
     fallout.giq_option(4, 496, 153, viola21, 50)
     fallout.giq_option(4, 496, 154, viola22, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 496, 155, viola23, 50)
     end
 end
@@ -345,7 +345,7 @@ function viola14()
     fallout.giq_option(7, 496, 157, viola16, 50)
     fallout.giq_option(4, 496, 158, viola21, 50)
     fallout.giq_option(4, 496, 159, viola22, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 496, 160, viola23, 50)
     end
 end
@@ -388,7 +388,7 @@ function viola22()
     fallout.giq_option(7, 496, 174, viola41, 50)
     fallout.giq_option(4, 496, 175, viola21, 50)
     fallout.giq_option(4, 496, 176, viola42, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 496, 177, viola43, 50)
     end
 end
@@ -410,7 +410,7 @@ function viola25()
     fallout.giq_option(7, 496, 185, viola31, 50)
     fallout.giq_option(4, 496, 186, viola32, 50)
     fallout.giq_option(4, 496, 187, viola33, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 496, 188, viola34, 50)
     end
 end
@@ -420,7 +420,7 @@ function viola26()
     fallout.giq_option(7, 496, 190, viola35, 50)
     fallout.giq_option(4, 496, 191, viola32, 50)
     fallout.giq_option(4, 496, 192, viola36, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 496, 193, viola37, 50)
     end
 end
@@ -430,7 +430,7 @@ function viola27()
     fallout.giq_option(7, 496, 195, viola29, 50)
     fallout.giq_option(4, 496, 196, viola38, 50)
     fallout.giq_option(4, 496, 197, viola39, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 496, 198, viola40, 50)
     end
 end
@@ -494,7 +494,7 @@ function viola41()
     fallout.giq_option(4, 496, 215, viola32, 50)
     fallout.giq_option(4, 496, 216, viola30, 50)
     fallout.giq_option(4, 496, 217, viola31, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 496, 218, viola43, 50)
     end
 end
@@ -506,7 +506,7 @@ function viola42()
     fallout.giq_option(4, 496, 222, viola32, 50)
     fallout.giq_option(4, 496, 223, viola30, 50)
     fallout.giq_option(4, 496, 224, viola31, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 496, 225, viola43, 50)
     end
 end
@@ -520,7 +520,7 @@ function viola44()
     fallout.giq_option(7, 496, 228, viola56, 50)
     fallout.giq_option(4, 496, 229, viola16, 50)
     fallout.giq_option(4, 496, 230, viola57, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 496, 231, viola49, 50)
     end
 end
@@ -574,7 +574,7 @@ function viola52()
     fallout.giq_option(7, 496, 256, viola72, 50)
     fallout.giq_option(4, 496, 257, viola73, 50)
     fallout.giq_option(4, 496, 258, viola74, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 496, 259, viola75, 50)
     end
 end

@@ -153,7 +153,7 @@ function rae00()
     fallout.giq_option(7, 671, 103, rae02, 50)
     fallout.giq_option(4, 671, 104, rae00a, 50)
     fallout.giq_option(4, 671, 105, rae00b, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 671, 106, combat, 50)
     end
     fallout.giq_option(4, 671, 107, dialog_end, 50)
@@ -180,7 +180,7 @@ function rae01()
     fallout.gsay_reply(671, 109)
     fallout.giq_option(7, 671, 110, rae01a, 50)
     fallout.giq_option(4, 671, 111, dialog_end, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 671, 112, combat, 50)
     end
     fallout.giq_option(4, 671, 113, rae02, 50)
@@ -272,7 +272,7 @@ function rae05()
     fallout.gsay_reply(671, 131)
     fallout.giq_option(9, 671, 132, rae06, 50)
     fallout.giq_option(8, 671, 133, rae05a, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 671, 134, combat, 50)
     end
     fallout.giq_option(4, 671, 135, rae05b, 50)
@@ -301,7 +301,7 @@ function rae06()
     fallout.giq_option(9, 671, 139, rae07, 50)
     fallout.giq_option(7, 671, 140, rae06a, 50)
     fallout.giq_option(4, 671, 141, rae06b, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 671, 142, rae06c, 50)
     end
 end

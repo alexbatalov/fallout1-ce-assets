@@ -124,11 +124,11 @@ function talk_p_proc()
     MAX_HITS = fallout.get_critter_stat(dude_obj, 7)
     HITS = fallout.get_critter_stat(dude_obj, 35)
     reaction.get_reaction()
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.set_global_var(156, 1)
         fallout.set_global_var(157, 0)
     end
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(160) > (3 * fallout.global_var(159))) or (fallout.global_var(157) == 1)) then
+    if reputation.has_rep_champion() then
         fallout.set_global_var(157, 1)
         fallout.set_global_var(156, 0)
     end
@@ -191,7 +191,7 @@ function talk_p_proc()
     elseif fallout.global_var(26) == 1 and fallout.global_var(218) == 1 and fallout.local_var(4) == 1 then
         fallout.set_local_var(4, 2)
         razlo07()
-    elseif ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) or (fallout.global_var(158) > 2) then
+    elseif reputation.has_rep_berserker() or (fallout.global_var(158) > 2) then
         fallout.start_gdialog(129, fallout.self_obj(), 4, -1, -1)
         fallout.gsay_start()
         razlo00()

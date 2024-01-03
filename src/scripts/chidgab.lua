@@ -47,7 +47,7 @@ end
 function talk_p_proc()
     fallout.script_overrides()
     if fallout.global_var(195) == 1 then
-        if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) or (fallout.global_var(158) > 2) then
+        if reputation.has_rep_berserker() or (fallout.global_var(158) > 2) then
             fallout.float_msg(fallout.self_obj(), fallout.message_str(395, 102), 0)
         else
             fallout.float_msg(fallout.self_obj(), fallout.message_str(395, 101), 0)
@@ -85,7 +85,7 @@ function Brat02()
     if fallout.global_var(194) == 1 then
         fallout.giq_option(4, 395, 107, Brat06, 50)
     end
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 395, 108, Brat07, 50)
     end
     fallout.giq_option(-3, 395, 109, Brat07, 50)

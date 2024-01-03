@@ -81,7 +81,7 @@ function pickup_p_proc()
 end
 
 function talk_p_proc()
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.set_global_var(156, 1)
         fallout.set_global_var(157, 0)
     end
@@ -96,7 +96,7 @@ function talk_p_proc()
             if fallout.global_var(45) == 2 then
                 fallout.float_msg(fallout.self_obj(), fallout.message_str(758, 102), 4)
             else
-                if (fallout.global_var(155) < -20) or (((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1))) or (fallout.global_var(158) > 2) then
+                if (fallout.global_var(155) < -20) or (reputation.has_rep_berserker()) or (fallout.global_var(158) > 2) then
                     fallout.float_msg(fallout.self_obj(), fallout.message_str(758, 104), 2)
                 else
                     fallout.float_msg(fallout.self_obj(), fallout.message_str(758, 103), 3)

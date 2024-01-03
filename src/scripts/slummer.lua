@@ -157,20 +157,20 @@ function do_dialogue()
             slummer00()
         else
             if armed == 1 then
-                if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(160) > (3 * fallout.global_var(159))) or (fallout.global_var(157) == 1)) then
+                if reputation.has_rep_champion() then
                     slummer04()
                 else
-                    if (fallout.global_var(158) > 2) or (((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1))) then
+                    if (fallout.global_var(158) > 2) or (reputation.has_rep_berserker()) then
                         slummer06()
                     else
                         slummer05()
                     end
                 end
             else
-                if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(160) > (3 * fallout.global_var(159))) or (fallout.global_var(157) == 1)) then
+                if reputation.has_rep_champion() then
                     slummer07()
                 else
-                    if (fallout.global_var(158) > 2) or (((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1))) then
+                    if (fallout.global_var(158) > 2) or (reputation.has_rep_berserker()) then
                         slummer09()
                     else
                         slummer08()
@@ -206,7 +206,7 @@ function slummer02()
     if fallout.global_var(194) == 1 then
         fallout.giq_option(4, 391, 108, slummer16, 50)
     end
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 391, 109, slummer18, 50)
     end
     fallout.giq_option(-3, 391, 110, slummer14, 50)
@@ -221,7 +221,7 @@ function slummer03()
     if fallout.global_var(194) == 1 then
         fallout.giq_option(4, 391, 116, slummer16, 50)
     end
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 391, 117, slummer17, 50)
     end
     fallout.giq_option(-3, 391, 118, slummer23, 50)
@@ -273,7 +273,7 @@ function slummer06()
     fallout.giq_option(4, 391, 135, slummer32, 50)
     fallout.giq_option(4, 391, 136, slummer31, 50)
     fallout.giq_option(4, 391, 137, slummer34, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 391, 138, slummer34, 50)
     end
     if fallout.global_var(194) == 1 then
@@ -352,7 +352,7 @@ function slummer13()
     fallout.giq_option(7, 391, 167, slummer13b, 50)
     fallout.giq_option(4, 391, 168, slummer13c, 50)
     fallout.giq_option(4, 391, 169, slummer43, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 391, 170, slummercombat, 50)
     end
 end
@@ -393,7 +393,7 @@ function slummer16()
     fallout.gsay_reply(391, 173)
     fallout.giq_option(7, 391, 174, slummer44, 50)
     fallout.giq_option(4, 391, 175, slummer45, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 391, 176, slummercombat, 50)
     end
 end
@@ -422,7 +422,7 @@ function slummer19()
     fallout.giq_option(7, 391, 183, slummer19a, 50)
     fallout.giq_option(7, 391, 184, slummer47, 50)
     fallout.giq_option(4, 391, 185, slummer44, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 391, 186, slummer44, 50)
     end
 end
@@ -436,7 +436,7 @@ function slummer20()
     fallout.gsay_reply(391, 187)
     fallout.giq_option(7, 391, 188, slummer47, 50)
     fallout.giq_option(4, 391, 189, slummer44, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 391, 190, slummer44, 50)
     end
 end
@@ -450,7 +450,7 @@ function slummer21()
     if fallout.global_var(194) == 1 then
         fallout.giq_option(4, 391, 196, slummer16, 50)
     end
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 391, 197, slummercombat, 50)
     end
 end
@@ -473,7 +473,7 @@ function slummer22()
     if fallout.global_var(194) == 1 then
         fallout.giq_option(4, 391, 203, slummer16, 50)
     end
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 391, 204, slummer44, 50)
     end
 end
@@ -496,7 +496,7 @@ function slummer25()
     if fallout.global_var(194) == 1 then
         fallout.giq_option(4, 391, 212, slummer16, 50)
     end
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 391, 213, slummer24, 50)
     end
 end
@@ -515,7 +515,7 @@ function slummer26()
     fallout.giq_option(7, 391, 216, slummer33, 50)
     fallout.giq_option(4, 391, 217, slummer55, 50)
     fallout.giq_option(4, 391, 218, slummer54, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 391, 219, slummer24, 50)
     end
 end
@@ -551,7 +551,7 @@ function slummer29()
     fallout.giq_option(7, 391, 231, slummer59, 50)
     fallout.giq_option(4, 391, 232, slummer01, 50)
     fallout.giq_option(4, 391, 233, slummer44, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 391, 234, slummercombat, 50)
     end
 end
@@ -566,7 +566,7 @@ function slummer31()
     fallout.giq_option(7, 391, 238, slummer44, 50)
     fallout.giq_option(4, 391, 239, slummer18, 50)
     fallout.giq_option(4, 391, 240, slummer20, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 391, 241, slummer24, 50)
     end
 end
@@ -607,7 +607,7 @@ function slummer36()
         fallout.giq_option(7, 391, 257, slummer36b, 50)
         fallout.giq_option(4, 391, 258, slummer20, 50)
     end
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 391, 259, slummer24, 50)
     end
 end
@@ -645,7 +645,7 @@ function slummer38()
     fallout.giq_option(7, 391, 262, slummer38a, 50)
     fallout.giq_option(4, 391, 263, slummer01, 50)
     fallout.giq_option(4, 391, 264, slummer44, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 391, 265, slummercombat, 50)
     end
 end
@@ -667,7 +667,7 @@ function slummer42()
     fallout.gsay_reply(391, 269)
     fallout.giq_option(4, 391, 270, slummer44, 50)
     fallout.giq_option(4, 391, 271, slummer50, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 391, 272, slummer49, 50)
     end
     fallout.giq_option(-3, 391, 273, slummer48, 50)
@@ -692,7 +692,7 @@ function slummer46()
     fallout.giq_option(4, 391, 279, slummer41, 50)
     fallout.giq_option(4, 391, 280, slummer44, 50)
     fallout.giq_option(4, 391, 281, slummer44, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 391, 282, slummer44, 50)
     end
 end
@@ -719,7 +719,7 @@ function slummer51()
     fallout.giq_option(7, 391, 289, slummer63, 50)
     fallout.giq_option(4, 391, 290, slummer64, 50)
     fallout.giq_option(4, 391, 291, slummer54, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 391, 292, slummer24, 50)
     end
 end
@@ -738,7 +738,7 @@ function slummer52()
     fallout.giq_option(7, 391, 295, slummer53, 50)
     fallout.giq_option(4, 391, 296, slummer41, 50)
     fallout.giq_option(4, 391, 297, slummer44, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 391, 298, slummercombat, 50)
     end
 end
@@ -764,7 +764,7 @@ function slummer54()
     if fallout.global_var(194) == 1 then
         fallout.giq_option(4, 391, 304, slummer16, 50)
     end
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 391, 305, slummercombat, 50)
     end
 end
@@ -786,7 +786,7 @@ function slummer55()
     if fallout.global_var(194) == 1 then
         fallout.giq_option(4, 391, 311, slummer16, 50)
     end
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 391, 312, slummercombat, 50)
     end
 end
@@ -800,7 +800,7 @@ function slummer56()
     if fallout.global_var(194) == 1 then
         fallout.giq_option(4, 391, 318, slummer16, 50)
     end
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 391, 319, slummer45, 50)
     end
 end
@@ -834,7 +834,7 @@ function slummer62()
     fallout.giq_option(7, 391, 330, slummer59, 50)
     fallout.giq_option(4, 391, 331, slummer01, 50)
     fallout.giq_option(4, 391, 332, slummer44, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 391, 333, slummercombat, 50)
     end
 end
@@ -847,7 +847,7 @@ function slummer63()
     if fallout.global_var(194) == 1 then
         fallout.giq_option(4, 391, 338, slummer16, 50)
     end
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 391, 339, slummer35, 50)
     end
 end
@@ -864,7 +864,7 @@ function slummer65()
     if fallout.global_var(194) == 1 then
         fallout.giq_option(4, 391, 345, slummer16, 50)
     end
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 391, 346, slummer35, 50)
     end
 end

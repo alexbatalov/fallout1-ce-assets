@@ -218,7 +218,7 @@ end
 
 function Vinnie14()
     fallout.gsay_reply(385, 131)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 385, 132, VinnieCombat, 51)
     end
     fallout.giq_option(4, 385, 133, Vinnie16, 50)
@@ -236,7 +236,7 @@ end
 function Vinnie15()
     fallout.gsay_reply(385, 135)
     fallout.giq_option(4, 385, 136, Vinnie15a, 50)
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         fallout.giq_option(4, 385, 137, VinnieCombat, 51)
     end
     fallout.giq_option(4, 385, 138, VinnieEnd, 50)

@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local reputation = require("lib.reputation")
 
 --
 -- Some unreferenced imported varables found.
@@ -103,7 +104,7 @@ function start()
                                                 else
                                                     fallout.display_msg(fallout.message_str(740, 105))
                                                     g2 = 1
-                                                    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+                                                    if reputation.has_rep_berserker() then
                                                         g2 = g2 + 15
                                                     end
                                                     if fallout.global_var(158) > 2 then
@@ -143,7 +144,7 @@ end
 
 function blast_party()
     g2 = 1
-    if ((fallout.global_var(160) + fallout.global_var(159)) >= 25) and ((fallout.global_var(159) > (2 * fallout.global_var(160))) or (fallout.global_var(156) == 1)) then
+    if reputation.has_rep_berserker() then
         g2 = g2 + 7
     end
     if fallout.global_var(158) > 2 then
