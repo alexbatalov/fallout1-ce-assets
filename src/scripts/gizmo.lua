@@ -68,55 +68,37 @@ local Gizmox2
 local GizmoPay
 local badmouth
 
-local rndx = 0
-local rndy = 0
-local rndz = 0
-local HOSTILE = 0
-local INSISTS = 0
-local CRIME = 0
-local stealing = 0
-local initialized = false
-
-local exit_line = 0
+local hostile = false
+local stealing = false
 
 function start()
-    if fallout.script_action() == 12 then
+    local script_action = fallout.script_action()
+    if script_action == 12 then
         critter_p_proc()
-    else
-        if fallout.script_action() == 3 then
-            description_p_proc()
-        else
-            if fallout.script_action() == 18 then
-                destroy_p_proc()
-            else
-                if fallout.script_action() == 21 then
-                    look_at_p_proc()
-                else
-                    if fallout.script_action() == 15 then
-                        map_enter_p_proc()
-                    else
-                        if fallout.script_action() == 4 then
-                            pickup_p_proc()
-                        else
-                            if fallout.script_action() == 11 then
-                                talk_p_proc()
-                            end
-                        end
-                    end
-                end
-            end
-        end
+    elseif script_action == 3 then
+        description_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 15 then
+        map_enter_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
     end
 end
 
 function critter_p_proc()
-    if HOSTILE then
-        HOSTILE = 0
+    if hostile then
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     else
-        if fallout.external_var("Killian_ptr") ~= 0 then
+        local killian_obj = fallout.external_var("Killian_ptr")
+        if killian_obj ~= nil then
             fallout.float_msg(fallout.self_obj(), fallout.message_str(44, 220), 0)
-            fallout.attack(fallout.external_var("Killian_ptr"), 0, 1, 0, 0, 30000, 0, 0)
+            fallout.attack(killian_obj, 0, 1, 0, 0, 30000, 0, 0)
         else
             if fallout.obj_is_carrying_obj_pid(fallout.self_obj(), 57) then
                 fallout.set_global_var(41, 1)
@@ -149,21 +131,21 @@ function look_at_p_proc()
 end
 
 function map_enter_p_proc()
-    local v0 = 0
-    fallout.set_external_var("Gizmo_ptr", fallout.self_obj())
+    local self_obj = fallout.self_obj()
+    fallout.set_external_var("Gizmo_ptr", self_obj)
     if fallout.local_var(7) == 0 then
         fallout.set_local_var(7, 1000)
     end
-    fallout.critter_add_trait(fallout.self_obj(), 1, 6, 13)
-    fallout.critter_add_trait(fallout.self_obj(), 1, 5, 60)
+    fallout.critter_add_trait(self_obj, 1, 6, 13)
+    fallout.critter_add_trait(self_obj, 1, 5, 60)
     if fallout.global_var(104) == 2 then
-        v0 = fallout.create_object_sid(213, fallout.tile_num(fallout.self_obj()), 0, -1)
-        fallout.kill_critter(fallout.self_obj(), 0)
+        fallout.create_object_sid(213, fallout.tile_num(self_obj), 0, -1)
+        fallout.kill_critter(self_obj, 0)
     end
 end
 
 function pickup_p_proc()
-    stealing = 1
+    stealing = true
     fallout.dialogue_system_enter()
 end
 
@@ -171,37 +153,29 @@ function talk_p_proc()
     reaction.get_reaction()
     if fallout.local_var(8) == 1 then
         fallout.float_msg(fallout.self_obj(), fallout.message_str(669, 104), 2)
+    elseif fallout.global_var(39) == 2 then
+        fallout.float_msg(fallout.self_obj(), fallout.message_str(669, 101), 0)
     else
-        if fallout.global_var(39) == 2 then
-            fallout.float_msg(fallout.self_obj(), fallout.message_str(669, 101), 0)
+        fallout.start_gdialog(44, fallout.self_obj(), 4, 21, 7)
+        fallout.gsay_start()
+        if stealing then
+            Gizmo45()
+        elseif fallout.global_var(37) == 1 then
+            Gizmo21()
+        elseif fallout.local_var(4) > 0 and fallout.local_var(4) < 3 then
+            Gizmo13()
+        elseif fallout.local_var(4) == 3 then
+            Gizmo35()
         else
-            fallout.start_gdialog(44, fallout.self_obj(), 4, 21, 7)
-            fallout.gsay_start()
-            if stealing then
-                Gizmo45()
+            fallout.set_local_var(4, 1)
+            if fallout.global_var(37) == 1 or fallout.global_var(36) == 1 then
+                Gizmo21()
             else
-                if fallout.global_var(37) == 1 then
-                    Gizmo21()
-                else
-                    if (fallout.local_var(4) > 0) and (fallout.local_var(4) < 3) then
-                        Gizmo13()
-                    else
-                        if fallout.local_var(4) == 3 then
-                            Gizmo35()
-                        else
-                            fallout.set_local_var(4, 1)
-                            if (fallout.global_var(37) == 1) or (fallout.global_var(36) == 1) then
-                                Gizmo21()
-                            else
-                                Gizmo01()
-                            end
-                        end
-                    end
-                end
+                Gizmo01()
             end
-            fallout.gsay_end()
-            fallout.end_dialogue()
         end
+        fallout.gsay_end()
+        fallout.end_dialogue()
     end
 end
 
@@ -259,7 +233,7 @@ end
 function Gizmo05()
     fallout.gsay_reply(44, 114)
     fallout.giq_option(7, 44, 115, Gizmo06, 50)
-    if not(fallout.is_success(fallout.do_check(fallout.dude_obj(), 6, 0))) then
+    if not fallout.is_success(fallout.do_check(fallout.dude_obj(), 6, 0)) then
         fallout.giq_option(6, 44, 116, Gizmo05_1, 51)
     end
     fallout.giq_option(4, 44, 117, Gizmo07, 49)
@@ -323,7 +297,7 @@ function Gizmo13()
 end
 
 function Gizmo13_1()
-    if fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 56) or (fallout.global_var(37) == 1) then
+    if fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 56) ~= 0 or fallout.global_var(37) == 1 then
         Gizmo14()
     else
         Gizmo17()
@@ -361,7 +335,7 @@ end
 function Gizmo16()
     fallout.gsay_reply(44, 149)
     fallout.giq_option(4, 44, 150, GizmoPay, 50)
-    if not(fallout.is_success(fallout.do_check(fallout.dude_obj(), 6, 0))) then
+    if not fallout.is_success(fallout.do_check(fallout.dude_obj(), 6, 0)) then
         fallout.giq_option(7, 44, 151, Gizmo16a, 51)
     end
     fallout.giq_option(6, 44, 152, GizmoPay, 50)
@@ -385,7 +359,7 @@ function Gizmo18()
         Gizmo11()
     else
         fallout.set_local_var(6, fallout.local_var(6) + 1)
-        if fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 104) and (fallout.global_var(36) == 1) then
+        if fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 104) ~= 0 and fallout.global_var(36) == 1 then
             fallout.set_global_var(42, 1)
         end
         fallout.gsay_message(44, 158, 50)
@@ -396,7 +370,7 @@ end
 function Gizmo19()
     fallout.gsay_reply(44, 159)
     fallout.giq_option(4, 44, 160, Gizmo20, 50)
-    if not(fallout.is_success(fallout.do_check(fallout.dude_obj(), 6, 0))) then
+    if not fallout.is_success(fallout.do_check(fallout.dude_obj(), 6, 0)) then
         fallout.giq_option(7, 44, 161, Gizmo19a, 51)
     end
     fallout.giq_option(5, 44, 162, Gizmo18, 50)
@@ -481,7 +455,7 @@ end
 function Gizmo28()
     fallout.gsay_reply(44, 193)
     if fallout.global_var(36) == 1 then
-        if fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 104) then
+        if fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 104) ~= 0 then
             fallout.set_global_var(42, 1)
         end
     end
@@ -554,7 +528,7 @@ end
 function Gizmo45()
     fallout.set_external_var("Gizmo_is_angry", 1)
     fallout.set_local_var(8, 1)
-    stealing = 0
+    stealing = false
     if fallout.get_critter_stat(fallout.dude_obj(), 34) == 0 then
         fallout.gsay_message(44, 213, 50)
     else
