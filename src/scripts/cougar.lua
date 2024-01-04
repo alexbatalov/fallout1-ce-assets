@@ -13,40 +13,33 @@ local Cougar02
 local Cougar03
 local Cougar04
 
-local hostile = 0
+local hostile = false
 
 local damage_p_proc
+local look_at_p_proc
 
 function start()
-    if fallout.script_action() == 18 then
+    local script_action = fallout.script_action()
+    if script_action == 18 then
         destroy_p_proc()
-    else
-        if fallout.script_action() == 12 then
-            critter_p_proc()
-        else
-            if fallout.script_action() == 15 then
-                map_enter_p_proc()
-            else
-                if fallout.script_action() == 11 then
-                    talk_p_proc()
-                else
-                    if (fallout.script_action() == 21) or (fallout.script_action() == 3) then
-                        fallout.script_overrides()
-                        fallout.display_msg(fallout.message_str(35, 100))
-                    end
-                end
-            end
-        end
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 15 then
+        map_enter_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 21 or script_action == 3 then
+        look_at_p_proc()
     end
 end
 
 function critter_p_proc()
     if hostile then
-        hostile = 0
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     else
-        if fallout.external_var("fetch_dude") then
-            hostile = 1
+        if fallout.external_var("fetch_dude") ~= 0 then
+            hostile = true
             fallout.set_external_var("fetch_dude", 0)
         end
     end
@@ -58,14 +51,15 @@ function critter_p_proc()
 end
 
 function map_enter_p_proc()
+    local script_action = fallout.script_action()
     if fallout.global_var(15) == 1 then
-        fallout.kill_critter(fallout.self_obj(), 48)
+        fallout.kill_critter(script_action, 48)
     end
-    fallout.critter_add_trait(fallout.self_obj(), 1, 6, 19)
+    fallout.critter_add_trait(script_action, 1, 6, 19)
 end
 
 function pickup_p_proc()
-    hostile = 1
+    hostile = true
 end
 
 function talk_p_proc()
@@ -118,6 +112,11 @@ function damage_p_proc()
     end
 end
 
+function look_at_p_proc()
+    fallout.script_overrides()
+    fallout.display_msg(fallout.message_str(35, 100))
+end
+
 local exports = {}
 exports.start = start
 exports.critter_p_proc = critter_p_proc
@@ -126,4 +125,5 @@ exports.pickup_p_proc = pickup_p_proc
 exports.talk_p_proc = talk_p_proc
 exports.destroy_p_proc = destroy_p_proc
 exports.damage_p_proc = damage_p_proc
+exports.look_at_p_proc = look_at_p_proc
 return exports
