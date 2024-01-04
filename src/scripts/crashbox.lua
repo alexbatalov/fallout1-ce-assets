@@ -8,20 +8,15 @@ local use_p_proc
 local use_skill_on_p_proc
 
 function start()
-    if fallout.script_action() == 3 then
+    local script_action = fallout.script_action()
+    if script_action == 3 then
         description_p_proc()
-    else
-        if fallout.script_action() == 21 then
-            look_at_p_proc()
-        else
-            if fallout.script_action() == 6 then
-                use_p_proc()
-            else
-                if fallout.script_action() == 8 then
-                    use_skill_on_p_proc()
-                end
-            end
-        end
+    elseif script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 6 then
+        use_p_proc()
+    elseif script_action == 8 then
+        use_skill_on_p_proc()
     end
 end
 
@@ -42,7 +37,7 @@ end
 
 function use_skill_on_p_proc()
     if fallout.action_being_used() == 10 then
-        if not(fallout.is_success(fallout.roll_vs_skill(fallout.source_obj(), fallout.action_being_used(), 0))) then
+        if not fallout.is_success(fallout.roll_vs_skill(fallout.source_obj(), fallout.action_being_used(), 0)) then
             if fallout.global_var(168) < time.game_time_in_days() then
                 fallout.set_external_var("messing_with_fridge", 1)
             end
