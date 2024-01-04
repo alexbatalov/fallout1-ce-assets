@@ -28,69 +28,61 @@ local Gretch10
 local GretchEnd
 local GretchCombat
 
-local hostile = 0
+local hostile = false
 local initialized = false
-local warned_about_messing = 0
-
-local exit_line = 0
+local warned_about_messing = false
 
 local damage_p_proc
 
 function start()
     if not initialized then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 19)
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 19)
         initialized = true
-    else
-        if fallout.script_action() == 12 then
-            critter_p_proc()
-        else
-            if fallout.script_action() == 18 then
-                destroy_p_proc()
-            else
-                if fallout.script_action() == 21 then
-                    look_at_p_proc()
-                else
-                    if fallout.script_action() == 4 then
-                        pickup_p_proc()
-                    else
-                        if fallout.script_action() == 11 then
-                            talk_p_proc()
-                        else
-                            if fallout.script_action() == 22 then
-                                timed_event_p_proc()
-                            end
-                        end
-                    end
-                end
-            end
-        end
+    end
+
+    local script_action = fallout.script_action()
+    if script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 22 then
+        timed_event_p_proc()
     end
 end
 
 function critter_p_proc()
+    local self_obj = fallout.self_obj()
+    local dude_obj = fallout.dude_obj()
     if hostile then
-        hostile = 0
-        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+        hostile = false
+        fallout.attack(dude_obj, 0, 1, 0, 0, 30000, 0, 0)
     else
-        if fallout.external_var("messing_with_Morbid_stuff") then
-            if (fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 12) and (fallout.elevation(fallout.self_obj()) == fallout.elevation(fallout.dude_obj())) then
+        if fallout.external_var("messing_with_Morbid_stuff") ~= 0 then
+            if fallout.tile_distance_objs(self_obj, dude_obj) < 12 and fallout.elevation(self_obj) == fallout.elevation(dude_obj) then
                 if warned_about_messing then
-                    hostile = 1
+                    hostile = true
                 else
-                    warned_about_messing = 1
-                    fallout.float_msg(fallout.self_obj(), fallout.message_str(103, 141), 2)
+                    warned_about_messing = true
+                    fallout.float_msg(self_obj, fallout.message_str(103, 141), 2)
                 end
             end
             fallout.set_external_var("messing_with_Morbid_stuff", 0)
         end
-        if fallout.external_var("Gretch_call") then
+        if fallout.external_var("Gretch_call") ~= 0 then
             fallout.set_external_var("Gretch_call", 0)
-            hostile = 1
+            hostile = true
         end
     end
     if fallout.global_var(346) == 1 then
-        if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
-            fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+        if fallout.obj_can_see_obj(self_obj, dude_obj) then
+            fallout.attack(dude_obj, 0, 1, 0, 0, 30000, 0, 0)
         end
     end
 end
@@ -103,7 +95,7 @@ function destroy_p_proc()
 end
 
 function pickup_p_proc()
-    hostile = 1
+    hostile = true
 end
 
 function look_at_p_proc()
@@ -258,7 +250,7 @@ function GretchEnd()
 end
 
 function GretchCombat()
-    hostile = 1
+    hostile = true
 end
 
 function damage_p_proc()
