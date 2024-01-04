@@ -19,60 +19,45 @@ local sleep_time = 0
 local home_tile = 0
 local sleep_tile = 0
 local dest_tile = 7000
-local hostile = 0
-local sleeping_disabled = 0
+local hostile = false
+local sleeping_disabled = false
 local waypoint = 0
 
 function start()
-    if fallout.script_action() == 12 then
+    local script_action = fallout.script_action()
+    if script_action == 12 then
         critter_p_proc()
-    else
-        if fallout.script_action() == 18 then
-            destroy_p_proc()
-        else
-            if fallout.script_action() == 21 then
-                look_at_p_proc()
-            else
-                if fallout.script_action() == 15 then
-                    map_enter_p_proc()
-                else
-                    if fallout.script_action() == 16 then
-                        map_exit_p_proc()
-                    else
-                        if fallout.script_action() == 4 then
-                            pickup_p_proc()
-                        else
-                            if fallout.script_action() == 11 then
-                                talk_p_proc()
-                            else
-                                if fallout.script_action() == 22 then
-                                    timed_event_p_proc()
-                                end
-                            end
-                        end
-                    end
-                end
-            end
-        end
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 15 then
+        map_enter_p_proc()
+    elseif script_action == 16 then
+        map_exit_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 22 then
+        timed_event_p_proc()
     end
 end
 
 function critter_p_proc()
     if hostile then
-        hostile = 0
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     else
         if fallout.cur_map_index() == 11 then
-            if (fallout.map_var(2) == 2) and (waypoint == 0) then
+            if fallout.map_var(2) == 2 and waypoint == 0 then
                 waypoint = 1
                 dest_tile = 26297
-                sleeping_disabled = 1
-            else
-                if (fallout.global_var(282) == 1) and (waypoint == 0) then
-                    waypoint = 1
-                    sleeping_disabled = 1
-                    fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(8), 3)
-                end
+                sleeping_disabled = true
+            elseif fallout.global_var(282) == 1 and waypoint == 0 then
+                waypoint = 1
+                sleeping_disabled = true
+                fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(8), 3)
             end
             if waypoint ~= 0 then
                 if fallout.tile_distance(fallout.tile_num(fallout.self_obj()), dest_tile) > 3 then
@@ -88,14 +73,12 @@ function critter_p_proc()
                     end
                 end
             end
-            if sleeping_disabled == 0 then
+            if not sleeping_disabled then
                 behaviour.sleeping(4, night_person, wake_time, sleep_time, home_tile, sleep_tile)
             end
-        else
-            if fallout.cur_map_index() == 12 then
-                if (fallout.global_var(555) ~= 2) and (sleeping_disabled == 0) then
-                    behaviour.sleeping(4, night_person, wake_time, sleep_time, home_tile, sleep_tile)
-                end
+        elseif fallout.cur_map_index() == 12 then
+            if fallout.global_var(555) ~= 2 and not sleeping_disabled then
+                behaviour.sleeping(4, night_person, wake_time, sleep_time, home_tile, sleep_tile)
             end
         end
     end
@@ -104,9 +87,9 @@ end
 function destroy_p_proc()
     reputation.inc_evil_critter()
     if home_tile == 20082 then
-        fallout.set_external_var("Skul_target", 0)
+        fallout.set_external_var("Skul_target", nil)
     end
-    if (fallout.cur_map_index() == 11) and (fallout.map_var(2) == 1) then
+    if fallout.cur_map_index() == 11 and fallout.map_var(2) == 1 then
         fallout.set_map_var(0, fallout.map_var(0) - 1)
     end
 end
@@ -117,50 +100,49 @@ function look_at_p_proc()
 end
 
 function map_enter_p_proc()
-    if not(fallout.local_var(5)) then
-        fallout.set_local_var(5, fallout.tile_num(fallout.self_obj()))
+    local self_obj = fallout.self_obj()
+    if fallout.local_var(5) == 0 then
+        fallout.set_local_var(5, fallout.tile_num(self_obj))
     end
     home_tile = fallout.local_var(5)
     if fallout.cur_map_index() == 10 then
         if fallout.global_var(555) == 2 then
-            fallout.set_obj_visibility(fallout.self_obj(), 0)
+            fallout.set_obj_visibility(self_obj, false)
         else
-            fallout.set_obj_visibility(fallout.self_obj(), 1)
+            fallout.set_obj_visibility(self_obj, true)
         end
     end
     if fallout.cur_map_index() ~= 11 then
         if fallout.cur_map_index() == 10 then
             if fallout.global_var(555) == 2 then
-                fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(fallout.random(30, 60)), 1)
+                fallout.add_timer_event(self_obj, fallout.game_ticks(fallout.random(30, 60)), 1)
             end
-        else
-            if fallout.cur_map_index() == 12 then
-                fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(fallout.random(30, 60)), 1)
-            end
+        elseif fallout.cur_map_index() == 12 then
+            fallout.add_timer_event(self_obj, fallout.game_ticks(fallout.random(30, 60)), 1)
         end
     else
-        if (fallout.global_var(282) == 1) and (fallout.map_var(2) == 0) then
-            fallout.destroy_object(fallout.self_obj())
+        if fallout.global_var(282) == 1 and fallout.map_var(2) == 0 then
+            fallout.destroy_object(self_obj)
         end
     end
-    fallout.critter_add_trait(fallout.self_obj(), 1, 6, 14)
-    fallout.critter_add_trait(fallout.self_obj(), 1, 5, 59)
+    fallout.critter_add_trait(self_obj, 1, 6, 14)
+    fallout.critter_add_trait(self_obj, 1, 5, 59)
     if fallout.global_var(555) == 2 then
         if fallout.cur_map_index() == 10 then
-            fallout.set_obj_visibility(fallout.self_obj(), 0)
+            fallout.set_obj_visibility(self_obj, false)
         else
-            fallout.destroy_object(fallout.self_obj())
+            fallout.destroy_object(self_obj)
         end
     end
     set_sleep_tile()
-    if (home_tile == 20082) and (fallout.cur_map_index() == 11) then
-        fallout.set_external_var("Skul_target", fallout.self_obj())
+    if home_tile == 20082 and fallout.cur_map_index() == 11 then
+        fallout.set_external_var("Skul_target", self_obj)
     end
 end
 
 function map_exit_p_proc()
     if fallout.cur_map_index() == 11 then
-        if (fallout.global_var(282) == 1) and (fallout.map_var(2) == 0) then
+        if fallout.global_var(282) == 1 and fallout.map_var(2) == 0 then
             fallout.destroy_object(fallout.self_obj())
         end
     end
@@ -168,58 +150,57 @@ end
 
 function pickup_p_proc()
     fallout.float_msg(fallout.self_obj(), fallout.message_str(390, 101), 2)
-    hostile = 1
+    hostile = true
 end
 
 function talk_p_proc()
-    local v0 = 0
     if fallout.cur_map_index() == 10 then
         fallout.set_local_var(6, 104)
-    else
-        if (fallout.cur_map_index() == 11) and (fallout.map_var(2) == 2) then
-            fallout.set_local_var(6, 112)
-        else
-            if fallout.local_var(6) == 0 then
-                fallout.set_local_var(6, fallout.random(102, 105))
-            end
-        end
+    elseif fallout.cur_map_index() == 11 and fallout.map_var(2) == 2 then
+        fallout.set_local_var(6, 112)
+    elseif fallout.local_var(6) == 0 then
+        fallout.set_local_var(6, fallout.random(102, 105))
     end
-    v0 = fallout.message_str(390, fallout.local_var(6))
+    local msg = fallout.message_str(390, fallout.local_var(6))
     if fallout.local_var(4) == 1 then
-        v0 = fallout.message_str(390, 106)
+        msg = fallout.message_str(390, 106)
     end
-    fallout.float_msg(fallout.self_obj(), v0, 0)
+    fallout.float_msg(fallout.self_obj(), msg, 0)
 end
 
 function timed_event_p_proc()
-    if fallout.fixed_param() == 1 then
-        if (fallout.local_var(4) == 0) and (fallout.combat_is_initialized() == 0) then
-            if fallout.random(0, 1) then
-                fallout.float_msg(fallout.self_obj(), fallout.message_str(390, fallout.random(107, 112)), 0)
+    local fixed_param = fallout.fixed_param()
+    if fixed_param == 1 then
+        local self_obj = fallout.self_obj()
+        if fallout.local_var(4) == 0 and not fallout.combat_is_initialized() then
+            if fallout.random(0, 1) ~= 0 then
+                fallout.float_msg(self_obj, fallout.message_str(390, fallout.random(107, 112)), 0)
             else
-                fallout.animate_move_obj_to_tile(fallout.self_obj(), fallout.tile_num_in_direction(fallout.local_var(5), fallout.random(0, 3), fallout.random(0, 5)), 0)
+                fallout.animate_move_obj_to_tile(self_obj,
+                    fallout.tile_num_in_direction(fallout.local_var(5), fallout.random(0, 3), fallout.random(0, 5)), 0)
             end
         end
-        fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(fallout.random(30, 60)), 1)
-    else
-        if (fallout.fixed_param() == 2) and (fallout.external_var("Trish_ptr") ~= 0) and (fallout.external_var("Neal_ptr") ~= 0) then
-            fallout.float_msg(fallout.self_obj(), fallout.message_str(387, 102), 2)
-            fallout.reg_anim_func(2, fallout.self_obj())
+        fallout.add_timer_event(self_obj, fallout.game_ticks(fallout.random(30, 60)), 1)
+    elseif fixed_param == 2 then
+        local trish_obj = fallout.external_var("Trish_ptr")
+        local neal_obj = fallout.external_var("Neal_ptr")
+        local self_obj = fallout.self_obj()
+        if trish_obj ~= nil and neal_obj ~= nil then
+            fallout.float_msg(self_obj, fallout.message_str(387, 102), 2)
+            fallout.reg_anim_func(2, self_obj)
             fallout.reg_anim_func(1, 1)
-            fallout.reg_anim_obj_move_to_obj(fallout.self_obj(), fallout.external_var("Trish_ptr"), -1)
-            fallout.reg_anim_animate(fallout.self_obj(), 16, -1)
-            fallout.reg_anim_animate(fallout.external_var("Trish_ptr"), 20, 4)
-            fallout.reg_anim_animate(fallout.external_var("Trish_ptr"), 48, -1)
-            fallout.reg_anim_animate(fallout.external_var("Trish_ptr"), 37, -1)
-            fallout.reg_anim_obj_run_to_tile(fallout.external_var("Trish_ptr"), 19889, -1)
+            fallout.reg_anim_obj_move_to_obj(self_obj, trish_obj, -1)
+            fallout.reg_anim_animate(self_obj, 16, -1)
+            fallout.reg_anim_animate(trish_obj, 20, 4)
+            fallout.reg_anim_animate(trish_obj, 48, -1)
+            fallout.reg_anim_animate(trish_obj, 37, -1)
+            fallout.reg_anim_obj_run_to_tile(trish_obj, 19889, -1)
             fallout.reg_anim_func(3, 0)
-            fallout.add_timer_event(fallout.external_var("Neal_ptr"), fallout.game_ticks(3), 1)
-        else
-            if fallout.fixed_param() == 3 then
-                dest_tile = 26297
-                sleeping_disabled = 1
-            end
+            fallout.add_timer_event(neal_obj, fallout.game_ticks(3), 1)
         end
+    elseif fixed_param == 3 then
+        dest_tile = 26297
+        sleeping_disabled = true
     end
 end
 
@@ -227,30 +208,22 @@ function set_sleep_tile()
     if fallout.cur_map_index() == 12 then
         if home_tile == 13502 then
             sleep_tile = 13093
-        else
-            if home_tile == 13516 then
-                sleep_tile = 13719
-            else
-                if home_tile == 13717 then
-                    sleep_tile = 13721
-                end
-            end
+        elseif home_tile == 13516 then
+            sleep_tile = 13719
+        elseif home_tile == 13717 then
+            sleep_tile = 13721
         end
         sleep_time = fallout.random(2200, 2215)
         wake_time = fallout.random(800, 815)
-    else
-        if fallout.cur_map_index() == 11 then
-            sleep_tile = 7000
-            sleep_time = 300
-            wake_time = 1600
-            night_person = true
-        else
-            if fallout.cur_map_index() == 10 then
-                sleep_tile = home_tile
-                sleep_time = 2200
-                wake_time = 1000
-            end
-        end
+    elseif fallout.cur_map_index() == 11 then
+        sleep_tile = 7000
+        sleep_time = 300
+        wake_time = 1600
+        night_person = true
+    elseif fallout.cur_map_index() == 10 then
+        sleep_tile = home_tile
+        sleep_time = 2200
+        wake_time = 1000
     end
 end
 
