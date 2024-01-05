@@ -1,27 +1,20 @@
 local fallout = require("fallout")
 local behaviour = require("lib.behaviour")
+local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
 local time = require("lib.time")
-
---
--- Some unreferenced imported varables found.
--- Because of it it is impossible to specify
--- the real names of global variables.
---
 
 local night_person = false
 local wake_time = 0
 local sleep_time = 0
 local home_tile = 0
 local sleep_tile = 0
-local g5 = 0
-local g6 = 0
-local g7 = 0
-local g8 = 0
-local g9 = 0
-local g10 = 0
-local g11 = 0
-local g12 = 0
+local hostile = false
+local round_counter = 0
+local sleeping_disabled = false
+local challenger_hits = 0
+local Saul_hits = 0
+local whose_turn = 0
 
 local start
 local combat_p_proc
@@ -59,78 +52,34 @@ local SaulCombat
 local SaulEnd
 local create_challenger
 
--- ?import? variable night_person
--- ?import? variable wake_time
--- ?import? variable sleep_time
--- ?import? variable home_tile
--- ?import? variable sleep_tile
--- ?import? variable hostile
--- ?import? variable initialized
--- ?import? variable round_counter
--- ?import? variable sleeping_disabled
--- ?import? variable challenger_hits
--- ?import? variable Saul_hits
--- ?import? variable whose_turn
--- ?import? variable removal_ptr
-
-local get_reaction
-local ReactToLevel
-local LevelToReact
-local UpReact
-local DownReact
-local BottomReact
-local TopReact
-local BigUpReact
-local BigDownReact
-local UpReactLevel
-local DownReactLevel
-local Goodbyes
-
--- ?import? variable exit_line
-
 function start()
-    if fallout.script_action() == 13 then
+    local script_action = fallout.script_action()
+    if script_action == 13 then
         combat_p_proc()
-    else
-        if fallout.script_action() == 12 then
-            critter_p_proc()
-        else
-            if fallout.script_action() == 3 then
-                description_p_proc()
-            else
-                if fallout.script_action() == 18 then
-                    destroy_p_proc()
-                else
-                    if fallout.script_action() == 21 then
-                        look_at_p_proc()
-                    else
-                        if fallout.script_action() == 15 then
-                            map_enter_p_proc()
-                        else
-                            if fallout.script_action() == 23 then
-                                map_update_p_proc()
-                            else
-                                if fallout.script_action() == 11 then
-                                    talk_p_proc()
-                                else
-                                    if fallout.script_action() == 22 then
-                                        timed_event_p_proc()
-                                    end
-                                end
-                            end
-                        end
-                    end
-                end
-            end
-        end
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 3 then
+        description_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 15 then
+        map_enter_p_proc()
+    elseif script_action == 23 then
+        map_update_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 22 then
+        timed_event_p_proc()
     end
 end
 
 function combat_p_proc()
-    if (fallout.fixed_param() == 4) and fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
-        g7 = g7 + 1
+    if fallout.fixed_param() == 4 and fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
+        round_counter = round_counter + 1
     end
-    if g7 > 3 then
+    if round_counter > 3 then
         if fallout.global_var(247) == 0 then
             fallout.set_global_var(247, 1)
             fallout.set_global_var(155, fallout.global_var(155) - 5)
@@ -139,15 +88,15 @@ function combat_p_proc()
 end
 
 function critter_p_proc()
-    if g5 then
-        g5 = 0
+    if hostile then
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     else
         if fallout.cur_map_index() == 11 then
-            if fallout.external_var("fight") then
+            if fallout.external_var("fight") ~= 0 then
                 fallout.set_external_var("fight", 0)
-                g10 = 0
-                g9 = 0
+                Saul_hits = 0
+                challenger_hits = 0
                 fallout.anim(fallout.self_obj(), 1000, 1)
                 if fallout.obj_can_see_obj(fallout.dude_obj(), fallout.self_obj()) then
                     fallout.gfade_out(600)
@@ -159,7 +108,7 @@ function critter_p_proc()
                 fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(1), 1)
             end
         end
-        if g8 == 0 then
+        if not sleeping_disabled then
             behaviour.sleeping(4, night_person, wake_time, sleep_time, home_tile, sleep_tile)
         end
     end
@@ -186,7 +135,7 @@ end
 
 function look_at_p_proc()
     fallout.script_overrides()
-    if not(fallout.global_var(169)) then
+    if fallout.global_var(169) == 0 then
         fallout.display_msg(fallout.message_str(528, 101))
     else
         fallout.display_msg(fallout.message_str(528, 100))
@@ -194,32 +143,32 @@ function look_at_p_proc()
 end
 
 function map_enter_p_proc()
-    local v0 = 0
+    local self_obj = fallout.self_obj()
     if fallout.global_var(15) == 1 then
-        v0 = fallout.create_object_sid(234, 0, 0, -1)
-        fallout.add_obj_to_inven(fallout.self_obj(), v0)
-        fallout.kill_critter(fallout.self_obj(), 48)
+        local item_obj = fallout.create_object_sid(234, 0, 0, -1)
+        fallout.add_obj_to_inven(self_obj, item_obj)
+        fallout.kill_critter(self_obj, 48)
     end
-    g8 = 0
+    sleeping_disabled = false
     sleep_time = 2000
     wake_time = 700
     if fallout.cur_map_index() == 11 then
         sleep_tile = 7000
-        if (time.game_time_in_days() % 3) == 0 then
+        if time.game_time_in_days() % 3 == 0 then
             home_tile = 15094
         else
             home_tile = 16892
         end
     end
     if fallout.global_var(169) == 3 then
-        fallout.destroy_object(fallout.self_obj())
+        fallout.destroy_object(self_obj)
     end
-    fallout.move_to(fallout.self_obj(), home_tile, 0)
+    fallout.move_to(self_obj, home_tile, 0)
 end
 
 function map_update_p_proc()
-    if not(fallout.combat_is_initialized()) then
-        if (time.game_time_in_days() % 3) == 0 then
+    if not fallout.combat_is_initialized() then
+        if time.game_time_in_days() % 3 == 0 then
             home_tile = 15094
         else
             home_tile = 16892
@@ -234,11 +183,11 @@ function map_update_p_proc()
 end
 
 function talk_p_proc()
-    get_reaction()
+    reaction.get_reaction()
     if fallout.local_var(4) ~= 0 then
         fallout.float_msg(fallout.self_obj(), fallout.message_str(185, 166), 0)
     else
-        if fallout.critter_state(fallout.self_obj()) & 1 then
+        if fallout.critter_state(fallout.self_obj()) & 1 ~= 0 then
             fallout.display_msg(fallout.message_str(528, 115))
         else
             if fallout.global_var(247) ~= 0 then
@@ -260,7 +209,7 @@ function talk_p_proc()
             end
         end
     end
-    if not(fallout.global_var(557) & 16) and (fallout.global_var(557) & 8) then
+    if fallout.global_var(557) & 16 == 0 and fallout.global_var(557) & 8 ~= 0 then
         fallout.set_global_var(557, fallout.global_var(557) + 16)
         fallout.display_msg(fallout.message_str(342, 173))
         fallout.give_exp_points(250)
@@ -268,30 +217,27 @@ function talk_p_proc()
 end
 
 function timed_event_p_proc()
-    if fallout.fixed_param() == 1 then
+    local event = fallout.fixed_param()
+    if event == 1 then
         if fallout.obj_pid(fallout.external_var("challenger_ptr")) == 16777227 then
             if fallout.random(0, 4) == 0 then
-                g11 = 1
+                whose_turn = 1
             else
-                g11 = 0
+                whose_turn = 0
             end
         else
             if fallout.random(0, 2) then
-                g11 = 1
+                whose_turn = 1
             else
-                g11 = 0
+                whose_turn = 0
             end
         end
         SaulBoxing()
-    else
-        if fallout.fixed_param() == 2 then
-            fallout.set_external_var("Saul_wins", 1)
-        else
-            if fallout.fixed_param() == 3 then
-                fallout.set_external_var("Saul_loses", 1)
-                fallout.set_local_var(8, 1)
-            end
-        end
+    elseif event == 2 then
+        fallout.set_external_var("Saul_wins", 1)
+    elseif event == 3 then
+        fallout.set_external_var("Saul_loses", 1)
+        fallout.set_local_var(8, 1)
     end
 end
 
@@ -313,7 +259,9 @@ function Saul07()
     end
     fallout.giq_option(4, 528, 107, Saul08, 50)
     fallout.giq_option(4, 528, 108, Saul09, 51)
-    fallout.giq_option(4, 528, fallout.message_str(528, 109) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(528, 110), Saul09, 50)
+    fallout.giq_option(4, 528,
+        fallout.message_str(528, 109) ..
+        fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(528, 110), Saul09, 50)
 end
 
 function Saul08()
@@ -354,18 +302,17 @@ end
 function Saul11()
     fallout.gsay_reply(528, 137)
     fallout.giq_option(4, 528, 136, Saul12, 49)
-    if not(fallout.local_var(5)) then
+    if fallout.local_var(5) == 0 then
         fallout.giq_option(4, 528, 138, Saul13, 50)
     end
-    if not(fallout.local_var(6)) then
+    if fallout.local_var(6) == 0 then
         fallout.giq_option(4, 528, 139, Saul14, 50)
     end
-    Goodbyes()
-    fallout.giq_option(4, 528, g12, SaulEnd, 50)
+    fallout.giq_option(4, 528, reaction.Goodbyes(), SaulEnd, 50)
 end
 
 function Saul12()
-    UpReact()
+    reaction.UpReact()
     if fallout.local_var(1) == 1 then
         fallout.gsay_reply(528, 140)
     else
@@ -374,8 +321,7 @@ function Saul12()
     end
     fallout.giq_option(4, 528, 143, Saul13, 50)
     fallout.giq_option(4, 528, 144, Saul14, 50)
-    Goodbyes()
-    fallout.giq_option(4, 528, g12, SaulEnd, 50)
+    fallout.giq_option(4, 528, reaction.Goodbyes(), SaulEnd, 50)
 end
 
 function Saul13()
@@ -383,18 +329,16 @@ function Saul13()
     fallout.gsay_reply(528, 145)
     fallout.giq_option(4, 528, 146, Saul19, 50)
     fallout.giq_option(4, 528, 147, Saul14, 50)
-    Goodbyes()
-    fallout.giq_option(4, 528, g12, SaulEnd, 50)
+    fallout.giq_option(4, 528, reaction.Goodbyes(), SaulEnd, 50)
 end
 
 function Saul14()
     fallout.set_local_var(6, 1)
     fallout.gsay_reply(528, 148)
-    if not(fallout.local_var(5)) then
+    if fallout.local_var(5) == 0 then
         fallout.giq_option(4, 528, 149, Saul13, 50)
     end
-    Goodbyes()
-    fallout.giq_option(4, 528, g12, SaulEnd, 50)
+    fallout.giq_option(4, 528, reaction.Goodbyes(), SaulEnd, 50)
 end
 
 function Saul15()
@@ -405,28 +349,25 @@ function Saul15()
     if fallout.get_critter_stat(fallout.dude_obj(), 4) >= 6 then
         fallout.giq_option(6, 528, 153, Saul16, 49)
     else
-        Goodbyes()
-        fallout.giq_option(4, 528, g12, SaulEnd, 50)
+        fallout.giq_option(4, 528, reaction.Goodbyes(), SaulEnd, 50)
     end
     fallout.giq_option(6, 528, 154, Saul24, 50)
 end
 
 function Saul16()
-    UpReact()
+    reaction.UpReact()
     fallout.gsay_reply(528, 155)
     fallout.giq_option(4, 528, 156, Saul18, 50)
-    Goodbyes()
-    fallout.giq_option(4, 528, g12, SaulEnd, 50)
+    fallout.giq_option(4, 528, reaction.Goodbyes(), SaulEnd, 50)
 end
 
 function Saul17()
     fallout.gsay_reply(528, 157)
     fallout.giq_option(4, 528, 158, Saul18, 50)
-    if (fallout.global_var(557) & 1) or (fallout.global_var(557) & 4) then
+    if fallout.global_var(557) & 1 ~= 0 or fallout.global_var(557) & 4 ~= 0 then
         fallout.giq_option(5, 528, 159, Saul20, 50)
     end
-    Goodbyes()
-    fallout.giq_option(4, 528, g12, SaulEnd, 50)
+    fallout.giq_option(4, 528, reaction.Goodbyes(), SaulEnd, 50)
 end
 
 function Saul18()
@@ -435,10 +376,10 @@ function Saul18()
     else
         fallout.gsay_reply(528, 161)
     end
-    if not(fallout.local_var(5)) then
+    if fallout.local_var(5) == 0 then
         fallout.giq_option(4, 528, 162, Saul13, 50)
     end
-    if not(fallout.local_var(6)) then
+    if fallout.local_var(6) == 0 then
         fallout.giq_option(4, 528, 163, Saul14, 50)
     end
     fallout.giq_option(4, 528, 164, Saul18a, 51)
@@ -447,7 +388,7 @@ end
 
 function Saul18a()
     fallout.set_local_var(1, 1)
-    LevelToReact()
+    reaction.LevelToReact()
     Saul09()
 end
 
@@ -455,9 +396,8 @@ function Saul19()
     fallout.gsay_reply(528, 166)
     fallout.giq_option(4, 528, 168, Saul18, 50)
     if fallout.get_critter_stat(fallout.dude_obj(), 4) >= 6 then
-        fallout.giq_option(6, 528, 167, UpReact, 49)
+        fallout.giq_option(6, 528, 167, reaction.UpReact, 49)
     else
-        Goodbyes()
         fallout.giq_option(4, 528, 169, SaulEnd, 50)
     end
 end
@@ -482,7 +422,7 @@ function Saul20()
 end
 
 function Saul21()
-    UpReact()
+    reaction.UpReact()
     fallout.set_global_var(557, fallout.global_var(557) + 8)
     fallout.gsay_message(528, 176, 49)
 end
@@ -504,14 +444,13 @@ function Saul23()
         fallout.gsay_reply(528, 181)
     end
     fallout.giq_option(4, 528, 182, Saul09, 51)
-    if (fallout.global_var(557) & 1) or (fallout.global_var(557) & 4) and not(fallout.global_var(557) & 8) then
+    if fallout.global_var(557) & 1 ~= 0 or fallout.global_var(557) & 4 ~= 0 and fallout.global_var(557) & 8 == 0 then
         fallout.giq_option(4, 528, 183, Saul20, 50)
     end
-    if not(fallout.local_var(5)) then
+    if fallout.local_var(5) == 0 then
         fallout.giq_option(4, 528, 184, Saul13, 50)
     end
-    Goodbyes()
-    fallout.giq_option(4, 528, g12, SaulEnd, 50)
+    fallout.giq_option(4, 528, reaction.Goodbyes(), SaulEnd, 50)
 end
 
 function Saul24()
@@ -521,184 +460,74 @@ function Saul24()
 end
 
 function SaulBoxing()
-    fallout.reg_anim_func(2, fallout.self_obj())
-    fallout.reg_anim_func(2, fallout.external_var("challenger_ptr"))
-    if g11 == 1 then
+    local self_obj = fallout.self_obj()
+    local challenger_obj = fallout.external_var("challenger_ptr")
+    fallout.reg_anim_func(2, self_obj)
+    fallout.reg_anim_func(2, challenger_obj)
+    if whose_turn == 1 then
         fallout.reg_anim_func(1, 1)
-        fallout.reg_anim_animate(fallout.self_obj(), 16, -1)
-        if fallout.is_success(fallout.roll_vs_skill(fallout.self_obj(), 3, 0)) then
-            if g9 >= (fallout.get_critter_stat(fallout.external_var("challenger_ptr"), 2) * 2) then
-                fallout.reg_anim_animate(fallout.external_var("challenger_ptr"), 20, 4)
-                fallout.reg_anim_animate(fallout.external_var("challenger_ptr"), 48, -1)
-                fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(2), 2)
+        fallout.reg_anim_animate(self_obj, 16, -1)
+        if fallout.is_success(fallout.roll_vs_skill(self_obj, 3, 0)) then
+            if challenger_hits >= fallout.get_critter_stat(challenger_obj, 2) * 2 then
+                fallout.reg_anim_animate(challenger_obj, 20, 4)
+                fallout.reg_anim_animate(challenger_obj, 48, -1)
+                fallout.add_timer_event(self_obj, fallout.game_ticks(2), 2)
             else
-                fallout.reg_anim_animate(fallout.external_var("challenger_ptr"), 14, 4)
-                g9 = g9 + 1
-                fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(fallout.random(1, 2)), 1)
+                fallout.reg_anim_animate(challenger_obj, 14, 4)
+                challenger_hits = challenger_hits + 1
+                fallout.add_timer_event(self_obj, fallout.game_ticks(fallout.random(1, 2)), 1)
             end
         else
-            fallout.reg_anim_animate(fallout.external_var("challenger_ptr"), 13, 4)
-            fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(fallout.random(1, 2)), 1)
+            fallout.reg_anim_animate(challenger_obj, 13, 4)
+            fallout.add_timer_event(self_obj, fallout.game_ticks(fallout.random(1, 2)), 1)
         end
         fallout.reg_anim_func(3, 0)
     else
         fallout.reg_anim_func(1, 1)
-        fallout.reg_anim_animate(fallout.external_var("challenger_ptr"), 16, -1)
-        if fallout.is_success(fallout.roll_vs_skill(fallout.external_var("challenger_ptr"), 3, 0)) then
-            if g10 >= (fallout.get_critter_stat(fallout.self_obj(), 2) * 2) then
-                fallout.reg_anim_animate(fallout.self_obj(), 20, 4)
-                fallout.reg_anim_animate(fallout.self_obj(), 48, -1)
-                fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(2), 3)
+        fallout.reg_anim_animate(challenger_obj, 16, -1)
+        if fallout.is_success(fallout.roll_vs_skill(challenger_obj, 3, 0)) then
+            if Saul_hits >= fallout.get_critter_stat(self_obj, 2) * 2 then
+                fallout.reg_anim_animate(self_obj, 20, 4)
+                fallout.reg_anim_animate(self_obj, 48, -1)
+                fallout.add_timer_event(self_obj, fallout.game_ticks(2), 3)
             else
-                fallout.reg_anim_animate(fallout.self_obj(), 14, 4)
-                g10 = g10 + 1
-                fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(fallout.random(1, 2)), 1)
+                fallout.reg_anim_animate(self_obj, 14, 4)
+                Saul_hits = Saul_hits + 1
+                fallout.add_timer_event(self_obj, fallout.game_ticks(fallout.random(1, 2)), 1)
             end
         else
-            fallout.reg_anim_animate(fallout.self_obj(), 13, 4)
-            fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(fallout.random(1, 2)), 1)
+            fallout.reg_anim_animate(self_obj, 13, 4)
+            fallout.add_timer_event(self_obj, fallout.game_ticks(fallout.random(1, 2)), 1)
         end
         fallout.reg_anim_func(3, 0)
     end
 end
 
 function SaulCombat()
-    g5 = 1
+    hostile = true
 end
 
 function SaulEnd()
 end
 
 function create_challenger()
-    fallout.set_external_var("challenger_ptr", fallout.random(0, 4))
-    if fallout.external_var("challenger_ptr") == 4 then
-        fallout.set_external_var("challenger_ptr", fallout.create_object_sid(16777226, 0, 0, 25))
-    else
-        if fallout.external_var("challenger_ptr") == 3 then
-            fallout.set_external_var("challenger_ptr", fallout.create_object_sid(16777227, 0, 0, 25))
-        else
-            if fallout.external_var("challenger_ptr") == 2 then
-                fallout.set_external_var("challenger_ptr", fallout.create_object_sid(16777238, 0, 0, 25))
-            else
-                if fallout.external_var("challenger_ptr") == 1 then
-                    fallout.set_external_var("challenger_ptr", fallout.create_object_sid(16777218, 0, 0, 25))
-                else
-                    if fallout.external_var("challenger_ptr") == 0 then
-                        fallout.set_external_var("challenger_ptr", fallout.create_object_sid(16777243, 0, 0, 25))
-                    end
-                end
-            end
-        end
+    local challenger_obj
+    local rnd = fallout.random(0, 4)
+    if rnd == 4 then
+        challenger_obj = fallout.create_object_sid(16777226, 0, 0, 25)
+    elseif rnd == 3 then
+        challenger_obj = fallout.create_object_sid(16777227, 0, 0, 25)
+    elseif rnd == 2 then
+        challenger_obj = fallout.create_object_sid(16777238, 0, 0, 25)
+    elseif rnd == 1 then
+        challenger_obj = fallout.create_object_sid(16777218, 0, 0, 25)
+    elseif rnd == 0 then
+        challenger_obj = fallout.create_object_sid(16777243, 0, 0, 25)
     end
-    fallout.critter_attempt_placement(fallout.external_var("challenger_ptr"), fallout.tile_num_in_direction(fallout.tile_num(fallout.self_obj()), 1, 1), 0)
-    fallout.anim(fallout.external_var("challenger_ptr"), 1000, 4)
-end
-
-function get_reaction()
-    if fallout.local_var(2) == 0 then
-        fallout.set_local_var(0, 50)
-        fallout.set_local_var(1, 2)
-        fallout.set_local_var(2, 1)
-        fallout.set_local_var(0, fallout.local_var(0) + (5 * fallout.get_critter_stat(fallout.dude_obj(), 3)) - 25)
-        fallout.set_local_var(0, fallout.local_var(0) + (10 * fallout.has_trait(0, fallout.dude_obj(), 10)))
-        if fallout.has_trait(0, fallout.dude_obj(), 39) then
-            if fallout.global_var(155) > 0 then
-                fallout.set_local_var(0, fallout.local_var(0) + fallout.global_var(155))
-            else
-                fallout.set_local_var(0, fallout.local_var(0) - fallout.global_var(155))
-            end
-        else
-            if fallout.local_var(3) == 1 then
-                fallout.set_local_var(0, fallout.local_var(0) - fallout.global_var(155))
-            else
-                fallout.set_local_var(0, fallout.local_var(0) + fallout.global_var(155))
-            end
-        end
-        if fallout.global_var(158) > 2 then
-            fallout.set_local_var(0, fallout.local_var(0) - 30)
-        end
-        if reputation.has_rep_champion() then
-            fallout.set_local_var(0, fallout.local_var(0) + 20)
-        end
-        if reputation.has_rep_berserker() then
-            fallout.set_local_var(0, fallout.local_var(0) - 20)
-        end
-        ReactToLevel()
-    end
-end
-
-function ReactToLevel()
-    if fallout.local_var(0) <= 25 then
-        fallout.set_local_var(1, 1)
-    else
-        if fallout.local_var(0) <= 75 then
-            fallout.set_local_var(1, 2)
-        else
-            fallout.set_local_var(1, 3)
-        end
-    end
-end
-
-function LevelToReact()
-    if fallout.local_var(1) == 1 then
-        fallout.set_local_var(0, fallout.random(1, 25))
-    else
-        if fallout.local_var(1) == 2 then
-            fallout.set_local_var(0, fallout.random(26, 75))
-        else
-            fallout.set_local_var(0, fallout.random(76, 100))
-        end
-    end
-end
-
-function UpReact()
-    fallout.set_local_var(0, fallout.local_var(0) + 10)
-    ReactToLevel()
-end
-
-function DownReact()
-    fallout.set_local_var(0, fallout.local_var(0) - 10)
-    ReactToLevel()
-end
-
-function BottomReact()
-    fallout.set_local_var(1, 1)
-    fallout.set_local_var(0, 1)
-end
-
-function TopReact()
-    fallout.set_local_var(0, 100)
-    fallout.set_local_var(1, 3)
-end
-
-function BigUpReact()
-    fallout.set_local_var(0, fallout.local_var(0) + 25)
-    ReactToLevel()
-end
-
-function BigDownReact()
-    fallout.set_local_var(0, fallout.local_var(0) - 25)
-    ReactToLevel()
-end
-
-function UpReactLevel()
-    fallout.set_local_var(1, fallout.local_var(1) + 1)
-    if fallout.local_var(1) > 3 then
-        fallout.set_local_var(1, 3)
-    end
-    LevelToReact()
-end
-
-function DownReactLevel()
-    fallout.set_local_var(1, fallout.local_var(1) - 1)
-    if fallout.local_var(1) < 1 then
-        fallout.set_local_var(1, 1)
-    end
-    LevelToReact()
-end
-
-function Goodbyes()
-    g12 = fallout.message_str(634, fallout.random(100, 105))
+    fallout.critter_attempt_placement(challenger_obj,
+        fallout.tile_num_in_direction(fallout.tile_num(fallout.self_obj()), 1, 1), 0)
+    fallout.anim(challenger_obj, 1000, 4)
+    fallout.set_external_var("challenger_ptr", challenger_obj)
 end
 
 local exports = {}
