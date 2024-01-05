@@ -51,18 +51,17 @@ local SinOn
 local SinthiaQuestions
 local SinthiaEnd
 
-local do_it = 0
-local leaving = 0
+local do_it = false
 local dest_tile = 0
-local raider_fall_down = 0
-local remove_Raider = 0
-local sleeping_disabled = 0
+local raider_fall_down = false
+local remove_Raider = false
+local sleeping_disabled = false
 local waypoint = 7000
-local line08flag = 0
-local line23flag = 0
-local line24flag = 0
-local line25flag = 0
-local line26flag = 0
+local line08flag = false
+local line23flag = false
+local line24flag = false
+local line25flag = false
+local line26flag = false
 
 local night_person = false
 local wake_time = 0
@@ -70,54 +69,46 @@ local sleep_time = 0
 local home_tile = 0
 local sleep_tile = 0
 
-local exit_line = 0
-
 local damage_p_proc
 
 function start()
     fallout.set_external_var("Sinthia_ptr", fallout.self_obj())
-    if fallout.script_action() == 12 then
+    local script_action = fallout.script_action()
+    if script_action == 12 then
         critter_p_proc()
-    else
-        if fallout.script_action() == 18 then
-            destroy_p_proc()
-        else
-            if fallout.script_action() == 21 then
-                look_at_p_proc()
-            else
-                if fallout.script_action() == 15 then
-                    map_enter_p_proc()
-                else
-                    if fallout.script_action() == 11 then
-                        talk_p_proc()
-                    else
-                        if fallout.script_action() == 22 then
-                            timed_event_p_proc()
-                        end
-                    end
-                end
-            end
-        end
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 15 then
+        map_enter_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 22 then
+        timed_event_p_proc()
     end
 end
 
 function critter_p_proc()
+    local self_obj = fallout.self_obj()
+    local dude_obj = fallout.dude_obj()
+    local self_can_see_dude = fallout.obj_can_see_obj(self_obj, dude_obj)
+    local distance_self_to_dude = fallout.tile_distance_objs(self_obj, dude_obj)
     if fallout.map_var(1) == 2 then
-        if (fallout.local_var(6) == 0) and fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) and (fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 12) then
+        if fallout.local_var(6) == 0 and self_can_see_dude and distance_self_to_dude < 12 then
             fallout.dialogue_system_enter()
         end
-    else
-        if fallout.map_var(1) == 1 then
-            if (fallout.local_var(7) == 0) and fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) and (fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 12) and (raider_fall_down == 0) then
-                fallout.rm_timer_event(fallout.self_obj())
-                fallout.add_timer_event(fallout.self_obj(), 15, 2)
-                fallout.reg_anim_func(2, fallout.external_var("JTRaider_ptr"))
-                fallout.reg_anim_func(1, 1)
-                fallout.reg_anim_animate(fallout.external_var("JTRaider_ptr"), 21, -1)
-                fallout.reg_anim_animate(fallout.external_var("JTRaider_ptr"), 49, -1)
-                fallout.reg_anim_func(3, 0)
-                raider_fall_down = 1
-            end
+    elseif fallout.map_var(1) == 1 then
+        if fallout.local_var(7) == 0 and self_can_see_dude and distance_self_to_dude < 12 and not raider_fall_down then
+            local raider_obj = fallout.external_var("JTRaider_ptr")
+            fallout.rm_timer_event(self_obj)
+            fallout.add_timer_event(self_obj, 15, 2)
+            fallout.reg_anim_func(2, raider_obj)
+            fallout.reg_anim_func(1, 1)
+            fallout.reg_anim_animate(raider_obj, 21, -1)
+            fallout.reg_anim_animate(raider_obj, 49, -1)
+            fallout.reg_anim_func(3, 0)
+            raider_fall_down = true
         end
     end
     if fallout.global_var(143) == 2 then
@@ -127,21 +118,19 @@ function critter_p_proc()
             end
         else
             fallout.set_map_var(0, 1)
-            sleeping_disabled = 1
+            sleeping_disabled = true
             if waypoint == 0 then
                 dest_tile = 22502
                 waypoint = 1
             end
-            if fallout.tile_distance(fallout.tile_num(fallout.self_obj()), dest_tile) > 3 then
-                fallout.animate_move_obj_to_tile(fallout.self_obj(), fallout.self_obj(), 0)
+            if fallout.tile_distance(fallout.tile_num(self_obj), dest_tile) > 3 then
+                fallout.animate_move_obj_to_tile(self_obj, dest_tile, 0)
             else
                 if waypoint == 1 then
                     dest_tile = 31930
                     waypoint = 2
-                else
-                    if waypoint == 2 then
-                        fallout.destroy_object(fallout.self_obj())
-                    end
+                elseif waypoint == 2 then
+                    fallout.destroy_object(self_obj)
                 end
             end
         end
@@ -149,7 +138,7 @@ function critter_p_proc()
 end
 
 function destroy_p_proc()
-    fallout.set_external_var("Sinthia_ptr", 0)
+    fallout.set_external_var("Sinthia_ptr", nil)
     fallout.set_global_var(143, 2)
     if fallout.map_var(0) ~= 1 then
         fallout.set_map_var(0, 2)
@@ -170,15 +159,16 @@ function look_at_p_proc()
 end
 
 function map_enter_p_proc()
-    fallout.critter_add_trait(fallout.self_obj(), 1, 6, 16)
-    fallout.set_external_var("Sinthia_ptr", fallout.self_obj())
+    local self_obj = fallout.self_obj()
+    fallout.critter_add_trait(self_obj, 1, 6, 16)
+    fallout.set_external_var("Sinthia_ptr", self_obj)
     home_tile = 17485
     sleep_tile = 16681
     sleep_time = 2300
     wake_time = 1000
     if fallout.local_var(6) == 1 then
-        fallout.set_external_var("Sinthia_ptr", 0)
-        fallout.destroy_object(fallout.self_obj())
+        fallout.set_external_var("Sinthia_ptr", nil)
+        fallout.destroy_object(self_obj)
     end
 end
 
@@ -186,7 +176,7 @@ function talk_p_proc()
     if fallout.local_var(6) == 1 then
         fallout.display_msg(fallout.message_str(338, 171))
     else
-        if (fallout.map_var(3) > 0) and (fallout.map_var(3) < 3) then
+        if fallout.map_var(3) > 0 and fallout.map_var(3) < 3 then
             Sinthia07()
         else
             reaction.get_reaction()
@@ -195,24 +185,16 @@ function talk_p_proc()
             fallout.set_local_var(5, 1)
             if fallout.map_var(1) == 2 then
                 Sinthia16()
+            elseif fallout.map_var(1) == 1 and fallout.local_var(7) == 0 then
+                Sinthia17()
+            elseif not line08flag and fallout.global_var(143) == 2 then
+                Sinthia08()
+            elseif fallout.map_var(3) < 3 then
+                Sinthia00()
+            elseif fallout.local_var(1) < 2 then
+                Sinthia29()
             else
-                if (fallout.map_var(1) == 1) and (fallout.local_var(7) == 0) then
-                    Sinthia17()
-                else
-                    if not(line08flag) and (fallout.global_var(143) == 2) then
-                        Sinthia08()
-                    else
-                        if fallout.map_var(3) < 3 then
-                            Sinthia00()
-                        else
-                            if fallout.local_var(1) < 2 then
-                                Sinthia29()
-                            else
-                                Sinthia20()
-                            end
-                        end
-                    end
-                end
+                Sinthia20()
             end
             fallout.gsay_end()
             fallout.end_dialogue()
@@ -220,11 +202,12 @@ function talk_p_proc()
                 Sin()
             end
             if remove_Raider then
-                if fallout.external_var("JTRaider_ptr") ~= 0 then
+                local raider_obj = fallout.external_var("JTRaider_ptr")
+                if raider_obj ~= nil then
                     fallout.display_msg(fallout.message_str(338, 177))
-                    fallout.destroy_object(fallout.external_var("JTRaider_ptr"))
-                    fallout.set_external_var("JTRaider_ptr", 0)
-                    remove_Raider = 0
+                    fallout.destroy_object(raider_obj)
+                    fallout.set_external_var("JTRaider_ptr", nil)
+                    remove_Raider = false
                 end
             end
         end
@@ -296,7 +279,7 @@ function Sinthia07()
 end
 
 function Sinthia08()
-    line08flag = 1
+    line08flag = true
     reaction.BigUpReact()
     fallout.gsay_reply(338, 118)
     fallout.giq_option(4, 338, 119, Sinthia10, 50)
@@ -336,7 +319,7 @@ function Sinthia13()
 end
 
 function Sinthia13a()
-    if (fallout.get_critter_stat(fallout.dude_obj(), 34) == 0) or fallout.is_success(fallout.do_check(fallout.dude_obj(), 3, 0)) then
+    if fallout.get_critter_stat(fallout.dude_obj(), 34) == 0 or fallout.is_success(fallout.do_check(fallout.dude_obj(), 3, 0)) then
         fallout.gsay_reply(338, 132)
         fallout.giq_option(0, 634, 106, SinOn, 49)
     else
@@ -346,7 +329,7 @@ end
 
 function Sinthia14()
     fallout.gsay_message(338, 134, 50)
-    if not(fallout.global_var(37)) and not(fallout.global_var(38)) then
+    if fallout.global_var(37) == 0 and fallout.global_var(38) == 0 then
         fallout.gsay_message(338, 136, 50)
     end
 end
@@ -357,7 +340,6 @@ function Sinthia15()
 end
 
 function Sinthia16()
-    local v0 = 0
     fallout.set_local_var(6, 1)
     if fallout.get_critter_stat(fallout.dude_obj(), 34) == 0 then
         fallout.gsay_reply(338, 141)
@@ -388,7 +370,7 @@ end
 function Sinthia19()
     fallout.gsay_reply(338, 148)
     fallout.giq_option(4, 338, 149, Sinthia08, 50)
-    remove_Raider = 1
+    remove_Raider = true
 end
 
 function Sinthia20()
@@ -397,7 +379,7 @@ function Sinthia20()
     if fallout.get_critter_stat(fallout.dude_obj(), 34) == 0 then
         fallout.giq_option(4, 338, 152, Sinthia20a, 50)
     end
-    if not(line23flag) then
+    if not line23flag then
         fallout.giq_option(6, 338, 153, Sinthia23, 50)
     end
 end
@@ -420,35 +402,32 @@ function Sinthia22()
 end
 
 function Sinthia23()
-    line23flag = 1
+    line23flag = true
     fallout.gsay_reply(338, 156)
     SinthiaQuestions()
 end
 
 function Sinthia24()
-    line24flag = 1
+    line24flag = true
     fallout.gsay_reply(338, 161)
     SinthiaQuestions()
 end
 
 function Sinthia25()
-    line25flag = 1
+    line25flag = true
     fallout.gsay_reply(338, 162)
     SinthiaQuestions()
 end
 
 function Sinthia26()
-    line26flag = 1
+    line26flag = true
     fallout.gsay_reply(338, 163)
     SinthiaQuestions()
 end
 
 function Sinthia27()
-    local v0 = 0
-    local v1 = 0
-    v0 = fallout.random(1, 3)
-    v1 = fallout.message_str(338, 163 + v0)
-    fallout.float_msg(fallout.self_obj(), v1, 7)
+    local msg = fallout.message_str(338, 163 + fallout.random(1, 3))
+    fallout.float_msg(fallout.self_obj(), msg, 7)
     SinOn()
 end
 
@@ -465,25 +444,25 @@ function Sin()
     fallout.gfade_out(600)
     fallout.game_time_advance(fallout.game_ticks(600))
     fallout.move_to(fallout.dude_obj(), 18291, 0)
-    if not(fallout.is_success(fallout.do_check(fallout.dude_obj(), 4, 0))) then
+    if not fallout.is_success(fallout.do_check(fallout.dude_obj(), 4, 0)) then
         fallout.set_map_var(7, 1)
     end
     fallout.gfade_in(600)
-    do_it = 0
+    do_it = false
 end
 
 function SinOn()
-    do_it = 1
+    do_it = true
 end
 
 function SinthiaQuestions()
-    if not(line24flag) then
+    if not line24flag then
         fallout.giq_option(6, 338, 157, Sinthia24, 50)
     end
-    if not(line25flag) then
+    if not line25flag then
         fallout.giq_option(6, 338, 158, Sinthia25, 50)
     end
-    if not(line26flag) then
+    if not line26flag then
         fallout.giq_option(6, 338, 159, Sinthia26, 50)
     end
     fallout.giq_option(6, 338, 160, SinthiaEnd, 50)
