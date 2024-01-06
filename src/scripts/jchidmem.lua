@@ -41,39 +41,27 @@ local wake_time = 0
 local sleep_time = 0
 local home_tile = 0
 local sleep_tile = 0
-local initialized = false
-local scared = 0
+local scared = false
 local cost = 0
 local hp_injured = 0
-local healing_cost = 0
-local poison_cost = 0
-
-local exit_line = 0
 
 function start()
-    if fallout.script_action() == 12 then
+    local script_action = fallout.script_action()
+    if script_action == 12 then
         critter_p_proc()
-    else
-        if fallout.script_action() == 18 then
-            destroy_p_proc()
-        else
-            if fallout.script_action() == 15 then
-                map_enter_p_proc()
-            else
-                if fallout.script_action() == 4 then
-                    pickup_p_proc()
-                else
-                    if fallout.script_action() == 11 then
-                        talk_p_proc()
-                    end
-                end
-            end
-        end
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 15 then
+        map_enter_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
     end
 end
 
 function critter_p_proc()
-    if scared and (fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 8) and (fallout.local_var(4) == 0) then
+    if scared and fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 8 and fallout.local_var(4) == 0 then
         behaviour.flee_dude(1)
     else
         behaviour.sleeping(4, night_person, wake_time, sleep_time, home_tile, sleep_tile)
@@ -85,34 +73,35 @@ function destroy_p_proc()
 end
 
 function map_enter_p_proc()
+    local self_obj = fallout.self_obj()
     if fallout.global_var(15) == 1 then
-        fallout.destroy_object(fallout.self_obj())
+        fallout.destroy_object(self_obj)
     end
     wake_time = 700
     sleep_time = 1900
-    fallout.critter_add_trait(fallout.self_obj(), 1, 6, 20)
+    fallout.critter_add_trait(self_obj, 1, 6, 20)
     if fallout.local_var(6) == 0 then
-        fallout.set_local_var(6, fallout.tile_num(fallout.self_obj()))
+        fallout.set_local_var(6, fallout.tile_num(self_obj))
     end
     home_tile = fallout.local_var(6)
     sleep_tile = 15275
     if time.game_time_in_days() < 80 then
-        fallout.set_obj_visibility(fallout.self_obj(), 1)
+        fallout.set_obj_visibility(self_obj, true)
     else
-        fallout.set_obj_visibility(fallout.self_obj(), 0)
+        fallout.set_obj_visibility(self_obj, false)
     end
 end
 
 function map_update_p_proc()
     if time.game_time_in_days() < 80 then
-        fallout.set_obj_visibility(fallout.self_obj(), 1)
+        fallout.set_obj_visibility(fallout.self_obj(), true)
     else
-        fallout.set_obj_visibility(fallout.self_obj(), 0)
+        fallout.set_obj_visibility(fallout.self_obj(), false)
     end
 end
 
 function pickup_p_proc()
-    scared = 1
+    scared = true
 end
 
 function talk_p_proc()
@@ -149,7 +138,7 @@ function Child00()
     fallout.gsay_reply(108, 100)
     fallout.giq_option(4, 108, 101, Child04, 50)
     fallout.giq_option(5, 108, 102, Child11, 50)
-    if (fallout.map_var(2) == 1) and (fallout.local_var(7) == 0) then
+    if fallout.map_var(2) == 1 and fallout.local_var(7) == 0 then
         fallout.giq_option(5, 108, 103, Child15, 50)
     end
     fallout.giq_option(-3, 108, 104, Child01, 50)
@@ -170,23 +159,24 @@ function Child02()
 end
 
 function Child03()
-    fallout.critter_heal(fallout.dude_obj(), fallout.get_critter_stat(fallout.dude_obj(), 7) - fallout.get_critter_stat(fallout.dude_obj(), 35))
+    fallout.critter_heal(fallout.dude_obj(),
+        fallout.get_critter_stat(fallout.dude_obj(), 7) - fallout.get_critter_stat(fallout.dude_obj(), 35))
     fallout.poison(fallout.dude_obj(), -fallout.get_poison(fallout.dude_obj()))
     fallout.gsay_message(108, 107, 50)
 end
 
 function Child04()
+    local healing_cost
+    local poison_cost
     if fallout.local_var(1) == 3 then
         healing_cost = 5
         poison_cost = 12
+    elseif fallout.local_var(1) == 1 then
+        healing_cost = 20
+        poison_cost = 50
     else
-        if fallout.local_var(1) == 1 then
-            healing_cost = 20
-            poison_cost = 50
-        else
-            healing_cost = 10
-            poison_cost = 25
-        end
+        healing_cost = 10
+        poison_cost = 25
     end
     hp_injured = fallout.get_critter_stat(fallout.dude_obj(), 7) - fallout.get_critter_stat(fallout.dude_obj(), 35)
     cost = hp_injured * healing_cost
@@ -207,7 +197,8 @@ function Child04()
         fallout.giq_option(4, 108, 113, Child04a, 50)
         fallout.giq_option(4, 108, 114, ChildEnd, 50)
         fallout.giq_option(4, 108, 115, Child09, 50)
-        fallout.giq_option(4, 108, fallout.message_str(108, 116) .. (cost * 0.75000) .. fallout.message_str(108, 117), Child05, 50)
+        fallout.giq_option(4, 108, fallout.message_str(108, 116) .. (cost * 0.75000) .. fallout.message_str(108, 117),
+            Child05, 50)
     else
         fallout.gsay_message(108, 146, 50)
     end
@@ -318,7 +309,7 @@ function Child16()
 end
 
 function Child17()
-    scared = 1
+    scared = true
     fallout.gsay_message(108, 145, 51)
 end
 
