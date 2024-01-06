@@ -1,21 +1,7 @@
 local fallout = require("fallout")
+local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
 local time = require("lib.time")
-
---
--- Some unreferenced imported varables found.
--- Because of it it is impossible to specify
--- the real names of global variables.
---
-
-local g0 = 0
-local g1 = 0
-local g2 = 0
-local g3 = 0
-local g4 = 0
-local g5 = 0
-local g6 = 0
-local g7 = 0
 
 local start
 local combat_p_proc
@@ -57,69 +43,40 @@ local Lars26
 local Lars27
 local LarsEnd
 local LarsKillNeal
-
--- ?import? variable hostile
--- ?import? variable initialized
--- ?import? variable round_counter
--- ?import? variable Lars_bust_Skulz
--- ?import? variable Lars_kill_Neal
--- ?import? variable nail_Gizmo
--- ?import? variable wait_for_Lars
--- ?import? variable removal_ptr
-
-local get_reaction
-local ReactToLevel
-local LevelToReact
-local UpReact
-local DownReact
-local BottomReact
-local TopReact
-local BigUpReact
-local BigDownReact
-local UpReactLevel
-local DownReactLevel
-local Goodbyes
-
--- ?import? variable exit_line
-
 local timed_event_p_proc
 
+local hostile = false
+local round_counter = 0
+local Lars_bust_Skulz = false
+local Lars_kill_Neal = false
+local nail_Gizmo = false
+local wait_for_Lars = false
+
 function start()
-    if fallout.script_action() == 12 then
+    local script_action = fallout.script_action()
+    if script_action == 12 then
         critter_p_proc()
-    else
-        if fallout.script_action() == 3 then
-            description_p_proc()
-        else
-            if fallout.script_action() == 18 then
-                destroy_p_proc()
-            else
-                if fallout.script_action() == 21 then
-                    look_at_p_proc()
-                else
-                    if fallout.script_action() == 15 then
-                        map_enter_p_proc()
-                    else
-                        if fallout.script_action() == 4 then
-                            pickup_p_proc()
-                        else
-                            if fallout.script_action() == 11 then
-                                talk_p_proc()
-                            end
-                        end
-                    end
-                end
-            end
-        end
+    elseif script_action == 3 then
+        description_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 15 then
+        map_enter_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
     end
 end
 
 function combat_p_proc()
     if fallout.cur_map_index() ~= 11 then
         if fallout.fixed_param() == 4 then
-            g2 = g2 + 1
+            round_counter = round_counter + 1
         end
-        if g2 > 3 then
+        if round_counter > 3 then
             if fallout.global_var(247) == 0 then
                 fallout.set_global_var(247, 1)
                 fallout.set_global_var(155, fallout.global_var(155) - 5)
@@ -129,8 +86,8 @@ function combat_p_proc()
 end
 
 function critter_p_proc()
-    if g0 then
-        g0 = 0
+    if hostile then
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     else
         if fallout.map_var(0) == 1 then
@@ -181,88 +138,71 @@ function look_at_p_proc()
 end
 
 function map_enter_p_proc()
+    local self_obj = fallout.self_obj()
     if fallout.cur_map_index() == 11 then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 0)
+        fallout.critter_add_trait(self_obj, 1, 6, 0)
     else
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 12)
+        fallout.critter_add_trait(self_obj, 1, 6, 12)
     end
-    if (fallout.global_var(38) == 1) and (fallout.cur_map_index() == 11) then
-        fallout.destroy_object(fallout.self_obj())
+    if fallout.global_var(38) == 1 and fallout.cur_map_index() == 11 then
+        fallout.destroy_object(self_obj)
     end
 end
 
 function pickup_p_proc()
     fallout.float_msg(fallout.self_obj(), fallout.message_str(518, 104), 0)
-    g0 = 1
+    hostile = true
 end
 
 function talk_p_proc()
-    get_reaction()
+    reaction.get_reaction()
     fallout.start_gdialog(518, fallout.self_obj(), 4, -1, -1)
     fallout.gsay_start()
     if fallout.global_var(158) > 2 then
         Lars01()
+    elseif fallout.global_var(247) == 1 then
+        Lars27()
+    elseif fallout.global_var(38) == 1 and fallout.global_var(104) ~= 2 then
+        Lars26()
+    elseif fallout.global_var(104) == 1 then
+        fallout.set_local_var(4, 1)
+        Lars21()
+    elseif fallout.local_var(4) == 0 then
+        Lars00()
+    elseif fallout.global_var(555) == 2 then
+        Lars19()
     else
-        if fallout.global_var(247) == 1 then
-            Lars27()
-        else
-            if (fallout.global_var(38) == 1) and (fallout.global_var(104) ~= 2) then
-                Lars26()
-            else
-                if fallout.global_var(104) == 1 then
-                    fallout.set_local_var(4, 1)
-                    Lars21()
-                else
-                    if fallout.local_var(4) == 0 then
-                        Lars00()
-                    else
-                        if fallout.global_var(555) == 2 then
-                            Lars19()
-                        else
-                            Lars12()
-                        end
-                    end
-                end
-            end
-        end
+        Lars12()
     end
     fallout.gsay_end()
     fallout.end_dialogue()
-    if g5 then
-        g5 = 0
+    if nail_Gizmo then
+        nail_Gizmo = false
         fallout.load_map(11, 4)
-    else
-        if (fallout.global_var(555) == 2) and (fallout.local_var(5) == 0) then
-            fallout.set_local_var(5, 1)
-            fallout.gfade_out(600)
-            fallout.give_exp_points(500)
-            fallout.set_global_var(155, fallout.global_var(155) + 3)
-            fallout.display_msg(fallout.message_str(518, 174))
-            fallout.game_time_advance(fallout.game_ticks(7200))
-            fallout.gfade_in(600)
-        else
-            if g6 then
-                fallout.gfade_out(600)
-                fallout.game_time_advance(fallout.game_ticks(3000))
-                fallout.set_global_var(104, 2)
-                fallout.gfade_in(600)
-                g6 = 0
-            else
-                if g4 then
-                    g4 = 0
-                    fallout.load_map(11, 7)
-                else
-                    if g3 then
-                        g3 = 0
-                        fallout.gfade_out(600)
-                        fallout.set_global_var(555, 2)
-                        fallout.set_global_var(283, 0)
-                        fallout.display_msg(fallout.message_str(518, 167))
-                        fallout.gfade_in(600)
-                    end
-                end
-            end
-        end
+    elseif fallout.global_var(555) == 2 and fallout.local_var(5) == 0 then
+        fallout.set_local_var(5, 1)
+        fallout.gfade_out(600)
+        fallout.give_exp_points(500)
+        fallout.set_global_var(155, fallout.global_var(155) + 3)
+        fallout.display_msg(fallout.message_str(518, 174))
+        fallout.game_time_advance(fallout.game_ticks(7200))
+        fallout.gfade_in(600)
+    elseif wait_for_Lars then
+        fallout.gfade_out(600)
+        fallout.game_time_advance(fallout.game_ticks(3000))
+        fallout.set_global_var(104, 2)
+        fallout.gfade_in(600)
+        wait_for_Lars = false
+    elseif Lars_kill_Neal then
+        Lars_kill_Neal = false
+        fallout.load_map(11, 7)
+    elseif Lars_bust_Skulz then
+        Lars_bust_Skulz = false
+        fallout.gfade_out(600)
+        fallout.set_global_var(555, 2)
+        fallout.set_global_var(283, 0)
+        fallout.display_msg(fallout.message_str(518, 167))
+        fallout.gfade_in(600)
     end
 end
 
@@ -285,25 +225,23 @@ end
 
 function Lars01()
     fallout.gsay_message(518, 111, 51)
-    g0 = 1
+    hostile = true
 end
 
 function Lars02()
     fallout.gsay_reply(518, 112)
     fallout.giq_option(4, 518, 113, Lars03, 50)
-    Goodbyes()
-    fallout.giq_option(4, 518, g7, LarsEnd, 50)
+    fallout.giq_option(4, 518, reaction.Goodbyes(), LarsEnd, 50)
 end
 
 function Lars03()
     fallout.gsay_reply(518, 114)
     fallout.giq_option(4, 518, 115, Lars04, 50)
-    Goodbyes()
-    fallout.giq_option(4, 518, g7, LarsEnd, 50)
+    fallout.giq_option(4, 518, reaction.Goodbyes(), LarsEnd, 50)
 end
 
 function Lars04()
-    DownReact()
+    reaction.DownReact()
     fallout.gsay_message(518, 116, 51)
 end
 
@@ -334,11 +272,11 @@ function Lars09()
 end
 
 function Lars10()
-    local v0 = 0
     fallout.set_local_var(4, 1)
-    v0 = fallout.message_str(518, 128) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(518, 129)
+    local msg = fallout.message_str(518, 128) ..
+        fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(518, 129)
     fallout.gsay_reply(518, 127)
-    fallout.giq_option(4, 518, v0, Lars11, 50)
+    fallout.giq_option(4, 518, msg, Lars11, 50)
     fallout.giq_option(4, 518, 130, Lars04, 50)
     if fallout.global_var(104) == 1 then
         fallout.giq_option(4, 518, 160, Lars22, 49)
@@ -346,13 +284,12 @@ function Lars10()
 end
 
 function Lars11()
-    local v0 = 0
-    v0 = fallout.message_str(518, 131) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(518, 132)
-    fallout.gsay_reply(518, v0)
+    local msg = fallout.message_str(518, 131) ..
+        fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(518, 132)
+    fallout.gsay_reply(518, msg)
     fallout.giq_option(4, 518, 133, Lars05, 50)
     fallout.giq_option(4, 518, 134, Lars02, 50)
-    Goodbyes()
-    fallout.giq_option(4, 518, g7, LarsEnd, 50)
+    fallout.giq_option(4, 518, reaction.Goodbyes(), LarsEnd, 50)
 end
 
 function Lars12()
@@ -365,11 +302,11 @@ function Lars12()
             fallout.gsay_reply(518, 136)
         end
     end
-    if not(fallout.global_var(555)) then
+    if fallout.global_var(555) == 0 then
         fallout.giq_option(4, 518, 137, Lars18, 50)
     end
     fallout.giq_option(4, 518, 138, LarsEnd, 50)
-    if fallout.global_var(257) and (fallout.global_var(555) == 1) then
+    if fallout.global_var(257) ~= 0 and (fallout.global_var(555) == 1) then
         fallout.giq_option(4, 518, 139, Lars14, 50)
     end
     if fallout.global_var(283) > time.game_time_in_days() then
@@ -408,15 +345,14 @@ function Lars16()
 end
 
 function Lars17()
-    DownReact()
+    reaction.DownReact()
     fallout.gsay_message(518, 150, 51)
 end
 
 function Lars18()
     fallout.set_global_var(555, 1)
     fallout.gsay_reply(518, 151)
-    Goodbyes()
-    fallout.giq_option(4, 518, g7, LarsEnd, 50)
+    fallout.giq_option(4, 518, reaction.Goodbyes(), LarsEnd, 50)
 end
 
 function Lars19()
@@ -437,12 +373,12 @@ end
 
 function Lars22()
     fallout.gsay_message(518, 158, 49)
-    g5 = 1
+    nail_Gizmo = true
 end
 
 function Lars23()
     fallout.gsay_message(518, 159, 50)
-    g6 = 1
+    wait_for_Lars = true
 end
 
 function Lars24()
@@ -454,7 +390,7 @@ function Lars24()
 end
 
 function Lars25()
-    g3 = 1
+    Lars_bust_Skulz = true
     fallout.set_local_var(5, 1)
 end
 
@@ -463,127 +399,21 @@ function Lars26()
 end
 
 function Lars27()
+    local self_obj = fallout.self_obj()
     fallout.gsay_message(518, 170, 51)
-    fallout.rm_timer_event(fallout.self_obj())
-    fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(15), 1)
+    fallout.rm_timer_event(self_obj)
+    fallout.add_timer_event(self_obj, fallout.game_ticks(15), 1)
 end
 
 function LarsEnd()
 end
 
 function LarsKillNeal()
-    g4 = 1
-end
-
-function get_reaction()
-    if fallout.local_var(2) == 0 then
-        fallout.set_local_var(0, 50)
-        fallout.set_local_var(1, 2)
-        fallout.set_local_var(2, 1)
-        fallout.set_local_var(0, fallout.local_var(0) + (5 * fallout.get_critter_stat(fallout.dude_obj(), 3)) - 25)
-        fallout.set_local_var(0, fallout.local_var(0) + (10 * fallout.has_trait(0, fallout.dude_obj(), 10)))
-        if fallout.has_trait(0, fallout.dude_obj(), 39) then
-            if fallout.global_var(155) > 0 then
-                fallout.set_local_var(0, fallout.local_var(0) + fallout.global_var(155))
-            else
-                fallout.set_local_var(0, fallout.local_var(0) - fallout.global_var(155))
-            end
-        else
-            if fallout.local_var(3) == 1 then
-                fallout.set_local_var(0, fallout.local_var(0) - fallout.global_var(155))
-            else
-                fallout.set_local_var(0, fallout.local_var(0) + fallout.global_var(155))
-            end
-        end
-        if fallout.global_var(158) > 2 then
-            fallout.set_local_var(0, fallout.local_var(0) - 30)
-        end
-        if reputation.has_rep_champion() then
-            fallout.set_local_var(0, fallout.local_var(0) + 20)
-        end
-        if reputation.has_rep_berserker() then
-            fallout.set_local_var(0, fallout.local_var(0) - 20)
-        end
-        ReactToLevel()
-    end
-end
-
-function ReactToLevel()
-    if fallout.local_var(0) <= 25 then
-        fallout.set_local_var(1, 1)
-    else
-        if fallout.local_var(0) <= 75 then
-            fallout.set_local_var(1, 2)
-        else
-            fallout.set_local_var(1, 3)
-        end
-    end
-end
-
-function LevelToReact()
-    if fallout.local_var(1) == 1 then
-        fallout.set_local_var(0, fallout.random(1, 25))
-    else
-        if fallout.local_var(1) == 2 then
-            fallout.set_local_var(0, fallout.random(26, 75))
-        else
-            fallout.set_local_var(0, fallout.random(76, 100))
-        end
-    end
-end
-
-function UpReact()
-    fallout.set_local_var(0, fallout.local_var(0) + 10)
-    ReactToLevel()
-end
-
-function DownReact()
-    fallout.set_local_var(0, fallout.local_var(0) - 10)
-    ReactToLevel()
-end
-
-function BottomReact()
-    fallout.set_local_var(1, 1)
-    fallout.set_local_var(0, 1)
-end
-
-function TopReact()
-    fallout.set_local_var(0, 100)
-    fallout.set_local_var(1, 3)
-end
-
-function BigUpReact()
-    fallout.set_local_var(0, fallout.local_var(0) + 25)
-    ReactToLevel()
-end
-
-function BigDownReact()
-    fallout.set_local_var(0, fallout.local_var(0) - 25)
-    ReactToLevel()
-end
-
-function UpReactLevel()
-    fallout.set_local_var(1, fallout.local_var(1) + 1)
-    if fallout.local_var(1) > 3 then
-        fallout.set_local_var(1, 3)
-    end
-    LevelToReact()
-end
-
-function DownReactLevel()
-    fallout.set_local_var(1, fallout.local_var(1) - 1)
-    if fallout.local_var(1) < 1 then
-        fallout.set_local_var(1, 1)
-    end
-    LevelToReact()
-end
-
-function Goodbyes()
-    g7 = fallout.message_str(634, fallout.random(100, 105))
+    Lars_kill_Neal = true
 end
 
 function timed_event_p_proc()
-    g0 = 1
+    hostile = true
 end
 
 local exports = {}
