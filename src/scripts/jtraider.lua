@@ -60,66 +60,53 @@ local RaiderCombat
 local RaiderSnap
 local safe
 
-local hostile = 0
-local known = 0
-local pissed = 0
-local sfx_name = 0
-local Sinthia_is_safe = 0
-local shoot_Sinthia = 0
-local will_negotiate = 0
-local line184flag = 0
-
-local exit_line = 0
+local hostile = false
+local known = false
+local pissed = false
+local Sinthia_is_safe = false
+local shoot_Sinthia = false
+local will_negotiate = false
+local line184flag = false
 
 function start()
     fallout.set_external_var("JTRaider_ptr", fallout.self_obj())
-    if fallout.script_action() == 12 then
+
+    local script_action = fallout.script_action()
+    if script_action == 12 then
         critter_p_proc()
-    else
-        if fallout.script_action() == 14 then
-            damage_p_proc()
-        else
-            if fallout.script_action() == 18 then
-                destroy_p_proc()
-            else
-                if fallout.script_action() == 21 then
-                    look_at_p_proc()
-                else
-                    if fallout.script_action() == 15 then
-                        map_enter_p_proc()
-                    else
-                        if fallout.script_action() == 4 then
-                            pickup_p_proc()
-                        else
-                            if fallout.script_action() == 11 then
-                                talk_p_proc()
-                            else
-                                if fallout.script_action() == 22 then
-                                    timed_event_p_proc()
-                                end
-                            end
-                        end
-                    end
-                end
-            end
-        end
+    elseif script_action == 14 then
+        damage_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 15 then
+        map_enter_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 22 then
+        timed_event_p_proc()
     end
 end
 
 function critter_p_proc()
-    if (fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 8) and (line184flag == 0) and (fallout.has_skill(fallout.dude_obj(), 8) >= 50) then
-        line184flag = 1
+    local self_obj = fallout.self_obj()
+    local dude_obj = fallout.dude_obj()
+    if fallout.tile_distance_objs(self_obj, dude_obj) < 8 and not line184flag and fallout.has_skill(dude_obj, 8) >= 50 then
+        line184flag = true
         fallout.display_msg(fallout.message_str(337, 184))
     else
         if hostile then
-            hostile = 0
-            pissed = 1
-            fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+            hostile = false
+            pissed = true
+            fallout.attack(dude_obj, 0, 1, 0, 0, 30000, 0, 0)
         else
-            if pissed and (fallout.tile_distance_objs(fallout.dude_obj(), fallout.self_obj()) < 4) then
-                hostile = 1
+            if pissed and fallout.tile_distance_objs(dude_obj, self_obj) < 4 then
+                hostile = true
             else
-                if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) and (known == 0) and (fallout.using_skill(fallout.dude_obj(), 8) == 0) then
+                if fallout.obj_can_see_obj(self_obj, dude_obj) and not known and not fallout.using_skill(dude_obj, 8) then
                     fallout.dialogue_system_enter()
                 end
             end
@@ -128,13 +115,15 @@ function critter_p_proc()
 end
 
 function damage_p_proc()
-    if fallout.source_obj() == fallout.dude_obj() then
-        if fallout.using_skill(fallout.dude_obj(), 8) then
-            if fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), 8, 0)) then
+    local dude_obj = fallout.dude_obj()
+    if fallout.source_obj() == dude_obj then
+        if fallout.using_skill(dude_obj, 8) then
+            if fallout.is_success(fallout.roll_vs_skill(dude_obj, 8, 0)) then
+                local self_obj = fallout.self_obj()
                 fallout.script_overrides()
                 fallout.display_msg(fallout.message_str(337, 183))
-                fallout.critter_injure(fallout.self_obj(), 2)
-                fallout.critter_injure(fallout.self_obj(), 1)
+                fallout.critter_injure(self_obj, 2)
+                fallout.critter_injure(self_obj, 1)
                 fallout.set_map_var(1, 1)
                 fallout.set_map_var(3, 3)
                 fallout.terminate_combat()
@@ -161,14 +150,15 @@ function look_at_p_proc()
 end
 
 function map_enter_p_proc()
-    fallout.set_external_var("JTRaider_ptr", fallout.self_obj())
-    fallout.critter_add_trait(fallout.self_obj(), 1, 6, 15)
+    local self_obj = fallout.self_obj()
+    fallout.set_external_var("JTRaider_ptr", self_obj)
+    fallout.critter_add_trait(self_obj, 1, 6, 15)
 end
 
 function pickup_p_proc()
-    hostile = 1
-    pissed = 1
-    will_negotiate = 0
+    hostile = true
+    pissed = true
+    will_negotiate = false
 end
 
 function talk_p_proc()
@@ -179,7 +169,7 @@ function talk_p_proc()
         if fallout.global_var(143) == 1 then
             fallout.start_gdialog(337, fallout.self_obj(), 4, -1, -1)
             fallout.gsay_start()
-            if not(known) then
+            if not known then
                 Raider0()
             else
                 if fallout.map_var(3) == 1 then
@@ -204,19 +194,21 @@ function talk_p_proc()
         end
     end
     if shoot_Sinthia then
+        local self_obj = fallout.self_obj()
         fallout.game_ui_disable()
-        fallout.reg_anim_func(2, fallout.self_obj())
+        fallout.reg_anim_func(2, self_obj)
         fallout.reg_anim_func(1, 1)
-        fallout.reg_anim_animate(fallout.self_obj(), 43, -1)
-        fallout.reg_anim_animate(fallout.self_obj(), 45, -1)
-        sfx_name = fallout.sfx_build_weapon_name(1, fallout.obj_carrying_pid_obj(fallout.self_obj(), 8), 0, fallout.external_var("Sinthia_ptr"))
-        fallout.reg_anim_play_sfx(fallout.self_obj(), sfx_name, 0)
-        fallout.reg_anim_animate(fallout.self_obj(), 44, -1)
+        fallout.reg_anim_animate(self_obj, 43, -1)
+        fallout.reg_anim_animate(self_obj, 45, -1)
+        local sfx_name = fallout.sfx_build_weapon_name(1, fallout.obj_carrying_pid_obj(self_obj, 8), 0,
+            fallout.external_var("Sinthia_ptr"))
+        fallout.reg_anim_play_sfx(self_obj, sfx_name, 0)
+        fallout.reg_anim_animate(self_obj, 44, -1)
         fallout.reg_anim_func(3, 0)
-        shoot_Sinthia = 0
-        fallout.add_timer_event(fallout.self_obj(), 5, 2)
+        shoot_Sinthia = false
+        fallout.add_timer_event(self_obj, 5, 2)
     end
-    if Sinthia_is_safe == 1 then
+    if Sinthia_is_safe then
         fallout.set_map_var(3, 3)
         fallout.set_global_var(143, 2)
         fallout.gfade_out(600)
@@ -226,19 +218,18 @@ function talk_p_proc()
 end
 
 function timed_event_p_proc()
-    if fallout.fixed_param() == 1 then
+    local event = fallout.fixed_param()
+    if event == 1 then
         fallout.game_ui_enable()
-        hostile = 1
-    else
-        if fallout.fixed_param() == 2 then
-            fallout.critter_dmg(fallout.external_var("Sinthia_ptr"), 75, 0)
-            fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(5), 1)
-        end
+        hostile = true
+    elseif event == 2 then
+        fallout.critter_dmg(fallout.external_var("Sinthia_ptr"), 75, 0)
+        fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(5), 1)
     end
 end
 
 function Raider0()
-    known = 1
+    known = true
     fallout.gsay_reply(337, 101)
     fallout.giq_option(-3, 337, 102, Raider1, 50)
     fallout.giq_option(4, 337, 103, Raider2, 50)
@@ -259,7 +250,7 @@ end
 function Raider3()
     reaction.DownReact()
     fallout.gsay_message(337, 109, 51)
-    pissed = 1
+    pissed = true
 end
 
 function Raider4()
@@ -275,13 +266,13 @@ end
 
 function Raider6()
     reaction.UpReact()
-    pissed = 1
+    pissed = true
     fallout.gsay_message(337, 115, 49)
 end
 
 function Raider7()
     fallout.gsay_message(337, 116, 51)
-    pissed = 1
+    pissed = true
 end
 
 function Raider8()
@@ -307,7 +298,7 @@ end
 
 function Raider10a()
     if fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), 14, 0)) then
-        will_negotiate = 1
+        will_negotiate = true
         Raider12()
     else
         Raider13()
@@ -334,7 +325,7 @@ end
 
 function Raider14a()
     if fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), 14, 20)) then
-        will_negotiate = 1
+        will_negotiate = true
         Raider16()
     else
         Raider15()
@@ -361,12 +352,12 @@ function Raider17()
 end
 
 function Raider17a()
-    will_negotiate = 0
+    will_negotiate = false
 end
 
 function Raider17b()
     if fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), 14, 0)) then
-        will_negotiate = 1
+        will_negotiate = true
         Raider20()
     else
         Raider19()
@@ -380,7 +371,7 @@ end
 
 function Raider19()
     fallout.gsay_message(337, 143, 51)
-    will_negotiate = 0
+    will_negotiate = false
 end
 
 function Raider20()
@@ -421,8 +412,9 @@ function Raider24()
 end
 
 function Raider24a()
-    if fallout.item_caps_total(fallout.dude_obj()) >= 100 then
-        fallout.item_caps_adjust(fallout.dude_obj(), -100)
+    local dude_obj = fallout.dude_obj()
+    if fallout.item_caps_total(dude_obj) >= 100 then
+        fallout.item_caps_adjust(dude_obj, -100)
         safe()
     else
         Raider23()
@@ -465,8 +457,9 @@ function Raider29()
 end
 
 function Raider29a()
-    if fallout.item_caps_total(fallout.dude_obj()) >= 100 then
-        fallout.item_caps_adjust(fallout.dude_obj(), -100)
+    local dude_obj = fallout.dude_obj()
+    if fallout.item_caps_total(dude_obj) >= 100 then
+        fallout.item_caps_adjust(dude_obj, -100)
         safe()
     else
         Raider23()
@@ -480,8 +473,9 @@ function Raider30()
 end
 
 function Raider30a()
-    if fallout.item_caps_total(fallout.dude_obj()) >= 200 then
-        fallout.item_caps_adjust(fallout.dude_obj(), -200)
+    local dude_obj = fallout.dude_obj()
+    if fallout.item_caps_total(dude_obj) >= 200 then
+        fallout.item_caps_adjust(dude_obj, -200)
         safe()
     else
         Raider23()
@@ -517,18 +511,18 @@ function Raiderend()
 end
 
 function RaiderCombat()
-    hostile = 1
+    hostile = true
 end
 
 function RaiderSnap()
-    shoot_Sinthia = 1
+    shoot_Sinthia = true
 end
 
 function safe()
     fallout.set_external_var("award", 1000)
-    pissed = 0
-    Sinthia_is_safe = 1
-    fallout.set_obj_visibility(fallout.self_obj(), 1)
+    pissed = false
+    Sinthia_is_safe = true
+    fallout.set_obj_visibility(fallout.self_obj(), true)
 end
 
 local exports = {}
