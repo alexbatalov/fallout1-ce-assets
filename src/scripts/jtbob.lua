@@ -3,7 +3,7 @@ local reputation = require("lib.reputation")
 local time = require("lib.time")
 
 local start
-local Do_Dialogue
+local talk_p_proc
 local bob0
 local bob1
 local bob2
@@ -24,62 +24,53 @@ local bob16
 local bobend
 local combat
 local damage_p_proc
+local map_enter_p_proc
 local destroy_p_proc
+local look_at_p_proc
 
-local Herebefore = 0
+local Herebefore = false
 local Days = 0
-local Met_Casino = 0
-local Has_Weapon = 0
+local Met_Casino = false
+local Has_Weapon = false
 
 function start()
-    if (fallout.script_action() == 21) or (fallout.script_action() == 3) then
-        fallout.script_overrides()
-        fallout.display_msg(fallout.message_str(341, 100))
-    else
-        if fallout.script_action() == 18 then
-            reputation.inc_good_critter()
-        else
-            if fallout.script_action() == 11 then
-                Do_Dialogue()
-            else
-                if fallout.script_action() == 15 then
-                    if (time.game_time_in_days() - Days) >= 7 then
-                        fallout.kill_critter(fallout.self_obj(), 0)
-                    end
-                end
-            end
-        end
+    local script_action = fallout.script_action()
+    if script_action == 21 or script_action == 3 then
+        look_at_p_proc()
+    elseif script_action == 18 then
+        -- FIXME: Conflicts with `destroy_p_proc`.
+        reputation.inc_good_critter()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 15 then
+        map_enter_p_proc()
     end
 end
 
-function Do_Dialogue()
-    if (Has_Weapon == 0) and ((fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3)) then
-        Has_Weapon = 1
+function talk_p_proc()
+    if not Has_Weapon and ((fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3)) then
+        Has_Weapon = true
         fallout.start_gdialog(341, fallout.self_obj(), 4, -1, -1)
         fallout.gsay_start()
         bob0()
         fallout.gsay_end()
         fallout.end_dialogue()
+    elseif Met_Casino then
+        bob9()
+    elseif Herebefore then
+        fallout.start_gdialog(341, fallout.self_obj(), 4, -1, -1)
+        fallout.gsay_start()
+        bob13()
+        fallout.gsay_end()
+        fallout.end_dialogue()
     else
-        if Met_Casino then
-            bob9()
-        else
-            if Herebefore then
-                fallout.start_gdialog(341, fallout.self_obj(), 4, -1, -1)
-                fallout.gsay_start()
-                bob13()
-                fallout.gsay_end()
-                fallout.end_dialogue()
-            else
-                Herebefore = 1
-                Days = time.game_time_in_days()
-                fallout.start_gdialog(341, fallout.self_obj(), 4, -1, -1)
-                fallout.gsay_start()
-                bob10()
-                fallout.gsay_end()
-                fallout.end_dialogue()
-            end
-        end
+        Herebefore = true
+        Days = time.game_time_in_days()
+        fallout.start_gdialog(341, fallout.self_obj(), 4, -1, -1)
+        fallout.gsay_start()
+        bob10()
+        fallout.gsay_end()
+        fallout.end_dialogue()
     end
 end
 
@@ -106,10 +97,15 @@ function bob3()
 end
 
 function bob4()
-    if fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3 then
-        fallout.gsay_message(341, fallout.message_str(341, 111) .. fallout.obj_pid(fallout.critter_inven_obj(fallout.dude_obj(), 1)) .. fallout.message_str(341, 112), 50)
+    local dude_obj = fallout.dude_obj()
+    if fallout.obj_item_subtype(fallout.critter_inven_obj(dude_obj, 1)) == 3 then
+        fallout.gsay_message(341,
+            fallout.message_str(341, 111) ..
+            fallout.obj_pid(fallout.critter_inven_obj(dude_obj, 1)) .. fallout.message_str(341, 112), 50)
     else
-        fallout.gsay_message(341, fallout.message_str(341, 113) .. fallout.obj_pid(fallout.critter_inven_obj(fallout.dude_obj(), 2)) .. fallout.message_str(341, 114), 50)
+        fallout.gsay_message(341,
+            fallout.message_str(341, 113) ..
+            fallout.obj_pid(fallout.critter_inven_obj(dude_obj, 2)) .. fallout.message_str(341, 114), 50)
     end
 end
 
@@ -204,6 +200,12 @@ function damage_p_proc()
     end
 end
 
+function map_enter_p_proc()
+    if time.game_time_in_days() - Days >= 7 then
+        fallout.kill_critter(fallout.self_obj(), 0)
+    end
+end
+
 function destroy_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
         fallout.set_global_var(247, 1)
@@ -211,8 +213,16 @@ function destroy_p_proc()
     end
 end
 
+function look_at_p_proc()
+    fallout.script_overrides()
+    fallout.display_msg(fallout.message_str(341, 100))
+end
+
 local exports = {}
 exports.start = start
+exports.talk_p_proc = talk_p_proc
 exports.damage_p_proc = damage_p_proc
+exports.map_enter_p_proc = map_enter_p_proc
 exports.destroy_p_proc = destroy_p_proc
+exports.look_at_p_proc = look_at_p_proc
 return exports
