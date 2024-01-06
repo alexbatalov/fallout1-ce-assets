@@ -39,9 +39,9 @@ local GustoferBet2
 local destroy_challenger
 
 local round_counter = 0
-local robbed = 0
+local robbed = false
 local dude_bet = 0
-local line148flag = 0
+local line148flag = false
 
 local night_person = false
 local wake_time = 0
@@ -50,33 +50,24 @@ local home_tile = 0
 local sleep_tile = 0
 
 function start()
-    if fallout.script_action() == 13 then
+    local script_action = fallout.script_action()
+    if script_action == 13 then
         combat_p_proc()
-    else
-        if fallout.script_action() == 12 then
-            critter_p_proc()
-        else
-            if fallout.script_action() == 18 then
-                destroy_p_proc()
-            else
-                if fallout.script_action() == 15 then
-                    map_enter_p_proc()
-                else
-                    if fallout.script_action() == 4 then
-                        pickup_p_proc()
-                    else
-                        if fallout.script_action() == 11 then
-                            talk_p_proc()
-                        end
-                    end
-                end
-            end
-        end
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 15 then
+        map_enter_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
     end
 end
 
 function combat_p_proc()
-    if (fallout.fixed_param() == 4) and fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
+    if fallout.fixed_param() == 4 and fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
         round_counter = round_counter + 1
     end
     if round_counter > 3 then
@@ -88,21 +79,24 @@ function combat_p_proc()
 end
 
 function critter_p_proc()
-    if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) and (fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 8) and (fallout.local_var(1) == 0) then
+    local self_obj = fallout.self_obj()
+    local dude_obj = fallout.dude_obj()
+    local distance_self_to_dude = fallout.tile_distance_objs(self_obj, dude_obj)
+    if (fallout.obj_item_subtype(fallout.critter_inven_obj(dude_obj, 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(dude_obj, 2)) == 3) and distance_self_to_dude < 8 and fallout.local_var(1) == 0 then
         behaviour.flee_dude(1)
     else
         if fallout.game_time_hour() == 1400 then
-            if (line148flag == 0) and ((time.game_time_in_days() % 3) == 0) then
-                line148flag = 1
+            if not line148flag and time.game_time_in_days() % 3 == 0 then
+                line148flag = true
                 fallout.set_external_var("fight", 1)
-                fallout.float_msg(fallout.self_obj(), fallout.message_str(529, 148), 0)
+                fallout.float_msg(self_obj, fallout.message_str(529, 148), 0)
             end
         else
-            line148flag = 0
+            line148flag = false
         end
-        if fallout.external_var("Saul_wins") or fallout.external_var("Saul_loses") and fallout.external_var("shot_challenger") then
+        if fallout.external_var("Saul_wins") ~= 0 or fallout.external_var("Saul_loses") ~= 0 and fallout.external_var("shot_challenger") ~= 0 then
             destroy_challenger()
-            if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) and (fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 12) then
+            if fallout.obj_can_see_obj(self_obj, dude_obj) and distance_self_to_dude < 12 then
                 fallout.dialogue_system_enter()
             end
         else
@@ -116,16 +110,17 @@ function destroy_p_proc()
 end
 
 function map_enter_p_proc()
+    local self_obj = fallout.self_obj()
     if fallout.global_var(15) == 1 then
-        fallout.destroy_object(fallout.self_obj())
+        fallout.destroy_object(self_obj)
     end
     if fallout.local_var(0) == 0 then
-        fallout.set_local_var(0, fallout.tile_num(fallout.self_obj()))
+        fallout.set_local_var(0, fallout.tile_num(self_obj))
     end
-    if fallout.obj_is_carrying_obj_pid(fallout.self_obj(), 41) == 0 then
-        fallout.item_caps_adjust(fallout.self_obj(), fallout.random(0, 10))
+    if fallout.obj_is_carrying_obj_pid(self_obj, 41) == 0 then
+        fallout.item_caps_adjust(self_obj, fallout.random(0, 10))
     end
-    fallout.critter_add_trait(fallout.self_obj(), 1, 6, 25)
+    fallout.critter_add_trait(self_obj, 1, 6, 25)
     sleep_time = 1920
     wake_time = 530
     home_tile = 17096
@@ -133,53 +128,47 @@ function map_enter_p_proc()
 end
 
 function pickup_p_proc()
-    robbed = 1
+    robbed = true
     fallout.dialogue_system_enter()
 end
 
 function talk_p_proc()
-    if not(robbed) and (fallout.local_var(2) == 1) and ((time.game_time_in_days() % 3) ~= 0) then
+    if not robbed and fallout.local_var(2) == 1 and time.game_time_in_days() % 3 ~= 0 then
         Gustofer05()
     else
         fallout.start_gdialog(529, fallout.self_obj(), 4, -1, -1)
         fallout.gsay_start()
-        if fallout.external_var("Saul_wins") then
+        if fallout.external_var("Saul_wins") ~= 0 then
             if dude_bet == 1 then
                 Gustofer16()
             else
                 Gustofer07()
             end
-        else
-            if fallout.external_var("Saul_loses") then
-                if dude_bet == 2 then
-                    Gustofer16()
+        elseif fallout.external_var("Saul_loses") ~= 0 then
+            if dude_bet == 2 then
+                Gustofer16()
+            else
+                Gustofer07()
+            end
+        elseif robbed then
+            Gustofer13()
+        elseif time.game_time_in_days() % 3 == 0 then
+            if fallout.game_time_hour() < 1400 then
+                if dude_bet == 0 then
+                    Gustofer06()
                 else
-                    Gustofer07()
+                    fallout.gsay_message(529, 152, 50)
                 end
             else
-                if robbed then
-                    Gustofer13()
+                if fallout.external_var("challenger_ptr") ~= nil then
+                    Gustofer19()
                 else
-                    if (time.game_time_in_days() % 3) == 0 then
-                        if fallout.game_time_hour() < 1400 then
-                            if dude_bet == 0 then
-                                Gustofer06()
-                            else
-                                fallout.gsay_message(529, 152, 50)
-                            end
-                        else
-                            if fallout.external_var("challenger_ptr") ~= 0 then
-                                Gustofer19()
-                            else
-                                Gustofer18()
-                                dude_bet = 0
-                            end
-                        end
-                    else
-                        Gustofer00()
-                    end
+                    Gustofer18()
+                    dude_bet = 0
                 end
             end
+        else
+            Gustofer00()
         end
         fallout.gsay_end()
         fallout.end_dialogue()
@@ -195,7 +184,7 @@ function Gustofer00()
 end
 
 function Gustofer00a()
-    if (time.game_time_in_days() % 3) == 1 then
+    if time.game_time_in_days() % 3 == 1 then
         Gustofer03()
     else
         Gustofer02()
@@ -223,16 +212,13 @@ function Gustofer04()
 end
 
 function Gustofer05()
-    local v0 = 0
-    v0 = fallout.message_str(529, 110)
-    if (time.game_time_in_days() % 3) == 1 then
-        v0 = v0 .. fallout.message_str(529, 112)
-    else
-        if (time.game_time_in_days() % 3) == 2 then
-            v0 = v0 .. fallout.message_str(529, 111)
-        end
+    local msg = fallout.message_str(529, 110)
+    if time.game_time_in_days() % 3 == 1 then
+        msg = msg .. fallout.message_str(529, 112)
+    elseif time.game_time_in_days() % 3 == 2 then
+        msg = msg .. fallout.message_str(529, 111)
     end
-    fallout.float_msg(fallout.self_obj(), v0, 0)
+    fallout.float_msg(fallout.self_obj(), msg, 0)
 end
 
 function Gustofer06()
@@ -296,7 +282,7 @@ function Gustofer12()
 end
 
 function Gustofer13()
-    robbed = 0
+    robbed = false
     fallout.gsay_reply(529, 137)
     fallout.giq_option(4, 529, 138, Gustofer14, 51)
     fallout.giq_option(4, 529, 139, Gustofer15, 51)
@@ -313,7 +299,7 @@ end
 
 function Gustofer16()
     dude_bet = 0
-    if fallout.external_var("Saul_wins") then
+    if fallout.external_var("Saul_wins") ~= 0 then
         fallout.item_caps_adjust(fallout.dude_obj(), 50)
     else
         fallout.item_caps_adjust(fallout.dude_obj(), 100)
@@ -343,7 +329,8 @@ end
 
 function GustoferWait()
     fallout.gfade_out(600)
-    fallout.game_time_advance(fallout.game_ticks((3600 * (13 - (fallout.game_time_hour() // 100))) + (60 * (60 - (fallout.game_time_hour() % 100)))))
+    fallout.game_time_advance(fallout.game_ticks((3600 * (13 - (fallout.game_time_hour() // 100))) +
+        (60 * (60 - (fallout.game_time_hour() % 100)))))
     fallout.gfade_in(600)
 end
 
