@@ -3,8 +3,11 @@ local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
 
 local start
-local do_dialogue
-local sys_dialog
+local pickup_p_proc
+local talk_p_proc
+local destroy_p_proc
+local look_at_p_proc
+local timed_event_p_proc
 local guard00
 local guard01
 local guard02
@@ -26,116 +29,93 @@ local guard15
 local guardend
 local combat
 local weapon_check
-local Critter_Action
+local critter_p_proc
 local damage_p_proc
 
-local hostile = 0
+local hostile = false
 local initialized = false
-local Weapons = 0
-local rndq = 0
-local rndr = 0
-local rndx = 0
-
-local exit_line = 0
-
-local first
-local notfirst
+local Weapons = false
 
 function start()
     if not initialized then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 6)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 21)
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 6)
+        fallout.critter_add_trait(self_obj, 1, 5, 21)
         initialized = true
     end
-    if fallout.script_action() == 22 then
-        if fallout.fixed_param() == 1 then
-            if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) then
-                combat()
-            end
-        else
-            if fallout.fixed_param() == 2 then
-                if fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 6 then
-                    combat()
-                end
-            else
-                if fallout.fixed_param() == 3 then
-                    if fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 8 then
-                        combat()
-                    end
-                end
-            end
-        end
-    else
-        if fallout.script_action() == 11 then
-            if fallout.local_var(5) == 1 then
-                fallout.display_msg(fallout.message_str(240, 100))
-            else
-                do_dialogue()
-            end
-        else
-            if fallout.script_action() == 4 then
-                hostile = 1
-            else
-                if fallout.script_action() == 12 then
-                    Critter_Action()
-                    if hostile then
-                        hostile = 0
-                        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
-                    else
-                        if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) and (fallout.global_var(611) ~= 1) then
-                            if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) and ((Weapons == 0) and (fallout.external_var("killing_women") == 0)) then
-                                Weapons = 1
-                                fallout.dialogue_system_enter()
-                            end
-                        end
-                    end
-                else
-                    if fallout.script_action() == 14 then
-                        damage_p_proc()
-                    else
-                        if fallout.script_action() == 18 then
-                            reputation.inc_evil_critter()
-                            fallout.set_global_var(254, 1)
-                            fallout.set_global_var(611, 0)
-                            fallout.set_global_var(115, fallout.global_var(115) - 1)
-                        else
-                            if fallout.script_action() == 21 then
-                                fallout.script_overrides()
-                                fallout.display_msg(fallout.message_str(240, 101))
-                            end
-                        end
-                    end
-                end
-            end
-        end
+
+    local script_action = fallout.script_action()
+    if script_action == 22 then
+        timed_event_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 14 then
+        damage_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 21 then
+        look_at_p_proc()
     end
 end
 
-function do_dialogue()
-    if fallout.global_var(116) == 1 then
+function pickup_p_proc()
+    hostile = true
+end
+
+function talk_p_proc()
+    if fallout.local_var(5) == 1 then
+        fallout.display_msg(fallout.message_str(240, 100))
+    elseif fallout.global_var(116) == 1 then
         guard00()
+    elseif Weapons and fallout.external_var("killing_women") == 0 and fallout.global_var(611) ~= 1 then
+        guard02()
     else
-        if (Weapons == 1) and (fallout.external_var("killing_women") == 0) and (fallout.global_var(611) ~= 1) then
-            guard02()
+        fallout.set_local_var(3, 1)
+        reaction.get_reaction()
+        fallout.start_gdialog(240, fallout.self_obj(), 4, -1, -1)
+        fallout.gsay_start()
+        if fallout.local_var(4) == 0 then
+            fallout.set_local_var(4, 1)
+            guard04()
         else
-            sys_dialog()
+            guard15()
         end
+        fallout.gsay_end()
+        fallout.end_dialogue()
     end
 end
 
-function sys_dialog()
-    fallout.set_local_var(3, 1)
-    reaction.get_reaction()
-    fallout.start_gdialog(240, fallout.self_obj(), 4, -1, -1)
-    fallout.gsay_start()
-    if fallout.local_var(4) == 0 then
-        fallout.set_local_var(4, 1)
-        guard04()
-    else
-        guard15()
+function destroy_p_proc()
+    reputation.inc_evil_critter()
+    fallout.set_global_var(254, 1)
+    fallout.set_global_var(611, 0)
+    fallout.set_global_var(115, fallout.global_var(115) - 1)
+end
+
+function look_at_p_proc()
+    fallout.script_overrides()
+    fallout.display_msg(fallout.message_str(240, 101))
+end
+
+function timed_event_p_proc()
+    local event = fallout.fixed_param()
+    if event == 1 then
+        if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) then
+            combat()
+        end
+    elseif event == 2 then
+        if fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 6 then
+            combat()
+        end
+    elseif event == 3 then
+        if fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 8 then
+            combat()
+        end
     end
-    fallout.gsay_end()
-    fallout.end_dialogue()
 end
 
 function guard00()
@@ -147,13 +127,15 @@ function guard01()
 end
 
 function guard02()
-    fallout.float_msg(fallout.self_obj(), fallout.message_str(240, fallout.random(112, 115)), 8)
-    fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(9), 1)
+    local self_obj = fallout.self_obj()
+    fallout.float_msg(self_obj, fallout.message_str(240, fallout.random(112, 115)), 8)
+    fallout.add_timer_event(self_obj, fallout.game_ticks(9), 1)
 end
 
 function guard03()
-    fallout.float_msg(fallout.self_obj(), fallout.message_str(240, fallout.random(116, 118)), 8)
-    fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(10), 2)
+    local self_obj = fallout.self_obj()
+    fallout.float_msg(self_obj, fallout.message_str(240, fallout.random(116, 118)), 8)
+    fallout.add_timer_event(self_obj, fallout.game_ticks(10), 2)
 end
 
 function guard04()
@@ -242,52 +224,67 @@ function combat()
     if fallout.global_var(116) == 1 then
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 87)
     end
-    hostile = 1
+    hostile = true
 end
 
 function weapon_check()
     if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) then
-        Weapons = 0
+        Weapons = false
     else
-        Weapons = 1
+        Weapons = true
     end
 end
 
-function Critter_Action()
-    local v0 = 0
+function critter_p_proc()
+    local self_obj = fallout.self_obj()
+    local dude_obj = fallout.dude_obj()
+    local distance_self_to_dude = fallout.tile_distance_objs(self_obj, dude_obj)
+    local self_can_see_dude = fallout.obj_can_see_obj(self_obj, dude_obj)
     if fallout.global_var(26) == 2 then
         fallout.set_global_var(254, 1)
+    elseif fallout.global_var(116) ~= 0 then
+        fallout.set_global_var(254, 0)
+        if distance_self_to_dude < 3 then
+            local self_tile_num = fallout.tile_num(self_obj)
+            local dest = fallout.tile_num_in_direction(self_tile_num, fallout.random(0, 5), 3)
+            if fallout.tile_distance(self_tile_num, dest) > 2 then
+                if fallout.random(0, 9) == 0 then
+                    fallout.float_msg(self_obj, fallout.message_str(136, fallout.random(102, 106)), 8)
+                end
+                fallout.animate_move_obj_to_tile(self_obj, dest, 0)
+            end
+        end
     else
-        if fallout.global_var(116) ~= 0 then
-            fallout.set_global_var(254, 0)
-            if fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 3 then
-                v0 = fallout.tile_num_in_direction(fallout.tile_num(fallout.self_obj()), fallout.random(0, 5), 3)
-                if fallout.tile_distance(fallout.tile_num(fallout.self_obj()), v0) > 2 then
-                    if fallout.random(0, 9) == 0 then
-                        fallout.float_msg(fallout.self_obj(), fallout.message_str(136, fallout.random(102, 106)), 8)
-                    end
-                    fallout.animate_move_obj_to_tile(fallout.self_obj(), v0, 0)
-                end
-            end
-        else
-            if fallout.global_var(213) ~= 0 then
-                fallout.set_global_var(254, 1)
-            end
-            if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
-                if fallout.global_var(214) ~= 0 then
-                    fallout.set_global_var(254, 1)
-                end
-            end
-            if fallout.map_var(2) == 1 then
+        if fallout.global_var(213) ~= 0 then
+            fallout.set_global_var(254, 1)
+        end
+        if self_can_see_dude then
+            if fallout.global_var(214) ~= 0 then
                 fallout.set_global_var(254, 1)
             end
         end
+        if fallout.map_var(2) == 1 then
+            fallout.set_global_var(254, 1)
+        end
     end
-    if fallout.global_var(254) and fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
-        hostile = 1
+    if fallout.global_var(254) ~= 0 and self_can_see_dude then
+        hostile = true
     end
-    if fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) > 12 then
-        hostile = 0
+    if distance_self_to_dude > 12 then
+        hostile = false
+    end
+    if hostile then
+        hostile = false
+        fallout.attack(dude_obj, 0, 1, 0, 0, 30000, 0, 0)
+    else
+        if self_can_see_dude and fallout.global_var(611) ~= 1 then
+            if (fallout.obj_item_subtype(fallout.critter_inven_obj(dude_obj, 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(dude_obj, 2)) == 3)
+                and not Weapons
+                and fallout.external_var("killing_women") == 0 then
+                Weapons = true
+                fallout.dialogue_system_enter()
+            end
+        end
     end
 end
 
@@ -297,13 +294,13 @@ function damage_p_proc()
     end
 end
 
-function first()
-end
-
-function notfirst()
-end
-
 local exports = {}
 exports.start = start
+exports.pickup_p_proc = pickup_p_proc
+exports.talk_p_proc = talk_p_proc
+exports.critter_p_proc = critter_p_proc
 exports.damage_p_proc = damage_p_proc
+exports.destroy_p_proc = destroy_p_proc
+exports.look_at_p_proc = look_at_p_proc
+exports.timed_event_p_proc = timed_event_p_proc
 return exports
