@@ -2,84 +2,78 @@ local fallout = require("fallout")
 local reputation = require("lib.reputation")
 
 local start
-local do_dialogue
+local pickup_p_proc
+local talk_p_proc
+local destroy_p_proc
 local genericcbt
 local generic00
 local generic02
 local generic03
-local Critter_Action
+local critter_p_proc
 
-local Hostile = 0
-local init = 0
-local rndx = 0
+local hostile = false
+local initialized = false
 
 function start()
-    if not(init) then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 30)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 41)
-        init = 1
-    else
-        if fallout.script_action() == 11 then
-            if fallout.global_var(249) ~= 0 then
-                fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
-            else
-                do_dialogue()
-            end
-        else
-            if fallout.script_action() == 4 then
-                Hostile = 1
-            else
-                if fallout.script_action() == 12 then
-                    Critter_Action()
-                else
-                    if fallout.script_action() == 18 then
-                        reputation.inc_evil_critter()
-                    end
-                end
-            end
-        end
+    if not initialized then
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 30)
+        fallout.critter_add_trait(self_obj, 1, 5, 41)
+        initialized = true
+    end
+
+    local script_action = fallout.script_action()
+    if script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
     end
 end
 
-function do_dialogue()
-    generic00()
+function pickup_p_proc()
+    hostile = true
+end
+
+function talk_p_proc()
+    if fallout.global_var(249) ~= 0 then
+        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+    else
+        generic00()
+    end
 end
 
 function genericcbt()
 end
 
 function generic00()
-    rndx = fallout.random(1, 7)
+    local rndx = fallout.random(1, 7)
     if rndx == 1 then
         fallout.float_msg(fallout.self_obj(), fallout.message_str(66, 100), 7)
-    end
-    if rndx == 2 then
+    elseif rndx == 2 then
         fallout.float_msg(fallout.self_obj(), fallout.message_str(66, 101), 7)
-    end
-    if rndx == 3 then
+    elseif rndx == 3 then
         fallout.float_msg(fallout.self_obj(), fallout.message_str(66, 102), 7)
-    end
-    if rndx == 4 then
+    elseif rndx == 4 then
         fallout.float_msg(fallout.self_obj(), fallout.message_str(66, 103), 7)
-    end
-    if rndx == 5 then
+    elseif rndx == 5 then
         fallout.float_msg(fallout.self_obj(), fallout.message_str(66, 104), 7)
-    end
-    if rndx == 6 then
+    elseif rndx == 6 then
         generic02()
-    end
-    if rndx == 7 then
+    elseif rndx == 7 then
         generic03()
     end
 end
 
 function generic02()
     if fallout.global_var(553) ~= 0 then
-        rndx = fallout.random(1, 2)
+        local rndx = fallout.random(1, 2)
         if rndx == 1 then
             fallout.float_msg(fallout.self_obj(), fallout.message_str(66, 109), 7)
-        end
-        if rndx == 2 then
+        elseif rndx == 2 then
             fallout.float_msg(fallout.self_obj(), fallout.message_str(66, 110), 7)
         end
     else
@@ -89,11 +83,10 @@ end
 
 function generic03()
     if fallout.global_var(29) == 2 then
-        rndx = fallout.random(1, 2)
+        local rndx = fallout.random(1, 2)
         if rndx == 1 then
             fallout.float_msg(fallout.self_obj(), fallout.message_str(66, 112), 7)
-        end
-        if rndx == 2 then
+        elseif rndx == 2 then
             fallout.float_msg(fallout.self_obj(), fallout.message_str(66, 113), 7)
         end
     else
@@ -101,7 +94,7 @@ function generic03()
     end
 end
 
-function Critter_Action()
+function critter_p_proc()
     if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
         if fallout.global_var(249) ~= 0 then
             fallout.set_local_var(0, 1)
@@ -120,6 +113,14 @@ function Critter_Action()
     end
 end
 
+function destroy_p_proc()
+    reputation.inc_evil_critter()
+end
+
 local exports = {}
 exports.start = start
+exports.pickup_p_proc = pickup_p_proc
+exports.talk_p_proc = talk_p_proc
+exports.critter_p_proc = critter_p_proc
+exports.destroy_p_proc = destroy_p_proc
 return exports
