@@ -1,53 +1,39 @@
 local fallout = require("fallout")
 
 local start
-local Initialize_Fridge
-local Looting_Fridge
-local Open_Fridge
+local map_enter_p_proc
+local pickup_p_proc
+local use_p_proc
+local use_obj_on_p_proc
+local use_skill_on_p_proc
 local pick_lock
+local timed_event_p_proc
 local map_update_p_proc
 
-local last_user = 0
-
 function start()
-    if fallout.script_action() == 15 then
-        Initialize_Fridge()
-    else
-        if fallout.script_action() == 23 then
-            map_update_p_proc()
-        else
-            if fallout.script_action() == 4 then
-                Looting_Fridge()
-            else
-                if fallout.script_action() == 6 then
-                    Open_Fridge()
-                else
-                    if fallout.script_action() == 22 then
-                        fallout.float_msg(fallout.external_var("Garret_ptr"), fallout.message_str(420, 105), 0)
-                    else
-                        if fallout.script_action() == 7 then
-                            if fallout.obj_pid(fallout.obj_being_used_with()) == 84 then
-                                pick_lock()
-                            end
-                        else
-                            if fallout.script_action() == 8 then
-                                if fallout.action_being_used() == 9 then
-                                    pick_lock()
-                                end
-                            end
-                        end
-                    end
-                end
-            end
-        end
+    local script_action = fallout.script_action()
+    if script_action == 15 then
+        map_enter_p_proc()
+    elseif script_action == 23 then
+        map_update_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 6 then
+        use_p_proc()
+    elseif script_action == 22 then
+        timed_event_p_proc()
+    elseif script_action == 7 then
+        use_obj_on_p_proc()
+    elseif script_action == 8 then
+        use_skill_on_p_proc()
     end
 end
 
-function Initialize_Fridge()
+function map_enter_p_proc()
     fallout.set_external_var("Fridge_ptr", fallout.self_obj())
 end
 
-function Looting_Fridge()
+function pickup_p_proc()
     if fallout.source_obj() ~= fallout.external_var("Garret_ptr") then
         if fallout.local_var(0) == 0 then
             fallout.script_overrides()
@@ -59,19 +45,20 @@ function Looting_Fridge()
     end
 end
 
-function Open_Fridge()
-    last_user = fallout.source_obj()
-    if fallout.source_obj() == fallout.external_var("Garret_ptr") then
+function use_p_proc()
+    local source_obj = fallout.source_obj()
+    local garret_obj = fallout.external_var("Garret_ptr")
+    if source_obj == garret_obj then
         if fallout.local_var(1) == 0 then
             fallout.set_local_var(0, 1)
             fallout.set_local_var(1, 1)
         else
-            if last_user == fallout.external_var("Garret_ptr") then
+            if source_obj == garret_obj then
                 fallout.set_local_var(1, 0)
                 fallout.set_local_var(0, 0)
             else
                 fallout.script_overrides()
-                fallout.float_msg(fallout.external_var("Garret_ptr"), fallout.message_str(420, 104), 0)
+                fallout.float_msg(garret_obj, fallout.message_str(420, 104), 0)
             end
         end
     else
@@ -85,6 +72,18 @@ function Open_Fridge()
                 fallout.set_local_var(1, 1)
             end
         end
+    end
+end
+
+function use_obj_on_p_proc()
+    if fallout.obj_pid(fallout.obj_being_used_with()) == 84 then
+        pick_lock()
+    end
+end
+
+function use_skill_on_p_proc()
+    if fallout.action_being_used() == 9 then
+        pick_lock()
     end
 end
 
@@ -104,11 +103,21 @@ function pick_lock()
     end
 end
 
+function timed_event_p_proc()
+    fallout.float_msg(fallout.external_var("Garret_ptr"), fallout.message_str(420, 105), 0)
+end
+
 function map_update_p_proc()
     fallout.set_external_var("Fridge_ptr", fallout.self_obj())
 end
 
 local exports = {}
 exports.start = start
+exports.pickup_p_proc = pickup_p_proc
+exports.use_p_proc = use_p_proc
+exports.use_obj_on_p_proc = use_obj_on_p_proc
+exports.use_skill_on_p_proc = use_skill_on_p_proc
+exports.map_enter_p_proc = map_enter_p_proc
+exports.timed_event_p_proc = timed_event_p_proc
 exports.map_update_p_proc = map_update_p_proc
 return exports
