@@ -1,31 +1,8 @@
 local fallout = require("fallout")
 local behaviour = require("lib.behaviour")
+local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
 local time = require("lib.time")
-
---
--- Some unreferenced imported varables found.
--- Because of it it is impossible to specify
--- the real names of global variables.
---
-
-local g0 = 0
-local g1 = 0
-local g2 = 0
-local g3 = 0
-local g4 = 0
-local g5 = 0
-local g6 = 0
-local g7 = 0
-local g8 = 0
-local g9 = 0
-local g10 = 0
-local night_person = false
-local wake_time = 0
-local sleep_time = 0
-local home_tile = 0
-local sleep_tile = 0
-local g16 = 0
 
 local start
 local critter_p_proc
@@ -135,42 +112,6 @@ local Killian32a
 local Killian63a
 local get_stuff_from_safe
 local put_stuff_in_safe
-
--- ?import? variable rndx
--- ?import? variable rndy
--- ?import? variable rndz
--- ?import? variable WARNED
--- ?import? variable WONTPAY
--- ?import? variable ILLEGAL
--- ?import? variable ILLEGBEFORE
--- ?import? variable TRESPASS
--- ?import? variable hostile
--- ?import? variable item
--- ?import? variable go_to_jail
-
--- ?import? variable night_person
--- ?import? variable wake_time
--- ?import? variable sleep_time
--- ?import? variable home_tile
--- ?import? variable sleep_tile
--- ?import? variable assassin_seed
--- ?import? variable removal_ptr
-
-local get_reaction
-local ReactToLevel
-local LevelToReact
-local UpReact
-local DownReact
-local BottomReact
-local TopReact
-local BigUpReact
-local BigDownReact
-local UpReactLevel
-local DownReactLevel
-local Goodbyes
-
--- ?import? variable exit_line
-
 local killian00
 local killian69
 local killian70
@@ -187,73 +128,82 @@ local killian85
 local killian86
 local killian87
 
+local ILLEGAL = false
+local ILLEGBEFORE = false
+local TRESPASS = false
+local hostile = false
+local go_to_jail = false
+local night_person = false
+local wake_time = 0
+local sleep_time = 0
+local home_tile = 0
+local sleep_tile = 0
+
 function start()
-    if fallout.script_action() == 12 then
+    local script_action = fallout.script_action()
+    if script_action == 12 then
         critter_p_proc()
-    else
-        if fallout.script_action() == 18 then
-            destroy_p_proc()
-        else
-            if fallout.script_action() == 21 then
-                look_at_p_proc()
-            else
-                if fallout.script_action() == 15 then
-                    map_enter_p_proc()
-                else
-                    if fallout.script_action() == 4 then
-                        pickup_p_proc()
-                    else
-                        if fallout.script_action() == 11 then
-                            talk_p_proc()
-                        end
-                    end
-                end
-            end
-        end
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 15 then
+        map_enter_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
     end
 end
 
 function critter_p_proc()
-    if time.is_night() and (fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 12) and fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) and (fallout.cur_map_index() == 12) then
-        g5 = 1
-        g7 = 1
+    local self_obj = fallout.self_obj()
+    local dude_obj = fallout.dude_obj()
+    local distance_self_to_dude = fallout.tile_distance_objs(self_obj, dude_obj)
+    local self_can_see_dude = fallout.obj_can_see_obj(self_obj, dude_obj)
+    local cur_map_index = fallout.cur_map_index()
+    if time.is_night() and distance_self_to_dude < 12 and self_can_see_dude and cur_map_index == 12 then
+        ILLEGAL = true
+        TRESPASS = true
         fallout.dialogue_system_enter()
     end
     if fallout.map_var(9) == 1 then
-        if (fallout.cur_map_index() == 12) and (fallout.local_var(7) == 0) and (fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 12) and fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
+        if cur_map_index == 12 and fallout.local_var(7) == 0 and distance_self_to_dude < 12 and self_can_see_dude then
             fallout.set_map_var(9, 0)
-            g5 = 1
-            g7 = 1
+            ILLEGAL = true
+            TRESPASS = true
             fallout.dialogue_system_enter()
         else
-            g5 = 0
-            g7 = 0
+            ILLEGAL = false
+            TRESPASS = false
             fallout.set_map_var(9, 0)
         end
     end
-    if g8 then
-        g8 = 0
-        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+    if hostile then
+        hostile = false
+        fallout.attack(dude_obj, 0, 1, 0, 0, 30000, 0, 0)
     end
-    if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) and (fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 12) and fallout.map_var(2) and (fallout.cur_map_index() == 12) then
+    if self_can_see_dude and distance_self_to_dude < 12 and fallout.map_var(2) ~= 0 and cur_map_index == 12 then
         fallout.dialogue_system_enter()
     end
     behaviour.sleeping(7, night_person, wake_time, sleep_time, home_tile, sleep_tile)
-    if (fallout.game_time_hour() > 730) and (fallout.game_time_hour() < 1900) then
-        if fallout.tile_num(fallout.self_obj()) ~= home_tile then
-            fallout.animate_move_obj_to_tile(fallout.self_obj(), home_tile, 0)
+    local game_time_hour = fallout.game_time_hour()
+    if game_time_hour > 730 and game_time_hour < 1900 then
+        if fallout.tile_num(self_obj) ~= home_tile then
+            fallout.animate_move_obj_to_tile(self_obj, home_tile, 0)
         else
-            if fallout.has_trait(1, fallout.self_obj(), 10) ~= 2 then
-                fallout.anim(fallout.self_obj(), 1000, 2)
+            if fallout.has_trait(1, self_obj, 10) ~= 2 then
+                fallout.anim(self_obj, 1000, 2)
             end
         end
     end
     if fallout.external_var("Killian_barter_var") ~= 0 then
-        if (fallout.local_var(7) == 0) and (fallout.cur_map_index() == 12) then
-            if fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 12 then
+        if fallout.local_var(7) == 0 and cur_map_index == 12 then
+            if distance_self_to_dude < 12 then
                 fallout.dialogue_system_enter()
             else
-                fallout.animate_move_obj_to_tile(fallout.self_obj(), fallout.tile_num_in_direction(fallout.tile_num(fallout.dude_obj()), fallout.random(0, 5), 1), 0)
+                fallout.animate_move_obj_to_tile(self_obj,
+                    fallout.tile_num_in_direction(fallout.tile_num(dude_obj), fallout.random(0, 5), 1), 0)
             end
         else
             fallout.set_external_var("Killian_barter_var", 0)
@@ -262,9 +212,8 @@ function critter_p_proc()
 end
 
 function destroy_p_proc()
-    local v0 = 0
-    v0 = fallout.create_object_sid(56, 0, 0, -1)
-    fallout.add_obj_to_inven(fallout.self_obj(), v0)
+    local item_obj = fallout.create_object_sid(56, 0, 0, -1)
+    fallout.add_obj_to_inven(fallout.self_obj(), item_obj)
     if fallout.source_obj() == fallout.dude_obj() then
         if fallout.global_var(247) == 0 then
             fallout.set_global_var(247, 1)
@@ -276,7 +225,7 @@ function destroy_p_proc()
     if fallout.global_var(105) == 1 then
         fallout.set_global_var(105, 2)
     end
-    fallout.set_external_var("Killian_ptr", 0)
+    fallout.set_external_var("Killian_ptr", nil)
 end
 
 function look_at_p_proc()
@@ -289,65 +238,58 @@ function map_enter_p_proc()
     sleep_time = 1900
     wake_time = 700
     home_tile = 25683
-    fallout.set_external_var("Killian_ptr", fallout.self_obj())
+    local self_obj = fallout.self_obj()
+    fallout.set_external_var("Killian_ptr", self_obj)
     if fallout.cur_map_index() == 11 then
         if fallout.global_var(38) == 1 then
-            fallout.destroy_object(fallout.self_obj())
+            fallout.destroy_object(self_obj)
         else
-            fallout.float_msg(fallout.self_obj(), fallout.message_str(47, 271), 3)
+            fallout.float_msg(self_obj, fallout.message_str(47, 271), 3)
         end
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 0)
+        fallout.critter_add_trait(self_obj, 1, 6, 0)
     else
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 12)
+        fallout.critter_add_trait(self_obj, 1, 6, 12)
     end
-    if fallout.item_caps_total(fallout.self_obj()) == 0 then
-        fallout.item_caps_adjust(fallout.self_obj(), fallout.random(10, 150))
+    if fallout.item_caps_total(self_obj) == 0 then
+        fallout.item_caps_adjust(self_obj, fallout.random(10, 150))
     end
 end
 
 function pickup_p_proc()
-    g5 = 1
-    g6 = 1
-    g7 = 0
+    ILLEGAL = true
+    ILLEGBEFORE = true
+    TRESPASS = false
     fallout.dialogue_system_enter()
 end
 
 function talk_p_proc()
-    local v0 = 0
-    local v1 = 0
     get_stuff_from_safe()
-    if (fallout.local_var(7) == 1) and (g7 == 0) then
+    if fallout.local_var(7) == 1 and not TRESPASS then
         fallout.float_msg(fallout.self_obj(), fallout.message_str(185, 166), 0)
     else
-        if (fallout.global_var(42) ~= 1) and (fallout.global_var(41) ~= 1) and (fallout.global_var(38) == 1) and (fallout.local_var(9) == 0) then
+        if fallout.global_var(42) ~= 1 and fallout.global_var(41) ~= 1 and fallout.global_var(38) == 1 and fallout.local_var(9) == 0 then
             Killian89()
         else
-            get_reaction()
+            reaction.get_reaction()
             if fallout.external_var("Killian_barter_var") >= 0 then
                 if fallout.external_var("Killian_barter_var") == 1 then
                     fallout.move_obj_inven_to_obj(fallout.external_var("Killian_store1_ptr"), fallout.self_obj())
-                else
-                    if fallout.external_var("Killian_barter_var") == 2 then
-                        fallout.move_obj_inven_to_obj(fallout.external_var("Killian_store2_ptr"), fallout.self_obj())
-                    else
-                        if fallout.external_var("Killian_barter_var") == 3 then
-                            fallout.move_obj_inven_to_obj(fallout.external_var("Killian_store3_ptr"), fallout.self_obj())
-                        else
-                            if fallout.external_var("Killian_barter_var") == 4 then
-                                fallout.move_obj_inven_to_obj(fallout.external_var("Killian_store4_ptr"), fallout.self_obj())
-                            end
-                        end
-                    end
+                elseif fallout.external_var("Killian_barter_var") == 2 then
+                    fallout.move_obj_inven_to_obj(fallout.external_var("Killian_store2_ptr"), fallout.self_obj())
+                elseif fallout.external_var("Killian_barter_var") == 3 then
+                    fallout.move_obj_inven_to_obj(fallout.external_var("Killian_store3_ptr"), fallout.self_obj())
+                elseif fallout.external_var("Killian_barter_var") == 4 then
+                    fallout.move_obj_inven_to_obj(fallout.external_var("Killian_store4_ptr"), fallout.self_obj())
                 end
             end
             fallout.start_gdialog(47, fallout.self_obj(), 4, 10, 7)
             fallout.gsay_start()
-            if g5 then
-                if g6 then
+            if ILLEGAL then
+                if ILLEGBEFORE then
                     Killian30()
                 else
-                    g6 = 1
-                    if g7 then
+                    ILLEGBEFORE = true
+                    if TRESPASS then
                         Killian31()
                     else
                         Killian29()
@@ -359,55 +301,43 @@ function talk_p_proc()
                     fallout.set_external_var("Killian_barter_var", 0)
                     if fallout.local_var(8) == 1 then
                         Killian42()
+                    elseif fallout.local_var(8) == 2 then
+                        Killian43()
+                    elseif fallout.local_var(8) == 3 then
+                        Killian44()
                     else
-                        if fallout.local_var(8) == 2 then
-                            Killian43()
-                        else
-                            if fallout.local_var(8) == 3 then
-                                Killian44()
-                            else
-                                Killian30()
-                            end
-                        end
+                        Killian30()
+                    end
+                elseif fallout.external_var("Killian_barter_var") ~= 0 then
+                    fallout.gsay_reply(47, 115)
+                    fallout.giq_option(4, 47, 118, Killian_barter, 50)
+                    fallout.giq_option(4, 47, 121, Killianx, 50)
+                    fallout.giq_option(-3, 47, 122, Killianx, 50)
+                elseif fallout.map_var(2) ~= 0 then
+                    Killian47()
+                elseif fallout.local_var(5) == 1 then
+                    if fallout.global_var(42) == 1 or fallout.global_var(41) == 1 and fallout.map_var(6) == 0 then
+                        Killian54()
+                    elseif fallout.local_var(1) >= 2 then
+                        Killian24()
+                    else
+                        Killian26()
                     end
                 else
-                    if fallout.external_var("Killian_barter_var") ~= 0 then
-                        fallout.gsay_reply(47, 115)
-                        fallout.giq_option(4, 47, 118, Killian_barter, 50)
-                        fallout.giq_option(4, 47, 121, Killianx, 50)
-                        fallout.giq_option(-3, 47, 122, Killianx, 50)
-                    else
-                        if fallout.map_var(2) ~= 0 then
-                            Killian47()
-                        else
-                            if fallout.local_var(5) == 1 then
-                                if (fallout.global_var(42) == 1) or (fallout.global_var(41) == 1) and (fallout.map_var(6) == 0) then
-                                    Killian54()
-                                else
-                                    if fallout.local_var(1) >= 2 then
-                                        Killian24()
-                                    else
-                                        Killian26()
-                                    end
-                                end
-                            else
-                                Killian01()
-                            end
-                        end
-                    end
+                    Killian01()
                 end
             end
             fallout.gsay_end()
             fallout.end_dialogue()
         end
     end
-    if (fallout.map_var(5) == 1) and (fallout.local_var(7) == 0) and (fallout.global_var(39) == 0) then
-        v1 = fallout.create_object_sid(16777528, 0, 0, 510)
-        g9 = fallout.create_object_sid(10, 0, 0, -1)
-        fallout.add_obj_to_inven(v1, g9)
-        fallout.critter_add_trait(v1, 1, 6, 13)
-        fallout.critter_add_trait(v1, 1, 5, 1)
-        fallout.critter_attempt_placement(v1, 28283, 0)
+    if fallout.map_var(5) == 1 and fallout.local_var(7) == 0 and fallout.global_var(39) == 0 then
+        local critter_obj = fallout.create_object_sid(16777528, 0, 0, 510)
+        local item_obj = fallout.create_object_sid(10, 0, 0, -1)
+        fallout.add_obj_to_inven(critter_obj, item_obj)
+        fallout.critter_add_trait(critter_obj, 1, 6, 13)
+        fallout.critter_add_trait(critter_obj, 1, 5, 1)
+        fallout.critter_attempt_placement(critter_obj, 28283, 0)
         fallout.set_map_var(5, 2)
     end
     if fallout.map_var(6) == 1 then
@@ -417,27 +347,23 @@ function talk_p_proc()
     end
     put_stuff_in_safe()
     if fallout.external_var("Killian_barter_var") >= 0 then
-        v0 = fallout.obj_carrying_pid_obj(fallout.self_obj(), 18)
-        fallout.rm_obj_from_inven(fallout.self_obj(), v0)
+        local item_obj = fallout.obj_carrying_pid_obj(fallout.self_obj(), 18)
+        fallout.rm_obj_from_inven(fallout.self_obj(), item_obj)
         if fallout.external_var("Killian_barter_var") == 1 then
             fallout.move_obj_inven_to_obj(fallout.self_obj(), fallout.external_var("Killian_store1_ptr"))
+        elseif fallout.external_var("Killian_barter_var") == 2 then
+            fallout.move_obj_inven_to_obj(fallout.self_obj(), fallout.external_var("Killian_store2_ptr"))
+        elseif fallout.external_var("Killian_barter_var") == 3 then
+            fallout.move_obj_inven_to_obj(fallout.self_obj(), fallout.external_var("Killian_store3_ptr"))
         else
-            if fallout.external_var("Killian_barter_var") == 2 then
-                fallout.move_obj_inven_to_obj(fallout.self_obj(), fallout.external_var("Killian_store2_ptr"))
-            else
-                if fallout.external_var("Killian_barter_var") == 3 then
-                    fallout.move_obj_inven_to_obj(fallout.self_obj(), fallout.external_var("Killian_store3_ptr"))
-                else
-                    fallout.move_obj_inven_to_obj(fallout.self_obj(), fallout.external_var("Killian_store4_ptr"))
-                end
-            end
+            fallout.move_obj_inven_to_obj(fallout.self_obj(), fallout.external_var("Killian_store4_ptr"))
         end
         fallout.set_external_var("Killian_barter_var", 0)
-        fallout.add_obj_to_inven(fallout.self_obj(), v0)
+        fallout.add_obj_to_inven(fallout.self_obj(), item_obj)
     end
-    if g10 then
+    if go_to_jail then
         fallout.set_global_var(155, fallout.global_var(155) - 1)
-        g10 = 0
+        go_to_jail = false
         fallout.load_map(10, 6)
     end
 end
@@ -446,7 +372,7 @@ function KillianEnd()
 end
 
 function KillianCbt()
-    g8 = 1
+    hostile = true
 end
 
 function Killian0a()
@@ -457,7 +383,7 @@ end
 
 function Killian01()
     fallout.set_local_var(5, 1)
-    if (fallout.map_var(5) == 0) and (fallout.global_var(38) == 0) and (fallout.map_var(6) == 0) and (fallout.global_var(36) == 0) then
+    if fallout.map_var(5) == 0 and fallout.global_var(38) == 0 and fallout.map_var(6) == 0 and fallout.global_var(36) == 0 then
         fallout.set_map_var(5, 1)
     end
     if fallout.local_var(1) == 3 then
@@ -479,8 +405,12 @@ end
 function Killian02()
     fallout.set_local_var(4, 1)
     fallout.gsay_reply(47, 123)
-    fallout.giq_option(4, 47, fallout.message_str(47, 124) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(47, 125), Killian02b, 50)
-    fallout.giq_option(4, 47, fallout.message_str(47, 126) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(47, 127), Killian03, 50)
+    fallout.giq_option(4, 47,
+        fallout.message_str(47, 124) ..
+        fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(47, 125), Killian02b, 50)
+    fallout.giq_option(4, 47,
+        fallout.message_str(47, 126) ..
+        fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(47, 127), Killian03, 50)
     fallout.giq_option(5, 47, 128, Killian02a, 51)
 end
 
@@ -520,10 +450,10 @@ function Killian08()
 end
 
 function Killian09()
-    if not(fallout.global_var(73)) then
+    if fallout.global_var(73) == 0 then
         fallout.set_global_var(73, 1)
     end
-    if not(fallout.global_var(72)) then
+    if fallout.global_var(72) == 0 then
         fallout.set_global_var(72, 1)
     end
     fallout.gsay_reply(47, 143)
@@ -533,7 +463,7 @@ function Killian09()
 end
 
 function Killian09a()
-    DownReactLevel()
+    reaction.DownReactLevel()
     Killian04()
 end
 
@@ -571,7 +501,7 @@ function Killian13()
 end
 
 function Killian13a()
-    DownReactLevel()
+    reaction.DownReactLevel()
     Killian14()
 end
 
@@ -632,14 +562,14 @@ function Killian29()
 end
 
 function Killian30()
-    g5 = 0
-    g6 = 0
+    ILLEGAL = false
+    ILLEGBEFORE = false
     fallout.gsay_reply(47, 171)
     Killianx1()
 end
 
 function Killian31()
-    g7 = 0
+    TRESPASS = false
     fallout.gsay_reply(47, 172)
     fallout.giq_option(4, 47, 173, Killian34, 50)
     fallout.giq_option(5, 47, 174, Killian32, 50)
@@ -772,7 +702,7 @@ function Killian54()
     fallout.gsay_reply(47, 219)
     fallout.giq_option(4, 47, 220, Killian55, 50)
     fallout.giq_option(-3, 47, 111, Killian55, 50)
-    if (fallout.global_var(41) == 1) or (fallout.global_var(42) == 1) then
+    if fallout.global_var(41) == 1 or fallout.global_var(42) == 1 then
         fallout.giq_option(4, 47, 221, Killian56, 49)
         fallout.giq_option(-3, 47, 110, Killian56, 49)
     end
@@ -818,7 +748,7 @@ end
 
 function Killian60()
     fallout.set_local_var(1, 3)
-    LevelToReact()
+    reaction.LevelToReact()
     fallout.set_global_var(104, 1)
     fallout.gsay_message(47, 234, 49)
     Killianx()
@@ -918,15 +848,15 @@ function Killianx2()
 end
 
 function Killianx3()
-    g10 = 1
+    go_to_jail = true
 end
 
 function Killianx4()
-    g9 = fallout.create_object_sid(57, 0, 0, -1)
-    fallout.add_obj_to_inven(fallout.dude_obj(), g9)
+    local item_obj = fallout.create_object_sid(57, 0, 0, -1)
+    fallout.add_obj_to_inven(fallout.dude_obj(), item_obj)
     if fallout.get_critter_stat(fallout.dude_obj(), 4) > 3 then
-        g9 = fallout.create_object_sid(104, 0, 0, -1)
-        fallout.add_obj_to_inven(fallout.dude_obj(), g9)
+        item_obj = fallout.create_object_sid(104, 0, 0, -1)
+        fallout.add_obj_to_inven(fallout.dude_obj(), item_obj)
     end
     fallout.set_global_var(36, 1)
 end
@@ -938,11 +868,12 @@ function Killian_barter()
 end
 
 function Killian_give_stuff()
-    if fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 104) then
-        fallout.destroy_object(fallout.obj_carrying_pid_obj(fallout.dude_obj(), 104))
+    local dude_obj = fallout.dude_obj()
+    if fallout.obj_is_carrying_obj_pid(dude_obj, 104) ~= 0 then
+        fallout.destroy_object(fallout.obj_carrying_pid_obj(dude_obj, 104))
     end
-    if fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 57) then
-        fallout.destroy_object(fallout.obj_carrying_pid_obj(fallout.dude_obj(), 57))
+    if fallout.obj_is_carrying_obj_pid(dude_obj, 57) ~= 0 then
+        fallout.destroy_object(fallout.obj_carrying_pid_obj(dude_obj, 57))
     end
     fallout.giq_option(4, 47, 276, Killian_give_shotgun, 49)
     fallout.giq_option(4, 47, 277, Killian_give_armor, 49)
@@ -953,28 +884,29 @@ function Killian_give_stuff()
 end
 
 function Killian_give_shotgun()
-    g9 = fallout.create_object_sid(94, 0, 0, -1)
-    fallout.add_obj_to_inven(fallout.dude_obj(), g9)
-    g9 = fallout.create_object_sid(95, 0, 0, -1)
-    fallout.add_mult_objs_to_inven(fallout.dude_obj(), g9, 5)
+    local item_obj
+    item_obj = fallout.create_object_sid(94, 0, 0, -1)
+    fallout.add_obj_to_inven(fallout.dude_obj(), item_obj)
+    item_obj = fallout.create_object_sid(95, 0, 0, -1)
+    fallout.add_mult_objs_to_inven(fallout.dude_obj(), item_obj, 5)
     Killian59()
 end
 
 function Killian_give_armor()
-    g9 = fallout.create_object_sid(1, 0, 0, -1)
-    fallout.add_obj_to_inven(fallout.dude_obj(), g9)
+    local item_obj = fallout.create_object_sid(1, 0, 0, -1)
+    fallout.add_obj_to_inven(fallout.dude_obj(), item_obj)
     Killian59()
 end
 
 function Killian_give_doctor_bag()
-    g9 = fallout.create_object_sid(91, 0, 0, -1)
-    fallout.add_obj_to_inven(fallout.dude_obj(), g9)
+    local item_obj = fallout.create_object_sid(91, 0, 0, -1)
+    fallout.add_obj_to_inven(fallout.dude_obj(), item_obj)
     Killian59()
 end
 
 function Killian_give_stimpaks()
-    g9 = fallout.create_object_sid(40, 0, 0, -1)
-    fallout.add_mult_objs_to_inven(fallout.dude_obj(), g9, 5)
+    local item_obj = fallout.create_object_sid(40, 0, 0, -1)
+    fallout.add_mult_objs_to_inven(fallout.dude_obj(), item_obj, 5)
     Killian59()
 end
 
@@ -989,7 +921,7 @@ function playback()
 end
 
 function Killian02a()
-    DownReactLevel()
+    reaction.DownReactLevel()
     Killian16()
 end
 
@@ -999,211 +931,108 @@ function Killian02b()
 end
 
 function Killian03aa()
-    DownReactLevel()
+    reaction.DownReactLevel()
     Killian04()
 end
 
 function Killian03ba()
-    DownReactLevel()
+    reaction.DownReactLevel()
     Killian03a()
 end
 
 function Killian03ca()
-    DownReactLevel()
+    reaction.DownReactLevel()
     Killian16()
 end
 
 function Killian32a()
-    DownReactLevel()
+    reaction.DownReactLevel()
     Killianx2()
 end
 
 function Killian63a()
-    DownReactLevel()
+    reaction.DownReactLevel()
     Killian64()
 end
 
 function get_stuff_from_safe()
-    local v0 = 0
-    if fallout.item_caps_total(fallout.external_var("KillSafe_ptr")) ~= 0 then
-        fallout.item_caps_adjust(fallout.self_obj(), fallout.item_caps_total(fallout.external_var("KillSafe_ptr")))
-        fallout.item_caps_adjust(fallout.external_var("KillSafe_ptr"), -fallout.item_caps_total(fallout.external_var("KillSafe_ptr")))
+    local kill_safe_obj = fallout.external_var("KillSafe_ptr")
+    local self_obj = fallout.self_obj()
+    local item_obj
+    if fallout.item_caps_total(kill_safe_obj) ~= 0 then
+        fallout.item_caps_adjust(self_obj, fallout.item_caps_total(kill_safe_obj))
+        fallout.item_caps_adjust(kill_safe_obj, -fallout.item_caps_total(kill_safe_obj))
     end
-    if fallout.obj_is_carrying_obj_pid(fallout.external_var("KillSafe_ptr"), 18) ~= 0 then
-        g9 = fallout.obj_carrying_pid_obj(fallout.external_var("KillSafe_ptr"), 18)
-        fallout.rm_obj_from_inven(fallout.external_var("KillSafe_ptr"), g9)
-        fallout.add_obj_to_inven(fallout.self_obj(), g9)
+    if fallout.obj_is_carrying_obj_pid(kill_safe_obj, 18) ~= 0 then
+        item_obj = fallout.obj_carrying_pid_obj(kill_safe_obj, 18)
+        fallout.rm_obj_from_inven(kill_safe_obj, item_obj)
+        fallout.add_obj_to_inven(self_obj, item_obj)
     end
-    if fallout.obj_is_carrying_obj_pid(fallout.external_var("KillSafe_ptr"), 40) ~= 0 then
-        g9 = fallout.obj_carrying_pid_obj(fallout.external_var("KillSafe_ptr"), 40)
-        fallout.rm_obj_from_inven(fallout.external_var("KillSafe_ptr"), g9)
-        fallout.add_obj_to_inven(fallout.self_obj(), g9)
+    if fallout.obj_is_carrying_obj_pid(kill_safe_obj, 40) ~= 0 then
+        item_obj = fallout.obj_carrying_pid_obj(kill_safe_obj, 40)
+        fallout.rm_obj_from_inven(kill_safe_obj, item_obj)
+        fallout.add_obj_to_inven(self_obj, item_obj)
     end
-    if fallout.obj_is_carrying_obj_pid(fallout.external_var("KillSafe_ptr"), 31) ~= 0 then
-        g9 = fallout.obj_carrying_pid_obj(fallout.external_var("KillSafe_ptr"), 31)
-        fallout.rm_obj_from_inven(fallout.external_var("KillSafe_ptr"), g9)
-        fallout.add_obj_to_inven(fallout.self_obj(), g9)
+    if fallout.obj_is_carrying_obj_pid(kill_safe_obj, 31) ~= 0 then
+        item_obj = fallout.obj_carrying_pid_obj(kill_safe_obj, 31)
+        fallout.rm_obj_from_inven(kill_safe_obj, item_obj)
+        fallout.add_obj_to_inven(self_obj, item_obj)
     end
-    if fallout.obj_is_carrying_obj_pid(fallout.external_var("KillSafe_ptr"), 34) ~= 0 then
-        g9 = fallout.obj_carrying_pid_obj(fallout.external_var("KillSafe_ptr"), 34)
-        fallout.rm_obj_from_inven(fallout.external_var("KillSafe_ptr"), g9)
-        fallout.add_obj_to_inven(fallout.self_obj(), g9)
+    if fallout.obj_is_carrying_obj_pid(kill_safe_obj, 34) ~= 0 then
+        item_obj = fallout.obj_carrying_pid_obj(kill_safe_obj, 34)
+        fallout.rm_obj_from_inven(kill_safe_obj, item_obj)
+        fallout.add_obj_to_inven(self_obj, item_obj)
     end
-    if fallout.obj_is_carrying_obj_pid(fallout.external_var("KillSafe_ptr"), 30) ~= 0 then
-        g9 = fallout.obj_carrying_pid_obj(fallout.external_var("KillSafe_ptr"), 30)
-        fallout.rm_obj_from_inven(fallout.external_var("KillSafe_ptr"), g9)
-        fallout.add_obj_to_inven(fallout.self_obj(), g9)
+    if fallout.obj_is_carrying_obj_pid(kill_safe_obj, 30) ~= 0 then
+        item_obj = fallout.obj_carrying_pid_obj(kill_safe_obj, 30)
+        fallout.rm_obj_from_inven(kill_safe_obj, item_obj)
+        fallout.add_obj_to_inven(self_obj, item_obj)
     end
-    if fallout.obj_is_carrying_obj_pid(fallout.external_var("KillSafe_ptr"), 4) ~= 0 then
-        g9 = fallout.obj_carrying_pid_obj(fallout.external_var("KillSafe_ptr"), 4)
-        fallout.rm_obj_from_inven(fallout.external_var("KillSafe_ptr"), g9)
-        fallout.add_obj_to_inven(fallout.self_obj(), g9)
+    if fallout.obj_is_carrying_obj_pid(kill_safe_obj, 4) ~= 0 then
+        item_obj = fallout.obj_carrying_pid_obj(kill_safe_obj, 4)
+        fallout.rm_obj_from_inven(kill_safe_obj, item_obj)
+        fallout.add_obj_to_inven(self_obj, item_obj)
     end
 end
 
 function put_stuff_in_safe()
-    local v0 = 0
-    if fallout.item_caps_total(fallout.self_obj()) ~= 0 then
-        fallout.item_caps_adjust(fallout.external_var("KillSafe_ptr"), fallout.item_caps_total(fallout.self_obj()))
-        fallout.item_caps_adjust(fallout.self_obj(), -fallout.item_caps_total(fallout.self_obj()))
+    local kill_safe_obj = fallout.external_var("KillSafe_ptr")
+    local self_obj = fallout.self_obj()
+    local item_obj
+    if fallout.item_caps_total(self_obj) ~= 0 then
+        fallout.item_caps_adjust(kill_safe_obj, fallout.item_caps_total(self_obj))
+        fallout.item_caps_adjust(self_obj, -fallout.item_caps_total(self_obj))
     end
-    if fallout.obj_is_carrying_obj_pid(fallout.self_obj(), 18) > 1 then
-        g9 = fallout.obj_carrying_pid_obj(fallout.self_obj(), 18)
-        fallout.rm_obj_from_inven(fallout.self_obj(), g9)
-        fallout.add_obj_to_inven(fallout.external_var("KillSafe_ptr"), g9)
+    if fallout.obj_is_carrying_obj_pid(self_obj, 18) > 1 then
+        item_obj = fallout.obj_carrying_pid_obj(self_obj, 18)
+        fallout.rm_obj_from_inven(self_obj, item_obj)
+        fallout.add_obj_to_inven(kill_safe_obj, item_obj)
     end
-    if fallout.obj_is_carrying_obj_pid(fallout.self_obj(), 40) > 1 then
-        g9 = fallout.obj_carrying_pid_obj(fallout.self_obj(), 40)
-        fallout.rm_obj_from_inven(fallout.self_obj(), g9)
-        fallout.add_obj_to_inven(fallout.external_var("KillSafe_ptr"), g9)
+    if fallout.obj_is_carrying_obj_pid(self_obj, 40) > 1 then
+        item_obj = fallout.obj_carrying_pid_obj(self_obj, 40)
+        fallout.rm_obj_from_inven(self_obj, item_obj)
+        fallout.add_obj_to_inven(kill_safe_obj, item_obj)
     end
-    if fallout.obj_is_carrying_obj_pid(fallout.self_obj(), 31) > 1 then
-        g9 = fallout.obj_carrying_pid_obj(fallout.self_obj(), 31)
-        fallout.rm_obj_from_inven(fallout.self_obj(), g9)
-        fallout.add_obj_to_inven(fallout.external_var("KillSafe_ptr"), g9)
+    if fallout.obj_is_carrying_obj_pid(self_obj, 31) > 1 then
+        item_obj = fallout.obj_carrying_pid_obj(self_obj, 31)
+        fallout.rm_obj_from_inven(self_obj, item_obj)
+        fallout.add_obj_to_inven(kill_safe_obj, item_obj)
     end
-    if fallout.obj_is_carrying_obj_pid(fallout.self_obj(), 34) > 1 then
-        g9 = fallout.obj_carrying_pid_obj(fallout.self_obj(), 34)
-        fallout.rm_obj_from_inven(fallout.self_obj(), g9)
-        fallout.add_obj_to_inven(fallout.external_var("KillSafe_ptr"), g9)
+    if fallout.obj_is_carrying_obj_pid(self_obj, 34) > 1 then
+        item_obj = fallout.obj_carrying_pid_obj(self_obj, 34)
+        fallout.rm_obj_from_inven(self_obj, item_obj)
+        fallout.add_obj_to_inven(kill_safe_obj, item_obj)
     end
-    if fallout.obj_is_carrying_obj_pid(fallout.self_obj(), 30) > 1 then
-        g9 = fallout.obj_carrying_pid_obj(fallout.self_obj(), 30)
-        fallout.rm_obj_from_inven(fallout.self_obj(), g9)
-        fallout.add_obj_to_inven(fallout.external_var("KillSafe_ptr"), g9)
+    if fallout.obj_is_carrying_obj_pid(self_obj, 30) > 1 then
+        item_obj = fallout.obj_carrying_pid_obj(self_obj, 30)
+        fallout.rm_obj_from_inven(self_obj, item_obj)
+        fallout.add_obj_to_inven(kill_safe_obj, item_obj)
     end
-    if fallout.obj_is_carrying_obj_pid(fallout.self_obj(), 4) > 1 then
-        g9 = fallout.obj_carrying_pid_obj(fallout.self_obj(), 4)
-        fallout.rm_obj_from_inven(fallout.self_obj(), g9)
-        fallout.add_obj_to_inven(fallout.external_var("KillSafe_ptr"), g9)
+    if fallout.obj_is_carrying_obj_pid(self_obj, 4) > 1 then
+        item_obj = fallout.obj_carrying_pid_obj(self_obj, 4)
+        fallout.rm_obj_from_inven(self_obj, item_obj)
+        fallout.add_obj_to_inven(kill_safe_obj, item_obj)
     end
-end
-
-function get_reaction()
-    if fallout.local_var(2) == 0 then
-        fallout.set_local_var(0, 50)
-        fallout.set_local_var(1, 2)
-        fallout.set_local_var(2, 1)
-        fallout.set_local_var(0, fallout.local_var(0) + (5 * fallout.get_critter_stat(fallout.dude_obj(), 3)) - 25)
-        fallout.set_local_var(0, fallout.local_var(0) + (10 * fallout.has_trait(0, fallout.dude_obj(), 10)))
-        if fallout.has_trait(0, fallout.dude_obj(), 39) then
-            if fallout.global_var(155) > 0 then
-                fallout.set_local_var(0, fallout.local_var(0) + fallout.global_var(155))
-            else
-                fallout.set_local_var(0, fallout.local_var(0) - fallout.global_var(155))
-            end
-        else
-            if fallout.local_var(3) == 1 then
-                fallout.set_local_var(0, fallout.local_var(0) - fallout.global_var(155))
-            else
-                fallout.set_local_var(0, fallout.local_var(0) + fallout.global_var(155))
-            end
-        end
-        if fallout.global_var(158) > 2 then
-            fallout.set_local_var(0, fallout.local_var(0) - 30)
-        end
-        if reputation.has_rep_champion() then
-            fallout.set_local_var(0, fallout.local_var(0) + 20)
-        end
-        if reputation.has_rep_berserker() then
-            fallout.set_local_var(0, fallout.local_var(0) - 20)
-        end
-        ReactToLevel()
-    end
-end
-
-function ReactToLevel()
-    if fallout.local_var(0) <= 25 then
-        fallout.set_local_var(1, 1)
-    else
-        if fallout.local_var(0) <= 75 then
-            fallout.set_local_var(1, 2)
-        else
-            fallout.set_local_var(1, 3)
-        end
-    end
-end
-
-function LevelToReact()
-    if fallout.local_var(1) == 1 then
-        fallout.set_local_var(0, fallout.random(1, 25))
-    else
-        if fallout.local_var(1) == 2 then
-            fallout.set_local_var(0, fallout.random(26, 75))
-        else
-            fallout.set_local_var(0, fallout.random(76, 100))
-        end
-    end
-end
-
-function UpReact()
-    fallout.set_local_var(0, fallout.local_var(0) + 10)
-    ReactToLevel()
-end
-
-function DownReact()
-    fallout.set_local_var(0, fallout.local_var(0) - 10)
-    ReactToLevel()
-end
-
-function BottomReact()
-    fallout.set_local_var(1, 1)
-    fallout.set_local_var(0, 1)
-end
-
-function TopReact()
-    fallout.set_local_var(0, 100)
-    fallout.set_local_var(1, 3)
-end
-
-function BigUpReact()
-    fallout.set_local_var(0, fallout.local_var(0) + 25)
-    ReactToLevel()
-end
-
-function BigDownReact()
-    fallout.set_local_var(0, fallout.local_var(0) - 25)
-    ReactToLevel()
-end
-
-function UpReactLevel()
-    fallout.set_local_var(1, fallout.local_var(1) + 1)
-    if fallout.local_var(1) > 3 then
-        fallout.set_local_var(1, 3)
-    end
-    LevelToReact()
-end
-
-function DownReactLevel()
-    fallout.set_local_var(1, fallout.local_var(1) - 1)
-    if fallout.local_var(1) < 1 then
-        fallout.set_local_var(1, 1)
-    end
-    LevelToReact()
-end
-
-function Goodbyes()
-    g16 = fallout.message_str(634, fallout.random(100, 105))
 end
 
 function killian00()
@@ -1214,10 +1043,10 @@ function killian00()
     fallout.giq_option(5, 47, 103, Killian22, 50)
     fallout.giq_option(4, 47, 104, Killian21, 50)
     fallout.giq_option(5, 47, 105, Killian13, 50)
-    if (fallout.global_var(39) == 1) and (fallout.global_var(38) == 0) and (fallout.global_var(36) == 0) then
+    if fallout.global_var(39) == 1 and fallout.global_var(38) == 0 and fallout.global_var(36) == 0 then
         fallout.giq_option(4, 47, 272, Killian88, 50)
     end
-    if (fallout.global_var(36) == 1) and (fallout.global_var(38) == 0) and (fallout.map_var(6) == 0) then
+    if fallout.global_var(36) == 1 and fallout.global_var(38) == 0 and fallout.map_var(6) == 0 then
         fallout.giq_option(5, 47, 106, Killian23, 50)
     end
     fallout.giq_option(4, 47, 107, Killianx, 50)
