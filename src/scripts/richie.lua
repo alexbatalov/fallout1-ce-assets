@@ -1,16 +1,6 @@
 local fallout = require("fallout")
+local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
-
---
--- Some unreferenced imported varables found.
--- Because of it it is impossible to specify
--- the real names of global variables.
---
-
-local g0 = 0
-local g1 = 1
-local g2 = 0
-local g3 = 0
 
 local start
 local combat
@@ -38,74 +28,53 @@ local Richie13
 local RichieLeave
 local RichieEnd
 
--- ?import? variable hostile
--- ?import? variable Only_Once
--- ?import? variable Go_Away
--- ?import? variable Vault_Ptr
-
-local get_reaction
-local ReactToLevel
-local LevelToReact
-local UpReact
-local DownReact
-local BottomReact
-local TopReact
-local BigUpReact
-local BigDownReact
-local UpReactLevel
-local DownReactLevel
-local Goodbyes
-
--- ?import? variable exit_line
+local hostile = false
+local initialized = false
+local go_away = false
 
 function start()
-    if g1 then
-        g1 = 0
-        fallout.set_external_var("Richie_Ptr", fallout.self_obj())
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 73)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 1)
+    if not initialized then
+        local self_obj = fallout.self_obj()
+        fallout.set_external_var("Richie_Ptr", self_obj)
+        fallout.critter_add_trait(self_obj, 1, 6, 73)
+        fallout.critter_add_trait(self_obj, 1, 5, 1)
+        initialized = true
     end
-    if fallout.script_action() == 21 then
+
+    local script_action = fallout.script_action()
+    if script_action == 21 then
         look_at_p_proc()
-    else
-        if fallout.script_action() == 4 then
-            pickup_p_proc()
-        else
-            if fallout.script_action() == 11 then
-                talk_p_proc()
-            else
-                if fallout.script_action() == 12 then
-                    critter_p_proc()
-                else
-                    if fallout.script_action() == 18 then
-                        destroy_p_proc()
-                    end
-                end
-            end
-        end
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
     end
 end
 
 function combat()
-    g0 = 1
+    hostile = true
 end
 
 function critter_p_proc()
-    if g0 then
-        g0 = 0
+    if hostile then
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
 end
 
 function pickup_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
-        g0 = 1
+        hostile = true
     end
 end
 
 function talk_p_proc()
-    get_reaction()
-    if (fallout.map_var(23) == 1) or (fallout.map_var(15) > 0) or (fallout.map_var(18) == 2) then
+    reaction.get_reaction()
+    if fallout.map_var(23) == 1 or fallout.map_var(15) > 0 or fallout.map_var(18) == 2 then
         Richie00()
     else
         if fallout.map_var(20) == 0 then
@@ -119,7 +88,7 @@ function talk_p_proc()
             Richie02()
         end
     end
-    if g2 then
+    if go_away then
         fallout.animate_move_obj_to_tile(fallout.self_obj(), 27450, 0)
     end
 end
@@ -171,7 +140,7 @@ end
 
 function Richie03()
     fallout.gsay_message(599, 111, 49)
-    g2 = 1
+    go_away = true
 end
 
 function Richie04()
@@ -180,7 +149,7 @@ end
 
 function Richie05()
     fallout.gsay_message(599, 113, 49)
-    g2 = 1
+    go_away = true
 end
 
 function Richie06()
@@ -226,113 +195,6 @@ function RichieLeave()
 end
 
 function RichieEnd()
-end
-
-function get_reaction()
-    if fallout.local_var(2) == 0 then
-        fallout.set_local_var(0, 50)
-        fallout.set_local_var(1, 2)
-        fallout.set_local_var(2, 1)
-        fallout.set_local_var(0, fallout.local_var(0) + (5 * fallout.get_critter_stat(fallout.dude_obj(), 3)) - 25)
-        fallout.set_local_var(0, fallout.local_var(0) + (10 * fallout.has_trait(0, fallout.dude_obj(), 10)))
-        if fallout.has_trait(0, fallout.dude_obj(), 39) then
-            if fallout.global_var(155) > 0 then
-                fallout.set_local_var(0, fallout.local_var(0) + fallout.global_var(155))
-            else
-                fallout.set_local_var(0, fallout.local_var(0) - fallout.global_var(155))
-            end
-        else
-            if fallout.local_var(3) == 1 then
-                fallout.set_local_var(0, fallout.local_var(0) - fallout.global_var(155))
-            else
-                fallout.set_local_var(0, fallout.local_var(0) + fallout.global_var(155))
-            end
-        end
-        if fallout.global_var(158) > 2 then
-            fallout.set_local_var(0, fallout.local_var(0) - 30)
-        end
-        if reputation.has_rep_champion() then
-            fallout.set_local_var(0, fallout.local_var(0) + 20)
-        end
-        if reputation.has_rep_berserker() then
-            fallout.set_local_var(0, fallout.local_var(0) - 20)
-        end
-        ReactToLevel()
-    end
-end
-
-function ReactToLevel()
-    if fallout.local_var(0) <= 25 then
-        fallout.set_local_var(1, 1)
-    else
-        if fallout.local_var(0) <= 75 then
-            fallout.set_local_var(1, 2)
-        else
-            fallout.set_local_var(1, 3)
-        end
-    end
-end
-
-function LevelToReact()
-    if fallout.local_var(1) == 1 then
-        fallout.set_local_var(0, fallout.random(1, 25))
-    else
-        if fallout.local_var(1) == 2 then
-            fallout.set_local_var(0, fallout.random(26, 75))
-        else
-            fallout.set_local_var(0, fallout.random(76, 100))
-        end
-    end
-end
-
-function UpReact()
-    fallout.set_local_var(0, fallout.local_var(0) + 10)
-    ReactToLevel()
-end
-
-function DownReact()
-    fallout.set_local_var(0, fallout.local_var(0) - 10)
-    ReactToLevel()
-end
-
-function BottomReact()
-    fallout.set_local_var(1, 1)
-    fallout.set_local_var(0, 1)
-end
-
-function TopReact()
-    fallout.set_local_var(0, 100)
-    fallout.set_local_var(1, 3)
-end
-
-function BigUpReact()
-    fallout.set_local_var(0, fallout.local_var(0) + 25)
-    ReactToLevel()
-end
-
-function BigDownReact()
-    fallout.set_local_var(0, fallout.local_var(0) - 25)
-    ReactToLevel()
-end
-
-function UpReactLevel()
-    fallout.set_local_var(1, fallout.local_var(1) + 1)
-    if fallout.local_var(1) > 3 then
-        fallout.set_local_var(1, 3)
-    end
-    LevelToReact()
-end
-
-function DownReactLevel()
-    fallout.set_local_var(1, fallout.local_var(1) - 1)
-    if fallout.local_var(1) < 1 then
-        fallout.set_local_var(1, 1)
-    end
-    LevelToReact()
-end
-
-function Goodbyes()
-    g3 = fallout.message_str(634, fallout.random(100, 105))
 end
 
 local exports = {}
