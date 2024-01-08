@@ -49,77 +49,68 @@ local SendToCattle2
 local SendToSleep
 local DanEnd
 
-local hostile = 0
+local hostile = false
 local initialized = false
-local SetDayNight = 0
-local NightCount = 0
-local Talky = 0
-local WalkToTalker = 0
-local Sleeping = 0
-
-local exit_line = 0
+local SetDayNight = false
+local NightCount = false
+local Talky = false
+local WalkToTalker = false
+local Sleeping = false
 
 function start()
     if not initialized then
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 62)
+        fallout.critter_add_trait(self_obj, 1, 5, 50)
+        fallout.set_external_var("Dan_ptr", self_obj)
         initialized = true
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 62)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 50)
-        fallout.set_external_var("Dan_ptr", fallout.self_obj())
     end
-    if fallout.script_action() == 21 then
+
+    local script_action = fallout.script_action()
+    if script_action == 21 then
         look_at_p_proc()
-    else
-        if fallout.script_action() == 4 then
-            pickup_p_proc()
-        else
-            if fallout.script_action() == 11 then
-                talk_p_proc()
-            else
-                if fallout.script_action() == 12 then
-                    critter_p_proc()
-                else
-                    if fallout.script_action() == 18 then
-                        destroy_p_proc()
-                    else
-                        if fallout.script_action() == 22 then
-                            timed_event_p_proc()
-                        end
-                    end
-                end
-            end
-        end
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 22 then
+        timed_event_p_proc()
     end
 end
 
 function combat()
-    hostile = 1
+    hostile = true
 end
 
 function critter_p_proc()
     if hostile then
-        hostile = 0
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
     if time.is_morning() then
-        if SetDayNight == 0 then
+        if not SetDayNight then
             fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(30), 3)
-            SetDayNight = 1
+            SetDayNight = true
         end
     end
     if fallout.map_var(0) == 1 then
-        if WalkToTalker == 0 then
+        if not WalkToTalker then
             fallout.reg_anim_func(2, fallout.self_obj())
             fallout.reg_anim_func(1, 1)
             fallout.reg_anim_obj_move_to_tile(fallout.self_obj(), 13891, -1)
             fallout.reg_anim_func(3, 0)
-            WalkToTalker = 1
+            WalkToTalker = true
         end
     end
     if fallout.tile_num(fallout.self_obj()) == 13891 then
         if fallout.map_var(0) == 1 then
-            if Talky == 0 then
+            if not Talky then
                 Dan27()
-                Talky = 1
+                Talky = true
                 fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(60 * 2), 1)
             end
         end
@@ -128,7 +119,7 @@ end
 
 function pickup_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
-        hostile = 1
+        hostile = true
     end
 end
 
@@ -139,7 +130,7 @@ function talk_p_proc()
     else
         if fallout.local_var(4) == 1 then
             fallout.set_local_var(4, 2)
-            if (fallout.map_var(0) == 2) and (fallout.local_var(8) == 0) then
+            if fallout.map_var(0) == 2 and fallout.local_var(8) == 0 then
                 if fallout.local_var(1) > 1 then
                     fallout.start_gdialog(562, fallout.self_obj(), 4, -1, -1)
                     fallout.gsay_start()
@@ -152,29 +143,27 @@ function talk_p_proc()
             else
                 Dan28()
             end
-        else
-            if fallout.local_var(4) == 2 then
-                if (fallout.map_var(0) == 2) and (fallout.local_var(8) == 0) then
-                    if fallout.local_var(1) == 1 then
-                        fallout.start_gdialog(562, fallout.self_obj(), 4, -1, -1)
-                        fallout.gsay_start()
-                        Dan16()
-                        fallout.gsay_end()
-                        fallout.end_dialogue()
-                    else
-                        Dan28()
-                    end
+        elseif fallout.local_var(4) == 2 then
+            if fallout.map_var(0) == 2 and fallout.local_var(8) == 0 then
+                if fallout.local_var(1) == 1 then
+                    fallout.start_gdialog(562, fallout.self_obj(), 4, -1, -1)
+                    fallout.gsay_start()
+                    Dan16()
+                    fallout.gsay_end()
+                    fallout.end_dialogue()
                 else
                     Dan28()
                 end
             else
-                fallout.start_gdialog(562, fallout.self_obj(), 4, -1, -1)
-                fallout.gsay_start()
-                Dan00()
-                fallout.gsay_end()
-                fallout.end_dialogue()
-                fallout.set_local_var(4, 1)
+                Dan28()
             end
+        else
+            fallout.start_gdialog(562, fallout.self_obj(), 4, -1, -1)
+            fallout.gsay_start()
+            Dan00()
+            fallout.gsay_end()
+            fallout.end_dialogue()
+            fallout.set_local_var(4, 1)
         end
     end
 end
@@ -191,52 +180,48 @@ end
 
 function timed_event_p_proc()
     if time.is_morning() or time.is_day() then
-        if Sleeping == 1 then
-            fallout.reg_anim_func(2, fallout.self_obj())
+        if Sleeping then
+            local self_obj = fallout.self_obj()
+            fallout.reg_anim_func(2, self_obj)
             fallout.reg_anim_func(1, 1)
-            fallout.reg_anim_obj_move_to_tile(fallout.self_obj(), 12871, -1)
+            fallout.reg_anim_obj_move_to_tile(self_obj, 12871, -1)
             fallout.reg_anim_func(3, 0)
-            fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(60 * 25), 2)
-            Sleeping = 0
+            fallout.add_timer_event(self_obj, fallout.game_ticks(60 * 25), 2)
+            Sleeping = false
         else
-            if fallout.fixed_param() == 1 then
+            local event = fallout.fixed_param()
+            if event == 1 then
                 SendToStart()
-            else
-                if fallout.fixed_param() == 2 then
-                    SendToStreet()
-                else
-                    if fallout.fixed_param() == 3 then
-                        SendToCattle1()
-                    else
-                        if fallout.fixed_param() == 4 then
-                            SendToCattle2()
-                        end
-                    end
-                end
+            elseif event == 2 then
+                SendToStreet()
+            elseif event == 3 then
+                SendToCattle1()
+            elseif event == 4 then
+                SendToCattle2()
             end
         end
     else
         SendToSleep()
-        if fallout.fixed_param() == 4 then
-            if fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) <= 10 then
-                fallout.float_msg(fallout.self_obj(), fallout.message_str(562, 215), 2)
+        local event = fallout.fixed_param()
+        if event == 4 then
+            local self_obj = fallout.self_obj()
+            if fallout.tile_distance_objs(self_obj, fallout.dude_obj()) <= 10 then
+                fallout.float_msg(self_obj, fallout.message_str(562, 215), 2)
             end
-        else
-            if fallout.fixed_param() == 5 then
-                NightCount = 0
-                if fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) <= 10 then
-                    fallout.float_msg(fallout.self_obj(), fallout.message_str(562, 216), 2)
-                    hostile = 1
-                end
+        elseif event == 5 then
+            NightCount = false
+            local self_obj = fallout.self_obj()
+            if fallout.tile_distance_objs(self_obj, fallout.dude_obj()) <= 10 then
+                fallout.float_msg(self_obj, fallout.message_str(562, 216), 2)
+                hostile = true
             end
         end
     end
 end
 
 function damage_p_proc()
-    local v0 = 0
-    v0 = fallout.obj_pid(fallout.source_obj())
-    if fallout.party_member_obj(v0) ~= 0 then
+    local pid = fallout.obj_pid(fallout.source_obj())
+    if fallout.party_member_obj(pid) ~= nil then
         fallout.set_global_var(248, 1)
     end
 end
@@ -443,58 +428,64 @@ function Dan28()
 end
 
 function DanAtNight()
-    if NightCount == 0 then
-        fallout.float_msg(fallout.self_obj(), fallout.message_str(562, 214), 2)
-        NightCount = 1
-        fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(5), 4)
-        fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(10), 5)
+    if not NightCount then
+        local self_obj = fallout.self_obj()
+        fallout.float_msg(self_obj, fallout.message_str(562, 214), 2)
+        NightCount = true
+        fallout.add_timer_event(self_obj, fallout.game_ticks(5), 4)
+        fallout.add_timer_event(self_obj, fallout.game_ticks(10), 5)
     end
 end
 
 function SendToStart()
-    fallout.reg_anim_func(2, fallout.self_obj())
+    local self_obj = fallout.self_obj()
+    fallout.reg_anim_func(2, self_obj)
     fallout.reg_anim_func(1, 1)
-    fallout.reg_anim_obj_move_to_tile(fallout.self_obj(), 15522, -1)
+    fallout.reg_anim_obj_move_to_tile(self_obj, 15522, -1)
     fallout.reg_anim_func(3, 0)
-    fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(60 * 12), 2)
+    fallout.add_timer_event(self_obj, fallout.game_ticks(60 * 12), 2)
 end
 
 function SendToStreet()
-    fallout.reg_anim_func(2, fallout.self_obj())
+    local self_obj = fallout.self_obj()
+    fallout.reg_anim_func(2, self_obj)
     fallout.reg_anim_func(1, 1)
-    fallout.reg_anim_obj_move_to_tile(fallout.self_obj(), 15295, -1)
+    fallout.reg_anim_obj_move_to_tile(self_obj, 15295, -1)
     fallout.reg_anim_func(3, 0)
-    fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(60 * 2), 3)
+    fallout.add_timer_event(self_obj, fallout.game_ticks(60 * 2), 3)
 end
 
 function SendToCattle1()
-    fallout.reg_anim_func(2, fallout.self_obj())
+    local self_obj = fallout.self_obj()
+    fallout.reg_anim_func(2, self_obj)
     fallout.reg_anim_func(1, 1)
-    fallout.reg_anim_obj_move_to_tile(fallout.self_obj(), 12871, -1)
+    fallout.reg_anim_obj_move_to_tile(self_obj, 12871, -1)
     fallout.reg_anim_func(3, 0)
     if fallout.random(1, 10) >= 6 then
-        fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(60 * 3), 4)
+        fallout.add_timer_event(self_obj, fallout.game_ticks(60 * 3), 4)
     else
-        fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(60 * 4), 1)
+        fallout.add_timer_event(self_obj, fallout.game_ticks(60 * 4), 1)
     end
 end
 
 function SendToCattle2()
-    fallout.reg_anim_func(2, fallout.self_obj())
+    local self_obj = fallout.self_obj()
+    fallout.reg_anim_func(2, self_obj)
     fallout.reg_anim_func(1, 1)
-    fallout.reg_anim_obj_move_to_tile(fallout.self_obj(), 12871, -1)
+    fallout.reg_anim_obj_move_to_tile(self_obj, 12871, -1)
     fallout.reg_anim_func(3, 0)
-    fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(60 * 4), 1)
+    fallout.add_timer_event(self_obj, fallout.game_ticks(60 * 4), 1)
 end
 
 function SendToSleep()
-    if Sleeping == 0 then
-        fallout.reg_anim_func(2, fallout.self_obj())
+    if not Sleeping then
+        local self_obj = fallout.self_obj()
+        fallout.reg_anim_func(2, self_obj)
         fallout.reg_anim_func(1, 1)
-        fallout.reg_anim_obj_move_to_tile(fallout.self_obj(), 14932, -1)
+        fallout.reg_anim_obj_move_to_tile(self_obj, 14932, -1)
         fallout.reg_anim_func(3, 0)
-        SetDayNight = 0
-        Sleeping = 1
+        SetDayNight = false
+        Sleeping = true
     end
 end
 
