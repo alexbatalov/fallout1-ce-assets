@@ -28,61 +28,54 @@ local LeonKickOut
 local LeonPerformDump
 local LeonCombat
 
-local hostile = 0
+local hostile = false
 local initialized = false
-local visible = 1
-
-local exit_line = 0
+local visible = true
 
 function start()
     if not initialized then
-        initialized = true
+        local self_obj = fallout.self_obj()
         if fallout.global_var(111) == 5 then
-            fallout.set_obj_visibility(fallout.self_obj(), 1)
-            visible = 0
+            fallout.set_obj_visibility(self_obj, true)
+            visible = false
         end
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 42)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 16)
+        fallout.critter_add_trait(self_obj, 1, 6, 42)
+        fallout.critter_add_trait(self_obj, 1, 5, 16)
+        initialized = true
     end
-    if fallout.script_action() == 21 then
+
+    local script_action = fallout.script_action()
+    if script_action == 21 then
         look_at_p_proc()
-    else
-        if fallout.script_action() == 4 then
-            pickup_p_proc()
-        else
-            if fallout.script_action() == 11 then
-                talk_p_proc()
-            else
-                if fallout.script_action() == 12 then
-                    critter_p_proc()
-                else
-                    if fallout.script_action() == 18 then
-                        destroy_p_proc()
-                    else
-                        if fallout.script_action() == 14 then
-                            damage_p_proc()
-                        end
-                    end
-                end
-            end
-        end
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 14 then
+        damage_p_proc()
     end
 end
 
 function combat()
-    hostile = 1
+    hostile = true
 end
 
 function critter_p_proc()
-    if visible == 0 then
+    if not visible then
         fallout.script_overrides()
     else
+        local self_obj = fallout.self_obj()
+        local dude_obj = fallout.dude_obj()
         if hostile then
-            hostile = 0
-            fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+            hostile = false
+            fallout.attack(dude_obj, 0, 1, 0, 0, 30000, 0, 0)
         end
         if fallout.map_var(5) == 1 then
-            if (fallout.obj_can_hear_obj(fallout.self_obj(), fallout.dude_obj()) == 1) or (fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) == 1) then
+            if fallout.obj_can_hear_obj(self_obj, dude_obj) or fallout.obj_can_see_obj(self_obj, dude_obj) then
                 combat()
             end
         else
@@ -91,16 +84,16 @@ function critter_p_proc()
             end
         end
         if time.is_morning() or time.is_day() then
-            if fallout.tile_num(fallout.self_obj()) ~= 22120 then
-                fallout.animate_move_obj_to_tile(fallout.self_obj(), 22120, 0)
+            if fallout.tile_num(self_obj) ~= 22120 then
+                fallout.animate_move_obj_to_tile(self_obj, 22120, 0)
             end
         else
-            if fallout.tile_num(fallout.self_obj()) ~= 16519 then
-                fallout.animate_move_obj_to_tile(fallout.self_obj(), 16519, 0)
+            if fallout.tile_num(self_obj) ~= 16519 then
+                fallout.animate_move_obj_to_tile(self_obj, 16519, 0)
             end
         end
-        if fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 6 then
-            if (fallout.local_var(5) == 0) and (fallout.tile_num(fallout.self_obj()) == 22120) then
+        if fallout.tile_distance_objs(self_obj, dude_obj) < 6 then
+            if fallout.local_var(5) == 0 and fallout.tile_num(self_obj) == 22120 then
                 fallout.set_local_var(5, 1)
                 fallout.dialogue_system_enter()
             end
@@ -110,7 +103,7 @@ end
 
 function pickup_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
-        hostile = 1
+        hostile = true
     end
 end
 
