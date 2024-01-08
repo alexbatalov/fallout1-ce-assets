@@ -2,8 +2,12 @@ local fallout = require("fallout")
 local reputation = require("lib.reputation")
 
 local start
-local timeforwhat
-local do_dialogue
+local pickup_p_proc
+local timed_event_p_proc
+local talk_p_proc
+local critter_p_proc
+local destroy_p_proc
+local look_at_p_proc
 local prisonrcbt
 local prisonrend
 local prisonr00
@@ -17,88 +21,96 @@ local prisonr07
 local prisonr08
 local leave_map
 
-local Hostile = 0
+local hostile = false
 local initialized = false
-local rndx = 0
-local rndy = 0
-local rndz = 0
-local my_hex = 0
 
 function start()
     if not initialized then
-        initialized = true
+        local self_obj = fallout.self_obj()
         if fallout.local_var(3) > 9 then
-            fallout.set_obj_visibility(fallout.self_obj(), 1)
+            fallout.set_obj_visibility(self_obj, true)
         end
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 30)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 40)
+        fallout.critter_add_trait(self_obj, 1, 6, 30)
+        fallout.critter_add_trait(self_obj, 1, 5, 40)
+        initialized = true
     end
+
+    -- FIXME: Get rid of this condition.
     if fallout.local_var(3) < 10 then
-        if fallout.script_action() == 22 then
-            timeforwhat()
+        local script_action = fallout.script_action()
+        if script_action == 22 then
+            timed_event_p_proc()
+        elseif script_action == 11 then
+            talk_p_proc()
+        elseif script_action == 21 or script_action == 3 then
+            look_at_p_proc()
+        elseif script_action == 4 then
+            pickup_p_proc()
+        elseif script_action == 12 then
+            critter_p_proc()
+        elseif script_action == 18 then
+            destroy_p_proc()
+        end
+    end
+end
+
+function pickup_p_proc()
+    hostile = true
+end
+
+function timed_event_p_proc()
+    if fallout.fixed_param() == 1 then
+        hostile = true
+    end
+end
+
+function talk_p_proc()
+    if fallout.local_var(1) == 0 then
+        fallout.start_gdialog(89, fallout.self_obj(), 4, -1, -1)
+        fallout.gsay_start()
+        if fallout.map_var(6) ~= 0 then
+            prisonr06()
         else
-            if fallout.script_action() == 11 then
-                if fallout.local_var(1) == 0 then
-                    do_dialogue()
-                else
-                    fallout.float_msg(fallout.self_obj(), fallout.message_str(89, 126), 2)
-                end
+            if fallout.local_var(0) ~= 0 then
+                prisonr05()
             else
-                if (fallout.script_action() == 21) or (fallout.script_action() == 3) then
-                    fallout.script_overrides()
-                    fallout.display_msg(fallout.message_str(89, 100))
-                else
-                    if fallout.script_action() == 4 then
-                        Hostile = 1
-                    else
-                        if fallout.script_action() == 12 then
-                            if fallout.map_var(6) ~= 0 then
-                                if fallout.local_var(1) == 1 then
-                                    leave_map()
-                                else
-                                    if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) and (fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 5) then
-                                        fallout.dialogue_system_enter()
-                                    end
-                                end
-                            else
-                                if Hostile then
-                                    Hostile = 0
-                                    fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
-                                end
-                            end
-                        else
-                            if fallout.script_action() == 18 then
-                                reputation.inc_good_critter()
-                            end
-                        end
-                    end
-                end
+                fallout.set_local_var(0, 1)
+                prisonr00()
             end
         end
-    end
-end
-
-function timeforwhat()
-    if fallout.fixed_param() == 1 then
-        Hostile = 1
-    end
-end
-
-function do_dialogue()
-    fallout.start_gdialog(89, fallout.self_obj(), 4, -1, -1)
-    fallout.gsay_start()
-    if fallout.map_var(6) ~= 0 then
-        prisonr06()
+        fallout.gsay_end()
+        fallout.end_dialogue()
     else
-        if fallout.local_var(0) ~= 0 then
-            prisonr05()
+        fallout.float_msg(fallout.self_obj(), fallout.message_str(89, 126), 2)
+    end
+end
+
+function critter_p_proc()
+    if fallout.map_var(6) ~= 0 then
+        if fallout.local_var(1) == 1 then
+            leave_map()
         else
-            fallout.set_local_var(0, 1)
-            prisonr00()
+            local self_obj = fallout.self_obj()
+            local dude_obj = fallout.dude_obj()
+            if fallout.obj_can_see_obj(self_obj, dude_obj) and fallout.tile_distance_objs(self_obj, dude_obj) < 5 then
+                fallout.dialogue_system_enter()
+            end
+        end
+    else
+        if hostile then
+            hostile = false
+            fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
         end
     end
-    fallout.gsay_end()
-    fallout.end_dialogue()
+end
+
+function destroy_p_proc()
+    reputation.inc_good_critter()
+end
+
+function look_at_p_proc()
+    fallout.script_overrides()
+    fallout.display_msg(fallout.message_str(89, 100))
 end
 
 function prisonrcbt()
@@ -164,46 +176,35 @@ function prisonr08()
 end
 
 function leave_map()
-    my_hex = fallout.tile_num(fallout.self_obj())
-    if my_hex == fallout.local_var(2) then
-        fallout.set_local_var(3, fallout.local_var(3) + 1)
-        if fallout.local_var(3) > 7 then
+    local self_obj = fallout.self_obj()
+    if fallout.tile_num(self_obj) == fallout.local_var(2) then
+        local cycle = fallout.local_var(3) + 1
+        fallout.set_local_var(3, cycle)
+        if cycle > 7 then
             fallout.set_global_var(155, fallout.global_var(155) + 1)
             fallout.set_local_var(3, 10)
-            fallout.set_obj_visibility(fallout.self_obj(), 1)
-            fallout.move_to(fallout.self_obj(), 0, 0)
+            fallout.set_obj_visibility(self_obj, true)
+            fallout.move_to(self_obj, 0, 0)
         else
-            if fallout.local_var(3) == 1 then
+            if cycle == 1 then
                 fallout.set_local_var(2, 15863)
-            else
-                if fallout.local_var(3) == 2 then
-                    fallout.set_local_var(2, 13065)
-                else
-                    if fallout.local_var(3) == 3 then
-                        fallout.set_local_var(2, 13081)
-                    else
-                        if fallout.local_var(3) == 4 then
-                            fallout.set_local_var(2, 14496)
-                        else
-                            if fallout.local_var(3) == 5 then
-                                fallout.set_local_var(2, 11900)
-                            else
-                                if fallout.local_var(3) == 6 then
-                                    fallout.set_local_var(2, 8700)
-                                else
-                                    if fallout.local_var(3) == 7 then
-                                        fallout.set_local_var(2, 5900)
-                                    end
-                                end
-                            end
-                        end
-                    end
-                end
+            elseif cycle == 2 then
+                fallout.set_local_var(2, 13065)
+            elseif cycle == 3 then
+                fallout.set_local_var(2, 13081)
+            elseif cycle == 4 then
+                fallout.set_local_var(2, 14496)
+            elseif cycle == 5 then
+                fallout.set_local_var(2, 11900)
+            elseif cycle == 6 then
+                fallout.set_local_var(2, 8700)
+            elseif cycle == 7 then
+                fallout.set_local_var(2, 5900)
             end
-            fallout.animate_move_obj_to_tile(fallout.self_obj(), fallout.local_var(2), 0)
+            fallout.animate_move_obj_to_tile(self_obj, fallout.local_var(2), 0)
         end
     end
-    fallout.animate_move_obj_to_tile(fallout.self_obj(), fallout.local_var(2), 0)
+    fallout.animate_move_obj_to_tile(self_obj, fallout.local_var(2), 0)
 end
 
 local exports = {}
