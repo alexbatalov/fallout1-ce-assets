@@ -24,94 +24,87 @@ local George07
 local George08
 local GeorgeEnd
 
-local hostile = 0
+local hostile = false
 local initialized = false
 local lastTraverse = 0
 local currentLocation = 0
-local hereBefore = 0
-local visible = 1
-
-local exit_line = 0
+local hereBefore = false
+local visible = true
 
 function start()
     if not initialized then
-        initialized = true
+        local self_obj = fallout.self_obj()
         fallout.set_map_var(3, 0)
         if fallout.global_var(111) == 5 then
-            fallout.set_obj_visibility(fallout.self_obj(), 1)
-            visible = 0
+            fallout.set_obj_visibility(self_obj, true)
+            visible = false
             fallout.set_map_var(3, 1)
         end
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 42)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 16)
+        fallout.critter_add_trait(self_obj, 1, 6, 42)
+        fallout.critter_add_trait(self_obj, 1, 5, 16)
+        initialized = true
     end
-    if fallout.script_action() == 21 then
+
+    local script_action = fallout.script_action()
+    if script_action == 21 then
         look_at_p_proc()
-    else
-        if fallout.script_action() == 4 then
-            pickup_p_proc()
-        else
-            if fallout.script_action() == 11 then
-                talk_p_proc()
-            else
-                if fallout.script_action() == 12 then
-                    critter_p_proc()
-                else
-                    if fallout.script_action() == 18 then
-                        destroy_p_proc()
-                    else
-                        if fallout.script_action() == 14 then
-                            damage_p_proc()
-                        end
-                    end
-                end
-            end
-        end
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 14 then
+        damage_p_proc()
     end
 end
 
 function combat()
-    hostile = 1
+    hostile = true
 end
 
 function critter_p_proc()
-    if visible == 0 then
+    if not visible then
         fallout.script_overrides()
     else
+        local self_obj = fallout.self_obj()
+        local dude_obj = fallout.dude_obj()
         if hostile then
-            hostile = 0
-            fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+            hostile = false
+            fallout.attack(dude_obj, 0, 1, 0, 0, 30000, 0, 0)
         end
         if fallout.map_var(5) == 1 then
-            if (fallout.obj_can_hear_obj(fallout.self_obj(), fallout.dude_obj()) == 1) or (fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) == 1) then
+            if fallout.obj_can_hear_obj(self_obj, dude_obj) or fallout.obj_can_see_obj(self_obj, dude_obj) then
                 combat()
             end
         else
             if time.is_night() then
-                if (fallout.obj_can_hear_obj(fallout.self_obj(), fallout.dude_obj()) == 1) or (fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) == 1) then
+                if fallout.obj_can_hear_obj(self_obj, dude_obj) or fallout.obj_can_see_obj(self_obj, dude_obj) then
                     fallout.dialogue_system_enter()
                 else
-                    if (fallout.global_var(111) == 1) or (fallout.global_var(107) == 1) then
+                    if fallout.global_var(111) == 1 or fallout.global_var(107) == 1 then
                         fallout.set_map_var(3, 1)
-                        if (time.game_time_in_seconds() - lastTraverse) >= 20 then
+                        if time.game_time_in_seconds() - lastTraverse >= 20 then
                             lastTraverse = time.game_time_in_seconds()
                             if currentLocation == 0 then
                                 currentLocation = 1
-                                fallout.animate_move_obj_to_tile(fallout.self_obj(), 19516, 0)
+                                fallout.animate_move_obj_to_tile(self_obj, 19516, 0)
                             else
                                 currentLocation = 0
-                                fallout.animate_move_obj_to_tile(fallout.self_obj(), 22529, 0)
+                                fallout.animate_move_obj_to_tile(self_obj, 22529, 0)
                             end
                         end
                     else
-                        if fallout.tile_num(fallout.self_obj()) ~= 22529 then
-                            fallout.animate_move_obj_to_tile(fallout.self_obj(), 22529, 0)
+                        if fallout.tile_num(self_obj) ~= 22529 then
+                            fallout.animate_move_obj_to_tile(self_obj, 22529, 0)
                         end
                     end
                 end
             else
-                if fallout.tile_num(fallout.self_obj()) ~= 22529 then
-                    fallout.animate_move_obj_to_tile(fallout.self_obj(), 22529, 0)
+                if fallout.tile_num(self_obj) ~= 22529 then
+                    fallout.animate_move_obj_to_tile(self_obj, 22529, 0)
                 end
                 if fallout.map_var(2) == 1 then
                     fallout.dialogue_system_enter()
@@ -123,7 +116,7 @@ end
 
 function pickup_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
-        hostile = 1
+        hostile = true
     end
 end
 
@@ -141,8 +134,8 @@ function talk_p_proc()
                 fallout.set_map_var(2, 0)
                 George08()
             else
-                if hereBefore == 0 then
-                    hereBefore = 1
+                if not hereBefore then
+                    hereBefore = true
                     fallout.start_gdialog(870, fallout.self_obj(), 4, -1, -1)
                     fallout.gsay_start()
                     George01()
