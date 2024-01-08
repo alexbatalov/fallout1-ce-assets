@@ -81,52 +81,45 @@ local Harold56
 local Harold57
 local HaroldEnd
 
-local hostile = 0
+local hostile = false
 local initialized = false
-
-local exit_line = 0
 
 function start()
     if not initialized then
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 41)
+        fallout.critter_add_trait(self_obj, 1, 5, 53)
         initialized = true
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 41)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 53)
     end
-    if fallout.script_action() == 21 then
+
+    local script_action = fallout.script_action()
+    if script_action == 21 then
         look_at_p_proc()
-    else
-        if fallout.script_action() == 4 then
-            pickup_p_proc()
-        else
-            if fallout.script_action() == 11 then
-                talk_p_proc()
-            else
-                if fallout.script_action() == 12 then
-                    critter_p_proc()
-                else
-                    if fallout.script_action() == 18 then
-                        destroy_p_proc()
-                    end
-                end
-            end
-        end
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
     end
 end
 
 function combat()
-    hostile = 1
+    hostile = true
 end
 
 function critter_p_proc()
     if hostile then
-        hostile = 0
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
 end
 
 function pickup_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
-        hostile = 1
+        hostile = true
     end
 end
 
@@ -191,9 +184,9 @@ function Harold00()
 end
 
 function Harold00a()
-    local v0 = 0
-    if fallout.item_caps_total(fallout.dude_obj()) >= 25 then
-        v0 = fallout.item_caps_adjust(fallout.dude_obj(), -25)
+    local dude_obj = fallout.dude_obj()
+    if fallout.item_caps_total(dude_obj) >= 25 then
+        fallout.item_caps_adjust(dude_obj, -25)
         Harold02()
     else
         Harold01()
@@ -201,9 +194,9 @@ function Harold00a()
 end
 
 function Harold00b()
-    local v0 = 0
-    if fallout.item_caps_total(fallout.dude_obj()) >= 5 then
-        v0 = fallout.item_caps_adjust(fallout.dude_obj(), -5)
+    local dude_obj = fallout.dude_obj()
+    if fallout.item_caps_total(dude_obj) >= 5 then
+        fallout.item_caps_adjust(dude_obj, -5)
         Harold02()
     else
         Harold01()
@@ -315,9 +308,9 @@ function Harold15()
 end
 
 function Harold15a()
-    local v0 = 0
-    if fallout.item_caps_total(fallout.dude_obj()) >= 25 then
-        v0 = fallout.item_caps_adjust(fallout.dude_obj(), -25)
+    local dude_obj = fallout.dude_obj()
+    if fallout.item_caps_total(dude_obj) >= 25 then
+        fallout.item_caps_adjust(dude_obj, -25)
         fallout.set_local_var(6, 1)
         Harold14()
     else
@@ -484,9 +477,9 @@ function Harold39()
 end
 
 function Harold39a()
-    local v0 = 0
-    if fallout.item_caps_total(fallout.dude_obj()) >= 25 then
-        v0 = fallout.item_caps_adjust(fallout.dude_obj(), -25)
+    local dude_obj = fallout.dude_obj()
+    if fallout.item_caps_total(dude_obj) >= 25 then
+        fallout.item_caps_adjust(dude_obj, -25)
         Harold40()
     else
         Harold01()
@@ -494,9 +487,9 @@ function Harold39a()
 end
 
 function Harold39b()
-    local v0 = 0
-    if fallout.item_caps_total(fallout.dude_obj()) >= 5 then
-        v0 = fallout.item_caps_adjust(fallout.dude_obj(), -5)
+    local dude_obj = fallout.dude_obj()
+    if fallout.item_caps_total(dude_obj) >= 5 then
+        fallout.item_caps_adjust(dude_obj, -5)
         Harold40()
     else
         Harold01()
@@ -517,9 +510,8 @@ function Harold41()
 end
 
 function Harold41a()
-    local v0 = 0
     if fallout.item_caps_total(fallout.dude_obj()) >= 20 then
-        v0 = fallout.item_caps_adjust(fallout.dude_obj(), -20)
+        fallout.item_caps_adjust(fallout.dude_obj(), -20)
         Harold43()
     else
         Harold01()
@@ -536,7 +528,7 @@ function Harold43()
     if fallout.global_var(226) == 2 then
         fallout.giq_option(4, 45, 225, Harold45, 50)
     end
-    if ((fallout.global_var(150) - time.game_time_in_days()) < 10) or (fallout.global_var(109) == 1) then
+    if fallout.global_var(150) - time.game_time_in_days() < 10 or fallout.global_var(109) == 1 then
         fallout.giq_option(4, 45, 224, Harold43b, 50)
     end
     if fallout.local_var(5) == 0 then
@@ -553,10 +545,8 @@ end
 function Harold43b()
     if fallout.global_var(109) == 1 then
         Harold53()
-    else
-        if (fallout.global_var(150) - time.game_time_in_days()) < 10 then
-            Harold54()
-        end
+    elseif fallout.global_var(150) - time.game_time_in_days() < 10 then
+        Harold54()
     end
 end
 
