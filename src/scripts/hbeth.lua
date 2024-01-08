@@ -1,16 +1,7 @@
 local fallout = require("fallout")
+local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
 local time = require("lib.time")
-
---
--- Some unreferenced imported varables found.
--- Because of it it is impossible to specify
--- the real names of global variables.
---
-
-local g0 = 0
-local g1 = 1
-local g2 = 0
 
 local start
 local combat
@@ -103,84 +94,60 @@ local Beth69
 local BethEnd
 local Get_Stuff
 local Put_Stuff
-
--- ?import? variable hostile
--- ?import? variable Only_Once
--- ?import? variable Sid_Ptr
-
-local get_reaction
-local ReactToLevel
-local LevelToReact
-local UpReact
-local DownReact
-local BottomReact
-local TopReact
-local BigUpReact
-local BigDownReact
-local UpReactLevel
-local DownReactLevel
-local Goodbyes
-
--- ?import? variable exit_line
-
 local Beth02c
 
+local hostile = false
+local initialized = false
+
 function start()
-    local v0 = 0
-    if g1 then
-        g1 = 0
-        fallout.set_external_var("Beth_Ptr", fallout.self_obj())
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 37)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 50)
+    if not initialized then
+        local self_obj = fallout.self_obj()
+        fallout.set_external_var("Beth_Ptr", self_obj)
+        fallout.critter_add_trait(self_obj, 1, 6, 37)
+        fallout.critter_add_trait(self_obj, 1, 5, 50)
+        initialized = true
     end
-    if fallout.script_action() == 21 then
+
+    local script_action = fallout.script_action()
+    if script_action == 21 then
         look_at_p_proc()
-    else
-        if fallout.script_action() == 4 then
-            pickup_p_proc()
-        else
-            if fallout.script_action() == 11 then
-                talk_p_proc()
-            else
-                if fallout.script_action() == 12 then
-                    critter_p_proc()
-                else
-                    if fallout.script_action() == 18 then
-                        destroy_p_proc()
-                    end
-                end
-            end
-        end
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
     end
 end
 
 function combat()
-    g0 = 1
+    hostile = true
 end
 
 function critter_p_proc()
-    if g0 then
-        g0 = 0
+    if hostile then
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
 end
 
 function pickup_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
-        g0 = 1
+        hostile = true
     end
 end
 
 function talk_p_proc()
-    local v0 = 0
     Get_Stuff()
-    get_reaction()
-    if ((time.game_time_in_days() - fallout.local_var(16)) >= 1) or (fallout.local_var(16) == 0) then
+    reaction.get_reaction()
+    if time.game_time_in_days() - fallout.local_var(16) >= 1 or fallout.local_var(16) == 0 then
         fallout.set_local_var(16, time.game_time_in_days())
         fallout.set_local_var(17, 1000 + fallout.random(0, 1000))
-        v0 = fallout.item_caps_adjust(fallout.self_obj(), fallout.local_var(17))
+        fallout.item_caps_adjust(fallout.self_obj(), fallout.local_var(17))
     else
-        v0 = fallout.item_caps_adjust(fallout.self_obj(), fallout.local_var(17))
+        fallout.item_caps_adjust(fallout.self_obj(), fallout.local_var(17))
     end
     if fallout.map_var(10) == 1 then
         fallout.gdialog_set_barter_mod(5)
@@ -222,7 +189,7 @@ function talk_p_proc()
         end
     end
     fallout.set_local_var(11, time.game_time_in_hours())
-    v0 = fallout.item_caps_adjust(fallout.self_obj(), -1 * fallout.item_caps_total(fallout.self_obj()))
+    fallout.item_caps_adjust(fallout.self_obj(), -1 * fallout.item_caps_total(fallout.self_obj()))
     Put_Stuff()
 end
 
@@ -232,9 +199,8 @@ function destroy_p_proc()
 end
 
 function damage_p_proc()
-    local v0 = 0
-    v0 = fallout.obj_pid(fallout.source_obj())
-    if fallout.party_member_obj(v0) ~= 0 then
+    local pid = fallout.obj_pid(fallout.source_obj())
+    if fallout.party_member_obj(pid) ~= nil then
         fallout.set_global_var(248, 1)
     end
 end
@@ -293,56 +259,42 @@ end
 
 function Beth03()
     if fallout.local_var(10) == 1 then
-        if (fallout.local_var(5) == 0) and (fallout.global_var(203) == 2) then
+        if fallout.local_var(5) == 0 and fallout.global_var(203) == 2 then
             fallout.set_local_var(5, 1)
             fallout.set_global_var(219, 1)
             fallout.gsay_reply(617, 123)
-        else
-            if (fallout.local_var(6) == 0) and (fallout.global_var(203) == 2) then
-                fallout.set_local_var(5, 1)
-                fallout.gsay_reply(617, 124)
-            else
-                if (fallout.local_var(7) == 0) and (fallout.global_var(112) == 2) then
-                    fallout.set_local_var(5, 1)
-                    fallout.gsay_reply(617, 125)
-                else
-                    if (fallout.local_var(8) == 0) and (fallout.global_var(18) == 1) then
-                        fallout.set_local_var(5, 1)
-                        fallout.gsay_reply(617, 126)
-                    else
-                        if (fallout.local_var(9) == 0) and (fallout.global_var(17) == 1) then
-                            fallout.set_local_var(5, 1)
-                            fallout.gsay_reply(617, 127)
-                        end
-                    end
-                end
-            end
+        elseif fallout.local_var(6) == 0 and fallout.global_var(203) == 2 then
+            fallout.set_local_var(5, 1)
+            fallout.gsay_reply(617, 124)
+        elseif fallout.local_var(7) == 0 and fallout.global_var(112) == 2 then
+            fallout.set_local_var(5, 1)
+            fallout.gsay_reply(617, 125)
+        elseif fallout.local_var(8) == 0 and fallout.global_var(18) == 1 then
+            fallout.set_local_var(5, 1)
+            fallout.gsay_reply(617, 126)
+        elseif fallout.local_var(9) == 0 and fallout.global_var(17) == 1 then
+            fallout.set_local_var(5, 1)
+            fallout.gsay_reply(617, 127)
         end
     else
         fallout.set_local_var(10, 1)
-        if (fallout.local_var(5) == 0) and (fallout.global_var(203) == 2) then
+        if fallout.local_var(5) == 0 and fallout.global_var(203) == 2 then
             fallout.set_local_var(5, 1)
             fallout.set_global_var(219, 1)
             fallout.gsay_reply(617, 117)
         else
-            if (fallout.local_var(6) == 0) and (fallout.global_var(203) == 2) then
+            if fallout.local_var(6) == 0 and fallout.global_var(203) == 2 then
                 fallout.set_local_var(5, 1)
                 fallout.gsay_reply(617, 118)
-            else
-                if (fallout.local_var(7) == 0) and (fallout.global_var(112) == 2) then
-                    fallout.set_local_var(5, 1)
-                    fallout.gsay_reply(617, 119)
-                else
-                    if (fallout.local_var(8) == 0) and (fallout.global_var(18) == 1) then
-                        fallout.set_local_var(5, 1)
-                        fallout.gsay_reply(617, 121)
-                    else
-                        if (fallout.local_var(9) == 0) and (fallout.global_var(17) == 1) then
-                            fallout.set_local_var(5, 1)
-                            fallout.gsay_reply(617, 122)
-                        end
-                    end
-                end
+            elseif fallout.local_var(7) == 0 and fallout.global_var(112) == 2 then
+                fallout.set_local_var(5, 1)
+                fallout.gsay_reply(617, 119)
+            elseif fallout.local_var(8) == 0 and fallout.global_var(18) == 1 then
+                fallout.set_local_var(5, 1)
+                fallout.gsay_reply(617, 121)
+            elseif fallout.local_var(9) == 0 and fallout.global_var(17) == 1 then
+                fallout.set_local_var(5, 1)
+                fallout.gsay_reply(617, 122)
             end
         end
     end
@@ -352,7 +304,11 @@ function Beth03()
 end
 
 function Beth03a()
-    if (fallout.local_var(5) == 0) and (fallout.global_var(203) == 2) or ((fallout.local_var(6) == 0) and (fallout.global_var(203) == 2)) or ((fallout.local_var(7) == 0) and (fallout.global_var(112) == 2)) or ((fallout.local_var(8) == 0) and (fallout.global_var(18) == 1)) or ((fallout.local_var(9) == 0) and (fallout.global_var(17) == 1)) then
+    if (fallout.local_var(5) == 0 and fallout.global_var(203) == 2)
+        or (fallout.local_var(6) == 0 and fallout.global_var(203) == 2)
+        or (fallout.local_var(7) == 0 and fallout.global_var(112) == 2)
+        or (fallout.local_var(8) == 0 and fallout.global_var(18) == 1)
+        or (fallout.local_var(9) == 0 and fallout.global_var(17) == 1) then
         Beth03()
     else
         Beth12()
@@ -419,21 +375,21 @@ function Beth15()
     fallout.set_global_var(219, 1)
     fallout.gsay_reply(617, 151)
     fallout.giq_option(4, 617, 152, Beth16, 50)
-    if (fallout.map_var(46) >= 4) or (fallout.map_var(46) >= 4) then
+    if fallout.map_var(46) >= 4 or fallout.map_var(46) >= 4 then
         fallout.giq_option(4, 617, 153, Beth15a, 51)
     end
     fallout.giq_option(4, 617, 154, BethEnd, 50)
 end
 
 function Beth15a()
-    BigDownReact()
+    reaction.BigDownReact()
     Beth21()
 end
 
 function Beth16()
     fallout.set_map_var(48, 1)
     fallout.gsay_reply(617, 155)
-    if (fallout.map_var(46) >= 5) or (fallout.map_var(46) >= 5) then
+    if fallout.map_var(46) >= 5 or fallout.map_var(46) >= 5 then
         fallout.giq_option(4, 617, 156, Beth16a, 51)
     end
     fallout.giq_option(4, 617, 157, Beth17, 50)
@@ -442,7 +398,7 @@ function Beth16()
 end
 
 function Beth16a()
-    BottomReact()
+    reaction.BottomReact()
     Beth22()
 end
 
@@ -454,12 +410,12 @@ function Beth17()
 end
 
 function Beth17a()
-    DownReact()
+    reaction.DownReact()
     Beth19()
 end
 
 function Beth17b()
-    BigDownReact()
+    reaction.BigDownReact()
     Beth19()
 end
 
@@ -522,7 +478,7 @@ function Beth27()
 end
 
 function Beth27a()
-    BigDownReact()
+    reaction.BigDownReact()
     BethEnd()
 end
 
@@ -623,7 +579,7 @@ function Beth40()
 end
 
 function Beth40a()
-    BigDownReact()
+    reaction.BigDownReact()
     Beth41()
 end
 
@@ -654,7 +610,7 @@ function Beth44()
 end
 
 function Beth45()
-    BigDownReact()
+    reaction.BigDownReact()
     fallout.gsay_message(617, 239, 51)
 end
 
@@ -709,7 +665,7 @@ function Beth52()
 end
 
 function Beth52a()
-    DownReact()
+    reaction.DownReact()
     BethEnd()
 end
 
@@ -808,53 +764,52 @@ function Beth63()
 end
 
 function Beth64()
-    if (fallout.get_critter_stat(fallout.dude_obj(), 3) >= 7) and (fallout.get_critter_stat(fallout.dude_obj(), 34) == 0) then
-        if ((time.game_time_in_hours() - fallout.local_var(11)) <= 1) and (fallout.get_critter_stat(fallout.dude_obj(), 34) == 1) then
-            fallout.gsay_reply(617, fallout.message_str(617, fallout.random(311, 314)) .. " " .. fallout.message_str(617, 315))
-        else
-            if (time.game_time_in_hours() - fallout.local_var(11)) <= 1 then
-                fallout.gsay_reply(617, fallout.message_str(617, fallout.random(311, 314)) .. " " .. fallout.message_str(617, 316))
-            else
-                if ((time.game_time_in_hours() - fallout.local_var(11)) > 1) and ((time.game_time_in_hours() - fallout.local_var(11)) <= 96) then
-                    fallout.gsay_reply(617, fallout.message_str(617, fallout.random(311, 314)) .. " " .. fallout.message_str(617, 317))
-                else
-                    if ((time.game_time_in_hours() - fallout.local_var(11)) > 96) and ((time.game_time_in_hours() - fallout.local_var(11)) <= 168) then
-                        fallout.gsay_reply(617, fallout.message_str(617, fallout.random(311, 314)) .. " " .. fallout.message_str(617, 318))
-                    else
-                        if ((time.game_time_in_hours() - fallout.local_var(11)) > 168) and ((time.game_time_in_hours() - fallout.local_var(11)) <= 336) then
-                            fallout.gsay_reply(617, fallout.message_str(617, fallout.random(311, 314)) .. " " .. fallout.message_str(617, 319))
-                        else
-                            if (time.game_time_in_hours() - fallout.local_var(11)) > 336 then
-                                fallout.gsay_reply(617, fallout.message_str(617, fallout.random(311, 314)) .. " " .. fallout.message_str(617, 320))
-                            end
-                        end
-                    end
-                end
-            end
+    local dude_obj = fallout.dude_obj()
+    local dude_gender = fallout.get_critter_stat(dude_obj, 34)
+    local hours_elapsed = time.game_time_in_hours() - fallout.local_var(11)
+    if fallout.get_critter_stat(dude_obj, 3) >= 7 and dude_gender == 0 then
+        if hours_elapsed <= 1 and dude_gender == 1 then
+            fallout.gsay_reply(617,
+                fallout.message_str(617, fallout.random(311, 314)) .. " " .. fallout.message_str(617, 315))
+        elseif hours_elapsed <= 1 then
+            fallout.gsay_reply(617,
+                fallout.message_str(617, fallout.random(311, 314)) .. " " .. fallout.message_str(617, 316))
+        elseif hours_elapsed > 1 and hours_elapsed <= 96 then
+            fallout.gsay_reply(617,
+                fallout.message_str(617, fallout.random(311, 314)) .. " " .. fallout.message_str(617, 317))
+        elseif hours_elapsed > 96 and hours_elapsed <= 168 then
+            fallout.gsay_reply(617,
+                fallout.message_str(617, fallout.random(311, 314)) .. " " .. fallout.message_str(617, 318))
+        elseif hours_elapsed > 168 and hours_elapsed <= 336 then
+            fallout.gsay_reply(617,
+                fallout.message_str(617, fallout.random(311, 314)) ..
+                " " .. fallout.message_str(617, 319))
+        elseif hours_elapsed > 336 then
+            fallout.gsay_reply(617,
+                fallout.message_str(617, fallout.random(311, 314)) ..
+                " " .. fallout.message_str(617, 320))
         end
     else
-        if ((time.game_time_in_hours() - fallout.local_var(11)) <= 1) and (fallout.get_critter_stat(fallout.dude_obj(), 34) == 1) then
-            fallout.gsay_reply(617, fallout.message_str(617, fallout.random(311, 313)) .. " " .. fallout.message_str(617, 315))
-        else
-            if (time.game_time_in_hours() - fallout.local_var(11)) <= 1 then
-                fallout.gsay_reply(617, fallout.message_str(617, fallout.random(311, 313)) .. " " .. fallout.message_str(617, 316))
-            else
-                if ((time.game_time_in_hours() - fallout.local_var(11)) > 1) and ((time.game_time_in_hours() - fallout.local_var(11)) <= 96) then
-                    fallout.gsay_reply(617, fallout.message_str(617, fallout.random(311, 313)) .. " " .. fallout.message_str(617, 317))
-                else
-                    if ((time.game_time_in_hours() - fallout.local_var(11)) > 96) and ((time.game_time_in_hours() - fallout.local_var(11)) <= 168) then
-                        fallout.gsay_reply(617, fallout.message_str(617, fallout.random(311, 313)) .. " " .. fallout.message_str(617, 318))
-                    else
-                        if ((time.game_time_in_hours() - fallout.local_var(11)) > 168) and ((time.game_time_in_hours() - fallout.local_var(11)) <= 336) then
-                            fallout.gsay_reply(617, fallout.message_str(617, fallout.random(311, 313)) .. " " .. fallout.message_str(617, 319))
-                        else
-                            if (time.game_time_in_hours() - fallout.local_var(11)) > 336 then
-                                fallout.gsay_reply(617, fallout.message_str(617, fallout.random(311, 313)) .. " " .. fallout.message_str(617, 320))
-                            end
-                        end
-                    end
-                end
-            end
+        if hours_elapsed <= 1 and dude_gender == 1 then
+            fallout.gsay_reply(617,
+                fallout.message_str(617, fallout.random(311, 313)) .. " " .. fallout.message_str(617, 315))
+        elseif hours_elapsed <= 1 then
+            fallout.gsay_reply(617,
+                fallout.message_str(617, fallout.random(311, 313)) .. " " .. fallout.message_str(617, 316))
+        elseif hours_elapsed > 1 and hours_elapsed <= 96 then
+            fallout.gsay_reply(617,
+                fallout.message_str(617, fallout.random(311, 313)) .. " " .. fallout.message_str(617, 317))
+        elseif hours_elapsed > 96 and hours_elapsed <= 168 then
+            fallout.gsay_reply(617,
+                fallout.message_str(617, fallout.random(311, 313)) .. " " .. fallout.message_str(617, 318))
+        elseif hours_elapsed > 168 and hours_elapsed <= 336 then
+            fallout.gsay_reply(617,
+                fallout.message_str(617, fallout.random(311, 313)) ..
+                " " .. fallout.message_str(617, 319))
+        elseif hours_elapsed > 336 then
+            fallout.gsay_reply(617,
+                fallout.message_str(617, fallout.random(311, 313)) ..
+                " " .. fallout.message_str(617, 320))
         end
     end
     Beth01()
@@ -879,25 +834,26 @@ function Beth66()
 end
 
 function Beth67()
-    local v0 = 0
+    local dude_obj = fallout.dude_obj()
+    local item_obj
     fallout.set_local_var(13, 1)
-    if fallout.get_critter_stat(fallout.dude_obj(), 34) == 0 then
+    if fallout.get_critter_stat(dude_obj, 34) == 0 then
         fallout.gsay_message(617, 334, 49)
     else
         fallout.gsay_message(617, 335, 49)
     end
-    v0 = fallout.create_object_sid(40, 0, 0, -1)
-    fallout.add_obj_to_inven(fallout.dude_obj(), v0)
-    v0 = fallout.create_object_sid(40, 0, 0, -1)
-    fallout.add_obj_to_inven(fallout.dude_obj(), v0)
-    v0 = fallout.create_object_sid(40, 0, 0, -1)
-    fallout.add_obj_to_inven(fallout.dude_obj(), v0)
-    v0 = fallout.create_object_sid(40, 0, 0, -1)
-    fallout.add_obj_to_inven(fallout.dude_obj(), v0)
-    v0 = fallout.create_object_sid(40, 0, 0, -1)
-    fallout.add_obj_to_inven(fallout.dude_obj(), v0)
-    v0 = fallout.create_object_sid(40, 0, 0, -1)
-    fallout.add_obj_to_inven(fallout.dude_obj(), v0)
+    item_obj = fallout.create_object_sid(40, 0, 0, -1)
+    fallout.add_obj_to_inven(dude_obj, item_obj)
+    item_obj = fallout.create_object_sid(40, 0, 0, -1)
+    fallout.add_obj_to_inven(dude_obj, item_obj)
+    item_obj = fallout.create_object_sid(40, 0, 0, -1)
+    fallout.add_obj_to_inven(dude_obj, item_obj)
+    item_obj = fallout.create_object_sid(40, 0, 0, -1)
+    fallout.add_obj_to_inven(dude_obj, item_obj)
+    item_obj = fallout.create_object_sid(40, 0, 0, -1)
+    fallout.add_obj_to_inven(dude_obj, item_obj)
+    item_obj = fallout.create_object_sid(40, 0, 0, -1)
+    fallout.add_obj_to_inven(dude_obj, item_obj)
 end
 
 function Beth68()
@@ -923,115 +879,12 @@ function Put_Stuff()
     fallout.move_obj_inven_to_obj(fallout.self_obj(), fallout.external_var("Beth_Box_Ptr"))
 end
 
-function get_reaction()
-    if fallout.local_var(2) == 0 then
-        fallout.set_local_var(0, 50)
-        fallout.set_local_var(1, 2)
-        fallout.set_local_var(2, 1)
-        fallout.set_local_var(0, fallout.local_var(0) + (5 * fallout.get_critter_stat(fallout.dude_obj(), 3)) - 25)
-        fallout.set_local_var(0, fallout.local_var(0) + (10 * fallout.has_trait(0, fallout.dude_obj(), 10)))
-        if fallout.has_trait(0, fallout.dude_obj(), 39) then
-            if fallout.global_var(155) > 0 then
-                fallout.set_local_var(0, fallout.local_var(0) + fallout.global_var(155))
-            else
-                fallout.set_local_var(0, fallout.local_var(0) - fallout.global_var(155))
-            end
-        else
-            if fallout.local_var(3) == 1 then
-                fallout.set_local_var(0, fallout.local_var(0) - fallout.global_var(155))
-            else
-                fallout.set_local_var(0, fallout.local_var(0) + fallout.global_var(155))
-            end
-        end
-        if fallout.global_var(158) > 2 then
-            fallout.set_local_var(0, fallout.local_var(0) - 30)
-        end
-        if reputation.has_rep_champion() then
-            fallout.set_local_var(0, fallout.local_var(0) + 20)
-        end
-        if reputation.has_rep_berserker() then
-            fallout.set_local_var(0, fallout.local_var(0) - 20)
-        end
-        ReactToLevel()
-    end
-end
-
-function ReactToLevel()
-    if fallout.local_var(0) <= 25 then
-        fallout.set_local_var(1, 1)
-    else
-        if fallout.local_var(0) <= 75 then
-            fallout.set_local_var(1, 2)
-        else
-            fallout.set_local_var(1, 3)
-        end
-    end
-end
-
-function LevelToReact()
-    if fallout.local_var(1) == 1 then
-        fallout.set_local_var(0, fallout.random(1, 25))
-    else
-        if fallout.local_var(1) == 2 then
-            fallout.set_local_var(0, fallout.random(26, 75))
-        else
-            fallout.set_local_var(0, fallout.random(76, 100))
-        end
-    end
-end
-
-function UpReact()
-    fallout.set_local_var(0, fallout.local_var(0) + 10)
-    ReactToLevel()
-end
-
-function DownReact()
-    fallout.set_local_var(0, fallout.local_var(0) - 10)
-    ReactToLevel()
-end
-
-function BottomReact()
-    fallout.set_local_var(1, 1)
-    fallout.set_local_var(0, 1)
-end
-
-function TopReact()
-    fallout.set_local_var(0, 100)
-    fallout.set_local_var(1, 3)
-end
-
-function BigUpReact()
-    fallout.set_local_var(0, fallout.local_var(0) + 25)
-    ReactToLevel()
-end
-
-function BigDownReact()
-    fallout.set_local_var(0, fallout.local_var(0) - 25)
-    ReactToLevel()
-end
-
-function UpReactLevel()
-    fallout.set_local_var(1, fallout.local_var(1) + 1)
-    if fallout.local_var(1) > 3 then
-        fallout.set_local_var(1, 3)
-    end
-    LevelToReact()
-end
-
-function DownReactLevel()
-    fallout.set_local_var(1, fallout.local_var(1) - 1)
-    if fallout.local_var(1) < 1 then
-        fallout.set_local_var(1, 1)
-    end
-    LevelToReact()
-end
-
-function Goodbyes()
-    g2 = fallout.message_str(634, fallout.random(100, 105))
-end
-
 function Beth02c()
-    if (fallout.local_var(5) == 0) and (fallout.global_var(203) == 2) or ((fallout.local_var(6) == 0) and (fallout.global_var(203) == 2)) or ((fallout.local_var(7) == 0) and (fallout.global_var(112) == 2)) or ((fallout.local_var(8) == 0) and (fallout.global_var(18) == 1)) or ((fallout.local_var(9) == 0) and (fallout.global_var(17) == 1)) then
+    if (fallout.local_var(5) == 0 and fallout.global_var(203) == 2)
+        or (fallout.local_var(6) == 0 and fallout.global_var(203) == 2)
+        or (fallout.local_var(7) == 0 and fallout.global_var(112) == 2)
+        or (fallout.local_var(8) == 0 and fallout.global_var(18) == 1)
+        or (fallout.local_var(9) == 0 and fallout.global_var(17) == 1) then
         Beth03()
     else
         Beth07()
