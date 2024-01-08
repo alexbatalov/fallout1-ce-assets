@@ -4,7 +4,12 @@ local reputation = require("lib.reputation")
 local time = require("lib.time")
 
 local start
-local do_dialogue
+local talk_p_proc
+local critter_p_proc
+local damage_p_proc
+local destroy_p_proc
+local look_at_p_proc
+local timed_event_p_proc
 local setend
 local setcbt
 local settime
@@ -119,89 +124,50 @@ local set311
 local pickup_p_proc
 local travel
 
-local Hostile = 0
+local hostile = false
 local initialized = false
-local chip = 0
-local setgone = 0
-
-local exit_line = 0
 
 function start()
     if not initialized then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 30)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 78)
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 30)
+        fallout.critter_add_trait(self_obj, 1, 5, 78)
         initialized = true
-    else
-        if fallout.script_action() == 22 then
-            if fallout.fixed_param() == 1 then
-                fallout.set_local_var(9, 1)
-            end
-        else
-            if fallout.script_action() == 14 then
-                Hostile = 1
-            else
-                if fallout.script_action() == 11 then
-                    do_dialogue()
-                else
-                    if fallout.script_action() == 4 then
-                        pickup_p_proc()
-                    else
-                        if fallout.script_action() == 12 then
-                            if fallout.global_var(249) and fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
-                                if fallout.local_var(6) == 0 then
-                                    fallout.dialogue_system_enter()
-                                end
-                            end
-                            if Hostile then
-                                Hostile = 0
-                                fallout.set_global_var(249, 1)
-                                fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
-                            else
-                                if fallout.local_var(4) == 0 then
-                                    if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) and (fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 6) then
-                                        fallout.dialogue_system_enter()
-                                    end
-                                else
-                                    if (fallout.global_var(30) == 1) and (fallout.global_var(31) ~= 2) then
-                                        if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) and (fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 6) then
-                                            fallout.dialogue_system_enter()
-                                        end
-                                    end
-                                end
-                            end
-                        else
-                            if (fallout.script_action() == 21) or (fallout.script_action() == 3) then
-                                fallout.script_overrides()
-                                fallout.display_msg(fallout.message_str(15, 100))
-                            else
-                                if fallout.script_action() == 18 then
-                                    fallout.set_global_var(553, 1)
-                                    reputation.inc_evil_critter()
-                                end
-                            end
-                        end
-                    end
-                end
-            end
-        end
+    end
+
+    local script_action = fallout.script_action()
+    if script_action == 22 then
+        timed_event_p_proc()
+    elseif script_action == 14 then
+        damage_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 21 or script_action == 3 then
+        look_at_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
     end
 end
 
-function do_dialogue()
+function talk_p_proc()
     reaction.get_reaction()
     fallout.start_gdialog(15, fallout.self_obj(), 4, 15, 4)
     fallout.gsay_start()
     if fallout.global_var(249) ~= 0 then
-        Hostile = 1
+        hostile = true
     end
-    if Hostile then
+    if hostile then
         set49()
     else
         if fallout.local_var(4) ~= 0 then
-            if (fallout.global_var(30) == 1) and (fallout.global_var(31) ~= 2) then
+            if fallout.global_var(30) == 1 and fallout.global_var(31) ~= 2 then
                 set57()
             else
-                if fallout.global_var(18) and (fallout.local_var(7) == 0) then
+                if fallout.global_var(18) ~= 0 and fallout.local_var(7) == 0 then
                     set52()
                 else
                     if time.is_day() then
@@ -211,13 +177,13 @@ function do_dialogue()
                             if fallout.local_var(5) == 1 then
                                 set50()
                             end
-                            if fallout.global_var(60) & 1 then
+                            if fallout.global_var(60) & 1 ~= 0 then
                                 set42()
                             else
                                 if fallout.global_var(59) == 1 then
                                     set29()
                                 else
-                                    if (fallout.global_var(29) == 2) or (fallout.global_var(306) ~= 0) then
+                                    if fallout.global_var(29) == 2 or fallout.global_var(306) ~= 0 then
                                         set18()
                                     else
                                         if fallout.local_var(9) ~= 0 then
@@ -237,13 +203,13 @@ function do_dialogue()
         else
             fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(600), 1)
             fallout.set_local_var(4, 1)
-            if (fallout.global_var(30) == 1) and (fallout.global_var(31) ~= 2) then
+            if fallout.global_var(30) == 1 and fallout.global_var(31) ~= 2 then
                 set57()
             else
-                if fallout.global_var(18) and (fallout.local_var(7) == 0) then
+                if fallout.global_var(18) ~= 0 and fallout.local_var(7) == 0 then
                     set52()
                 else
-                    if (fallout.global_var(29) == 2) or (fallout.global_var(306) ~= 0) then
+                    if fallout.global_var(29) == 2 or fallout.global_var(306) ~= 0 then
                         set30()
                     else
                         if fallout.global_var(17) ~= 2 then
@@ -262,11 +228,60 @@ function do_dialogue()
     fallout.end_dialogue()
 end
 
+function critter_p_proc()
+    local self_obj = fallout.self_obj()
+    local dude_obj = fallout.dude_obj()
+    local self_can_see_dude = fallout.obj_can_see_obj(self_obj, dude_obj)
+    if fallout.global_var(249) ~= 0 and self_can_see_dude then
+        if fallout.local_var(6) == 0 then
+            fallout.dialogue_system_enter()
+        end
+    end
+    if hostile then
+        hostile = false
+        fallout.set_global_var(249, 1)
+        fallout.attack(dude_obj, 0, 1, 0, 0, 30000, 0, 0)
+    else
+        local distance_self_to_dude = fallout.tile_distance_objs(self_obj, dude_obj)
+        if fallout.local_var(4) == 0 then
+            if self_can_see_dude and distance_self_to_dude < 6 then
+                fallout.dialogue_system_enter()
+            end
+        else
+            if fallout.global_var(30) == 1 and fallout.global_var(31) ~= 2 then
+                if self_can_see_dude and distance_self_to_dude < 6 then
+                    fallout.dialogue_system_enter()
+                end
+            end
+        end
+    end
+end
+
+function damage_p_proc()
+    hostile = true
+end
+
+function destroy_p_proc()
+    fallout.set_global_var(553, 1)
+    reputation.inc_evil_critter()
+end
+
+function look_at_p_proc()
+    fallout.script_overrides()
+    fallout.display_msg(fallout.message_str(15, 100))
+end
+
+function timed_event_p_proc()
+    if fallout.fixed_param() == 1 then
+        fallout.set_local_var(9, 1)
+    end
+end
+
 function setend()
 end
 
 function setcbt()
-    Hostile = 1
+    hostile = true
 end
 
 function settime()
@@ -730,7 +745,6 @@ function set54()
 end
 
 function set55()
-    setgone = 1
     fallout.gsay_message(15, 268, 50)
     setend()
 end
@@ -803,8 +817,8 @@ function set64()
 end
 
 function set65()
-    chip = fallout.obj_carrying_pid_obj(fallout.dude_obj(), 55)
-    if chip ~= 0 then
+    local chip = fallout.obj_carrying_pid_obj(fallout.dude_obj(), 55)
+    if chip ~= nil then
         fallout.rm_obj_from_inven(fallout.dude_obj(), chip)
         fallout.set_global_var(30, 0)
     end
@@ -940,7 +954,7 @@ end
 
 function pickup_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
-        Hostile = 1
+        hostile = true
     end
 end
 
@@ -951,4 +965,10 @@ end
 local exports = {}
 exports.start = start
 exports.pickup_p_proc = pickup_p_proc
+exports.talk_p_proc = talk_p_proc
+exports.critter_p_proc = critter_p_proc
+exports.damage_p_proc = damage_p_proc
+exports.destroy_p_proc = destroy_p_proc
+exports.look_at_p_proc = look_at_p_proc
+exports.timed_event_p_proc = timed_event_p_proc
 return exports
