@@ -59,88 +59,74 @@ local Lorenzo39
 local Lorenzo40
 local Lorenzo41
 
-local hostile = 0
+local hostile = false
 local initialized = false
-local SetDayNight = 0
-local Destination = 0
+local SetDayNight = false
 local LastMove = 0
 local VaultCount = 0
 
-local exit_line = 0
-
 function start()
     if not initialized then
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 73)
+        fallout.critter_add_trait(self_obj, 1, 5, 85)
         initialized = true
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 73)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 85)
         LastMove = 23309
     end
-    if fallout.script_action() == 21 then
+
+    local script_action = fallout.script_action()
+    if script_action == 21 then
         look_at_p_proc()
-    else
-        if fallout.script_action() == 4 then
-            pickup_p_proc()
-        else
-            if fallout.script_action() == 11 then
-                talk_p_proc()
-            else
-                if fallout.script_action() == 12 then
-                    critter_p_proc()
-                else
-                    if fallout.script_action() == 18 then
-                        destroy_p_proc()
-                    else
-                        if fallout.script_action() == 22 then
-                            timed_event_p_proc()
-                        end
-                    end
-                end
-            end
-        end
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 22 then
+        timed_event_p_proc()
     end
 end
 
 function combat()
-    hostile = 1
+    hostile = true
 end
 
 function critter_p_proc()
-    local v0 = 0
+    local self_obj = fallout.self_obj()
     if hostile then
-        hostile = 0
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
-    if SetDayNight == 0 then
-        fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(fallout.random(5, 20)), 1)
-        SetDayNight = 1
+    if not SetDayNight then
+        fallout.add_timer_event(self_obj, fallout.game_ticks(fallout.random(5, 20)), 1)
+        SetDayNight = true
     end
     if fallout.map_var(55) == 2 then
-        hostile = 1
-        fallout.float_msg(fallout.self_obj(), fallout.message_str(597, 247), 2)
-    else
-        if fallout.map_var(55) == 1 then
-            fallout.set_map_var(55, 0)
-            VaultCount = VaultCount + 1
-            fallout.float_msg(fallout.self_obj(), fallout.message_str(597, 246), 2)
-            if VaultCount >= 2 then
-                hostile = 1
-                fallout.float_msg(fallout.self_obj(), fallout.message_str(597, 247), 2)
-            end
+        hostile = true
+        fallout.float_msg(self_obj, fallout.message_str(597, 247), 2)
+    elseif fallout.map_var(55) == 1 then
+        fallout.set_map_var(55, 0)
+        VaultCount = VaultCount + 1
+        fallout.float_msg(self_obj, fallout.message_str(597, 246), 2)
+        if VaultCount >= 2 then
+            hostile = true
+            fallout.float_msg(self_obj, fallout.message_str(597, 247), 2)
         end
     end
-    v0 = fallout.tile_num(fallout.self_obj())
-    if (v0 == 22312) or (v0 == 23106) or (v0 == 24106) then
-        if fallout.anim_busy(fallout.self_obj()) == 0 then
-            if fallout.has_trait(1, fallout.self_obj(), 10) ~= 0 then
-                fallout.anim(fallout.self_obj(), 1000, 0)
+    local self_tile_num = fallout.tile_num(self_obj)
+    if self_tile_num == 22312 or self_tile_num == 23106 or self_tile_num == 24106 then
+        if fallout.anim_busy(self_obj) == 0 then
+            if fallout.has_trait(1, self_obj, 10) ~= 0 then
+                fallout.anim(self_obj, 1000, 0)
             end
         end
-    else
-        if v0 == 21112 then
-            if fallout.anim_busy(fallout.self_obj()) == 0 then
-                if fallout.has_trait(1, fallout.self_obj(), 10) ~= 5 then
-                    fallout.anim(fallout.self_obj(), 1000, 5)
-                end
+    elseif self_tile_num == 21112 then
+        if fallout.anim_busy(self_obj) == 0 then
+            if fallout.has_trait(1, self_obj, 10) ~= 5 then
+                fallout.anim(self_obj, 1000, 5)
             end
         end
     end
@@ -148,40 +134,33 @@ end
 
 function pickup_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
-        hostile = 1
+        hostile = true
     end
 end
 
 function talk_p_proc()
-    local v0 = 0
-    if fallout.item_caps_total(fallout.dude_obj()) < 1000 then
-        v0 = fallout.item_caps_adjust(fallout.self_obj(), 3000)
+    local self_obj = fallout.self_obj()
+    local dude_obj = fallout.dude_obj()
+    if fallout.item_caps_total(dude_obj) < 1000 then
+        fallout.item_caps_adjust(self_obj, 3000)
+    elseif fallout.item_caps_total(dude_obj) < 2000 then
+        fallout.item_caps_adjust(self_obj, 2000)
     else
-        if fallout.item_caps_total(fallout.dude_obj()) < 2000 then
-            v0 = fallout.item_caps_adjust(fallout.self_obj(), 2000)
-        else
-            v0 = fallout.item_caps_adjust(fallout.self_obj(), 1000)
-        end
+        fallout.item_caps_adjust(self_obj, 1000)
     end
     reaction.get_reaction()
     if fallout.map_var(22) == 1 then
         Lorenzo04()
+    elseif fallout.map_var(22) == 0 and (fallout.map_var(11) == 1 or fallout.map_var(44) == 1) then
+        Lorenzo00()
+    elseif fallout.local_var(6) > 0 and time.game_time_in_days() - fallout.local_var(5) > 10 then
+        Lorenzo01()
+    elseif fallout.local_var(6) > 0 then
+        Lorenzo02()
     else
-        if (fallout.map_var(22) == 0) and ((fallout.map_var(11) == 1) or (fallout.map_var(44) == 1)) then
-            Lorenzo00()
-        else
-            if (fallout.local_var(6) > 0) and ((time.game_time_in_days() - fallout.local_var(5)) > 10) then
-                Lorenzo01()
-            else
-                if fallout.local_var(6) > 0 then
-                    Lorenzo02()
-                else
-                    Lorenzo05()
-                end
-            end
-        end
+        Lorenzo05()
     end
-    v0 = fallout.item_caps_adjust(fallout.self_obj(), -fallout.item_caps_total(fallout.self_obj()))
+    fallout.item_caps_adjust(self_obj, -fallout.item_caps_total(self_obj))
 end
 
 function destroy_p_proc()
@@ -197,42 +176,32 @@ function timed_event_p_proc()
     SendInsideHouse()
 end
 
+local HOUSE_TILES <const> = {
+    23309,
+    21112,
+    22312,
+    23106,
+    24104,
+}
+
 function SendInsideHouse()
-    local v0 = 0
-    Destination = 0
-    v0 = fallout.random(10, 30)
-    while Destination == 0 do
-        Destination = fallout.random(1, 5)
-        if Destination == 1 then
-            Destination = 23309
-        else
-            if Destination == 2 then
-                Destination = 21112
-            else
-                if Destination == 3 then
-                    Destination = 22312
-                else
-                    if Destination == 4 then
-                        Destination = 23106
-                    else
-                        if Destination == 5 then
-                            Destination = 24104
-                        end
-                    end
-                end
-            end
-        end
-        if Destination == LastMove then
-            Destination = 0
+    local destination = 0
+    local delay = fallout.random(10, 30)
+    while destination == 0 do
+        destination = HOUSE_TILES[fallout.random(1, #HOUSE_TILES)]
+        if destination == LastMove then
+            destination = 0
         end
     end
-    LastMove = Destination
-    fallout.reg_anim_func(2, fallout.self_obj())
+    LastMove = destination
+
+    local self_obj = fallout.self_obj()
+    fallout.reg_anim_func(2, self_obj)
     fallout.reg_anim_func(1, 1)
-    fallout.reg_anim_obj_move_to_tile(fallout.self_obj(), Destination, -1)
+    fallout.reg_anim_obj_move_to_tile(self_obj, destination, -1)
     fallout.reg_anim_func(3, 0)
-    fallout.rm_timer_event(fallout.self_obj())
-    fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(v0), 1)
+    fallout.rm_timer_event(self_obj)
+    fallout.add_timer_event(self_obj, fallout.game_ticks(delay), 1)
 end
 
 function Lorenzo00()
@@ -246,10 +215,9 @@ function Lorenzo00()
 end
 
 function Lorenzo01()
-    local v0 = 0
     fallout.start_gdialog(597, fallout.self_obj(), 4, -1, -1)
     fallout.gsay_start()
-    v0 = (fallout.local_var(6) // 10 * (time.game_time_in_days() - fallout.local_var(5))) + fallout.local_var(6)
+    local v0 = (fallout.local_var(6) // 10 * (time.game_time_in_days() - fallout.local_var(5))) + fallout.local_var(6)
     fallout.gsay_reply(597, 103)
     fallout.giq_option(4, 597, 104, Lorenzo14, 51)
     fallout.giq_option(4, 597, 105, Lorenzo15, 51)
@@ -262,10 +230,9 @@ function Lorenzo01()
 end
 
 function Lorenzo02()
-    local v0 = 0
     fallout.start_gdialog(597, fallout.self_obj(), 4, -1, -1)
     fallout.gsay_start()
-    v0 = (fallout.local_var(6) // 10 * (time.game_time_in_days() - fallout.local_var(5))) + fallout.local_var(6)
+    local v0 = (fallout.local_var(6) // 10 * (time.game_time_in_days() - fallout.local_var(5))) + fallout.local_var(6)
     fallout.gsay_reply(597, 109)
     fallout.giq_option(4, 597, 110, Lorenzo02a, 50)
     fallout.giq_option(4, 597, 111, Lorenzo08, 50)
@@ -334,11 +301,9 @@ function Lorenzo08()
 end
 
 function Lorenzo09()
-    local v0 = 0
-    local v1 = 0
-    v0 = (fallout.local_var(6) // 10 * (time.game_time_in_days() - fallout.local_var(5))) + fallout.local_var(6)
+    local v0 = (fallout.local_var(6) // 10 * (time.game_time_in_days() - fallout.local_var(5))) + fallout.local_var(6)
     if fallout.item_caps_total(fallout.dude_obj()) >= v0 then
-        v1 = fallout.item_caps_adjust(fallout.dude_obj(), -1 * v0)
+        fallout.item_caps_adjust(fallout.dude_obj(), -1 * v0)
         fallout.set_local_var(6, 0)
         fallout.set_local_var(5, 0)
         fallout.gsay_reply(597, 128)
@@ -382,25 +347,24 @@ function Lorenzo14()
 end
 
 function Lorenzo15()
-    local v0 = 0
-    v0 = (fallout.local_var(6) // 10 * (time.game_time_in_days() - fallout.local_var(5))) + fallout.local_var(6)
+    local v0 = (fallout.local_var(6) // 10 * (time.game_time_in_days() - fallout.local_var(5))) + fallout.local_var(6)
     fallout.gsay_reply(597, 248)
     if fallout.item_caps_total(fallout.dude_obj()) < v0 then
         fallout.giq_option(4, 597, 249, Lorenzo15a, 50)
     else
         fallout.giq_option(4, 597, 250, Lorenzo15b, 50)
-        fallout.giq_option(4, 597, fallout.message_str(597, 251) .. (v0 * 3 // 4) .. fallout.message_str(597, 252), Lorenzo15c, 50)
-        fallout.giq_option(4, 597, fallout.message_str(597, 251) .. (v0 // 2) .. fallout.message_str(597, 252), Lorenzo15d, 50)
-        fallout.giq_option(4, 597, fallout.message_str(597, 251) .. (v0 // 4) .. fallout.message_str(597, 252), Lorenzo15e, 50)
+        fallout.giq_option(4, 597, fallout.message_str(597, 251) .. (v0 * 3 // 4) .. fallout.message_str(597, 252),
+            Lorenzo15c, 50)
+        fallout.giq_option(4, 597, fallout.message_str(597, 251) .. (v0 // 2) .. fallout.message_str(597, 252),
+            Lorenzo15d, 50)
+        fallout.giq_option(4, 597, fallout.message_str(597, 251) .. (v0 // 4) .. fallout.message_str(597, 252),
+            Lorenzo15e, 50)
     end
     fallout.giq_option(4, 597, 253, Lorenzo15f, 51)
 end
 
 function Lorenzo15a()
-    local v0 = 0
-    local v1 = 0
-    v0 = (fallout.local_var(6) // 10 * (time.game_time_in_days() - fallout.local_var(5))) + fallout.local_var(6)
-    v1 = fallout.item_caps_adjust(fallout.dude_obj(), -fallout.item_caps_total(fallout.dude_obj()))
+    fallout.item_caps_adjust(fallout.dude_obj(), -fallout.item_caps_total(fallout.dude_obj()))
     fallout.set_map_var(22, 1)
     fallout.set_local_var(6, 0)
     fallout.set_local_var(5, 0)
@@ -409,10 +373,8 @@ function Lorenzo15a()
 end
 
 function Lorenzo15b()
-    local v0 = 0
-    local v1 = 0
-    v0 = (fallout.local_var(6) // 10 * (time.game_time_in_days() - fallout.local_var(5))) + fallout.local_var(6)
-    v1 = fallout.item_caps_adjust(fallout.dude_obj(), -1 * v0)
+    local v0 = (fallout.local_var(6) // 10 * (time.game_time_in_days() - fallout.local_var(5))) + fallout.local_var(6)
+    fallout.item_caps_adjust(fallout.dude_obj(), -1 * v0)
     fallout.set_map_var(22, 1)
     fallout.set_local_var(6, 0)
     fallout.set_local_var(5, 0)
@@ -420,11 +382,9 @@ function Lorenzo15b()
 end
 
 function Lorenzo15c()
-    local v0 = 0
-    local v1 = 0
-    v0 = (fallout.local_var(6) // 10 * (time.game_time_in_days() - fallout.local_var(5))) + fallout.local_var(6)
+    local v0 = (fallout.local_var(6) // 10 * (time.game_time_in_days() - fallout.local_var(5))) + fallout.local_var(6)
     if fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), 14, -20)) or fallout.is_success(fallout.do_check(fallout.dude_obj(), 3, -1)) then
-        v1 = fallout.item_caps_adjust(fallout.dude_obj(), -1 * (v0 * 3 // 4))
+        fallout.item_caps_adjust(fallout.dude_obj(), -1 * (v0 * 3 // 4))
         fallout.set_map_var(22, 1)
         fallout.set_local_var(6, 0)
         fallout.set_local_var(5, 0)
@@ -442,11 +402,9 @@ function Lorenzo15c()
 end
 
 function Lorenzo15d()
-    local v0 = 0
-    local v1 = 0
-    v0 = (fallout.local_var(6) // 10 * (time.game_time_in_days() - fallout.local_var(5))) + fallout.local_var(6)
+    local v0 = (fallout.local_var(6) // 10 * (time.game_time_in_days() - fallout.local_var(5))) + fallout.local_var(6)
     if fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), 14, -30)) or fallout.is_success(fallout.do_check(fallout.dude_obj(), 3, -2)) then
-        v1 = fallout.item_caps_adjust(fallout.dude_obj(), -1 * (v0 // 2))
+        fallout.item_caps_adjust(fallout.dude_obj(), -1 * (v0 // 2))
         fallout.set_map_var(22, 1)
         fallout.set_local_var(6, 0)
         fallout.set_local_var(5, 0)
@@ -464,11 +422,9 @@ function Lorenzo15d()
 end
 
 function Lorenzo15e()
-    local v0 = 0
-    local v1 = 0
-    v0 = (fallout.local_var(6) // 10 * (time.game_time_in_days() - fallout.local_var(5))) + fallout.local_var(6)
+    local v0 = (fallout.local_var(6) // 10 * (time.game_time_in_days() - fallout.local_var(5))) + fallout.local_var(6)
     if fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), 14, -40)) or fallout.is_success(fallout.do_check(fallout.dude_obj(), 3, -3)) then
-        v1 = fallout.item_caps_adjust(fallout.dude_obj(), -1 * (v0 // 4))
+        fallout.item_caps_adjust(fallout.dude_obj(), -1 * (v0 // 4))
         fallout.set_map_var(22, 1)
         fallout.set_local_var(6, 0)
         fallout.set_local_var(5, 0)
@@ -496,11 +452,9 @@ function Lorenzo15f()
 end
 
 function Lorenzo16()
-    local v0 = 0
-    local v1 = 0
-    v0 = (fallout.local_var(6) // 10 * (time.game_time_in_days() - fallout.local_var(5))) + fallout.local_var(6)
+    local v0 = (fallout.local_var(6) // 10 * (time.game_time_in_days() - fallout.local_var(5))) + fallout.local_var(6)
     if fallout.item_caps_total(fallout.dude_obj()) >= v0 then
-        v1 = fallout.item_caps_adjust(fallout.dude_obj(), -1 * v0)
+        fallout.item_caps_adjust(fallout.dude_obj(), -1 * v0)
         fallout.set_local_var(6, 0)
         fallout.set_local_var(5, 0)
         fallout.gsay_reply(597, 138)
@@ -524,18 +478,27 @@ end
 function Lorenzo19()
     fallout.gsay_reply(597, 143)
     if fallout.local_var(7) >= 800 then
-        fallout.giq_option(4, 597, fallout.message_str(597, 144) .. fallout.message_str(597, 145) .. fallout.message_str(597, 150), Lorenzo29, 50)
+        fallout.giq_option(4, 597,
+            fallout.message_str(597, 144) .. fallout.message_str(597, 145) .. fallout.message_str(597, 150), Lorenzo29,
+            50)
     end
     if fallout.local_var(7) >= 600 then
-        fallout.giq_option(4, 597, fallout.message_str(597, 144) .. fallout.message_str(597, 146) .. fallout.message_str(597, 150), Lorenzo30, 50)
+        fallout.giq_option(4, 597,
+            fallout.message_str(597, 144) .. fallout.message_str(597, 146) .. fallout.message_str(597, 150), Lorenzo30,
+            50)
     end
     if fallout.local_var(7) >= 400 then
-        fallout.giq_option(4, 597, fallout.message_str(597, 144) .. fallout.message_str(597, 147) .. fallout.message_str(597, 150), Lorenzo31, 50)
+        fallout.giq_option(4, 597,
+            fallout.message_str(597, 144) .. fallout.message_str(597, 147) .. fallout.message_str(597, 150), Lorenzo31,
+            50)
     end
     if fallout.local_var(7) >= 200 then
-        fallout.giq_option(4, 597, fallout.message_str(597, 144) .. fallout.message_str(597, 148) .. fallout.message_str(597, 150), Lorenzo32, 50)
+        fallout.giq_option(4, 597,
+            fallout.message_str(597, 144) .. fallout.message_str(597, 148) .. fallout.message_str(597, 150), Lorenzo32,
+            50)
     end
-    fallout.giq_option(4, 597, fallout.message_str(597, 144) .. fallout.message_str(597, 149) .. fallout.message_str(597, 150), Lorenzo33, 50)
+    fallout.giq_option(4, 597,
+        fallout.message_str(597, 144) .. fallout.message_str(597, 149) .. fallout.message_str(597, 150), Lorenzo33, 50)
     fallout.giq_option(4, 597, 151, Lorenzo34, 50)
 end
 
@@ -642,10 +605,9 @@ function Lorenzo28()
 end
 
 function Lorenzo29()
-    local v0 = 0
     fallout.set_local_var(6, 1000)
     fallout.set_local_var(5, time.game_time_in_days())
-    v0 = fallout.item_caps_adjust(fallout.dude_obj(), 1000)
+    fallout.item_caps_adjust(fallout.dude_obj(), 1000)
     if fallout.local_var(7) <= 1000 then
         fallout.set_local_var(7, 1000)
     end
@@ -653,10 +615,9 @@ function Lorenzo29()
 end
 
 function Lorenzo30()
-    local v0 = 0
     fallout.set_local_var(6, 800)
     fallout.set_local_var(5, time.game_time_in_days())
-    v0 = fallout.item_caps_adjust(fallout.dude_obj(), 800)
+    fallout.item_caps_adjust(fallout.dude_obj(), 800)
     if fallout.local_var(7) <= 800 then
         fallout.set_local_var(7, 800)
     end
@@ -664,10 +625,9 @@ function Lorenzo30()
 end
 
 function Lorenzo31()
-    local v0 = 0
     fallout.set_local_var(6, 600)
     fallout.set_local_var(5, time.game_time_in_days())
-    v0 = fallout.item_caps_adjust(fallout.dude_obj(), 600)
+    fallout.item_caps_adjust(fallout.dude_obj(), 600)
     if fallout.local_var(7) <= 600 then
         fallout.set_local_var(7, 600)
     end
@@ -675,10 +635,9 @@ function Lorenzo31()
 end
 
 function Lorenzo32()
-    local v0 = 0
     fallout.set_local_var(6, 400)
     fallout.set_local_var(5, time.game_time_in_days())
-    v0 = fallout.item_caps_adjust(fallout.dude_obj(), 400)
+    fallout.item_caps_adjust(fallout.dude_obj(), 400)
     if fallout.local_var(7) <= 400 then
         fallout.set_local_var(7, 400)
     end
@@ -686,10 +645,9 @@ function Lorenzo32()
 end
 
 function Lorenzo33()
-    local v0 = 0
     fallout.set_local_var(6, 200)
     fallout.set_local_var(5, time.game_time_in_days())
-    v0 = fallout.item_caps_adjust(fallout.dude_obj(), 200)
+    fallout.item_caps_adjust(fallout.dude_obj(), 200)
     if fallout.local_var(7) <= 200 then
         fallout.set_local_var(7, 200)
     end
