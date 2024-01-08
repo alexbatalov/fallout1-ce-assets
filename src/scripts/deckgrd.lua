@@ -11,60 +11,51 @@ local destroy_p_proc
 local look_at_p_proc
 local combat_p_proc
 
-local hostile = 0
+local hostile = false
 local initialized = false
-local surrendered = 0
-
-local exit_line = 0
+local surrendered = false
 
 function start()
     if not initialized then
-        initialized = true
+        local self_obj = fallout.self_obj()
         if fallout.global_var(202) == 1 then
-            fallout.set_obj_visibility(fallout.self_obj(), 1)
+            fallout.set_obj_visibility(self_obj, true)
         end
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 38)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 16)
+        fallout.critter_add_trait(self_obj, 1, 6, 38)
+        fallout.critter_add_trait(self_obj, 1, 5, 16)
+        initialized = true
     end
-    if fallout.script_action() == 21 then
+
+    local script_action = fallout.script_action()
+    if script_action == 21 then
         look_at_p_proc()
-    else
-        if fallout.script_action() == 4 then
-            pickup_p_proc()
-        else
-            if fallout.script_action() == 11 then
-                talk_p_proc()
-            else
-                if fallout.script_action() == 12 then
-                    critter_p_proc()
-                else
-                    if fallout.script_action() == 18 then
-                        destroy_p_proc()
-                    else
-                        if fallout.script_action() == 13 then
-                            combat_p_proc()
-                        end
-                    end
-                end
-            end
-        end
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 13 then
+        combat_p_proc()
     end
 end
 
 function combat()
-    hostile = 1
+    hostile = true
 end
 
 function critter_p_proc()
     if hostile then
-        hostile = 0
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
 end
 
 function pickup_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
-        hostile = 1
+        hostile = true
     end
 end
 
@@ -87,16 +78,14 @@ function look_at_p_proc()
 end
 
 function combat_p_proc()
-    if (fallout.global_var(202) == 1) and (surrendered == 0) then
+    if fallout.global_var(202) == 1 and not surrendered then
         fallout.script_overrides()
         fallout.set_map_var(54, 1)
-        surrendered = 1
+        surrendered = true
         fallout.inven_unwield()
         fallout.float_msg(fallout.self_obj(), fallout.message_str(565, 107), 2)
-    else
-        if (fallout.global_var(202) == 1) and (surrendered == 1) then
-            fallout.script_overrides()
-        end
+    elseif fallout.global_var(202) == 1 and surrendered then
+        fallout.script_overrides()
     end
 end
 
