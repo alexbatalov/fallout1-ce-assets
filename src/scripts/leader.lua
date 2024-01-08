@@ -3,7 +3,11 @@ local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
 
 local start
-local do_dialogue
+local pickup_p_proc
+local talk_p_proc
+local critter_p_proc
+local destroy_p_proc
+local look_at_p_proc
 local leadercbt
 local leaderend
 local leader00
@@ -49,59 +53,39 @@ local leader29
 local leader30
 local leader31
 
-local Hostile = 0
+local hostile = false
 local initialized = false
-local has_parts = 0
-local repair_skill = 0
-local stuff = 0
-
-local exit_line = 0
+local has_parts = false
 
 function start()
     if not initialized then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 31)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 41)
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 31)
+        fallout.critter_add_trait(self_obj, 1, 5, 41)
         initialized = true
     end
-    if fallout.script_action() == 11 then
-        do_dialogue()
-    else
-        if fallout.script_action() == 21 then
-            fallout.script_overrides()
-            fallout.display_msg(fallout.message_str(81, 100))
-        else
-            if fallout.script_action() == 4 then
-                Hostile = 1
-            else
-                if fallout.script_action() == 12 then
-                    if Hostile then
-                        Hostile = 0
-                        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
-                    else
-                        if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
-                            if fallout.local_var(7) == 0 then
-                                fallout.set_local_var(7, 1)
-                                if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) then
-                                    fallout.float_msg(fallout.self_obj(), fallout.message_str(81, 193), 8)
-                                else
-                                    fallout.float_msg(fallout.self_obj(), fallout.message_str(81, 194), 8)
-                                end
-                            end
-                        end
-                    end
-                else
-                    if fallout.script_action() == 18 then
-                        reputation.inc_good_critter()
-                    end
-                end
-            end
-        end
+
+    local script_action = fallout.script_action()
+    if script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
     end
 end
 
-function do_dialogue()
+function pickup_p_proc()
+    hostile = true
+end
+
+function talk_p_proc()
     reaction.get_reaction()
-    has_parts = fallout.obj_carrying_pid_obj(fallout.dude_obj(), 98)
+    has_parts = fallout.obj_carrying_pid_obj(fallout.dude_obj(), 98) ~= nil
     fallout.start_gdialog(81, fallout.self_obj(), 4, -1, -1)
     fallout.gsay_start()
     if fallout.local_var(4) ~= 0 then
@@ -138,9 +122,36 @@ function do_dialogue()
     fallout.end_dialogue()
 end
 
+function critter_p_proc()
+    if hostile then
+        hostile = false
+        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+    else
+        if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
+            if fallout.local_var(7) == 0 then
+                fallout.set_local_var(7, 1)
+                if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) then
+                    fallout.float_msg(fallout.self_obj(), fallout.message_str(81, 193), 8)
+                else
+                    fallout.float_msg(fallout.self_obj(), fallout.message_str(81, 194), 8)
+                end
+            end
+        end
+    end
+end
+
+function destroy_p_proc()
+    reputation.inc_good_critter()
+end
+
+function look_at_p_proc()
+    fallout.script_overrides()
+    fallout.display_msg(fallout.message_str(81, 100))
+end
+
 function leadercbt()
     reaction.BigDownReact()
-    Hostile = 1
+    hostile = true
 end
 
 function leaderend()
@@ -318,8 +329,7 @@ end
 
 function leader19()
     fallout.set_local_var(6, 1)
-    repair_skill = fallout.has_skill(fallout.dude_obj(), 13)
-    if repair_skill < 60 then
+    if fallout.has_skill(fallout.dude_obj(), 13) < 60 then
         leader19a()
     else
         leader19b()
@@ -327,12 +337,10 @@ function leader19()
 end
 
 function leader19a()
-    stuff = fallout.create_object_sid(76, 0, 0, -1)
-    fallout.add_obj_to_inven(fallout.dude_obj(), stuff)
-    stuff = fallout.create_object_sid(76, 0, 0, -1)
-    fallout.add_obj_to_inven(fallout.dude_obj(), stuff)
-    stuff = fallout.create_object_sid(76, 0, 0, -1)
-    fallout.add_obj_to_inven(fallout.dude_obj(), stuff)
+    local dude_obj = fallout.dude_obj()
+    fallout.add_obj_to_inven(dude_obj, fallout.create_object_sid(76, 0, 0, -1))
+    fallout.add_obj_to_inven(dude_obj, fallout.create_object_sid(76, 0, 0, -1))
+    fallout.add_obj_to_inven(dude_obj, fallout.create_object_sid(76, 0, 0, -1))
     fallout.gsay_message(81, 160, 50)
 end
 
@@ -412,4 +420,9 @@ end
 
 local exports = {}
 exports.start = start
+exports.pickup_p_proc = pickup_p_proc
+exports.talk_p_proc = talk_p_proc
+exports.critter_p_proc = critter_p_proc
+exports.destroy_p_proc = destroy_p_proc
+exports.look_at_p_proc = look_at_p_proc
 return exports
