@@ -135,64 +135,57 @@ local KaneEndRefuses
 local KaneTravel
 local GoToDecker
 
-local hostile = 0
+local hostile = false
 local initialized = false
-local travel = 0
-
-local exit_line = 0
+local travel = false
 
 function start()
     if not initialized then
-        initialized = true
-        fallout.set_external_var("Kane_Ptr", fallout.self_obj())
+        local self_obj = fallout.self_obj()
+        fallout.set_external_var("Kane_Ptr", self_obj)
         if fallout.map_var(49) == 1 then
-            fallout.set_obj_visibility(fallout.self_obj(), 1)
+            fallout.set_obj_visibility(self_obj, true)
         end
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 38)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 88)
+        fallout.critter_add_trait(self_obj, 1, 6, 38)
+        fallout.critter_add_trait(self_obj, 1, 5, 88)
+        initialized = true
     end
-    if fallout.script_action() == 21 then
+
+    local script_action = fallout.script_action()
+    if script_action == 21 then
         look_at_p_proc()
-    else
-        if fallout.script_action() == 4 then
-            pickup_p_proc()
-        else
-            if fallout.script_action() == 11 then
-                talk_p_proc()
-            else
-                if fallout.script_action() == 12 then
-                    critter_p_proc()
-                else
-                    if fallout.script_action() == 18 then
-                        destroy_p_proc()
-                    end
-                end
-            end
-        end
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
     end
 end
 
 function combat()
-    hostile = 1
+    hostile = true
 end
 
 function critter_p_proc()
     if hostile then
-        hostile = 0
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
     if fallout.map_var(51) == 1 then
         fallout.dialogue_system_enter()
     end
-    if travel == 1 then
-        travel = 0
+    if travel then
+        travel = false
         GoToDecker()
     end
 end
 
 function pickup_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
-        hostile = 1
+        hostile = true
     end
 end
 
@@ -206,256 +199,206 @@ function talk_p_proc()
             if fallout.local_var(6) == 0 then
                 fallout.set_local_var(6, 1)
                 Kane61()
+            elseif fallout.local_var(6) == 1 then
+                fallout.set_local_var(6, 2)
+                Kane62()
             else
-                if fallout.local_var(6) == 1 then
-                    fallout.set_local_var(6, 2)
-                    Kane62()
-                else
-                    Kane63()
-                end
+                Kane63()
             end
         else
             if fallout.local_var(4) == 0 then
                 fallout.set_local_var(4, 1)
-                if ((fallout.global_var(37) == 0) and (fallout.global_var(38) == 0)) == 1 then
+                if fallout.global_var(37) == 0 and fallout.global_var(38) == 0 then
                     if reputation.has_rep_berserker() then
                         fallout.start_gdialog(594, fallout.self_obj(), 4, -1, -1)
                         fallout.gsay_start()
                         Kane11()
                         fallout.gsay_end()
                         fallout.end_dialogue()
-                    else
-                        if reputation.has_rep_champion() then
-                            fallout.start_gdialog(594, fallout.self_obj(), 4, -1, -1)
-                            fallout.gsay_start()
-                            Kane15()
-                            fallout.gsay_end()
-                            fallout.end_dialogue()
-                        else
-                            fallout.start_gdialog(594, fallout.self_obj(), 4, -1, -1)
-                            fallout.gsay_start()
-                            Kane60()
-                            fallout.gsay_end()
-                            fallout.end_dialogue()
-                        end
-                    end
-                else
-                    if ((fallout.global_var(37) == 1) == 1) and ((fallout.global_var(38) == 1) == 0) then
+                    elseif reputation.has_rep_champion() then
                         fallout.start_gdialog(594, fallout.self_obj(), 4, -1, -1)
                         fallout.gsay_start()
-                        Kane12()
+                        Kane15()
                         fallout.gsay_end()
                         fallout.end_dialogue()
                     else
-                        if ((fallout.global_var(38) == 1) == 1) and ((fallout.global_var(37) == 1) == 0) then
-                            fallout.start_gdialog(594, fallout.self_obj(), 4, -1, -1)
-                            fallout.gsay_start()
-                            Kane13()
-                            fallout.gsay_end()
-                            fallout.end_dialogue()
-                        else
-                            if ((fallout.global_var(37) == 1) and (fallout.global_var(38) == 1)) == 1 then
-                                fallout.start_gdialog(594, fallout.self_obj(), 4, -1, -1)
-                                fallout.gsay_start()
-                                Kane14()
-                                fallout.gsay_end()
-                                fallout.end_dialogue()
-                            else
-                                fallout.start_gdialog(594, fallout.self_obj(), 4, -1, -1)
-                                fallout.gsay_start()
-                                Kane60()
-                                fallout.gsay_end()
-                                fallout.end_dialogue()
-                            end
-                        end
+                        fallout.start_gdialog(594, fallout.self_obj(), 4, -1, -1)
+                        fallout.gsay_start()
+                        Kane60()
+                        fallout.gsay_end()
+                        fallout.end_dialogue()
                     end
+                elseif fallout.global_var(37) == 1 and fallout.global_var(38) ~= 1 then
+                    fallout.start_gdialog(594, fallout.self_obj(), 4, -1, -1)
+                    fallout.gsay_start()
+                    Kane12()
+                    fallout.gsay_end()
+                    fallout.end_dialogue()
+                elseif fallout.global_var(38) == 1 and fallout.global_var(37) ~= 1 then
+                    fallout.start_gdialog(594, fallout.self_obj(), 4, -1, -1)
+                    fallout.gsay_start()
+                    Kane13()
+                    fallout.gsay_end()
+                    fallout.end_dialogue()
+                elseif fallout.global_var(37) == 1 and fallout.global_var(38) == 1 then
+                    fallout.start_gdialog(594, fallout.self_obj(), 4, -1, -1)
+                    fallout.gsay_start()
+                    Kane14()
+                    fallout.gsay_end()
+                    fallout.end_dialogue()
+                else
+                    fallout.start_gdialog(594, fallout.self_obj(), 4, -1, -1)
+                    fallout.gsay_start()
+                    Kane60()
+                    fallout.gsay_end()
+                    fallout.end_dialogue()
                 end
+            elseif (fallout.map_var(44) == 1) or (fallout.map_var(11) == 1) then
+                Kane10()
+            elseif fallout.map_var(45) == 2 then
+                fallout.start_gdialog(594, fallout.self_obj(), 4, -1, -1)
+                fallout.gsay_start()
+                Kane93()
+                fallout.gsay_end()
+                fallout.end_dialogue()
+            elseif fallout.map_var(45) == 5 then
+                fallout.start_gdialog(594, fallout.self_obj(), 4, -1, -1)
+                fallout.gsay_start()
+                Kane100()
+                fallout.gsay_end()
+                fallout.end_dialogue()
+            elseif fallout.map_var(45) == 4 then
+                fallout.start_gdialog(594, fallout.self_obj(), 4, -1, -1)
+                fallout.gsay_start()
+                Kane106()
+                fallout.gsay_end()
+                fallout.end_dialogue()
             else
-                if (fallout.map_var(44) == 1) or (fallout.map_var(11) == 1) then
-                    Kane10()
-                else
-                    if fallout.map_var(45) == 2 then
+                if fallout.global_var(111) ~= 2 and fallout.local_var(7) == 0 then
+                    if fallout.map_var(46) == 0 then
                         fallout.start_gdialog(594, fallout.self_obj(), 4, -1, -1)
                         fallout.gsay_start()
-                        Kane93()
+                        Kane60()
                         fallout.gsay_end()
                         fallout.end_dialogue()
-                    else
-                        if fallout.map_var(45) == 5 then
+                    elseif fallout.map_var(46) == 1 then
+                        fallout.start_gdialog(594, fallout.self_obj(), 4, -1, -1)
+                        fallout.gsay_start()
+                        Kane10()
+                        fallout.gsay_end()
+                        fallout.end_dialogue()
+                    elseif fallout.map_var(46) == 2 then
+                        if fallout.global_var(111) == 5 then
                             fallout.start_gdialog(594, fallout.self_obj(), 4, -1, -1)
                             fallout.gsay_start()
-                            Kane100()
+                            Kane153()
                             fallout.gsay_end()
                             fallout.end_dialogue()
                         else
-                            if fallout.map_var(45) == 4 then
-                                fallout.start_gdialog(594, fallout.self_obj(), 4, -1, -1)
-                                fallout.gsay_start()
-                                Kane106()
-                                fallout.gsay_end()
-                                fallout.end_dialogue()
-                            else
-                                if (fallout.global_var(111) ~= 2) and (fallout.local_var(7) == 0) then
-                                    if fallout.map_var(46) == 0 then
-                                        fallout.start_gdialog(594, fallout.self_obj(), 4, -1, -1)
-                                        fallout.gsay_start()
-                                        Kane60()
-                                        fallout.gsay_end()
-                                        fallout.end_dialogue()
-                                    else
-                                        if fallout.map_var(46) == 1 then
-                                            fallout.start_gdialog(594, fallout.self_obj(), 4, -1, -1)
-                                            fallout.gsay_start()
-                                            Kane10()
-                                            fallout.gsay_end()
-                                            fallout.end_dialogue()
-                                        else
-                                            if fallout.map_var(46) == 2 then
-                                                if fallout.global_var(111) == 5 then
-                                                    fallout.start_gdialog(594, fallout.self_obj(), 4, -1, -1)
-                                                    fallout.gsay_start()
-                                                    Kane153()
-                                                    fallout.gsay_end()
-                                                    fallout.end_dialogue()
-                                                else
-                                                    fallout.start_gdialog(594, fallout.self_obj(), 4, -1, -1)
-                                                    fallout.gsay_start()
-                                                    Kane86()
-                                                    fallout.gsay_end()
-                                                    fallout.end_dialogue()
-                                                end
-                                            else
-                                                if fallout.map_var(46) == 4 then
-                                                    if fallout.global_var(111) == 5 then
-                                                        fallout.start_gdialog(594, fallout.self_obj(), 4, -1, -1)
-                                                        fallout.gsay_start()
-                                                        Kane153()
-                                                        fallout.gsay_end()
-                                                        fallout.end_dialogue()
-                                                    else
-                                                        fallout.start_gdialog(594, fallout.self_obj(), 4, -1, -1)
-                                                        fallout.gsay_start()
-                                                        Kane135()
-                                                        fallout.gsay_end()
-                                                        fallout.end_dialogue()
-                                                    end
-                                                end
-                                            end
-                                        end
-                                    end
-                                else
-                                    if (fallout.global_var(111) == 2) and (fallout.local_var(7) == 0) then
-                                        if fallout.map_var(46) == 0 then
-                                            fallout.start_gdialog(594, fallout.self_obj(), 4, -1, -1)
-                                            fallout.gsay_start()
-                                            Kane71()
-                                            fallout.gsay_end()
-                                            fallout.end_dialogue()
-                                        else
-                                            if fallout.map_var(46) == 1 then
-                                                fallout.start_gdialog(594, fallout.self_obj(), 4, -1, -1)
-                                                fallout.gsay_start()
-                                                Kane79()
-                                                fallout.gsay_end()
-                                                fallout.end_dialogue()
-                                            else
-                                                if fallout.map_var(46) == 2 then
-                                                    fallout.start_gdialog(594, fallout.self_obj(), 4, -1, -1)
-                                                    fallout.gsay_start()
-                                                    Kane89()
-                                                    fallout.gsay_end()
-                                                    fallout.end_dialogue()
-                                                else
-                                                    if fallout.map_var(46) == 4 then
-                                                        fallout.start_gdialog(594, fallout.self_obj(), 4, -1, -1)
-                                                        fallout.gsay_start()
-                                                        Kane87()
-                                                        fallout.gsay_end()
-                                                        fallout.end_dialogue()
-                                                    end
-                                                end
-                                            end
-                                        end
-                                    else
-                                        if (fallout.global_var(112) ~= 2) and (fallout.local_var(7) == 112) then
-                                            if fallout.map_var(47) == 0 then
-                                                fallout.start_gdialog(594, fallout.self_obj(), 4, -1, -1)
-                                                fallout.gsay_start()
-                                                Kane134()
-                                                fallout.gsay_end()
-                                                fallout.end_dialogue()
-                                            else
-                                                if fallout.map_var(47) == 2 then
-                                                    fallout.start_gdialog(594, fallout.self_obj(), 4, -1, -1)
-                                                    fallout.gsay_start()
-                                                    Kane10()
-                                                    fallout.gsay_end()
-                                                    fallout.end_dialogue()
-                                                else
-                                                    if fallout.map_var(47) == 3 then
-                                                        fallout.start_gdialog(594, fallout.self_obj(), 4, -1, -1)
-                                                        fallout.gsay_start()
-                                                        Kane91()
-                                                        fallout.gsay_end()
-                                                        fallout.end_dialogue()
-                                                    else
-                                                        if fallout.map_var(47) == 5 then
-                                                            fallout.start_gdialog(594, fallout.self_obj(), 4, -1, -1)
-                                                            fallout.gsay_start()
-                                                            Kane135()
-                                                            fallout.gsay_end()
-                                                            fallout.end_dialogue()
-                                                        end
-                                                    end
-                                                end
-                                            end
-                                        else
-                                            if (fallout.global_var(112) == 2) and (fallout.local_var(7) == 112) then
-                                                if fallout.map_var(47) == 0 then
-                                                    fallout.start_gdialog(594, fallout.self_obj(), 4, -1, -1)
-                                                    fallout.gsay_start()
-                                                    Kane80()
-                                                    fallout.gsay_end()
-                                                    fallout.end_dialogue()
-                                                else
-                                                    if fallout.map_var(47) == 2 then
-                                                        fallout.start_gdialog(594, fallout.self_obj(), 4, -1, -1)
-                                                        fallout.gsay_start()
-                                                        Kane79()
-                                                        fallout.gsay_end()
-                                                        fallout.end_dialogue()
-                                                    else
-                                                        if fallout.map_var(47) == 3 then
-                                                            fallout.start_gdialog(594, fallout.self_obj(), 4, -1, -1)
-                                                            fallout.gsay_start()
-                                                            Kane90()
-                                                            fallout.gsay_end()
-                                                            fallout.end_dialogue()
-                                                        else
-                                                            if fallout.map_var(47) == 5 then
-                                                                fallout.start_gdialog(594, fallout.self_obj(), 4, -1, -1)
-                                                                fallout.gsay_start()
-                                                                Kane92()
-                                                                fallout.gsay_end()
-                                                                fallout.end_dialogue()
-                                                            else
-                                                                if fallout.map_var(47) == 6 then
-                                                                    fallout.start_gdialog(594, fallout.self_obj(), 4, -1, -1)
-                                                                    fallout.gsay_start()
-                                                                    Kane134()
-                                                                    fallout.gsay_end()
-                                                                    fallout.end_dialogue()
-                                                                end
-                                                            end
-                                                        end
-                                                    end
-                                                end
-                                            end
-                                        end
-                                    end
-                                end
-                            end
+                            fallout.start_gdialog(594, fallout.self_obj(), 4, -1, -1)
+                            fallout.gsay_start()
+                            Kane86()
+                            fallout.gsay_end()
+                            fallout.end_dialogue()
                         end
+                    elseif fallout.map_var(46) == 4 then
+                        if fallout.global_var(111) == 5 then
+                            fallout.start_gdialog(594, fallout.self_obj(), 4, -1, -1)
+                            fallout.gsay_start()
+                            Kane153()
+                            fallout.gsay_end()
+                            fallout.end_dialogue()
+                        else
+                            fallout.start_gdialog(594, fallout.self_obj(), 4, -1, -1)
+                            fallout.gsay_start()
+                            Kane135()
+                            fallout.gsay_end()
+                            fallout.end_dialogue()
+                        end
+                    end
+                elseif fallout.global_var(111) == 2 and fallout.local_var(7) == 0 then
+                    if fallout.map_var(46) == 0 then
+                        fallout.start_gdialog(594, fallout.self_obj(), 4, -1, -1)
+                        fallout.gsay_start()
+                        Kane71()
+                        fallout.gsay_end()
+                        fallout.end_dialogue()
+                    elseif fallout.map_var(46) == 1 then
+                        fallout.start_gdialog(594, fallout.self_obj(), 4, -1, -1)
+                        fallout.gsay_start()
+                        Kane79()
+                        fallout.gsay_end()
+                        fallout.end_dialogue()
+                    elseif fallout.map_var(46) == 2 then
+                        fallout.start_gdialog(594, fallout.self_obj(), 4, -1, -1)
+                        fallout.gsay_start()
+                        Kane89()
+                        fallout.gsay_end()
+                        fallout.end_dialogue()
+                    elseif fallout.map_var(46) == 4 then
+                        fallout.start_gdialog(594, fallout.self_obj(), 4, -1, -1)
+                        fallout.gsay_start()
+                        Kane87()
+                        fallout.gsay_end()
+                        fallout.end_dialogue()
+                    end
+                elseif fallout.global_var(112) ~= 2 and fallout.local_var(7) == 112 then
+                    if fallout.map_var(47) == 0 then
+                        fallout.start_gdialog(594, fallout.self_obj(), 4, -1, -1)
+                        fallout.gsay_start()
+                        Kane134()
+                        fallout.gsay_end()
+                        fallout.end_dialogue()
+                    elseif fallout.map_var(47) == 2 then
+                        fallout.start_gdialog(594, fallout.self_obj(), 4, -1, -1)
+                        fallout.gsay_start()
+                        Kane10()
+                        fallout.gsay_end()
+                        fallout.end_dialogue()
+                    elseif fallout.map_var(47) == 3 then
+                        fallout.start_gdialog(594, fallout.self_obj(), 4, -1, -1)
+                        fallout.gsay_start()
+                        Kane91()
+                        fallout.gsay_end()
+                        fallout.end_dialogue()
+                    elseif fallout.map_var(47) == 5 then
+                        fallout.start_gdialog(594, fallout.self_obj(), 4, -1, -1)
+                        fallout.gsay_start()
+                        Kane135()
+                        fallout.gsay_end()
+                        fallout.end_dialogue()
+                    end
+                elseif fallout.global_var(112) == 2 and fallout.local_var(7) == 112 then
+                    if fallout.map_var(47) == 0 then
+                        fallout.start_gdialog(594, fallout.self_obj(), 4, -1, -1)
+                        fallout.gsay_start()
+                        Kane80()
+                        fallout.gsay_end()
+                        fallout.end_dialogue()
+                    elseif fallout.map_var(47) == 2 then
+                        fallout.start_gdialog(594, fallout.self_obj(), 4, -1, -1)
+                        fallout.gsay_start()
+                        Kane79()
+                        fallout.gsay_end()
+                        fallout.end_dialogue()
+                    elseif fallout.map_var(47) == 3 then
+                        fallout.start_gdialog(594, fallout.self_obj(), 4, -1, -1)
+                        fallout.gsay_start()
+                        Kane90()
+                        fallout.gsay_end()
+                        fallout.end_dialogue()
+                    elseif fallout.map_var(47) == 5 then
+                        fallout.start_gdialog(594, fallout.self_obj(), 4, -1, -1)
+                        fallout.gsay_start()
+                        Kane92()
+                        fallout.gsay_end()
+                        fallout.end_dialogue()
+                    elseif fallout.map_var(47) == 6 then
+                        fallout.start_gdialog(594, fallout.self_obj(), 4, -1, -1)
+                        fallout.gsay_start()
+                        Kane134()
+                        fallout.gsay_end()
+                        fallout.end_dialogue()
                     end
                 end
             end
@@ -466,7 +409,7 @@ end
 function destroy_p_proc()
     reputation.inc_evil_critter()
     fallout.set_map_var(49, 1)
-    if (fallout.map_var(49) == 1) and (fallout.map_var(50) == 1) then
+    if fallout.map_var(49) == 1 and fallout.map_var(50) == 1 then
         fallout.set_global_var(202, 1)
         fallout.set_map_var(11, 1)
         fallout.set_map_var(44, 1)
@@ -880,13 +823,11 @@ function Kane74()
 end
 
 function Kane75()
-    local v0 = 0
-    local v1 = 0
     fallout.set_map_var(46, 5)
     fallout.give_exp_points(300)
     fallout.display_msg(fallout.message_str(766, 103) .. 300 .. fallout.message_str(766, 104))
     fallout.set_global_var(155, fallout.global_var(155) - 1)
-    v1 = fallout.item_caps_adjust(fallout.dude_obj(), 1500)
+    fallout.item_caps_adjust(fallout.dude_obj(), 1500)
     fallout.gsay_reply(594, 284)
     fallout.giq_option(4, 594, 285, Kane75a, 51)
     fallout.giq_option(4, 594, 286, Kane76, 50)
@@ -921,12 +862,10 @@ function Kane79()
 end
 
 function Kane80()
-    local v0 = 0
-    local v1 = 0
     fallout.give_exp_points(350)
     fallout.display_msg(fallout.message_str(766, 103) .. 350 .. fallout.message_str(766, 104))
     fallout.set_global_var(155, fallout.global_var(155) - 1)
-    v1 = fallout.item_caps_adjust(fallout.dude_obj(), 1000)
+    fallout.item_caps_adjust(fallout.dude_obj(), 1000)
     fallout.set_map_var(47, 7)
     fallout.gsay_reply(594, 293)
     Kane81()
@@ -958,16 +897,14 @@ function Kane85()
 end
 
 function Kane86()
-    local v0 = 0
     fallout.set_map_var(46, 4)
     fallout.set_global_var(579, 1)
-    v0 = fallout.item_caps_adjust(fallout.dude_obj(), 500)
+    fallout.item_caps_adjust(fallout.dude_obj(), 500)
     fallout.gsay_message(594, 301, 50)
 end
 
 function Kane87()
-    local v0 = 0
-    v0 = fallout.item_caps_adjust(fallout.dude_obj(), 2500)
+    fallout.item_caps_adjust(fallout.dude_obj(), 2500)
     fallout.give_exp_points(600)
     fallout.display_msg(fallout.message_str(766, 103) .. 600 .. fallout.message_str(766, 104))
     fallout.set_global_var(155, fallout.global_var(155) - 2)
@@ -977,8 +914,7 @@ function Kane87()
 end
 
 function Kane88()
-    local v0 = 0
-    v0 = fallout.item_caps_adjust(fallout.dude_obj(), 3500)
+    fallout.item_caps_adjust(fallout.dude_obj(), 3500)
     fallout.give_exp_points(600)
     fallout.display_msg(fallout.message_str(766, 103) .. 600 .. fallout.message_str(766, 104))
     fallout.set_global_var(155, fallout.global_var(155) - 2)
@@ -990,8 +926,7 @@ function Kane88()
 end
 
 function Kane89()
-    local v0 = 0
-    v0 = fallout.item_caps_adjust(fallout.dude_obj(), 3000)
+    fallout.item_caps_adjust(fallout.dude_obj(), 3000)
     fallout.give_exp_points(600)
     fallout.display_msg(fallout.message_str(766, 103) .. 600 .. fallout.message_str(766, 104))
     fallout.set_global_var(155, fallout.global_var(155) - 2)
@@ -1001,8 +936,7 @@ function Kane89()
 end
 
 function Kane90()
-    local v0 = 0
-    v0 = fallout.item_caps_adjust(fallout.dude_obj(), 5000)
+    fallout.item_caps_adjust(fallout.dude_obj(), 5000)
     fallout.give_exp_points(700)
     fallout.display_msg(fallout.message_str(766, 103) .. 700 .. fallout.message_str(766, 104))
     fallout.set_global_var(155, fallout.global_var(155) - 2)
@@ -1020,8 +954,7 @@ function Kane91()
 end
 
 function Kane92()
-    local v0 = 0
-    v0 = fallout.item_caps_adjust(fallout.dude_obj(), 4000)
+    fallout.item_caps_adjust(fallout.dude_obj(), 4000)
     fallout.give_exp_points(700)
     fallout.display_msg(fallout.message_str(766, 103) .. 700 .. fallout.message_str(766, 104))
     fallout.set_global_var(155, fallout.global_var(155) - 2)
@@ -1260,16 +1193,19 @@ function KaneEndRefuses()
 end
 
 function KaneTravel()
-    travel = 1
+    travel = true
 end
 
 function GoToDecker()
+    local self_obj = fallout.self_obj()
+    local dude_obj = fallout.dude_obj()
+    local decker_obj = fallout.external_var("Decker_Ptr")
     fallout.set_map_var(45, 1)
     fallout.gfade_out(1000)
-    fallout.move_to(fallout.self_obj(), 22526, 1)
-    fallout.anim(fallout.self_obj(), 1000, fallout.rotation_to_tile(fallout.tile_num(fallout.self_obj()), fallout.tile_num(fallout.external_var("Decker_Ptr"))))
-    fallout.move_to(fallout.dude_obj(), 23722, 1)
-    fallout.anim(fallout.dude_obj(), 1000, fallout.rotation_to_tile(fallout.tile_num(fallout.dude_obj()), fallout.tile_num(fallout.external_var("Decker_Ptr"))))
+    fallout.move_to(self_obj, 22526, 1)
+    fallout.anim(self_obj, 1000, fallout.rotation_to_tile(fallout.tile_num(self_obj), fallout.tile_num(decker_obj)))
+    fallout.move_to(dude_obj, 23722, 1)
+    fallout.anim(dude_obj, 1000, fallout.rotation_to_tile(fallout.tile_num(dude_obj), fallout.tile_num(decker_obj)))
     fallout.gfade_in(1000)
 end
 
