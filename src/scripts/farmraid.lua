@@ -32,10 +32,10 @@ end
 function critter_p_proc()
     local dude_obj = fallout.dude_obj()
     local self_obj = fallout.self_obj()
-    if fallout.obj_can_see_obj(self_obj, self_obj) then
-        fallout.attack(self_obj, 0, 1, 0, 0, 30000, 0, 0)
+    if fallout.obj_can_see_obj(self_obj, dude_obj) then
+        fallout.attack(dude_obj, 0, 1, 0, 0, 30000, 0, 0)
     end
-    if time.game_time_in_seconds() - PsstTime >= 30 and fallout.tile_distance_objs(self_obj, self_obj) <= 4 then
+    if time.game_time_in_seconds() - PsstTime >= 30 and fallout.tile_distance_objs(self_obj, dude_obj) <= 4 then
         fallout.float_msg(self_obj, fallout.message_str(935, fallout.random(300, 303)), 0)
         PsstTime = time.game_time_in_seconds()
     end
