@@ -23,79 +23,69 @@ local Daren07
 local DarenCombat
 local DarenEndLeon
 
-local hostile = 0
+local hostile = false
 local initialized = false
-local visible = 1
-
-local exit_line = 0
+local visible = true
 
 function start()
     if not initialized then
-        initialized = true
+        local self_obj = fallout.self_obj()
         if fallout.global_var(111) == 5 then
-            fallout.set_obj_visibility(fallout.self_obj(), 1)
-            visible = 0
+            fallout.set_obj_visibility(self_obj, true)
+            visible = false
         end
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 42)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 5)
+        fallout.critter_add_trait(self_obj, 1, 6, 42)
+        fallout.critter_add_trait(self_obj, 1, 5, 5)
+        initialized = true
     end
-    if fallout.script_action() == 21 then
+
+    local script_action = fallout.script_action()
+    if script_action == 21 then
         look_at_p_proc()
-    else
-        if fallout.script_action() == 4 then
-            pickup_p_proc()
-        else
-            if fallout.script_action() == 11 then
-                talk_p_proc()
-            else
-                if fallout.script_action() == 12 then
-                    critter_p_proc()
-                else
-                    if fallout.script_action() == 18 then
-                        destroy_p_proc()
-                    else
-                        if fallout.script_action() == 14 then
-                            damage_p_proc()
-                        else
-                            if fallout.script_action() == 13 then
-                                combat_p_proc()
-                            end
-                        end
-                    end
-                end
-            end
-        end
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 14 then
+        damage_p_proc()
+    elseif script_action == 13 then
+        combat_p_proc()
     end
 end
 
 function combat()
-    hostile = 1
+    hostile = true
 end
 
 function critter_p_proc()
-    if visible == 0 then
+    if not visible then
         fallout.script_overrides()
     else
         if hostile then
-            hostile = 0
+            hostile = false
             fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
         end
         if fallout.map_var(5) == 1 then
-            if (fallout.obj_can_hear_obj(fallout.self_obj(), fallout.dude_obj()) == 1) or (fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) == 1) then
+            local self_obj = fallout.self_obj()
+            local dude_obj = fallout.dude_obj()
+            if fallout.obj_can_hear_obj(self_obj, dude_obj) or fallout.obj_can_see_obj(self_obj, dude_obj) then
                 combat()
             end
         else
+            local self_obj = fallout.self_obj()
             if time.is_morning() or time.is_day() then
-                if fallout.tile_num(fallout.self_obj()) ~= 25125 then
-                    fallout.animate_move_obj_to_tile(fallout.self_obj(), 25125, 0)
-                else
-                    if (fallout.tile_num(fallout.dude_obj()) == 24522) and (fallout.map_var(1) == 0) then
-                        fallout.dialogue_system_enter()
-                    end
+                if fallout.tile_num(self_obj) ~= 25125 then
+                    fallout.animate_move_obj_to_tile(self_obj, 25125, 0)
+                elseif fallout.tile_num(fallout.dude_obj()) == 24522 and fallout.map_var(1) == 0 then
+                    fallout.dialogue_system_enter()
                 end
             else
-                if fallout.tile_num(fallout.self_obj()) ~= 24708 then
-                    fallout.animate_move_obj_to_tile(fallout.self_obj(), 24708, 0)
+                if fallout.tile_num(self_obj) ~= 24708 then
+                    fallout.animate_move_obj_to_tile(self_obj, 24708, 0)
                 end
             end
         end
@@ -104,7 +94,7 @@ end
 
 function pickup_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
-        hostile = 1
+        hostile = true
     end
 end
 
@@ -161,7 +151,9 @@ function Daren01()
     if fallout.global_var(111) == 1 then
         fallout.giq_option(4, 582, 103, Daren03, 50)
     end
-    fallout.giq_option(4, 582, fallout.message_str(582, 104) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(582, 105), Daren04, 50)
+    fallout.giq_option(4, 582,
+        fallout.message_str(582, 104) ..
+        fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(582, 105), Daren04, 50)
     fallout.giq_option(4, 582, 106, Daren07, 50)
     fallout.giq_option(4, 582, 107, Daren06, 50)
     fallout.giq_option(-3, 582, 108, Daren06, 50)
@@ -186,7 +178,9 @@ function Daren03()
 end
 
 function Daren04()
-    fallout.gsay_message(582, fallout.message_str(582, 119) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(582, 120), 51)
+    fallout.gsay_message(582,
+        fallout.message_str(582, 119) ..
+        fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(582, 120), 51)
     DarenEndLeon()
 end
 
@@ -200,8 +194,7 @@ function Daren05()
 end
 
 function Daren05a()
-    local v0 = 0
-    v0 = fallout.item_caps_adjust(fallout.dude_obj(), -100)
+    fallout.item_caps_adjust(fallout.dude_obj(), -100)
     fallout.gsay_message(582, 125, 51)
     DarenEndLeon()
 end
