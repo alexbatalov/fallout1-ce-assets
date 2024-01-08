@@ -72,57 +72,50 @@ local Bob50
 local BobEnd
 local BobCombat
 
-local hostile = 0
+local hostile = false
 local initialized = false
-local ToldRumor1 = 0
-local ToldRumor2 = 0
-local ToldRumor3 = 0
-local ToldRumor4 = 0
-local ToldRumor5 = 0
-
-local exit_line = 0
+local ToldRumor1 = false
+local ToldRumor2 = false
+local ToldRumor3 = false
+local ToldRumor4 = false
+local ToldRumor5 = false
 
 function start()
     if not initialized then
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 19)
+        fallout.critter_add_trait(self_obj, 1, 5, 50)
         initialized = true
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 19)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 50)
     end
-    if fallout.script_action() == 21 then
+
+    local script_action = fallout.script_action()
+    if script_action == 21 then
         look_at_p_proc()
-    else
-        if fallout.script_action() == 4 then
-            pickup_p_proc()
-        else
-            if fallout.script_action() == 11 then
-                talk_p_proc()
-            else
-                if fallout.script_action() == 12 then
-                    critter_p_proc()
-                else
-                    if fallout.script_action() == 18 then
-                        destroy_p_proc()
-                    end
-                end
-            end
-        end
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
     end
 end
 
 function combat()
-    hostile = 1
+    hostile = true
 end
 
 function critter_p_proc()
     if hostile then
-        hostile = 0
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
 end
 
 function pickup_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
-        hostile = 1
+        hostile = true
     end
 end
 
@@ -176,9 +169,8 @@ function destroy_p_proc()
 end
 
 function damage_p_proc()
-    local v0 = 0
-    v0 = fallout.obj_pid(fallout.source_obj())
-    if fallout.party_member_obj(v0) ~= 0 then
+    local pid = fallout.obj_pid(fallout.source_obj())
+    if fallout.party_member_obj(pid) ~= nil then
         fallout.set_global_var(248, 1)
     end
 end
@@ -236,8 +228,7 @@ function BBQa()
 end
 
 function Bob00()
-    local v0 = 0
-    v0 = fallout.item_caps_adjust(fallout.dude_obj(), fallout.local_var(7))
+    fallout.item_caps_adjust(fallout.dude_obj(), fallout.local_var(7))
     fallout.set_local_var(6, time.game_time_in_days() + 5)
     fallout.gsay_reply(891, 101)
     BobBlackmailQuestions()
@@ -303,14 +294,19 @@ end
 
 function Bob09()
     fallout.gsay_reply(891, 122)
-    fallout.giq_option(4, 891, fallout.message_str(891, 123) .. (fallout.local_var(7) + 25) .. fallout.message_str(891, 124), Bob09a, 50)
-    fallout.giq_option(4, 891, fallout.message_str(891, 123) .. (fallout.local_var(7) + 50) .. fallout.message_str(891, 124), Bob09b, 50)
-    fallout.giq_option(4, 891, fallout.message_str(891, 123) .. (fallout.local_var(7) + 75) .. fallout.message_str(891, 124), Bob09c, 50)
-    fallout.giq_option(4, 891, fallout.message_str(891, 123) .. (fallout.local_var(7) + 100) .. fallout.message_str(891, 124), Bob09d, 50)
+    fallout.giq_option(4, 891,
+        fallout.message_str(891, 123) .. (fallout.local_var(7) + 25) .. fallout.message_str(891, 124), Bob09a, 50)
+    fallout.giq_option(4, 891,
+        fallout.message_str(891, 123) .. (fallout.local_var(7) + 50) .. fallout.message_str(891, 124), Bob09b, 50)
+    fallout.giq_option(4, 891,
+        fallout.message_str(891, 123) .. (fallout.local_var(7) + 75) .. fallout.message_str(891, 124), Bob09c, 50)
+    fallout.giq_option(4, 891,
+        fallout.message_str(891, 123) .. (fallout.local_var(7) + 100) .. fallout.message_str(891, 124), Bob09d, 50)
 end
 
 function Bob09a()
-    if fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), 14, 0)) or fallout.is_success(fallout.do_check(fallout.dude_obj(), 3, 0)) then
+    local dude_obj = fallout.dude_obj()
+    if fallout.is_success(fallout.roll_vs_skill(dude_obj, 14, 0)) or fallout.is_success(fallout.do_check(dude_obj, 3, 0)) then
         fallout.set_local_var(7, fallout.local_var(7) + 25)
         Bob46()
     else
@@ -319,7 +315,8 @@ function Bob09a()
 end
 
 function Bob09b()
-    if fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), 14, -15)) or fallout.is_success(fallout.do_check(fallout.dude_obj(), 3, -1)) then
+    local dude_obj = fallout.dude_obj()
+    if fallout.is_success(fallout.roll_vs_skill(dude_obj, 14, -15)) or fallout.is_success(fallout.do_check(dude_obj, 3, -1)) then
         fallout.set_local_var(7, fallout.local_var(7) + 50)
         Bob46()
     else
@@ -328,7 +325,8 @@ function Bob09b()
 end
 
 function Bob09c()
-    if fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), 14, -30)) or fallout.is_success(fallout.do_check(fallout.dude_obj(), 3, -3)) then
+    local dude_obj = fallout.dude_obj()
+    if fallout.is_success(fallout.roll_vs_skill(dude_obj, 14, -30)) or fallout.is_success(fallout.do_check(dude_obj, 3, -3)) then
         fallout.set_local_var(7, fallout.local_var(7) + 75)
         Bob46()
     else
@@ -337,7 +335,8 @@ function Bob09c()
 end
 
 function Bob09d()
-    if fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), 14, -45)) or fallout.is_success(fallout.do_check(fallout.dude_obj(), 3, -4)) then
+    local dude_obj = fallout.dude_obj()
+    if fallout.is_success(fallout.roll_vs_skill(dude_obj, 14, -45)) or fallout.is_success(fallout.do_check(dude_obj, 3, -4)) then
         fallout.set_local_var(7, fallout.local_var(7) + 100)
         Bob46()
     else
@@ -360,8 +359,7 @@ function Bob11()
 end
 
 function Bob12()
-    local v0 = 0
-    v0 = fallout.item_caps_adjust(fallout.dude_obj(), fallout.local_var(7))
+    fallout.item_caps_adjust(fallout.dude_obj(), fallout.local_var(7))
     fallout.set_local_var(6, time.game_time_in_days() + 5)
     fallout.gsay_message(891, 134, 51)
 end
@@ -431,60 +429,48 @@ function Bob23()
 end
 
 function Bob25()
-    if (fallout.global_var(203) ~= 0) and (ToldRumor1 == 0) then
-        ToldRumor1 = 1
+    if fallout.global_var(203) ~= 0 and not ToldRumor1 then
+        ToldRumor1 = true
         fallout.set_global_var(219, 1)
         fallout.gsay_message(891, 160, 50)
+    elseif fallout.global_var(221) == 1 and not ToldRumor2 then
+        ToldRumor2 = true
+        fallout.gsay_message(891, 161, 50)
+    elseif fallout.global_var(111) == 2 and not ToldRumor3 then
+        ToldRumor3 = true
+        fallout.gsay_message(891, 162, 50)
+    elseif fallout.global_var(107) == 2 and not ToldRumor4 then
+        ToldRumor4 = true
+        fallout.gsay_message(891, 163, 50)
+    elseif fallout.global_var(112) == 2 and not ToldRumor5 then
+        ToldRumor5 = true
+        fallout.gsay_message(891, 164, 50)
     else
-        if (fallout.global_var(221) == 1) and (ToldRumor2 == 0) then
-            ToldRumor2 = 1
-            fallout.gsay_message(891, 161, 50)
-        else
-            if (fallout.global_var(111) == 2) and (ToldRumor3 == 0) then
-                ToldRumor3 = 1
-                fallout.gsay_message(891, 162, 50)
-            else
-                if (fallout.global_var(107) == 2) and (ToldRumor4 == 0) then
-                    ToldRumor4 = 1
-                    fallout.gsay_message(891, 163, 50)
-                else
-                    if (fallout.global_var(112) == 2) and (ToldRumor5 == 0) then
-                        ToldRumor5 = 1
-                        fallout.gsay_message(891, 164, 50)
-                    else
-                        fallout.gsay_message(891, 165, 50)
-                    end
-                end
-            end
-        end
+        fallout.gsay_message(891, 165, 50)
     end
     fallout.gsay_message(891, 166, 50)
     BobStandardQuestions()
 end
 
 function Bob27()
-    local v0 = 0
-    local v1 = 0
     if fallout.item_caps_total(fallout.dude_obj()) < 20 then
         fallout.gsay_message(891, 169, 50)
     else
-        v1 = fallout.item_caps_adjust(fallout.dude_obj(), -20)
-        v0 = fallout.create_object_sid(81, 0, 0, -1)
-        fallout.add_obj_to_inven(fallout.dude_obj(), v0)
+        fallout.item_caps_adjust(fallout.dude_obj(), -20)
+        local item_obj = fallout.create_object_sid(81, 0, 0, -1)
+        fallout.add_obj_to_inven(fallout.dude_obj(), item_obj)
         fallout.gsay_message(891, 170, 50)
     end
     BobStandardQuestions()
 end
 
 function Bob28()
-    local v0 = 0
-    local v1 = 0
     if fallout.item_caps_total(fallout.dude_obj()) < 8 then
         fallout.gsay_message(891, 173, 50)
     else
-        v1 = fallout.item_caps_adjust(fallout.dude_obj(), -8)
-        v0 = fallout.create_object_sid(103, 0, 0, -1)
-        fallout.add_obj_to_inven(fallout.dude_obj(), v0)
+        fallout.item_caps_adjust(fallout.dude_obj(), -8)
+        local item_obj = fallout.create_object_sid(103, 0, 0, -1)
+        fallout.add_obj_to_inven(fallout.dude_obj(), item_obj)
         if fallout.local_var(5) > 0 then
             fallout.gsay_message(891, 171, 50)
             fallout.giq_option(4, 891, 172, Bob38, 50)
@@ -557,16 +543,22 @@ end
 
 function Bob44()
     fallout.gsay_reply(891, 212)
-    fallout.giq_option(4, 891, fallout.message_str(891, 213) .. fallout.message_str(891, 214) .. fallout.message_str(891, 219), Bob44a, 50)
-    fallout.giq_option(4, 891, fallout.message_str(891, 213) .. fallout.message_str(891, 215) .. fallout.message_str(891, 219), Bob44b, 50)
-    fallout.giq_option(4, 891, fallout.message_str(891, 213) .. fallout.message_str(891, 216) .. fallout.message_str(891, 219), Bob44c, 50)
-    fallout.giq_option(4, 891, fallout.message_str(891, 213) .. fallout.message_str(891, 217) .. fallout.message_str(891, 219), Bob44d, 50)
-    fallout.giq_option(4, 891, fallout.message_str(891, 213) .. fallout.message_str(891, 218) .. fallout.message_str(891, 219), Bob44e, 50)
+    fallout.giq_option(4, 891,
+        fallout.message_str(891, 213) .. fallout.message_str(891, 214) .. fallout.message_str(891, 219), Bob44a, 50)
+    fallout.giq_option(4, 891,
+        fallout.message_str(891, 213) .. fallout.message_str(891, 215) .. fallout.message_str(891, 219), Bob44b, 50)
+    fallout.giq_option(4, 891,
+        fallout.message_str(891, 213) .. fallout.message_str(891, 216) .. fallout.message_str(891, 219), Bob44c, 50)
+    fallout.giq_option(4, 891,
+        fallout.message_str(891, 213) .. fallout.message_str(891, 217) .. fallout.message_str(891, 219), Bob44d, 50)
+    fallout.giq_option(4, 891,
+        fallout.message_str(891, 213) .. fallout.message_str(891, 218) .. fallout.message_str(891, 219), Bob44e, 50)
     fallout.giq_option(4, 891, 220, Bob48, 50)
 end
 
 function Bob44a()
-    if fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), 14, 20)) or fallout.is_success(fallout.do_check(fallout.dude_obj(), 3, 2)) then
+    local dude_obj = fallout.dude_obj()
+    if fallout.is_success(fallout.roll_vs_skill(dude_obj, 14, 20)) or fallout.is_success(fallout.do_check(dude_obj, 3, 2)) then
         fallout.set_local_var(7, 50)
         Bob46()
     else
@@ -575,7 +567,8 @@ function Bob44a()
 end
 
 function Bob44b()
-    if fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), 14, 0)) or fallout.is_success(fallout.do_check(fallout.dude_obj(), 3, 0)) then
+    local dude_obj = fallout.dude_obj()
+    if fallout.is_success(fallout.roll_vs_skill(dude_obj, 14, 0)) or fallout.is_success(fallout.do_check(dude_obj, 3, 0)) then
         fallout.set_local_var(7, 75)
         Bob46()
     else
@@ -584,7 +577,8 @@ function Bob44b()
 end
 
 function Bob44c()
-    if fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), 14, -10)) or fallout.is_success(fallout.do_check(fallout.dude_obj(), 3, -1)) then
+    local dude_obj = fallout.dude_obj()
+    if fallout.is_success(fallout.roll_vs_skill(dude_obj, 14, -10)) or fallout.is_success(fallout.do_check(dude_obj, 3, -1)) then
         fallout.set_local_var(7, 100)
         Bob46()
     else
@@ -593,7 +587,8 @@ function Bob44c()
 end
 
 function Bob44d()
-    if fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), 14, -30)) or fallout.is_success(fallout.do_check(fallout.dude_obj(), 3, -3)) then
+    local dude_obj = fallout.dude_obj()
+    if fallout.is_success(fallout.roll_vs_skill(dude_obj, 14, -30)) or fallout.is_success(fallout.do_check(dude_obj, 3, -3)) then
         fallout.set_local_var(7, 150)
         Bob46()
     else
@@ -602,7 +597,8 @@ function Bob44d()
 end
 
 function Bob44e()
-    if fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), 14, -60)) or fallout.is_success(fallout.do_check(fallout.dude_obj(), 3, -6)) then
+    local dude_obj = fallout.dude_obj()
+    if fallout.is_success(fallout.roll_vs_skill(dude_obj, 14, -60)) or fallout.is_success(fallout.do_check(dude_obj, 3, -6)) then
         fallout.set_local_var(7, 200)
         Bob46()
     else
