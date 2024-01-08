@@ -13,63 +13,55 @@ local look_at_p_proc
 local timed_event_p_proc
 local damage_p_proc
 
-local hostile = 0
+local hostile = false
 local initialized = false
-local Sleeping = 0
-local SetDayNight = 0
-
-local exit_line = 0
+local Sleeping = false
+local SetDayNight = false
 
 function start()
     if not initialized then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 62)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 51)
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 62)
+        fallout.critter_add_trait(self_obj, 1, 5, 51)
+        initialized = true
     end
-    if fallout.script_action() == 21 then
+
+    local script_action = fallout.script_action()
+    if script_action == 21 then
         look_at_p_proc()
-    else
-        if fallout.script_action() == 4 then
-            pickup_p_proc()
-        else
-            if fallout.script_action() == 11 then
-                talk_p_proc()
-            else
-                if fallout.script_action() == 12 then
-                    critter_p_proc()
-                else
-                    if fallout.script_action() == 18 then
-                        destroy_p_proc()
-                    else
-                        if fallout.script_action() == 22 then
-                            timed_event_p_proc()
-                        end
-                    end
-                end
-            end
-        end
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 22 then
+        timed_event_p_proc()
     end
 end
 
 function combat()
-    hostile = 1
+    hostile = true
 end
 
 function critter_p_proc()
     if hostile then
-        hostile = 0
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
     if time.is_morning() then
-        if SetDayNight == 0 then
+        if not SetDayNight then
             fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(15), 1)
-            SetDayNight = 1
+            SetDayNight = true
         end
     end
 end
 
 function pickup_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
-        hostile = 1
+        hostile = true
     end
 end
 
@@ -101,45 +93,45 @@ end
 
 function timed_event_p_proc()
     if time.is_morning() or time.is_day() then
-        Sleeping = 0
-        if fallout.fixed_param() == 1 then
-            fallout.reg_anim_func(2, fallout.self_obj())
+        Sleeping = false
+        local event = fallout.fixed_param()
+        if event == 1 then
+            local self_obj = fallout.self_obj()
+            fallout.reg_anim_func(2, self_obj)
             fallout.reg_anim_func(1, 1)
-            fallout.reg_anim_obj_move_to_tile(fallout.self_obj(), 15330, -1)
+            fallout.reg_anim_obj_move_to_tile(self_obj, 15330, -1)
             fallout.reg_anim_func(3, 0)
-            fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(30), 2)
-        else
-            if fallout.fixed_param() == 2 then
-                fallout.reg_anim_func(2, fallout.self_obj())
-                fallout.reg_anim_func(1, 1)
-                fallout.reg_anim_obj_move_to_tile(fallout.self_obj(), 15122, -1)
-                fallout.reg_anim_func(3, 0)
-                fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(60 * 1), 3)
-            else
-                if fallout.fixed_param() == 3 then
-                    fallout.reg_anim_func(2, fallout.self_obj())
-                    fallout.reg_anim_func(1, 1)
-                    fallout.reg_anim_obj_move_to_tile(fallout.self_obj(), 14930, -1)
-                    fallout.reg_anim_func(3, 0)
-                end
-            end
+            fallout.add_timer_event(self_obj, fallout.game_ticks(30), 2)
+        elseif event == 2 then
+            local self_obj = fallout.self_obj()
+            fallout.reg_anim_func(2, self_obj)
+            fallout.reg_anim_func(1, 1)
+            fallout.reg_anim_obj_move_to_tile(self_obj, 15122, -1)
+            fallout.reg_anim_func(3, 0)
+            fallout.add_timer_event(self_obj, fallout.game_ticks(60 * 1), 3)
+        elseif event == 3 then
+            local self_obj = fallout.self_obj()
+            fallout.reg_anim_func(2, self_obj)
+            fallout.reg_anim_func(1, 1)
+            fallout.reg_anim_obj_move_to_tile(self_obj, 14930, -1)
+            fallout.reg_anim_func(3, 0)
         end
     else
-        if Sleeping == 0 then
-            fallout.reg_anim_func(2, fallout.self_obj())
+        if not Sleeping then
+            local self_obj = fallout.self_obj()
+            fallout.reg_anim_func(2, self_obj)
             fallout.reg_anim_func(1, 1)
-            fallout.reg_anim_obj_move_to_tile(fallout.self_obj(), 14930, -1)
+            fallout.reg_anim_obj_move_to_tile(self_obj, 14930, -1)
             fallout.reg_anim_func(3, 0)
-            Sleeping = 1
-            SetDayNight = 0
+            Sleeping = true
+            SetDayNight = false
         end
     end
 end
 
 function damage_p_proc()
-    local v0 = 0
-    v0 = fallout.obj_pid(fallout.source_obj())
-    if fallout.party_member_obj(v0) ~= 0 then
+    local pid = fallout.obj_pid(fallout.source_obj())
+    if fallout.party_member_obj(pid) ~= nil then
         fallout.set_global_var(248, 1)
     end
 end
