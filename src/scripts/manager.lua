@@ -2,8 +2,12 @@ local fallout = require("fallout")
 local reputation = require("lib.reputation")
 
 local start
-local timeforwhat
-local do_dialogue
+local pickup_p_proc
+local timed_event_p_proc
+local talk_p_proc
+local critter_p_proc
+local destroy_p_proc
+local look_at_p_proc
 local ghoulcbt
 local ghoul00
 local ghoul01
@@ -19,9 +23,9 @@ local ghoul09
 local ghoul10
 local ghoul11
 
-local Hostile = 0
+local hostile = false
 local initialized = false
-local noevent = 0
+local noevent = false
 local loopcount = 0
 
 function start()
@@ -29,51 +33,30 @@ function start()
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 32)
         initialized = true
     end
-    if fallout.script_action() == 22 then
-        timeforwhat()
-    else
-        if fallout.script_action() == 11 then
-            do_dialogue()
-        else
-            if (fallout.script_action() == 21) or (fallout.script_action() == 3) then
-                fallout.script_overrides()
-                fallout.display_msg(fallout.message_str(82, 100))
-            else
-                if fallout.script_action() == 4 then
-                    Hostile = 1
-                else
-                    if fallout.script_action() == 12 then
-                        if Hostile then
-                            Hostile = 0
-                            fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
-                        else
-                            loopcount = loopcount + 1
-                            if loopcount > 40 then
-                                loopcount = 0
-                                if fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 7 then
-                                    if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
-                                        if noevent == 0 then
-                                            noevent = 1
-                                            fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(5), 0)
-                                        end
-                                    end
-                                end
-                            end
-                        end
-                    else
-                        if fallout.script_action() == 18 then
-                            reputation.inc_evil_critter()
-                        end
-                    end
-                end
-            end
-        end
+
+    local script_action = fallout.script_action()
+    if script_action == 22 then
+        timed_event_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 21 or script_action == 3 then
+        look_at_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
     end
 end
 
-function timeforwhat()
+function pickup_p_proc()
+    hostile = true
+end
+
+function timed_event_p_proc()
     if fallout.fixed_param() == 1 then
-        Hostile = 1
+        hostile = true
     else
         if fallout.local_var(0) == 0 then
             fallout.dialogue_system_enter()
@@ -81,7 +64,7 @@ function timeforwhat()
     end
 end
 
-function do_dialogue()
+function talk_p_proc()
     fallout.start_gdialog(82, fallout.self_obj(), 4, -1, -1)
     fallout.gsay_start()
     if fallout.local_var(0) ~= 0 then
@@ -92,6 +75,37 @@ function do_dialogue()
     end
     fallout.gsay_end()
     fallout.end_dialogue()
+end
+
+function critter_p_proc()
+    if hostile then
+        hostile = false
+        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+    else
+        loopcount = loopcount + 1
+        if loopcount > 40 then
+            loopcount = 0
+            local self_obj = fallout.self_obj()
+            local dude_obj = fallout.dude_obj()
+            if fallout.tile_distance_objs(self_obj, dude_obj) < 7 then
+                if fallout.obj_can_see_obj(self_obj, dude_obj) then
+                    if not noevent then
+                        noevent = true
+                        fallout.add_timer_event(self_obj, fallout.game_ticks(5), 0)
+                    end
+                end
+            end
+        end
+    end
+end
+
+function destroy_p_proc()
+    reputation.inc_evil_critter()
+end
+
+function look_at_p_proc()
+    fallout.script_overrides()
+    fallout.display_msg(fallout.message_str(82, 100))
 end
 
 function ghoulcbt()
@@ -168,4 +182,10 @@ end
 
 local exports = {}
 exports.start = start
+exports.pickup_p_proc = pickup_p_proc
+exports.talk_p_proc = talk_p_proc
+exports.critter_p_proc = critter_p_proc
+exports.destroy_p_proc = destroy_p_proc
+exports.look_at_p_proc = look_at_p_proc
+exports.timed_event_p_proc = timed_event_p_proc
 return exports
