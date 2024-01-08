@@ -18,63 +18,50 @@ local Mutant01
 local Mutant02
 local Mutant03
 
-local hostile = 0
+local hostile = false
 local initialized = false
 local lastBabble = 0
-local kill_me = 0
-
-local exit_line = 0
+local kill_me = false
 
 function start()
     if not initialized then
+        local self_obj = fallout.self_obj()
+        fallout.anim(self_obj, 48, 0)
+        fallout.critter_add_trait(self_obj, 1, 6, 34)
+        fallout.critter_add_trait(self_obj, 1, 5, 47)
         initialized = true
-        fallout.anim(fallout.self_obj(), 48, 0)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 34)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 47)
     end
-    if fallout.script_action() == 21 then
+
+    local script_action = fallout.script_action()
+    if script_action == 21 then
         look_at_p_proc()
-    else
-        if fallout.script_action() == 4 then
-            pickup_p_proc()
-        else
-            if fallout.script_action() == 11 then
-                talk_p_proc()
-            else
-                if fallout.script_action() == 12 then
-                    critter_p_proc()
-                else
-                    if fallout.script_action() == 18 then
-                        destroy_p_proc()
-                    else
-                        if fallout.script_action() == 8 then
-                            use_skill_on_p_proc()
-                        else
-                            if fallout.script_action() == 7 then
-                                use_obj_on_p_proc()
-                            else
-                                if fallout.script_action() == 13 then
-                                    combat_p_proc()
-                                end
-                            end
-                        end
-                    end
-                end
-            end
-        end
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 8 then
+        use_skill_on_p_proc()
+    elseif script_action == 7 then
+        use_obj_on_p_proc()
+    elseif script_action == 13 then
+        combat_p_proc()
     end
 end
 
 function combat()
-    hostile = 1
+    hostile = true
 end
 
 function critter_p_proc()
     if hostile then
-        hostile = 0
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
-    if (fallout.local_var(5) == 0) and ((time.game_time_in_seconds() - lastBabble) >= 10) and (fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) <= 15) then
+    if fallout.local_var(5) == 0 and time.game_time_in_seconds() - lastBabble >= 10 and fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) <= 15 then
         lastBabble = time.game_time_in_seconds()
         fallout.float_msg(fallout.self_obj(), fallout.message_str(848, fallout.random(111, 113)), 2)
     end
@@ -98,8 +85,8 @@ function talk_p_proc()
         fallout.gsay_end()
         fallout.end_dialogue()
     end
-    if kill_me == 1 then
-        kill_me = 0
+    if kill_me then
+        kill_me = false
         fallout.kill_critter(fallout.self_obj(), 48)
     end
 end
@@ -133,13 +120,13 @@ function Mutant00()
 end
 
 function Mutant01()
-    local v0 = 0
     fallout.set_global_var(106, 2)
     fallout.gsay_reply(848, 106)
-    v0 = fallout.obj_carrying_pid_obj(fallout.self_obj(), 196)
-    if v0 ~= 0 then
-        fallout.rm_obj_from_inven(fallout.self_obj(), v0)
-        fallout.add_obj_to_inven(fallout.dude_obj(), v0)
+    local self_obj = fallout.self_obj()
+    local item_obj = fallout.obj_carrying_pid_obj(self_obj, 196)
+    if item_obj ~= nil then
+        fallout.rm_obj_from_inven(self_obj, item_obj)
+        fallout.add_obj_to_inven(fallout.dude_obj(), item_obj)
     end
     fallout.giq_option(4, 848, 107, Mutant02, 50)
 end
@@ -151,7 +138,7 @@ end
 
 function Mutant03()
     fallout.set_local_var(5, 1)
-    kill_me = 1
+    kill_me = true
     fallout.gsay_message(848, 110, 50)
 end
 
