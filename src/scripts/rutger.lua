@@ -101,52 +101,45 @@ local Rutger76
 local RutgerEnd
 local RutgerEndBad
 
-local hostile = 0
+local hostile = false
 local initialized = false
-
-local exit_line = 0
 
 function start()
     if not initialized then
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 36)
+        fallout.critter_add_trait(self_obj, 1, 5, 17)
         initialized = true
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 36)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 17)
     end
-    if fallout.script_action() == 21 then
+
+    local script_action = fallout.script_action()
+    if script_action == 21 then
         look_at_p_proc()
-    else
-        if fallout.script_action() == 4 then
-            pickup_p_proc()
-        else
-            if fallout.script_action() == 11 then
-                talk_p_proc()
-            else
-                if fallout.script_action() == 12 then
-                    critter_p_proc()
-                else
-                    if fallout.script_action() == 18 then
-                        destroy_p_proc()
-                    end
-                end
-            end
-        end
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
     end
 end
 
 function combat()
-    hostile = 1
+    hostile = true
 end
 
 function critter_p_proc()
     if hostile then
-        hostile = 0
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
 end
 
 function pickup_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
-        hostile = 1
+        hostile = true
     end
 end
 
@@ -155,110 +148,90 @@ function talk_p_proc()
     if fallout.get_critter_stat(fallout.dude_obj(), 4) < 4 then
         fallout.float_msg(fallout.dude_obj(), fallout.message_str(401, 314), 3)
         fallout.float_msg(fallout.self_obj(), fallout.message_str(401, 315), 2)
-    else
-        if (fallout.global_var(18) == 1) and (fallout.global_var(17) ~= 1) and (fallout.local_var(8) == 0) then
-            fallout.set_local_var(8, 1)
-            fallout.set_local_var(4, 1)
+    elseif fallout.global_var(18) == 1 and fallout.global_var(17) ~= 1 and fallout.local_var(8) == 0 then
+        fallout.set_local_var(8, 1)
+        fallout.set_local_var(4, 1)
+        fallout.start_gdialog(401, fallout.self_obj(), 4, -1, -1)
+        fallout.gsay_start()
+        Rutger55()
+        fallout.gsay_end()
+        fallout.end_dialogue()
+    elseif fallout.global_var(18) ~= 1 and fallout.global_var(17) == 1 and fallout.local_var(8) == 0 then
+        fallout.set_local_var(8, 1)
+        fallout.set_local_var(4, 1)
+        fallout.start_gdialog(401, fallout.self_obj(), 4, -1, -1)
+        fallout.gsay_start()
+        Rutger58()
+        fallout.gsay_end()
+        fallout.end_dialogue()
+    elseif fallout.map_var(40) == 1 or fallout.map_var(35) == 1 then
+        fallout.set_local_var(4, 1)
+        fallout.start_gdialog(401, fallout.self_obj(), 4, -1, -1)
+        fallout.gsay_start()
+        Rutger74()
+        fallout.gsay_end()
+        fallout.end_dialogue()
+    elseif fallout.local_var(4) == 0 then
+        fallout.set_local_var(4, 1)
+        fallout.start_gdialog(401, fallout.self_obj(), 4, -1, -1)
+        fallout.gsay_start()
+        Rutger00()
+        fallout.gsay_end()
+        fallout.end_dialogue()
+    elseif fallout.map_var(34) == 0 then
+        if fallout.local_var(1) >= 2 then
             fallout.start_gdialog(401, fallout.self_obj(), 4, -1, -1)
             fallout.gsay_start()
-            Rutger55()
+            Rutger73()
             fallout.gsay_end()
             fallout.end_dialogue()
         else
-            if (fallout.global_var(18) ~= 1) and (fallout.global_var(17) == 1) and (fallout.local_var(8) == 0) then
-                fallout.set_local_var(8, 1)
-                fallout.set_local_var(4, 1)
+            fallout.start_gdialog(401, fallout.self_obj(), 4, -1, -1)
+            fallout.gsay_start()
+            Rutger74()
+            fallout.gsay_end()
+            fallout.end_dialogue()
+        end
+    elseif fallout.map_var(34) == 1 and fallout.map_var(41) == 0 then
+        Rutger21()
+    elseif fallout.map_var(41) == 3 then
+        fallout.start_gdialog(401, fallout.self_obj(), 4, -1, -1)
+        fallout.gsay_start()
+        Rutger54()
+        fallout.gsay_end()
+        fallout.end_dialogue()
+    elseif fallout.map_var(41) == 4 then
+        fallout.start_gdialog(401, fallout.self_obj(), 4, -1, -1)
+        fallout.gsay_start()
+        Rutger56()
+        fallout.gsay_end()
+        fallout.end_dialogue()
+    elseif fallout.local_var(6) == 0 then
+        if fallout.map_var(41) == 2 then
+            fallout.start_gdialog(401, fallout.self_obj(), 4, -1, -1)
+            fallout.gsay_start()
+            Rutger17()
+            fallout.gsay_end()
+            fallout.end_dialogue()
+        else
+            if fallout.map_var(41) == 1 then
                 fallout.start_gdialog(401, fallout.self_obj(), 4, -1, -1)
                 fallout.gsay_start()
-                Rutger58()
+                Rutger25()
                 fallout.gsay_end()
                 fallout.end_dialogue()
             else
-                if (fallout.map_var(40) == 1) or (fallout.map_var(35) == 1) then
-                    fallout.set_local_var(4, 1)
-                    fallout.start_gdialog(401, fallout.self_obj(), 4, -1, -1)
-                    fallout.gsay_start()
-                    Rutger74()
-                    fallout.gsay_end()
-                    fallout.end_dialogue()
-                else
-                    if fallout.local_var(4) == 0 then
-                        fallout.set_local_var(4, 1)
-                        fallout.start_gdialog(401, fallout.self_obj(), 4, -1, -1)
-                        fallout.gsay_start()
-                        Rutger00()
-                        fallout.gsay_end()
-                        fallout.end_dialogue()
-                    else
-                        if fallout.map_var(34) == 0 then
-                            if fallout.local_var(1) >= 2 then
-                                fallout.start_gdialog(401, fallout.self_obj(), 4, -1, -1)
-                                fallout.gsay_start()
-                                Rutger73()
-                                fallout.gsay_end()
-                                fallout.end_dialogue()
-                            else
-                                fallout.start_gdialog(401, fallout.self_obj(), 4, -1, -1)
-                                fallout.gsay_start()
-                                Rutger74()
-                                fallout.gsay_end()
-                                fallout.end_dialogue()
-                            end
-                        else
-                            if (fallout.map_var(34) == 1) and (fallout.map_var(41) == 0) then
-                                Rutger21()
-                            else
-                                if fallout.map_var(41) == 3 then
-                                    fallout.start_gdialog(401, fallout.self_obj(), 4, -1, -1)
-                                    fallout.gsay_start()
-                                    Rutger54()
-                                    fallout.gsay_end()
-                                    fallout.end_dialogue()
-                                else
-                                    if fallout.map_var(41) == 4 then
-                                        fallout.start_gdialog(401, fallout.self_obj(), 4, -1, -1)
-                                        fallout.gsay_start()
-                                        Rutger56()
-                                        fallout.gsay_end()
-                                        fallout.end_dialogue()
-                                    else
-                                        if fallout.local_var(6) == 0 then
-                                            if fallout.map_var(41) == 2 then
-                                                fallout.start_gdialog(401, fallout.self_obj(), 4, -1, -1)
-                                                fallout.gsay_start()
-                                                Rutger17()
-                                                fallout.gsay_end()
-                                                fallout.end_dialogue()
-                                            else
-                                                if fallout.map_var(41) == 1 then
-                                                    fallout.start_gdialog(401, fallout.self_obj(), 4, -1, -1)
-                                                    fallout.gsay_start()
-                                                    Rutger25()
-                                                    fallout.gsay_end()
-                                                    fallout.end_dialogue()
-                                                else
-                                                    if fallout.map_var(41) == 0 then
-                                                        Rutger21()
-                                                    end
-                                                end
-                                            end
-                                        else
-                                            if (fallout.local_var(6) == 1) and (fallout.map_var(41) == 1) then
-                                                fallout.start_gdialog(401, fallout.self_obj(), 4, -1, -1)
-                                                fallout.gsay_start()
-                                                Rutger22()
-                                                fallout.gsay_end()
-                                                fallout.end_dialogue()
-                                            end
-                                        end
-                                    end
-                                end
-                            end
-                        end
-                    end
+                if fallout.map_var(41) == 0 then
+                    Rutger21()
                 end
             end
         end
+    elseif fallout.local_var(6) == 1 and fallout.map_var(41) == 1 then
+        fallout.start_gdialog(401, fallout.self_obj(), 4, -1, -1)
+        fallout.gsay_start()
+        Rutger22()
+        fallout.gsay_end()
+        fallout.end_dialogue()
     end
 end
 
@@ -267,9 +240,8 @@ function destroy_p_proc()
 end
 
 function damage_p_proc()
-    local v0 = 0
-    v0 = fallout.obj_pid(fallout.source_obj())
-    if fallout.party_member_obj(v0) ~= 0 then
+    local pid = fallout.obj_pid(fallout.source_obj())
+    if fallout.party_member_obj(pid) ~= nil then
         fallout.set_global_var(248, 1)
     end
 end
@@ -297,20 +269,14 @@ end
 function Rutger00a()
     if reputation.has_rep_berserker() then
         Rutger10()
+    elseif fallout.global_var(158) > 2 then
+        Rutger11()
+    elseif reputation.has_rep_champion() then
+        Rutger15()
+    elseif fallout.map_var(35) == 1 or fallout.map_var(40) == 1 then
+        Rutger75()
     else
-        if fallout.global_var(158) > 2 then
-            Rutger11()
-        else
-            if reputation.has_rep_champion() then
-                Rutger15()
-            else
-                if (fallout.map_var(35) == 1) or (fallout.map_var(40) == 1) then
-                    Rutger75()
-                else
-                    Rutger16()
-                end
-            end
-        end
+        Rutger16()
     end
 end
 
@@ -487,7 +453,7 @@ end
 
 function Rutger22()
     fallout.gsay_reply(401, 159)
-    if (fallout.global_var(78) == 2) or (fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 196) >= 1) then
+    if fallout.global_var(78) == 2 or fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 196) >= 1 then
         fallout.giq_option(4, 401, 312, Rutger76, 50)
     else
         fallout.giq_option(4, 401, 160, Rutger23, 50)
@@ -501,7 +467,7 @@ function Rutger22()
 end
 
 function Rutger22a()
-    if (fallout.map_var(41) ~= 3) and (fallout.map_var(41) ~= 4) then
+    if fallout.map_var(41) ~= 3 and fallout.map_var(41) ~= 4 then
         Rutger63()
     else
         if fallout.map_var(36) == 1 then
@@ -630,16 +596,12 @@ end
 function Rutger39a()
     if fallout.map_var(42) == 16777267 then
         Rutger49()
+    elseif fallout.map_var(42) == 1 then
+        Rutger50()
+    elseif fallout.map_var(42) == 2 then
+        Rutger51()
     else
-        if fallout.map_var(42) == 1 then
-            Rutger50()
-        else
-            if fallout.map_var(42) == 2 then
-                Rutger51()
-            else
-                Rutger40()
-            end
-        end
+        Rutger40()
     end
 end
 
@@ -716,9 +678,8 @@ function Rutger47()
 end
 
 function Rutger48()
-    local v0 = 0
     reaction.TopReact()
-    v0 = fallout.item_caps_adjust(fallout.dude_obj(), 800)
+    fallout.item_caps_adjust(fallout.dude_obj(), 800)
     fallout.set_map_var(42, 2)
     fallout.set_map_var(36, 1)
     fallout.set_map_var(35, 0)
@@ -788,12 +749,10 @@ function Rutger55()
     fallout.gsay_reply(401, 243)
     if reputation.has_rep_berserker() then
         fallout.giq_option(4, 401, 244, Rutger59, 50)
+    elseif reputation.has_rep_champion() then
+        fallout.giq_option(4, 401, 245, Rutger59, 50)
     else
-        if reputation.has_rep_champion() then
-            fallout.giq_option(4, 401, 245, Rutger59, 50)
-        else
-            fallout.giq_option(4, 401, 246, Rutger59, 50)
-        end
+        fallout.giq_option(4, 401, 246, Rutger59, 50)
     end
     fallout.giq_option(4, 401, 247, Rutger55a, 50)
     fallout.giq_option(4, 401, 248, RutgerEnd, 50)
@@ -801,7 +760,7 @@ function Rutger55()
 end
 
 function Rutger55a()
-    if (fallout.map_var(40) == 1) or (fallout.map_var(35) == 1) then
+    if fallout.map_var(40) == 1 or fallout.map_var(35) == 1 then
         Rutger67()
     else
         if fallout.map_var(36) == 1 then
@@ -815,12 +774,10 @@ end
 function Rutger56()
     if fallout.get_critter_stat(fallout.dude_obj(), 34) == 0 then
         fallout.gsay_reply(401, 250)
+    elseif fallout.get_critter_stat(fallout.dude_obj(), 3) >= 7 then
+        fallout.gsay_reply(401, 252)
     else
-        if fallout.get_critter_stat(fallout.dude_obj(), 3) >= 7 then
-            fallout.gsay_reply(401, 252)
-        else
-            fallout.gsay_reply(401, 253)
-        end
+        fallout.gsay_reply(401, 253)
     end
     fallout.giq_option(4, 401, 254, Rutger55a, 50)
     fallout.giq_option(4, 401, 255, Rutger56a, 50)
@@ -828,7 +785,7 @@ function Rutger56()
 end
 
 function Rutger56a()
-    if (fallout.global_var(18) == 1) or (fallout.global_var(17) == 1) then
+    if fallout.global_var(18) == 1 or fallout.global_var(17) == 1 then
         Rutger57()
     else
         Rutger61()
@@ -843,13 +800,11 @@ function Rutger58()
     fallout.gsay_reply(401, 258)
     if reputation.has_rep_berserker() then
         fallout.giq_option(4, 401, 259, Rutger60, 50)
+    elseif reputation.has_rep_champion() then
+        fallout.giq_option(4, 401, 260, Rutger60, 50)
+        fallout.giq_option(4, 401, 261, Rutger60, 50)
     else
-        if reputation.has_rep_champion() then
-            fallout.giq_option(4, 401, 260, Rutger60, 50)
-            fallout.giq_option(4, 401, 261, Rutger60, 50)
-        else
-            fallout.giq_option(4, 401, 262, Rutger61, 50)
-        end
+        fallout.giq_option(4, 401, 262, Rutger61, 50)
     end
     fallout.giq_option(4, 401, 263, Rutger55a, 50)
     fallout.giq_option(4, 401, 248, RutgerEnd, 50)
