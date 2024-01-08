@@ -18,60 +18,53 @@ local SendToWork
 local SendToSleep
 local WakeUpCall
 
-local hostile = 0
+local hostile = false
 local initialized = false
-local SetDayNight = 0
-local Sleeping = 0
+local SetDayNight = false
+local Sleeping = false
 local LastMove = 0
 
 local exit_line = 0
 
 function start()
     if not initialized then
-        initialized = true
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 64)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 50)
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 64)
+        fallout.critter_add_trait(self_obj, 1, 5, 50)
         SendToWork()
+        initialized = true
     end
-    if fallout.script_action() == 21 then
+
+    local script_action = fallout.script_action()
+    if script_action == 21 then
         look_at_p_proc()
-    else
-        if fallout.script_action() == 4 then
-            pickup_p_proc()
-        else
-            if fallout.script_action() == 11 then
-                talk_p_proc()
-            else
-                if fallout.script_action() == 12 then
-                    critter_p_proc()
-                else
-                    if fallout.script_action() == 18 then
-                        destroy_p_proc()
-                    else
-                        if fallout.script_action() == 22 then
-                            timed_event_p_proc()
-                        end
-                    end
-                end
-            end
-        end
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 22 then
+        timed_event_p_proc()
     end
 end
 
 function combat()
-    hostile = 1
+    hostile = true
 end
 
 function critter_p_proc()
     if hostile then
-        hostile = 0
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
 end
 
 function pickup_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
-        hostile = 1
+        hostile = true
     end
 end
 
@@ -102,9 +95,8 @@ function timed_event_p_proc()
 end
 
 function damage_p_proc()
-    local v0 = 0
-    v0 = fallout.obj_pid(fallout.source_obj())
-    if fallout.party_member_obj(v0) ~= 0 then
+    local pid = fallout.obj_pid(fallout.source_obj())
+    if fallout.party_member_obj(pid) ~= nil then
         fallout.set_global_var(248, 1)
     end
 end
@@ -117,87 +109,56 @@ function Caravan02()
     fallout.float_msg(fallout.self_obj(), fallout.message_str(609, fallout.random(112, 122)), 4)
 end
 
+local WORK_TILES <const> = {
+    11504,
+    11904,
+    12102,
+    12299,
+    11098,
+    11497,
+    10698,
+    13503,
+    13503,
+    12700,
+    12704,
+    12305,
+}
+
 function SendToWork()
-    local v0 = 0
-    local v1 = 0
-    v0 = 0
-    v1 = fallout.random(7, 25)
-    while v0 == 0 do
-        v0 = fallout.random(1, 12)
-        if v0 == 1 then
-            v0 = 11504
-        else
-            if v0 == 2 then
-                v0 = 11904
-            else
-                if v0 == 3 then
-                    v0 = 12102
-                else
-                    if v0 == 4 then
-                        v0 = 12299
-                    else
-                        if v0 == 5 then
-                            v0 = 11098
-                        else
-                            if v0 == 6 then
-                                v0 = 11497
-                            else
-                                if v0 == 7 then
-                                    v0 = 10698
-                                else
-                                    if v0 == 8 then
-                                        v0 = 13503
-                                    else
-                                        if v0 == 9 then
-                                            v0 = 13503
-                                        else
-                                            if v0 == 10 then
-                                                v0 = 12700
-                                            else
-                                                if v0 == 11 then
-                                                    v0 = 12704
-                                                else
-                                                    if v0 == 12 then
-                                                        v0 = 12305
-                                                    end
-                                                end
-                                            end
-                                        end
-                                    end
-                                end
-                            end
-                        end
-                    end
-                end
-            end
-        end
-        if v0 == LastMove then
-            v0 = 0
+    local destination = 0
+    destination = 0
+    local delay = fallout.random(7, 25)
+    while destination == 0 do
+        destination = WORK_TILES[fallout.random(1, #WORK_TILES)]
+        if destination == LastMove then
+            destination = 0
         end
     end
-    LastMove = v0
-    fallout.reg_anim_func(2, fallout.self_obj())
+    LastMove = destination
+
+    local self_obj = fallout.self_obj()
+    fallout.reg_anim_func(2, self_obj)
     fallout.reg_anim_func(1, 1)
-    fallout.reg_anim_obj_move_to_tile(fallout.self_obj(), v0, -1)
+    fallout.reg_anim_obj_move_to_tile(self_obj, destination, -1)
     fallout.reg_anim_func(3, 0)
-    fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(v1), 1)
+    fallout.add_timer_event(self_obj, fallout.game_ticks(delay), 1)
 end
 
 function SendToSleep()
-    if Sleeping == 0 then
-        Sleeping = 1
-        if (SetDayNight == 1) and (fallout.random(0, 100) >= 80) then
+    if not Sleeping then
+        Sleeping = true
+        if SetDayNight and fallout.random(0, 100) >= 80 then
             fallout.float_msg(fallout.self_obj(), fallout.message_str(609, 124), 4)
         end
-        SetDayNight = 0
+        SetDayNight = false
     end
 end
 
 function WakeUpCall()
-    if SetDayNight == 0 then
-        Sleeping = 0
-        SetDayNight = 1
-        fallout.set_obj_visibility(fallout.self_obj(), 0)
+    if not SetDayNight then
+        Sleeping = false
+        SetDayNight = true
+        fallout.set_obj_visibility(fallout.self_obj(), false)
         fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(1), 5)
     end
 end
