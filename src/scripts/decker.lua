@@ -49,54 +49,47 @@ local DeckerEndInsult
 local DeckerEndNormal
 local DeckerTransport
 
-local hostile = 0
+local hostile = false
 local initialized = false
-local travel = 0
-
-local exit_line = 0
+local travel = false
 
 function start()
     if not initialized then
-        initialized = true
-        fallout.set_external_var("Decker_Ptr", fallout.self_obj())
+        local self_obj = fallout.self_obj()
+        fallout.set_external_var("Decker_Ptr", self_obj)
         if fallout.map_var(50) == 1 then
-            fallout.set_obj_visibility(fallout.self_obj(), 1)
+            fallout.set_obj_visibility(self_obj, true)
         end
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 38)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 87)
+        fallout.critter_add_trait(self_obj, 1, 6, 38)
+        fallout.critter_add_trait(self_obj, 1, 5, 87)
+        initialized = true
     end
-    if fallout.script_action() == 21 then
+
+    local script_action = fallout.script_action()
+    if script_action == 21 then
         look_at_p_proc()
-    else
-        if fallout.script_action() == 4 then
-            pickup_p_proc()
-        else
-            if fallout.script_action() == 11 then
-                talk_p_proc()
-            else
-                if fallout.script_action() == 12 then
-                    critter_p_proc()
-                else
-                    if fallout.script_action() == 18 then
-                        destroy_p_proc()
-                    end
-                end
-            end
-        end
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
     end
 end
 
 function combat()
-    hostile = 1
+    hostile = true
 end
 
 function critter_p_proc()
     if hostile then
-        hostile = 0
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
-    if travel == 1 then
-        travel = 0
+    if travel then
+        travel = false
         DeckerTransport()
     else
         if fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) <= 10 then
@@ -107,14 +100,14 @@ end
 
 function pickup_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
-        hostile = 1
+        hostile = true
     end
 end
 
 function talk_p_proc()
     fallout.set_global_var(219, 1)
     reaction.get_reaction()
-    if (fallout.map_var(49) == 1) or (fallout.map_var(45) ~= 1) then
+    if fallout.map_var(49) == 1 or fallout.map_var(45) ~= 1 then
         if fallout.map_var(52) == 0 then
             fallout.float_msg(fallout.self_obj(), fallout.message_str(42, 230), 2)
             combat()
@@ -131,22 +124,18 @@ function talk_p_proc()
             Decker01()
             fallout.gsay_end()
             fallout.end_dialogue()
-        else
-            if fallout.global_var(112) == 2 then
-                fallout.start_gdialog(42, fallout.self_obj(), 4, 7, 3)
-                fallout.gsay_start()
-                Decker15()
-                fallout.gsay_end()
-                fallout.end_dialogue()
-            else
-                if fallout.global_var(111) == 2 then
-                    fallout.start_gdialog(42, fallout.self_obj(), 4, 7, 3)
-                    fallout.gsay_start()
-                    Decker26()
-                    fallout.gsay_end()
-                    fallout.end_dialogue()
-                end
-            end
+        elseif fallout.global_var(112) == 2 then
+            fallout.start_gdialog(42, fallout.self_obj(), 4, 7, 3)
+            fallout.gsay_start()
+            Decker15()
+            fallout.gsay_end()
+            fallout.end_dialogue()
+        elseif fallout.global_var(111) == 2 then
+            fallout.start_gdialog(42, fallout.self_obj(), 4, 7, 3)
+            fallout.gsay_start()
+            Decker26()
+            fallout.gsay_end()
+            fallout.end_dialogue()
         end
     end
 end
@@ -155,7 +144,7 @@ function destroy_p_proc()
     reputation.inc_evil_critter()
     fallout.set_map_var(50, 1)
     fallout.set_global_var(203, 1)
-    if (fallout.map_var(49) == 1) and (fallout.map_var(50) == 1) then
+    if fallout.map_var(49) == 1 and fallout.map_var(50) == 1 then
         fallout.set_global_var(202, 1)
         fallout.set_map_var(11, 1)
         fallout.set_map_var(44, 1)
@@ -175,7 +164,9 @@ end
 
 function Decker01()
     fallout.gsay_reply(42, 103)
-    fallout.giq_option(4, 42, fallout.message_str(42, 104) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(42, 105), Decker02, 50)
+    fallout.giq_option(4, 42,
+        fallout.message_str(42, 104) ..
+        fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(42, 105), Decker02, 50)
     fallout.giq_option(4, 42, 106, Decker13, 51)
 end
 
@@ -245,7 +236,9 @@ end
 
 function Decker13()
     fallout.gsay_reply(42, 135)
-    fallout.giq_option(4, 42, fallout.message_str(42, 136) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(42, 137), Decker02, 50)
+    fallout.giq_option(4, 42,
+        fallout.message_str(42, 136) ..
+        fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(42, 137), Decker02, 50)
     fallout.giq_option(4, 42, 138, Decker14, 50)
 end
 
@@ -359,46 +352,50 @@ end
 function DeckerEndAcceptJob1()
     fallout.set_map_var(46, 2)
     fallout.set_global_var(111, 1)
-    travel = 1
+    travel = true
 end
 
 function DeckerEndDeclineJob1()
     fallout.set_map_var(46, 1)
     fallout.set_map_var(11, 1)
     fallout.set_global_var(111, 0)
-    travel = 1
+    travel = true
 end
 
 function DeckerEndAcceptJob2()
     fallout.set_map_var(47, 3)
     fallout.set_global_var(112, 1)
-    travel = 1
+    travel = true
 end
 
 function DeckerEndDeclineJob2()
     fallout.set_map_var(47, 2)
     fallout.set_map_var(11, 1)
     fallout.set_global_var(112, 0)
-    travel = 1
+    travel = true
 end
 
 function DeckerEndInsult()
     fallout.set_map_var(46, 1)
     fallout.set_map_var(11, 1)
     fallout.set_map_var(44, 1)
-    travel = 1
+    travel = true
 end
 
 function DeckerEndNormal()
-    travel = 1
+    travel = true
 end
 
 function DeckerTransport()
+    local dude_obj = fallout.dude_obj()
+    local dude_tile_num = fallout.tile_num(dude_obj)
+    local kane_obj = fallout.external_var("Kane_Ptr")
+    local kane_tile_num = fallout.tile_num(kane_obj)
     fallout.gfade_out(1000)
-    fallout.move_to(fallout.external_var("Kane_Ptr"), 24336, 0)
-    fallout.move_to(fallout.dude_obj(), 23736, 0)
-    fallout.anim(fallout.external_var("Kane_Ptr"), 1000, fallout.rotation_to_tile(fallout.tile_num(fallout.external_var("Kane_Ptr")), fallout.tile_num(fallout.dude_obj())))
-    fallout.anim(fallout.dude_obj(), 1000, fallout.rotation_to_tile(fallout.tile_num(fallout.dude_obj()), fallout.tile_num(fallout.external_var("Kane_Ptr"))))
+    fallout.move_to(kane_obj, 24336, 0)
+    fallout.move_to(dude_obj, 23736, 0)
+    fallout.anim(kane_obj, 1000, fallout.rotation_to_tile(kane_tile_num, dude_tile_num))
+    fallout.anim(dude_obj, 1000, fallout.rotation_to_tile(dude_tile_num, kane_tile_num))
     fallout.gfade_in(1000)
 end
 
