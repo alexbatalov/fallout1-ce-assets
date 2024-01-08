@@ -23,53 +23,46 @@ local CheckMoney03
 local DealerEnd
 local GetOdds
 
-local hostile = 0
+local hostile = false
 local Bet = 0
 local initialized = false
 
-local exit_line = 0
-
 function start()
     if not initialized then
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 38)
+        fallout.critter_add_trait(self_obj, 1, 5, 50)
         initialized = true
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 38)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 50)
     end
-    if fallout.script_action() == 21 then
+
+    local script_action = fallout.script_action()
+    if script_action == 21 then
         look_at_p_proc()
-    else
-        if fallout.script_action() == 4 then
-            pickup_p_proc()
-        else
-            if fallout.script_action() == 11 then
-                talk_p_proc()
-            else
-                if fallout.script_action() == 12 then
-                    critter_p_proc()
-                else
-                    if fallout.script_action() == 18 then
-                        destroy_p_proc()
-                    end
-                end
-            end
-        end
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
     end
 end
 
 function combat()
-    hostile = 1
+    hostile = true
 end
 
 function critter_p_proc()
     if hostile then
-        hostile = 0
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
 end
 
 function pickup_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
-        hostile = 1
+        hostile = true
     end
 end
 
@@ -172,34 +165,28 @@ function DealerEnd()
 end
 
 function GetOdds()
-    local v0 = 0
-    local v1 = 0
-    v0 = fallout.random(1, 36) - 10
-    v1 = fallout.roll_vs_skill(fallout.dude_obj(), 16, -15)
-    if fallout.is_critical(v1) then
-        if fallout.is_success(v1) then
-            v0 = v0 + 10
+    local dice = fallout.random(1, 36) - 10
+    local roll = fallout.roll_vs_skill(fallout.dude_obj(), 16, -15)
+    if fallout.is_critical(roll) then
+        if fallout.is_success(roll) then
+            dice = dice + 10
         else
-            v0 = v0 - 5
+            dice = dice - 5
         end
     else
-        if fallout.is_success(v1) then
-            v0 = v0 + 5
+        if fallout.is_success(roll) then
+            dice = dice + 5
         end
     end
-    fallout.display_msg("dice == " .. v0)
-    if v0 < 10 then
+    fallout.display_msg("dice == " .. dice)
+    if dice < 10 then
         Dealer02()
+    elseif dice < 20 then
+        Dealer03()
+    elseif dice < 30 then
+        Dealer04()
     else
-        if v0 < 20 then
-            Dealer03()
-        else
-            if v0 < 30 then
-                Dealer04()
-            else
-                Dealer05()
-            end
-        end
+        Dealer05()
     end
 end
 
