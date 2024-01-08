@@ -7,23 +7,16 @@ local use_obj_on_p_proc
 local use_skill_on_p_proc
 local set_off_trap
 
-local test = 0
-
 function start()
-    if fallout.script_action() == 21 then
+    local script_action = fallout.script_action()
+    if script_action == 21 then
         look_at_p_proc()
-    else
-        if fallout.script_action() == 6 then
-            use_p_proc()
-        else
-            if fallout.script_action() == 7 then
-                use_obj_on_p_proc()
-            else
-                if fallout.script_action() == 8 then
-                    use_skill_on_p_proc()
-                end
-            end
-        end
+    elseif script_action == 6 then
+        use_p_proc()
+    elseif script_action == 7 then
+        use_obj_on_p_proc()
+    elseif script_action == 8 then
+        use_skill_on_p_proc()
     end
 end
 
@@ -44,16 +37,16 @@ function use_p_proc()
         if fallout.local_var(1) == 0 then
             fallout.script_overrides()
             if fallout.local_var(2) == 0 then
-                test = fallout.roll_vs_skill(fallout.dude_obj(), 11, 0)
-                if fallout.is_success(test) then
+                local roll = fallout.roll_vs_skill(fallout.dude_obj(), 11, 0)
+                if fallout.is_success(roll) then
                     fallout.reg_anim_func(2, fallout.source_obj())
-                    test = fallout.roll_vs_skill(fallout.dude_obj(), 11, 0)
-                    if fallout.is_success(test) then
+                    roll = fallout.roll_vs_skill(fallout.dude_obj(), 11, 0)
+                    if fallout.is_success(roll) then
                         fallout.set_local_var(2, 1)
                         fallout.set_local_var(1, 1)
                         fallout.display_msg(fallout.message_str(872, 103))
                     else
-                        if fallout.is_critical(test) then
+                        if fallout.is_critical(roll) then
                             fallout.set_local_var(2, 1)
                             fallout.set_local_var(1, 1)
                             fallout.display_msg(fallout.message_str(872, 104))
@@ -80,22 +73,22 @@ function use_obj_on_p_proc()
     if fallout.obj_pid(fallout.obj_being_used_with()) == 77 then
         if fallout.local_var(0) == 0 then
             fallout.script_overrides()
-            test = fallout.roll_vs_skill(fallout.dude_obj(), 9, 0)
-            if fallout.is_success(test) then
+            local roll = fallout.roll_vs_skill(fallout.dude_obj(), 9, 0)
+            if fallout.is_success(roll) then
                 fallout.set_local_var(0, 1)
                 fallout.display_msg(fallout.message_str(872, 107))
                 fallout.set_local_var(3, fallout.local_var(3) + 1)
-                if (fallout.local_var(3) >= 3) and (fallout.local_var(1) == 0) then
+                if fallout.local_var(3) >= 3 and fallout.local_var(1) == 0 then
                     fallout.display_msg(fallout.message_str(872, 108))
                     fallout.set_local_var(1, 1)
                     set_off_trap()
                 end
             else
-                if fallout.is_critical(test) then
+                if fallout.is_critical(roll) then
                     fallout.jam_lock(fallout.self_obj())
                     fallout.display_msg(fallout.message_str(872, 109))
                     fallout.set_local_var(3, fallout.local_var(3) + 1)
-                    if (fallout.local_var(3) >= 3) and (fallout.local_var(1) == 0) then
+                    if fallout.local_var(3) >= 3 and fallout.local_var(1) == 0 then
                         fallout.display_msg(fallout.message_str(872, 108))
                         fallout.set_local_var(1, 1)
                         set_off_trap()
@@ -103,7 +96,7 @@ function use_obj_on_p_proc()
                 else
                     fallout.display_msg(fallout.message_str(872, 110))
                     fallout.set_local_var(3, fallout.local_var(3) + 1)
-                    if (fallout.local_var(3) >= 3) and (fallout.local_var(1) == 0) then
+                    if fallout.local_var(3) >= 3 and fallout.local_var(1) == 0 then
                         fallout.display_msg(fallout.message_str(872, 108))
                         fallout.set_local_var(1, 1)
                         set_off_trap()
@@ -117,25 +110,26 @@ function use_obj_on_p_proc()
 end
 
 function use_skill_on_p_proc()
-    if fallout.action_being_used() == 9 then
+    local skill = fallout.action_being_used()
+    if skill == 9 then
         if fallout.local_var(0) == 0 then
             fallout.script_overrides()
-            test = fallout.roll_vs_skill(fallout.dude_obj(), 9, -20)
-            if fallout.is_success(test) then
+            local roll = fallout.roll_vs_skill(fallout.dude_obj(), 9, -20)
+            if fallout.is_success(roll) then
                 fallout.set_local_var(0, 1)
                 fallout.display_msg(fallout.message_str(872, 107))
                 fallout.set_local_var(3, fallout.local_var(3) + 1)
-                if (fallout.local_var(3) >= 3) and (fallout.local_var(1) == 0) then
+                if fallout.local_var(3) >= 3 and fallout.local_var(1) == 0 then
                     fallout.display_msg(fallout.message_str(872, 108))
                     fallout.set_local_var(1, 1)
                     set_off_trap()
                 end
             else
-                if fallout.is_critical(test) then
+                if fallout.is_critical(roll) then
                     fallout.jam_lock(fallout.self_obj())
                     fallout.display_msg(fallout.message_str(872, 109))
                     fallout.set_local_var(3, fallout.local_var(3) + 1)
-                    if (fallout.local_var(3) >= 3) and (fallout.local_var(1) == 0) then
+                    if fallout.local_var(3) >= 3 and fallout.local_var(1) == 0 then
                         fallout.display_msg(fallout.message_str(872, 108))
                         fallout.set_local_var(1, 1)
                         set_off_trap()
@@ -143,7 +137,7 @@ function use_skill_on_p_proc()
                 else
                     fallout.display_msg(fallout.message_str(872, 110))
                     fallout.set_local_var(3, fallout.local_var(3) + 1)
-                    if (fallout.local_var(3) >= 3) and (fallout.local_var(1) == 0) then
+                    if fallout.local_var(3) >= 3 and fallout.local_var(1) == 0 then
                         fallout.display_msg(fallout.message_str(872, 108))
                         fallout.set_local_var(1, 1)
                         set_off_trap()
@@ -153,46 +147,44 @@ function use_skill_on_p_proc()
         else
             fallout.display_msg(fallout.message_str(872, 106))
         end
-    else
-        if fallout.action_being_used() == 11 then
-            if fallout.local_var(2) == 0 then
-                test = fallout.roll_vs_skill(fallout.dude_obj(), 11, 0)
-                if fallout.is_success(test) then
-                    if fallout.is_critical(test) then
-                        fallout.script_overrides()
-                        fallout.display_msg(fallout.message_str(872, 111))
-                        fallout.set_local_var(2, 1)
-                        fallout.set_local_var(1, 1)
-                    else
-                        fallout.script_overrides()
-                        fallout.display_msg(fallout.message_str(872, 112))
-                        fallout.set_local_var(2, 1)
-                    end
-                else
-                    if fallout.is_critical(test) then
-                        fallout.script_overrides()
-                        fallout.display_msg(fallout.message_str(872, 113))
-                        fallout.set_local_var(1, 1)
-                        set_off_trap()
-                    else
-                        fallout.script_overrides()
-                        fallout.display_msg(fallout.message_str(872, 114))
-                    end
-                end
-            else
-                fallout.script_overrides()
-                test = fallout.roll_vs_skill(fallout.dude_obj(), 11, 0)
-                if fallout.is_success(test) then
-                    fallout.display_msg(fallout.message_str(872, 115))
+    elseif skill == 11 then
+        if fallout.local_var(2) == 0 then
+            local roll = fallout.roll_vs_skill(fallout.dude_obj(), 11, 0)
+            if fallout.is_success(roll) then
+                if fallout.is_critical(roll) then
+                    fallout.script_overrides()
+                    fallout.display_msg(fallout.message_str(872, 111))
+                    fallout.set_local_var(2, 1)
                     fallout.set_local_var(1, 1)
                 else
-                    if fallout.is_critical(test) then
-                        fallout.display_msg(fallout.message_str(872, 116))
-                        fallout.set_local_var(1, 1)
-                        set_off_trap()
-                    else
-                        fallout.display_msg(fallout.message_str(872, 117))
-                    end
+                    fallout.script_overrides()
+                    fallout.display_msg(fallout.message_str(872, 112))
+                    fallout.set_local_var(2, 1)
+                end
+            else
+                if fallout.is_critical(roll) then
+                    fallout.script_overrides()
+                    fallout.display_msg(fallout.message_str(872, 113))
+                    fallout.set_local_var(1, 1)
+                    set_off_trap()
+                else
+                    fallout.script_overrides()
+                    fallout.display_msg(fallout.message_str(872, 114))
+                end
+            end
+        else
+            fallout.script_overrides()
+            local roll = fallout.roll_vs_skill(fallout.dude_obj(), 11, 0)
+            if fallout.is_success(roll) then
+                fallout.display_msg(fallout.message_str(872, 115))
+                fallout.set_local_var(1, 1)
+            else
+                if fallout.is_critical(roll) then
+                    fallout.display_msg(fallout.message_str(872, 116))
+                    fallout.set_local_var(1, 1)
+                    set_off_trap()
+                else
+                    fallout.display_msg(fallout.message_str(872, 117))
                 end
             end
         end
