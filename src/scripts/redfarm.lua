@@ -18,72 +18,62 @@ local SendToWork
 local SendToSleep
 local CheckWorkHeading
 
-local hostile = 0
+local hostile = false
 local initialized = false
-local SetDayNight = 0
-local Sleeping = 0
+local SetDayNight = false
+local Sleeping = false
 local LastMove = 0
-local destination = 0
-local CurrentTile = 0
 local Count = 0
-
-local exit_line = 0
 
 function start()
     if not initialized then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 65)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 51)
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 65)
+        fallout.critter_add_trait(self_obj, 1, 5, 51)
         initialized = true
         LastMove = 21347
         Count = fallout.random(0, 7)
     end
-    if fallout.script_action() == 21 then
+
+    local script_action = fallout.script_action()
+    if script_action == 21 then
         look_at_p_proc()
-    else
-        if fallout.script_action() == 4 then
-            pickup_p_proc()
-        else
-            if fallout.script_action() == 11 then
-                talk_p_proc()
-            else
-                if fallout.script_action() == 12 then
-                    critter_p_proc()
-                else
-                    if fallout.script_action() == 18 then
-                        destroy_p_proc()
-                    else
-                        if fallout.script_action() == 22 then
-                            timed_event_p_proc()
-                        end
-                    end
-                end
-            end
-        end
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 22 then
+        timed_event_p_proc()
     end
 end
 
 function combat()
-    hostile = 1
+    hostile = true
 end
 
 function critter_p_proc()
+    local self_obj = fallout.self_obj()
     if hostile then
-        hostile = 0
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
     if not time.is_night() then
-        if SetDayNight == 0 then
-            fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(fallout.random(30, 40)), 1)
-            SetDayNight = 1
+        if SetDayNight then
+            fallout.add_timer_event(self_obj, fallout.game_ticks(fallout.random(30, 40)), 1)
+            SetDayNight = true
         end
     else
-        if Sleeping == 0 then
-            fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(2), 1)
+        if not Sleeping then
+            fallout.add_timer_event(self_obj, fallout.game_ticks(2), 1)
         end
     end
-    if fallout.tile_num(fallout.self_obj()) == 26728 then
-        if fallout.has_trait(1, fallout.self_obj(), 10) ~= 2 then
-            fallout.anim(fallout.self_obj(), 1000, 2)
+    if fallout.tile_num(self_obj) == 26728 then
+        if fallout.has_trait(1, self_obj, 10) ~= 2 then
+            fallout.anim(self_obj, 1000, 2)
         end
     end
     CheckWorkHeading()
@@ -91,7 +81,7 @@ end
 
 function pickup_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
-        hostile = 1
+        hostile = true
     end
 end
 
@@ -115,7 +105,7 @@ end
 
 function timed_event_p_proc()
     if time.is_morning() or time.is_day() then
-        Sleeping = 0
+        Sleeping = false
         SendToWork()
     else
         SendToSleep()
@@ -123,21 +113,19 @@ function timed_event_p_proc()
 end
 
 function damage_p_proc()
-    local v0 = 0
-    v0 = fallout.obj_pid(fallout.source_obj())
-    if fallout.party_member_obj(v0) ~= 0 then
+    local pid = fallout.obj_pid(fallout.source_obj())
+    if fallout.party_member_obj(pid) ~= nil then
         fallout.set_global_var(248, 1)
     end
 end
 
 function Farmer00()
-    local v0 = 0
     if fallout.global_var(5) == 1 then
-        v0 = fallout.random(101, 109)
-        if v0 == 108 then
-            v0 = 109
+        local num = fallout.random(101, 109)
+        if num == 108 then
+            num = 109
         end
-        fallout.float_msg(fallout.self_obj(), fallout.message_str(580, v0), 8)
+        fallout.float_msg(fallout.self_obj(), fallout.message_str(580, num), 8)
     else
         fallout.float_msg(fallout.self_obj(), fallout.message_str(580, fallout.random(101, 108)), 8)
     end
@@ -147,43 +135,22 @@ function Farmer01()
     fallout.float_msg(fallout.self_obj(), fallout.message_str(580, fallout.random(110, 114)), 8)
 end
 
+local WORK_TILES <const> = {
+    21347,
+    22546,
+    23146,
+    21750,
+    22750,
+    20554,
+    21150,
+    24146,
+}
+
 function SendToWork()
-    local v0 = 0
-    destination = 0
-    v0 = fallout.random(8, 25)
+    local destination = 0
+    local delay = fallout.random(8, 25)
     while destination == 0 do
-        destination = fallout.random(1, 8)
-        if destination == 1 then
-            destination = 21347
-        else
-            if destination == 2 then
-                destination = 22546
-            else
-                if destination == 3 then
-                    destination = 23146
-                else
-                    if destination == 4 then
-                        destination = 21750
-                    else
-                        if destination == 5 then
-                            destination = 22750
-                        else
-                            if destination == 6 then
-                                destination = 20554
-                            else
-                                if destination == 7 then
-                                    destination = 21150
-                                else
-                                    if destination == 8 then
-                                        destination = 24146
-                                    end
-                                end
-                            end
-                        end
-                    end
-                end
-            end
-        end
+        destination = WORK_TILES[fallout.random(1, #WORK_TILES)]
         if destination == LastMove then
             destination = 0
         end
@@ -192,40 +159,44 @@ function SendToWork()
     if Count >= 8 then
         Count = 0
         destination = 26935
-        v0 = 35
+        delay = 35
     end
     LastMove = destination
-    fallout.reg_anim_func(2, fallout.self_obj())
+
+    local self_obj = fallout.self_obj()
+    fallout.reg_anim_func(2, self_obj)
     fallout.reg_anim_func(1, 1)
-    fallout.reg_anim_obj_move_to_tile(fallout.self_obj(), destination, -1)
+    fallout.reg_anim_obj_move_to_tile(self_obj, destination, -1)
     fallout.reg_anim_func(3, 0)
-    fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(v0), 1)
+    fallout.add_timer_event(self_obj, fallout.game_ticks(delay), 1)
 end
 
 function SendToSleep()
-    if Sleeping == 0 then
-        fallout.reg_anim_func(2, fallout.self_obj())
+    if not Sleeping then
+        local self_obj = fallout.self_obj()
+        fallout.reg_anim_func(2, self_obj)
         fallout.reg_anim_func(1, 1)
-        fallout.reg_anim_obj_move_to_tile(fallout.self_obj(), 26728, -1)
+        fallout.reg_anim_obj_move_to_tile(self_obj, 26728, -1)
         fallout.reg_anim_func(3, 0)
-        Sleeping = 1
-        SetDayNight = 0
+        Sleeping = true
+        SetDayNight = false
         Count = 0
         LastMove = 26728
     end
 end
 
 function CheckWorkHeading()
-    if Sleeping == 0 then
-        CurrentTile = fallout.tile_num(fallout.self_obj())
-        if CurrentTile == LastMove then
-            if CurrentTile == 24146 then
-                if fallout.has_trait(1, fallout.self_obj(), 10) ~= 2 then
-                    fallout.anim(fallout.self_obj(), 1000, 2)
+    if not Sleeping then
+        local self_obj = fallout.self_obj()
+        local self_tile_num = fallout.tile_num(self_obj)
+        if self_tile_num == LastMove then
+            if self_tile_num == 24146 then
+                if fallout.has_trait(1, self_obj, 10) ~= 2 then
+                    fallout.anim(self_obj, 1000, 2)
                 end
             else
-                if fallout.has_trait(1, fallout.self_obj(), 10) ~= 0 then
-                    fallout.anim(fallout.self_obj(), 1000, 0)
+                if fallout.has_trait(1, self_obj, 10) ~= 0 then
+                    fallout.anim(self_obj, 1000, 0)
                 end
             end
         end
