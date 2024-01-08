@@ -5,8 +5,11 @@ local time = require("lib.time")
 
 local start
 local gameover
-local do_dialogue
-local Critter_Action
+local talk_p_proc
+local critter_p_proc
+local destroy_p_proc
+local look_at_p_proc
+local timed_event_p_proc
 local harryleave
 local harryend
 local harrycbt
@@ -76,69 +79,31 @@ local harry308
 local pickup_p_proc
 local harryxxx
 
-local Hostile = 0
+local hostile = false
 local initialized = false
-local noevent = 0
-local loopcount = 0
-
-local exit_line = 0
 
 function start()
     if not initialized then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 34)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 79)
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 34)
+        fallout.critter_add_trait(self_obj, 1, 5, 79)
         fallout.set_local_var(5, 0)
         initialized = true
     end
-    if fallout.script_action() == 11 then
-        if fallout.global_var(306) == 0 then
-            do_dialogue()
-        else
-            fallout.display_msg(fallout.message_str(16, 193))
-        end
-    else
-        if (fallout.script_action() == 21) or (fallout.script_action() == 3) then
-            fallout.script_overrides()
-            fallout.display_msg(fallout.message_str(16, 100))
-        else
-            if fallout.script_action() == 22 then
-                if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
-                    if fallout.fixed_param() == 1 then
-                        harry07b()
-                    else
-                        if fallout.fixed_param() == 2 then
-                            harry21()
-                        end
-                    end
-                end
-            else
-                if fallout.script_action() == 4 then
-                    pickup_p_proc()
-                else
-                    if fallout.script_action() == 12 then
-                        if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) and (fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 8) then
-                            if fallout.local_var(4) == 0 then
-                                fallout.dialogue_system_enter()
-                            else
-                                Critter_Action()
-                            end
-                        else
-                            Critter_Action()
-                        end
-                    else
-                        if fallout.script_action() == 18 then
-                            fallout.set_global_var(35, fallout.global_var(35) + 1)
-                            if fallout.global_var(35) > fallout.global_var(551) then
-                                fallout.set_global_var(155, fallout.global_var(155) + 3)
-                                fallout.set_global_var(29, 2)
-                                fallout.set_global_var(225, time.game_time_in_days())
-                            end
-                            reputation.inc_evil_critter()
-                        end
-                    end
-                end
-            end
-        end
+
+    local script_action = fallout.script_action()
+    if script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 21 or script_action == 3 then
+        look_at_p_proc()
+    elseif script_action == 22 then
+        timed_event_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
     end
 end
 
@@ -146,62 +111,90 @@ function gameover()
     fallout.gsay_message(16, 191, 50)
 end
 
-function do_dialogue()
-    reaction.get_reaction()
-    fallout.start_gdialog(16, fallout.self_obj(), 4, 5, 4)
-    fallout.gsay_start()
-    if fallout.local_var(4) ~= 0 then
-        if fallout.local_var(1) >= 2 then
-            harry19()
-        else
-            harry11()
-        end
-    else
-        fallout.set_local_var(4, 1)
-        if fallout.global_var(17) ~= 0 then
-            harry26()
-        else
-            if fallout.global_var(59) == 1 then
-                harry23()
+function talk_p_proc()
+    if fallout.global_var(306) == 0 then
+        reaction.get_reaction()
+        fallout.start_gdialog(16, fallout.self_obj(), 4, 5, 4)
+        fallout.gsay_start()
+        if fallout.local_var(4) ~= 0 then
+            if fallout.local_var(1) >= 2 then
+                harry19()
             else
-                if fallout.global_var(35) > 0 then
-                    harry18()
+                harry11()
+            end
+        else
+            fallout.set_local_var(4, 1)
+            if fallout.global_var(17) ~= 0 then
+                harry26()
+            elseif fallout.global_var(59) == 1 then
+                harry23()
+            elseif fallout.global_var(35) > 0 then
+                harry18()
+            elseif fallout.local_var(1) >= 2 and not hostile then
+                if fallout.is_success(fallout.do_check(fallout.dude_obj(), 3, 0)) and fallout.get_critter_stat(fallout.dude_obj(), 34) == 1 then
+                    harry12()
                 else
-                    if (fallout.local_var(1) >= 2) and (Hostile == 0) then
-                        if fallout.is_success(fallout.do_check(fallout.dude_obj(), 3, 0)) and (fallout.get_critter_stat(fallout.dude_obj(), 34) == 1) then
-                            harry12()
-                        else
-                            harry00()
-                        end
-                    else
-                        harry07()
-                    end
+                    harry00()
                 end
+            else
+                harry07()
+            end
+        end
+        fallout.gsay_end()
+        fallout.end_dialogue()
+    else
+        fallout.display_msg(fallout.message_str(16, 193))
+    end
+end
+
+function critter_p_proc()
+    local self_obj = fallout.self_obj()
+    local dude_obj = fallout.dude_obj()
+    if fallout.obj_can_see_obj(self_obj, dude_obj)
+        and fallout.tile_distance_objs(self_obj, dude_obj) < 8
+        and fallout.local_var(4) == 0 then
+        fallout.dialogue_system_enter()
+    else
+        if hostile then
+            hostile = false
+            fallout.attack(dude_obj, 0, 1, 0, 0, 30000, 0, 0)
+        else
+            local self_tile_num = fallout.tile_num(self_obj)
+            if fallout.global_var(306) == 1 and self_tile_num ~= 15507 then
+                fallout.animate_move_obj_to_tile(self_obj, 15507, 0)
+            elseif fallout.global_var(306) == 1 and self_tile_num == 15507 then
+                fallout.set_global_var(306, 2)
+            elseif fallout.global_var(306) == 2 and self_tile_num ~= 12536 then
+                fallout.animate_move_obj_to_tile(self_obj, 12536, 0)
+            elseif fallout.global_var(306) == 2 and self_tile_num == 12536 then
+                fallout.set_obj_visibility(self_obj, true)
             end
         end
     end
-    fallout.gsay_end()
-    fallout.end_dialogue()
 end
 
-function Critter_Action()
-    if Hostile > 0 then
-        Hostile = 0
-        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
-    else
-        if (fallout.global_var(306) == 1) and (fallout.tile_num(fallout.self_obj()) ~= 15507) then
-            fallout.animate_move_obj_to_tile(fallout.self_obj(), 15507, 0)
+function destroy_p_proc()
+    fallout.set_global_var(35, fallout.global_var(35) + 1)
+    if fallout.global_var(35) > fallout.global_var(551) then
+        fallout.set_global_var(155, fallout.global_var(155) + 3)
+        fallout.set_global_var(29, 2)
+        fallout.set_global_var(225, time.game_time_in_days())
+    end
+    reputation.inc_evil_critter()
+end
+
+function look_at_p_proc()
+    fallout.script_overrides()
+    fallout.display_msg(fallout.message_str(16, 100))
+end
+
+function timed_event_p_proc()
+    if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
+        if fallout.fixed_param() == 1 then
+            harry07b()
         else
-            if (fallout.global_var(306) == 1) and (fallout.tile_num(fallout.self_obj()) == 15507) then
-                fallout.set_global_var(306, 2)
-            else
-                if (fallout.global_var(306) == 2) and (fallout.tile_num(fallout.self_obj()) ~= 12536) then
-                    fallout.animate_move_obj_to_tile(fallout.self_obj(), 12536, 0)
-                else
-                    if (fallout.tile_num(fallout.self_obj()) == 12536) and (fallout.global_var(306) == 2) then
-                        fallout.set_obj_visibility(fallout.self_obj(), 1)
-                    end
-                end
+            if fallout.fixed_param() == 2 then
+                harry21()
             end
         end
     end
@@ -215,19 +208,19 @@ function harryend()
 end
 
 function harrycbt()
-    Hostile = 1
+    hostile = true
 end
 
 function harryturn()
-    Hostile = 1
+    hostile = true
 end
 
 function harryextra()
-    Hostile = 1
+    hostile = true
 end
 
 function surprise()
-    Hostile = 1
+    hostile = true
 end
 
 function harrytime()
@@ -582,7 +575,7 @@ end
 
 function pickup_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
-        Hostile = 1
+        hostile = true
     end
 end
 
@@ -595,4 +588,9 @@ end
 local exports = {}
 exports.start = start
 exports.pickup_p_proc = pickup_p_proc
+exports.talk_p_proc = talk_p_proc
+exports.critter_p_proc = critter_p_proc
+exports.destroy_p_proc = destroy_p_proc
+exports.look_at_p_proc = look_at_p_proc
+exports.timed_event_p_proc = timed_event_p_proc
 return exports
