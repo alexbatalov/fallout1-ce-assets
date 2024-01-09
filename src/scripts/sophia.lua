@@ -37,62 +37,52 @@ local anger
 local gotoend
 local gotostory
 
-local hostile = 0
-local item = 0
-local Pick = 0
+local hostile = false
 local initialized = false
-local message = 0
-
-local exit_line = 0
 
 function start()
     if not initialized then
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 44)
+        fallout.critter_add_trait(self_obj, 1, 5, 63)
         initialized = true
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 44)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 63)
     end
-    if fallout.script_action() == 21 then
+
+    local script_action = fallout.script_action()
+    if script_action == 21 then
         look_at_p_proc()
-    else
-        if fallout.script_action() == 4 then
-            pickup_p_proc()
-        else
-            if fallout.script_action() == 11 then
-                talk_p_proc()
-            else
-                if fallout.script_action() == 12 then
-                    critter_p_proc()
-                else
-                    if fallout.script_action() == 18 then
-                        destroy_p_proc()
-                    end
-                end
-            end
-        end
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
     end
 end
 
 function combat()
-    hostile = 1
+    hostile = true
 end
 
 function critter_p_proc()
     if fallout.global_var(250) ~= 0 then
-        hostile = 1
+        hostile = true
     end
     if fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) > 12 then
-        hostile = 0
+        hostile = false
     end
     if hostile then
         fallout.set_global_var(250, 1)
-        hostile = 0
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
 end
 
 function pickup_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
-        hostile = 1
+        hostile = true
     end
 end
 
@@ -207,7 +197,7 @@ function goto09()
     if fallout.local_var(6) ~= 1 then
         fallout.giq_option(4, 319, 338, goto12, 49)
     end
-    fallout.giq_option(4, 319, 339, DownReact, 51)
+    fallout.giq_option(4, 319, 339, reaction.DownReact, 51)
     fallout.giq_option(4, 319, 341, goto01, 51)
     fallout.giq_option(4, 319, 342, goto10, 50)
 end
@@ -220,16 +210,16 @@ function goto11()
     fallout.gsay_reply(319, 344)
     fallout.giq_option(4, 319, 345, gotoend, 50)
     fallout.giq_option(4, 319, 346, goto13, 50)
-    fallout.giq_option(4, 319, 347, DownReact, 51)
+    fallout.giq_option(4, 319, 347, reaction.DownReact, 51)
 end
 
 function goto12()
     fallout.set_local_var(6, 1)
-    item = fallout.create_object_sid(215, 0, 0, -1)
-    fallout.add_obj_to_inven(fallout.dude_obj(), item)
+    local item_obj = fallout.create_object_sid(215, 0, 0, -1)
+    fallout.add_obj_to_inven(fallout.dude_obj(), item_obj)
     fallout.gsay_reply(319, 348)
     fallout.giq_option(4, 319, 349, gotoend, 50)
-    fallout.giq_option(4, 319, 350, DownReact, 51)
+    fallout.giq_option(4, 319, 350, reaction.DownReact, 51)
 end
 
 function goto13()
@@ -253,7 +243,7 @@ function goto15()
     fallout.gsay_reply(319, 359)
     fallout.giq_option(4, 319, 360, goto07, 50)
     fallout.giq_option(4, 319, 361, anger, 51)
-    fallout.giq_option(4, 319, 362, DownReact, 51)
+    fallout.giq_option(4, 319, 362, reaction.DownReact, 51)
 end
 
 function goto16()
@@ -281,13 +271,13 @@ end
 function goto18()
     fallout.gsay_reply(319, 374)
     fallout.giq_option(4, 319, 369, gotoend, 50)
-    fallout.giq_option(4, 319, 350, DownReact, 51)
+    fallout.giq_option(4, 319, 350, reaction.DownReact, 51)
 end
 
 function goto19()
     fallout.gsay_reply(319, 374)
     fallout.giq_option(4, 319, 369, gotoend, 50)
-    fallout.giq_option(4, 319, 350, DownReact, 51)
+    fallout.giq_option(4, 319, 350, reaction.DownReact, 51)
 end
 
 function goto20()
