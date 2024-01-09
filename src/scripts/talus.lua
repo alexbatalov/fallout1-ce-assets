@@ -71,55 +71,41 @@ local pickup_p_proc
 local talk_p_proc
 local destroy_p_proc
 local look_at_p_proc
+local timed_event_p_proc
 
-local armed = 0
-local temp = 0
-local flag1 = 0
-local flag5 = 0
-local who_vree = 0
-local who_rhombus = 0
-local who_maxson = 0
-local line16flag = 0
+local armed = false
+local who_vree = false
+local who_rhombus = false
+local who_maxson = false
+local line16flag = false
 local initialized = false
-local Hostile = 0
-local drugs = 0
-local awardex = 0
-
-local exit_line = 0
+local hostile = false
+local awardex = false
 
 local Talus36
 
 function start()
     if not initialized then
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 44)
+        fallout.critter_add_trait(self_obj, 1, 5, 65)
+        fallout.add_timer_event(self_obj, fallout.game_ticks(30), 2)
         initialized = true
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 44)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 65)
-        fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(30), 2)
     end
-    if fallout.script_action() == 21 then
+
+    local script_action = fallout.script_action()
+    if script_action == 21 then
         look_at_p_proc()
-    else
-        if fallout.script_action() == 4 then
-            pickup_p_proc()
-        else
-            if fallout.script_action() == 11 then
-                talk_p_proc()
-            else
-                if fallout.script_action() == 22 then
-                    if fallout.global_var(250) == 0 then
-                        TalusBackground()
-                    end
-                else
-                    if fallout.script_action() == 12 then
-                        critter_p_proc()
-                    else
-                        if fallout.script_action() == 18 then
-                            destroy_p_proc()
-                        end
-                    end
-                end
-            end
-        end
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 22 then
+        timed_event_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
     end
 end
 
@@ -128,15 +114,13 @@ function do_dialogue()
     if armed then
         if fallout.local_var(6) == 0 then
             Talus11()
+        elseif fallout.local_var(6) == 1 then
+            Talus12()
         else
-            if fallout.local_var(6) == 1 then
-                Talus12()
-            else
-                Talus13()
-            end
+            Talus13()
         end
     else
-        if (fallout.global_var(109) == 2) and (fallout.local_var(8) == 0) then
+        if fallout.global_var(109) == 2 and fallout.local_var(8) == 0 then
             if fallout.local_var(7) == 0 then
                 Talus49()
             else
@@ -145,12 +129,10 @@ function do_dialogue()
         else
             if fallout.local_var(7) == 0 then
                 Talus00()
+            elseif fallout.local_var(1) == 1 then
+                Talus22()
             else
-                if fallout.local_var(1) == 1 then
-                    Talus22()
-                else
-                    Talus14()
-                end
+                Talus14()
             end
         end
     end
@@ -159,9 +141,9 @@ end
 
 function weapon_check()
     if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) then
-        armed = 1
+        armed = true
     else
-        armed = 0
+        armed = false
     end
 end
 
@@ -188,15 +170,13 @@ end
 function Talus01()
     fallout.gsay_reply(318, 106)
     fallout.giq_option(4, 318, 107, Talus05, 50)
-    exit_line = reaction.Goodbyes()
-    fallout.giq_option(4, 0, exit_line, TalusEnd, 50)
+    fallout.giq_option(4, 0, reaction.Goodbyes(), TalusEnd, 50)
 end
 
 function Talus02()
     fallout.gsay_reply(318, 108)
     fallout.giq_option(4, 318, 107, Talus05, 50)
-    exit_line = reaction.Goodbyes()
-    fallout.giq_option(4, 0, exit_line, TalusEnd, 50)
+    fallout.giq_option(4, 0, reaction.Goodbyes(), TalusEnd, 50)
 end
 
 function Talus05()
@@ -207,8 +187,7 @@ function Talus05()
     end
     fallout.giq_option(4, 318, 401, Talus28, 50)
     fallout.giq_option(4, 318, 402, Talus28, 50)
-    exit_line = reaction.Goodbyes()
-    fallout.giq_option(4, 0, exit_line, TalusEnd, 50)
+    fallout.giq_option(4, 0, reaction.Goodbyes(), TalusEnd, 50)
 end
 
 function Talus06()
@@ -264,8 +243,10 @@ function Talus13()
 end
 
 function Talus14()
-    fallout.gsay_reply(318, fallout.message_str(318, 130) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(318, 131))
-    if not(line16flag) then
+    fallout.gsay_reply(318,
+        fallout.message_str(318, 130) ..
+        fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(318, 131))
+    if not line16flag then
         fallout.giq_option(5, 318, 132, Talus16, 50)
     else
         fallout.giq_option(5, 318, 133, Talus17, 50)
@@ -295,7 +276,7 @@ function Talus15()
 end
 
 function Talus16()
-    line16flag = 1
+    line16flag = true
     fallout.gsay_message(318, 141, 50)
     Talus18()
 end
@@ -313,38 +294,38 @@ function Talus18()
 end
 
 function Talus19()
-    who_rhombus = 1
+    who_rhombus = true
     fallout.gsay_message(318, 147, 50)
     fallout.gsay_reply(318, 148)
-    if who_vree == 0 then
+    if not who_vree then
         fallout.giq_option(4, 318, 145, Talus20, 50)
     end
-    if who_maxson == 0 then
+    if not who_maxson then
         fallout.giq_option(4, 318, 146, Talus21, 50)
     end
     fallout.giq_option(4, 318, 151, TalusEnd, 50)
 end
 
 function Talus20()
-    who_vree = 1
+    who_vree = true
     fallout.gsay_message(318, 152, 50)
     fallout.gsay_reply(318, 153)
-    if who_rhombus == 0 then
+    if not who_rhombus then
         fallout.giq_option(4, 318, 144, Talus19, 50)
     end
-    if who_maxson == 0 then
+    if not who_maxson then
         fallout.giq_option(4, 318, 146, Talus21, 50)
     end
     fallout.giq_option(4, 318, 156, TalusEnd, 50)
 end
 
 function Talus21()
-    who_maxson = 1
+    who_maxson = true
     fallout.gsay_reply(318, 157)
-    if who_rhombus == 0 then
+    if not who_rhombus then
         fallout.giq_option(4, 318, 144, Talus19, 50)
     end
-    if who_vree == 0 then
+    if not who_vree then
         fallout.giq_option(4, 318, 145, Talus20, 50)
     end
     fallout.giq_option(4, 318, 160, TalusEnd, 50)
@@ -352,7 +333,7 @@ end
 
 function Talus22()
     fallout.gsay_reply(318, 161)
-    fallout.giq_option(4, 318, 162, DownReact, 51)
+    fallout.giq_option(4, 318, 162, reaction.DownReact, 51)
     fallout.giq_option(4, 318, 163, TalusEnd, 50)
     if fallout.local_var(5) == 1 then
         fallout.giq_option(4, 318, 135, TalusAmmo, 50)
@@ -374,10 +355,8 @@ end
 function Talus25()
     fallout.gsay_message(318, 168, 50)
     fallout.set_map_var(17, 1)
-    temp = fallout.map_var(9) + 3
-    fallout.set_map_var(9, temp)
-    temp = fallout.map_var(10) + 3
-    fallout.set_map_var(10, temp)
+    fallout.set_map_var(9, fallout.map_var(9) + 3)
+    fallout.set_map_var(10, fallout.map_var(10) + 3)
 end
 
 function Talus26()
@@ -499,7 +478,9 @@ function Talus46()
 end
 
 function Talus47()
-    fallout.gsay_reply(318, fallout.message_str(318, 201) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(318, 202))
+    fallout.gsay_reply(318,
+        fallout.message_str(318, 201) ..
+        fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(318, 202))
     fallout.giq_option(4, 318, 205, Talus51, 50)
     fallout.giq_option(-3, 318, 206, Talus50, 50)
 end
@@ -551,7 +532,7 @@ end
 
 function Talus53()
     fallout.set_local_var(8, 1)
-    awardex = 1
+    awardex = true
     fallout.gsay_message(318, 216, 50)
 end
 
@@ -559,7 +540,9 @@ function Talus54()
     fallout.set_local_var(9, 1)
     fallout.set_map_var(9, fallout.map_var(9) + 1)
     fallout.set_map_var(15, 1)
-    fallout.gsay_message(318, fallout.message_str(318, 201) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(318, 217), 50)
+    fallout.gsay_message(318,
+        fallout.message_str(318, 201) ..
+        fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(318, 217), 50)
 end
 
 function Talus55()
@@ -568,28 +551,20 @@ function Talus55()
 end
 
 function TalusBackground()
-    local v0 = 0
-    v0 = fallout.random(1, 5)
-    if v0 == 1 then
-        v0 = fallout.message_str(318, 219)
-    else
-        if v0 == 2 then
-            v0 = fallout.message_str(318, 220)
-        else
-            if v0 == 3 then
-                v0 = fallout.message_str(318, 221)
-            else
-                if v0 == 4 then
-                    v0 = fallout.message_str(318, 222)
-                else
-                    if v0 == 5 then
-                        v0 = fallout.message_str(318, 223)
-                    end
-                end
-            end
-        end
+    local rnd = fallout.random(1, 5)
+    local msg
+    if rnd == 1 then
+        msg = fallout.message_str(318, 219)
+    elseif rnd == 2 then
+        msg = fallout.message_str(318, 220)
+    elseif rnd == 3 then
+        msg = fallout.message_str(318, 221)
+    elseif rnd == 4 then
+        msg = fallout.message_str(318, 222)
+    elseif rnd == 5 then
+        msg = fallout.message_str(318, 223)
     end
-    fallout.float_msg(fallout.self_obj(), v0, 0)
+    fallout.float_msg(fallout.self_obj(), msg, 0)
     fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(180), 2)
 end
 
@@ -606,21 +581,21 @@ end
 
 function critter_p_proc()
     if fallout.global_var(250) ~= 0 then
-        Hostile = 1
+        hostile = true
     end
     if fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) > 12 then
-        Hostile = 0
+        hostile = false
     end
-    if Hostile then
+    if hostile then
         fallout.set_global_var(250, 1)
-        Hostile = 0
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
 end
 
 function pickup_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
-        Hostile = 1
+        hostile = true
     end
 end
 
@@ -638,11 +613,11 @@ function talk_p_proc()
     fallout.gsay_end()
     fallout.end_dialogue()
     if awardex then
-        awardex = 0
-        temp = 1500
-        fallout.display_msg(fallout.message_str(318, 408) .. temp .. fallout.message_str(318, 409))
+        awardex = false
+        local xp = 1500
+        fallout.display_msg(fallout.message_str(318, 408) .. xp .. fallout.message_str(318, 409))
         fallout.set_global_var(155, fallout.global_var(155) + 1)
-        fallout.give_exp_points(temp)
+        fallout.give_exp_points(xp)
     end
 end
 
@@ -657,6 +632,12 @@ function look_at_p_proc()
     fallout.display_msg(fallout.message_str(318, 100))
 end
 
+function timed_event_p_proc()
+    if fallout.global_var(250) == 0 then
+        TalusBackground()
+    end
+end
+
 function Talus36()
     fallout.gsay_message(318, 184, 51)
 end
@@ -668,4 +649,5 @@ exports.pickup_p_proc = pickup_p_proc
 exports.talk_p_proc = talk_p_proc
 exports.destroy_p_proc = destroy_p_proc
 exports.look_at_p_proc = look_at_p_proc
+exports.timed_event_p_proc = timed_event_p_proc
 return exports
