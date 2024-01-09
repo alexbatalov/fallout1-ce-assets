@@ -44,40 +44,31 @@ local look_at_p_proc
 local smalltalk
 local pre_dialogue
 
-local known = 0
+local known = false
 local initialized = false
-local hostile = 0
-local radx = 0
+local hostile = false
 local ccount = 0
-local loot = 0
-local stuff = 0
-
-local exit_line = 0
+local loot_obj = nil
 
 function start()
     if not initialized then
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 44)
+        fallout.critter_add_trait(self_obj, 1, 5, 64)
         initialized = true
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 44)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 64)
     end
-    if fallout.script_action() == 21 then
+
+    local script_action = fallout.script_action()
+    if script_action == 21 then
         look_at_p_proc()
-    else
-        if fallout.script_action() == 4 then
-            pickup_p_proc()
-        else
-            if fallout.script_action() == 11 then
-                talk_p_proc()
-            else
-                if fallout.script_action() == 12 then
-                    critter_p_proc()
-                else
-                    if fallout.script_action() == 18 then
-                        destroy_p_proc()
-                    end
-                end
-            end
-        end
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
     end
 end
 
@@ -89,24 +80,16 @@ function do_dialogue()
     if fallout.local_var(4) == 0 then
         fallout.set_local_var(4, 1)
         goto01()
+    elseif fallout.global_var(304) == 2 then
+        goto26()
+    elseif fallout.global_var(304) == 3 then
+        goto26()
+    elseif fallout.obj_carrying_pid_obj(fallout.dude_obj(), 229) ~= nil then
+        goto23()
+    elseif fallout.global_var(304) ~= 0 then
+        goto17()
     else
-        if fallout.global_var(304) == 2 then
-            goto26()
-        else
-            if fallout.global_var(304) == 3 then
-                goto26()
-            else
-                if fallout.obj_carrying_pid_obj(fallout.dude_obj(), 229) then
-                    goto23()
-                else
-                    if fallout.global_var(304) ~= 0 then
-                        goto17()
-                    else
-                        goto27()
-                    end
-                end
-            end
-        end
+        goto27()
     end
     fallout.gsay_end()
     fallout.end_dialogue()
@@ -193,6 +176,7 @@ function goto12()
 end
 
 function goto13()
+    known = true
     fallout.gsay_reply(845, 137)
     fallout.giq_option(4, 845, 138, goto02, 50)
     fallout.giq_option(4, 845, 139, goto04, 51)
@@ -206,7 +190,9 @@ end
 
 function goto15()
     fallout.gsay_reply(845, 143)
-    fallout.giq_option(4, 845, fallout.message_str(845, 144) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(845, 145), goto13, 50)
+    fallout.giq_option(4, 845,
+        fallout.message_str(845, 144) ..
+        fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(845, 145), goto13, 50)
     fallout.giq_option(4, 845, 146, goto16, 50)
 end
 
@@ -249,10 +235,9 @@ function goto22()
 end
 
 function goto23()
-    loot = 0
     fallout.gsay_reply(845, 163)
-    loot = fallout.obj_carrying_pid_obj(fallout.dude_obj(), 229)
-    if loot then
+    loot_obj = fallout.obj_carrying_pid_obj(fallout.dude_obj(), 229)
+    if loot_obj ~= nil then
         fallout.giq_option(4, 845, 164, goto24, 50)
     end
     fallout.giq_option(4, 845, 165, goto25, 50)
@@ -260,7 +245,7 @@ function goto23()
 end
 
 function goto24()
-    fallout.rm_obj_from_inven(fallout.dude_obj(), loot)
+    fallout.rm_obj_from_inven(fallout.dude_obj(), loot_obj)
     fallout.gsay_reply(845, 166)
     fallout.giq_option(4, 845, 300, goto24a, 50)
 end
@@ -268,8 +253,8 @@ end
 function goto24a()
     fallout.gfade_out(600)
     fallout.gfade_in(600)
-    stuff = fallout.create_object_sid(76, 0, 0, -1)
-    fallout.add_obj_to_inven(fallout.dude_obj(), stuff)
+    local item_obj = fallout.create_object_sid(76, 0, 0, -1)
+    fallout.add_obj_to_inven(fallout.dude_obj(), item_obj)
     fallout.set_global_var(304, 2)
     fallout.gsay_message(845, 167, 50)
 end
@@ -302,26 +287,26 @@ function gotopart()
 end
 
 function combat()
-    hostile = 1
+    hostile = true
 end
 
 function critter_p_proc()
     if fallout.global_var(250) ~= 0 then
-        hostile = 1
+        hostile = true
     end
     if fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) > 12 then
-        hostile = 0
+        hostile = false
     end
     if hostile then
         fallout.set_global_var(250, 1)
-        hostile = 0
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
 end
 
 function pickup_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
-        hostile = 1
+        hostile = true
     end
 end
 
@@ -329,38 +314,28 @@ function talk_p_proc()
     fallout.debug_msg("global_var(PART_RUN) == " .. fallout.global_var(304))
     if fallout.global_var(304) == 4 then
         smalltalk()
+    elseif fallout.local_var(4) == 1 and fallout.local_var(1) < 2 then
+        goto22()
     else
-        if (fallout.local_var(4) == 1) and (fallout.local_var(1) < 2) then
-            goto22()
+        reaction.get_reaction()
+        fallout.start_gdialog(845, fallout.self_obj(), 4, -1, -1)
+        fallout.gsay_start()
+        if fallout.local_var(4) == 0 then
+            fallout.set_local_var(4, 1)
+            goto01()
+        elseif fallout.global_var(304) == 2 then
+            goto26()
+        elseif fallout.global_var(304) == 3 then
+            goto26()
+        elseif fallout.obj_carrying_pid_obj(fallout.dude_obj(), 229) ~= nil then
+            goto23()
+        elseif fallout.global_var(304) ~= 0 then
+            goto17()
         else
-            reaction.get_reaction()
-            fallout.start_gdialog(845, fallout.self_obj(), 4, -1, -1)
-            fallout.gsay_start()
-            if fallout.local_var(4) == 0 then
-                fallout.set_local_var(4, 1)
-                goto01()
-            else
-                if fallout.global_var(304) == 2 then
-                    goto26()
-                else
-                    if fallout.global_var(304) == 3 then
-                        goto26()
-                    else
-                        if fallout.obj_carrying_pid_obj(fallout.dude_obj(), 229) then
-                            goto23()
-                        else
-                            if fallout.global_var(304) ~= 0 then
-                                goto17()
-                            else
-                                goto27()
-                            end
-                        end
-                    end
-                end
-            end
-            fallout.gsay_end()
-            fallout.end_dialogue()
+            goto27()
         end
+        fallout.gsay_end()
+        fallout.end_dialogue()
     end
 end
 
@@ -382,16 +357,12 @@ function smalltalk()
     ccount = ccount + 1
     if ccount < 6 then
         fallout.float_msg(fallout.self_obj(), fallout.message_str(723, 200 + fallout.random(0, 2)), 2)
+    elseif ccount < 9 then
+        fallout.float_msg(fallout.self_obj(), fallout.message_str(723, 203 + fallout.random(0, 4)), 2)
+    elseif ccount < 12 then
+        fallout.float_msg(fallout.self_obj(), fallout.message_str(723, 209 + fallout.random(0, 3)), 2)
     else
-        if ccount < 9 then
-            fallout.float_msg(fallout.self_obj(), fallout.message_str(723, 203 + fallout.random(0, 4)), 2)
-        else
-            if ccount < 12 then
-                fallout.float_msg(fallout.self_obj(), fallout.message_str(723, 209 + fallout.random(0, 3)), 2)
-            else
-                fallout.display_msg(fallout.message_str(723, 213))
-            end
-        end
+        fallout.display_msg(fallout.message_str(723, 213))
     end
 end
 
@@ -399,12 +370,10 @@ function pre_dialogue()
     fallout.display_msg("in pre_dialogue")
     if fallout.global_var(304) == 4 then
         smalltalk()
+    elseif fallout.local_var(4) == 1 and fallout.local_var(1) < 2 then
+        goto22()
     else
-        if (fallout.local_var(4) == 1) and (fallout.local_var(1) < 2) then
-            goto22()
-        else
-            do_dialogue()
-        end
+        do_dialogue()
     end
 end
 
