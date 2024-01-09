@@ -40,66 +40,61 @@ local Elder11
 local Elder12
 local ElderEnd
 
-local hostile = 0
+local hostile = false
 local initialized = false
-local awardex = 0
-local temp = 0
-
-local exit_line = 0
+local awardex = false
 
 function start()
     if not initialized then
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 44)
+        fallout.critter_add_trait(self_obj, 1, 5, 80)
         initialized = true
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 44)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 80)
     end
-    if fallout.script_action() == 21 then
+
+    local script_action = fallout.script_action()
+    if script_action == 21 then
         look_at_p_proc()
-    else
-        if fallout.script_action() == 4 then
-            pickup_p_proc()
-        else
-            if fallout.script_action() == 11 then
-                talk_p_proc()
-            else
-                if fallout.script_action() == 12 then
-                    critter_p_proc()
-                else
-                    if fallout.script_action() == 18 then
-                        destroy_p_proc()
-                    end
-                end
-            end
-        end
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
     end
 end
 
 function combat()
-    hostile = 1
+    hostile = true
 end
 
 function critter_p_proc()
-    if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) and (fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 3) then
-        if (fallout.map_var(19) == 1) and (fallout.local_var(5) == 0) then
+    local self_obj = fallout.self_obj()
+    local dude_obj = fallout.dude_obj()
+    local distance_self_to_dude = fallout.tile_distance_objs(self_obj, dude_obj)
+    if fallout.obj_can_see_obj(self_obj, dude_obj) and distance_self_to_dude < 3 then
+        if fallout.map_var(19) == 1 and fallout.local_var(5) == 0 then
             fallout.dialogue_system_enter()
         end
     end
     if fallout.global_var(250) ~= 0 then
-        hostile = 1
+        hostile = true
     end
-    if fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) > 12 then
-        hostile = 0
+    if distance_self_to_dude > 12 then
+        hostile = false
     end
     if hostile then
         fallout.set_global_var(250, 1)
-        hostile = 0
-        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+        hostile = false
+        fallout.attack(dude_obj, 0, 1, 0, 0, 30000, 0, 0)
     end
 end
 
 function pickup_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
-        hostile = 1
+        hostile = true
     end
 end
 
@@ -111,45 +106,37 @@ function talk_p_proc()
         Elder10()
         fallout.gsay_end()
         fallout.end_dialogue()
+    elseif fallout.local_var(1) == 1 then
+        Elder12()
+    elseif fallout.local_var(5) == 1 then
+        fallout.float_msg(fallout.self_obj(), fallout.message_str(942, 165), 2)
+    elseif fallout.map_var(19) == 1 and fallout.local_var(5) == 0 then
+        fallout.set_local_var(5, 1)
+        fallout.start_gdialog(942, fallout.self_obj(), 4, -1, -1)
+        fallout.gsay_start()
+        Meeting01()
+        fallout.gsay_end()
+        fallout.end_dialogue()
+    elseif fallout.local_var(4) == 0 then
+        fallout.set_local_var(4, 1)
+        fallout.start_gdialog(942, fallout.self_obj(), 4, -1, -1)
+        fallout.gsay_start()
+        Elder01()
+        fallout.gsay_end()
+        fallout.end_dialogue()
     else
-        if fallout.local_var(1) == 1 then
-            Elder12()
-        else
-            if fallout.local_var(5) == 1 then
-                fallout.float_msg(fallout.self_obj(), fallout.message_str(942, 165), 2)
-            else
-                if (fallout.map_var(19) == 1) and (fallout.local_var(5) == 0) then
-                    fallout.set_local_var(5, 1)
-                    fallout.start_gdialog(942, fallout.self_obj(), 4, -1, -1)
-                    fallout.gsay_start()
-                    Meeting01()
-                    fallout.gsay_end()
-                    fallout.end_dialogue()
-                else
-                    if fallout.local_var(4) == 0 then
-                        fallout.set_local_var(4, 1)
-                        fallout.start_gdialog(942, fallout.self_obj(), 4, -1, -1)
-                        fallout.gsay_start()
-                        Elder01()
-                        fallout.gsay_end()
-                        fallout.end_dialogue()
-                    else
-                        fallout.start_gdialog(942, fallout.self_obj(), 4, -1, -1)
-                        fallout.gsay_start()
-                        Elder04()
-                        fallout.gsay_end()
-                        fallout.end_dialogue()
-                    end
-                end
-            end
-        end
+        fallout.start_gdialog(942, fallout.self_obj(), 4, -1, -1)
+        fallout.gsay_start()
+        Elder04()
+        fallout.gsay_end()
+        fallout.end_dialogue()
     end
     if awardex then
         if fallout.local_var(6) == 0 then
             fallout.set_local_var(6, 1)
-            temp = 1500
-            fallout.display_msg(fallout.message_str(942, 166) .. temp .. fallout.message_str(942, 167))
-            fallout.give_exp_points(temp)
+            local xp = 1500
+            fallout.display_msg(fallout.message_str(942, 166) .. xp .. fallout.message_str(942, 167))
+            fallout.give_exp_points(xp)
         end
     end
 end
@@ -164,7 +151,10 @@ function look_at_p_proc()
 end
 
 function Meeting01()
-    fallout.gsay_reply(942, fallout.message_str(942, 134) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(942, 135) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(942, 136))
+    local dude_name = fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1)
+    fallout.gsay_reply(942,
+        fallout.message_str(942, 134) ..
+        dude_name .. fallout.message_str(942, 135) .. dude_name .. fallout.message_str(942, 136))
     fallout.giq_option(4, 942, 137, Meeting02, 50)
     fallout.giq_option(-3, 942, 138, Meeting13, 51)
 end
@@ -196,7 +186,7 @@ end
 
 function Meeting05()
     fallout.gsay_reply(942, 146)
-    if (fallout.global_var(149) < time.game_time_in_days()) and (fallout.global_var(72) == 2) then
+    if fallout.global_var(149) < time.game_time_in_days() and fallout.global_var(72) == 2 then
         fallout.giq_option(4, 942, 147, Meeting06, 50)
     end
     fallout.giq_option(4, 942, 148, Meeting05a, 50)
@@ -229,7 +219,7 @@ function Meeting08()
 end
 
 function Meeting09()
-    awardex = 1
+    awardex = true
     fallout.set_global_var(223, 2)
     fallout.gsay_message(942, 157, 50)
 end
@@ -262,7 +252,8 @@ function Elder01()
 end
 
 function Elder02()
-    fallout.gsay_reply(942, fallout.message_str(942, 105) .. fallout.message_str(942, 106) .. fallout.message_str(942, 107))
+    fallout.gsay_reply(942,
+        fallout.message_str(942, 105) .. fallout.message_str(942, 106) .. fallout.message_str(942, 107))
     fallout.giq_option(4, 942, 108, Elder03, 50)
     fallout.giq_option(4, 942, 109, Elder09, 50)
     if fallout.global_var(78) == 2 then
