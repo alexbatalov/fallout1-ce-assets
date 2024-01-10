@@ -1,18 +1,6 @@
 local fallout = require("fallout")
 local reputation = require("lib.reputation")
 
---
--- Some unreferenced imported varables found.
--- Because of it it is impossible to specify
--- the real names of global variables.
---
-
-local g0 = 0
-local g1 = 0
-local g2 = 0
-local g3 = 0
-local g4 = 0
-
 local start
 local critter_p_proc
 local look_at_p_proc
@@ -35,62 +23,43 @@ local ChocTech11
 local combat
 local ChocTechend
 
--- ?import? variable removal_ptr
--- ?import? variable Hostile
--- ?import? variable said_stuff
--- ?import? variable explode
--- ?import? variable initialized
-
-local get_reaction
-local ReactToLevel
-local LevelToReact
-local UpReact
-local DownReact
-local BottomReact
-local TopReact
-local BigUpReact
-local BigDownReact
-local UpReactLevel
-local DownReactLevel
-local Goodbyes
-
--- ?import? variable exit_line
+local hostile = false
+local said_stuff = false
+local explode = false
+local initialized = false
 
 function start()
-    if not(g3) then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 34)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 69)
-        g3 = 1
+    if not initialized then
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 34)
+        fallout.critter_add_trait(self_obj, 1, 5, 69)
+        initialized = true
     end
-    if fallout.script_action() == 12 then
+
+    local script_action = fallout.script_action()
+    if script_action == 12 then
         critter_p_proc()
-    else
-        if fallout.script_action() == 21 then
-            look_at_p_proc()
-        else
-            if fallout.script_action() == 11 then
-                talk_p_proc()
-            else
-                if fallout.script_action() == 18 then
-                    destroy_p_proc()
-                end
-            end
-        end
+    elseif script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
     end
 end
 
 function critter_p_proc()
-    if g0 then
-        g0 = 0
+    if hostile then
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     else
-        if g2 then
+        if explode then
             fallout.critter_dmg(fallout.self_obj(), fallout.random(200, 250), 6)
         else
             if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
                 if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) then
-                    if not(g1) then
-                        g1 = 1
+                    if not said_stuff then
+                        said_stuff = true
                         if fallout.external_var("Team9_Count") > 0 then
                             ChocTech00()
                         else
@@ -99,7 +68,7 @@ function critter_p_proc()
                     end
                 end
             else
-                g1 = 0
+                said_stuff = false
             end
         end
     end
@@ -117,20 +86,16 @@ function talk_p_proc()
         ChocTech10()
         fallout.gsay_end()
         fallout.end_dialogue()
+    elseif fallout.global_var(54) == 1 then
+        ChocTech09()
+    elseif fallout.external_var("Team9_Count") > 0 then
+        fallout.start_gdialog(358, fallout.self_obj(), 4, -1, -1)
+        fallout.gsay_start()
+        ChocTech02()
+        fallout.gsay_end()
+        fallout.end_dialogue()
     else
-        if fallout.global_var(54) == 1 then
-            ChocTech09()
-        else
-            if fallout.external_var("Team9_Count") > 0 then
-                fallout.start_gdialog(358, fallout.self_obj(), 4, -1, -1)
-                fallout.gsay_start()
-                ChocTech02()
-                fallout.gsay_end()
-                fallout.end_dialogue()
-            else
-                ChocTech01()
-            end
-        end
+        ChocTech01()
     end
 end
 
@@ -204,7 +169,7 @@ end
 
 function ChocTech09()
     fallout.float_msg(fallout.self_obj(), fallout.message_str(358, 125), 0)
-    g2 = 1
+    explode = true
 end
 
 function ChocTech10()
@@ -216,121 +181,14 @@ end
 
 function ChocTech11()
     fallout.gsay_message(358, 130, 0)
-    g2 = 1
+    explode = true
 end
 
 function combat()
-    g0 = 1
+    hostile = true
 end
 
 function ChocTechend()
-end
-
-function get_reaction()
-    if fallout.local_var(2) == 0 then
-        fallout.set_local_var(0, 50)
-        fallout.set_local_var(1, 2)
-        fallout.set_local_var(2, 1)
-        fallout.set_local_var(0, fallout.local_var(0) + (5 * fallout.get_critter_stat(fallout.dude_obj(), 3)) - 25)
-        fallout.set_local_var(0, fallout.local_var(0) + (10 * fallout.has_trait(0, fallout.dude_obj(), 10)))
-        if fallout.has_trait(0, fallout.dude_obj(), 39) then
-            if fallout.global_var(155) > 0 then
-                fallout.set_local_var(0, fallout.local_var(0) + fallout.global_var(155))
-            else
-                fallout.set_local_var(0, fallout.local_var(0) - fallout.global_var(155))
-            end
-        else
-            if fallout.local_var(3) == 1 then
-                fallout.set_local_var(0, fallout.local_var(0) - fallout.global_var(155))
-            else
-                fallout.set_local_var(0, fallout.local_var(0) + fallout.global_var(155))
-            end
-        end
-        if fallout.global_var(158) > 2 then
-            fallout.set_local_var(0, fallout.local_var(0) - 30)
-        end
-        if reputation.has_rep_champion() then
-            fallout.set_local_var(0, fallout.local_var(0) + 20)
-        end
-        if reputation.has_rep_berserker() then
-            fallout.set_local_var(0, fallout.local_var(0) - 20)
-        end
-        ReactToLevel()
-    end
-end
-
-function ReactToLevel()
-    if fallout.local_var(0) <= 25 then
-        fallout.set_local_var(1, 1)
-    else
-        if fallout.local_var(0) <= 75 then
-            fallout.set_local_var(1, 2)
-        else
-            fallout.set_local_var(1, 3)
-        end
-    end
-end
-
-function LevelToReact()
-    if fallout.local_var(1) == 1 then
-        fallout.set_local_var(0, fallout.random(1, 25))
-    else
-        if fallout.local_var(1) == 2 then
-            fallout.set_local_var(0, fallout.random(26, 75))
-        else
-            fallout.set_local_var(0, fallout.random(76, 100))
-        end
-    end
-end
-
-function UpReact()
-    fallout.set_local_var(0, fallout.local_var(0) + 10)
-    ReactToLevel()
-end
-
-function DownReact()
-    fallout.set_local_var(0, fallout.local_var(0) - 10)
-    ReactToLevel()
-end
-
-function BottomReact()
-    fallout.set_local_var(1, 1)
-    fallout.set_local_var(0, 1)
-end
-
-function TopReact()
-    fallout.set_local_var(0, 100)
-    fallout.set_local_var(1, 3)
-end
-
-function BigUpReact()
-    fallout.set_local_var(0, fallout.local_var(0) + 25)
-    ReactToLevel()
-end
-
-function BigDownReact()
-    fallout.set_local_var(0, fallout.local_var(0) - 25)
-    ReactToLevel()
-end
-
-function UpReactLevel()
-    fallout.set_local_var(1, fallout.local_var(1) + 1)
-    if fallout.local_var(1) > 3 then
-        fallout.set_local_var(1, 3)
-    end
-    LevelToReact()
-end
-
-function DownReactLevel()
-    fallout.set_local_var(1, fallout.local_var(1) - 1)
-    if fallout.local_var(1) < 1 then
-        fallout.set_local_var(1, 1)
-    end
-    LevelToReact()
-end
-
-function Goodbyes()
-    g4 = fallout.message_str(634, fallout.random(100, 105))
 end
 
 local exports = {}
