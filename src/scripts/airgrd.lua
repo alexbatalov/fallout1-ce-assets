@@ -3,7 +3,13 @@ local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
 
 local start
-local do_dialogue
+local pickup_p_proc
+local talk_p_proc
+local critter_p_proc
+local damage_p_proc
+local destroy_p_proc
+local look_at_p_proc
+local timed_event_p_proc
 local dialog
 local airgrd00
 local airgrd01
@@ -29,112 +35,66 @@ local dialog_end
 local airgrdtim
 local combat
 
-local HOSTILE = 0
+local hostile = false
 local initialized = false
-local Weapons = 0
-local DISGUISED = 0
-local again = 0
-local first = 0
-local rndx = 0
+local Weapons = false
+local disguised = false
+local again = false
+local first = false
 local jumpcode = 0
-local indialog = 0
-local temp = 0
-
-local exit_line = 0
+local indialog = false
 
 function start()
     if not initialized then
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 34)
+        fallout.critter_add_trait(self_obj, 1, 5, 46)
         initialized = true
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 34)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 46)
-    else
-        if fallout.script_action() == 14 then
-            if fallout.global_var(245) == 0 then
-                fallout.set_global_var(245, 1)
-            end
-        else
-            if fallout.script_action() == 11 then
-                do_dialogue()
-            else
-                if fallout.script_action() == 4 then
-                    HOSTILE = 1
-                else
-                    if fallout.script_action() == 22 then
-                        if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) then
-                            combat()
-                        end
-                    else
-                        if fallout.script_action() == 12 then
-                            if HOSTILE then
-                                HOSTILE = 0
-                                fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
-                            end
-                            if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) and (fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 6) then
-                                if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) then
-                                    if Weapons == 0 then
-                                        Weapons = 1
-                                        again = 1
-                                        fallout.dialogue_system_enter()
-                                    end
-                                end
-                                DISGUISED = 0
-                                if fallout.obj_pid(fallout.critter_inven_obj(fallout.dude_obj(), 0)) == 113 then
-                                    if fallout.metarule(16, 0) > 1 then
-                                        DISGUISED = 0
-                                    else
-                                        DISGUISED = 1
-                                    end
-                                end
-                                if DISGUISED == 0 then
-                                    again = 1
-                                    fallout.dialogue_system_enter()
-                                end
-                                if again == 0 then
-                                    again = 1
-                                    fallout.dialogue_system_enter()
-                                end
-                            end
-                        else
-                            if (fallout.script_action() == 21) or (fallout.script_action() == 3) then
-                                fallout.script_overrides()
-                            else
-                                if fallout.script_action() == 18 then
-                                    reputation.inc_evil_critter()
-                                end
-                            end
-                        end
-                    end
-                end
-            end
-        end
+    end
+
+    local script_action = fallout.script_action()
+    if script_action == 14 then
+        damage_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 22 then
+        timed_event_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 21 or script_action == 3 then
+        look_at_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
     end
 end
 
-function do_dialogue()
+function pickup_p_proc()
+    hostile = true
+end
+
+function talk_p_proc()
     if fallout.obj_pid(fallout.critter_inven_obj(fallout.dude_obj(), 0)) == 113 then
         if fallout.metarule(16, 0) > 1 then
-            DISGUISED = 0
+            disguised = false
         else
-            DISGUISED = 1
+            disguised = true
         end
     end
-    if (fallout.map_var(1) == 1) and (fallout.global_var(231) == 1) then
+    if fallout.map_var(1) == 1 and fallout.global_var(231) == 1 then
         airgrd00()
     else
-        if DISGUISED then
+        if disguised then
             if Weapons then
                 jumpcode = 1
                 dialog()
-            else
-                if first == 0 then
-                    first = 1
-                    jumpcode = 2
-                    dialog()
-                else
-                    if first == 1 then
-                        airgrd08()
-                    end
-                end
+            elseif not first then
+                first = true
+                jumpcode = 2
+                dialog()
+            elseif first then
+                airgrd08()
             end
         else
             if Weapons then
@@ -147,24 +107,72 @@ function do_dialogue()
     end
 end
 
+function critter_p_proc()
+    if hostile then
+        hostile = false
+        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+    end
+    if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) and (fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 6) then
+        if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) then
+            if not Weapons then
+                Weapons = true
+                again = true
+                fallout.dialogue_system_enter()
+            end
+        end
+        disguised = false
+        if fallout.obj_pid(fallout.critter_inven_obj(fallout.dude_obj(), 0)) == 113 then
+            if fallout.metarule(16, 0) > 1 then
+                disguised = false
+            else
+                disguised = true
+            end
+        end
+        if not disguised then
+            again = true
+            fallout.dialogue_system_enter()
+        end
+        if not again then
+            again = true
+            fallout.dialogue_system_enter()
+        end
+    end
+end
+
+function damage_p_proc()
+    if fallout.global_var(245) == 0 then
+        fallout.set_global_var(245, 1)
+    end
+end
+
+function destroy_p_proc()
+    reputation.inc_evil_critter()
+end
+
+function look_at_p_proc()
+    fallout.script_overrides()
+end
+
+function timed_event_p_proc()
+    if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) then
+        combat()
+    end
+end
+
 function dialog()
     fallout.set_local_var(3, 1)
     reaction.get_reaction()
     fallout.start_gdialog(673, fallout.self_obj(), 4, -1, -1)
     fallout.gsay_start()
-    indialog = 1
+    indialog = true
     if jumpcode < 2 then
         airgrd01()
-    else
-        if jumpcode == 2 then
-            airgrd03()
-        else
-            if jumpcode > 2 then
-                airgrd09()
-            end
-        end
+    elseif jumpcode == 2 then
+        airgrd03()
+    elseif jumpcode > 2 then
+        airgrd09()
     end
-    indialog = 0
+    indialog = false
     fallout.gsay_end()
     fallout.end_dialogue()
 end
@@ -242,7 +250,7 @@ function airgrd07()
 end
 
 function airgrd08()
-    if indialog == 1 then
+    if indialog then
         fallout.gsay_message(673, fallout.random(125, 127), 50)
     else
         fallout.float_msg(fallout.self_obj(), fallout.message_str(673, fallout.random(125, 127)), 2)
@@ -293,9 +301,9 @@ end
 function bluff_end()
     if fallout.local_var(4) == 0 then
         fallout.set_local_var(4, 1)
-        temp = 750
-        fallout.display_msg(fallout.message_str(673, 200) .. temp .. fallout.message_str(673, 201))
-        fallout.give_exp_points(temp)
+        local xp = 750
+        fallout.display_msg(fallout.message_str(673, 200) .. xp .. fallout.message_str(673, 201))
+        fallout.give_exp_points(xp)
     end
 end
 
@@ -307,9 +315,16 @@ function airgrdtim()
 end
 
 function combat()
-    HOSTILE = 1
+    hostile = true
 end
 
 local exports = {}
 exports.start = start
+exports.pickup_p_proc = pickup_p_proc
+exports.talk_p_proc = talk_p_proc
+exports.critter_p_proc = critter_p_proc
+exports.damage_p_proc = damage_p_proc
+exports.destroy_p_proc = destroy_p_proc
+exports.look_at_p_proc = look_at_p_proc
+exports.timed_event_p_proc = timed_event_p_proc
 return exports
