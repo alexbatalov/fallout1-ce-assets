@@ -9,8 +9,6 @@ local Command01
 local use_all_fields_on
 local use_all_fields_off
 
-local skill_roll = 0
-local stat_roll = 0
 local initialized = false
 
 function start()
@@ -19,22 +17,17 @@ function start()
             fallout.set_local_var(0, 1)
         end
         initialized = true
-    else
-        if fallout.script_action() == 3 then
-            description_p_proc()
-        else
-            if fallout.script_action() == 6 then
-                use_p_proc()
-            else
-                if fallout.script_action() == 7 then
-                    use_obj_on_p_proc()
-                else
-                    if fallout.script_action() == 8 then
-                        use_skill_on_p_proc()
-                    end
-                end
-            end
-        end
+    end
+
+    local script_action = fallout.script_action()
+    if script_action == 3 then
+        description_p_proc()
+    elseif script_action == 6 then
+        use_p_proc()
+    elseif script_action == 7 then
+        use_obj_on_p_proc()
+    elseif script_action == 8 then
+        use_skill_on_p_proc()
     end
 end
 
@@ -42,17 +35,16 @@ function description_p_proc()
     fallout.script_overrides()
     fallout.display_msg(fallout.message_str(432, 100))
     fallout.display_msg(fallout.message_str(432, 101))
-    if fallout.local_var(0) and not(fallout.local_var(2)) then
+    if fallout.local_var(0) ~= 0 and fallout.local_var(2) == 0 then
         Command01()
     end
 end
 
 function use_p_proc()
-    local v0 = 0
-    if fallout.local_var(0) and not(fallout.local_var(1)) then
+    if fallout.local_var(0) ~= 0 and fallout.local_var(1) == 0 then
         fallout.script_overrides()
-        v0 = fallout.roll_vs_skill(fallout.dude_obj(), 16, 0)
-        if fallout.is_success(v0) then
+        local roll = fallout.roll_vs_skill(fallout.dude_obj(), 16, 0)
+        if fallout.is_success(roll) then
             fallout.display_msg(fallout.message_str(432, 109))
             fallout.set_local_var(1, 1)
             fallout.display_msg(fallout.message_str(432, 116))
@@ -66,7 +58,7 @@ end
 
 function use_obj_on_p_proc()
     if fallout.obj_pid(fallout.obj_being_used_with()) == 100 then
-        if not(fallout.global_var(610)) then
+        if fallout.global_var(610) == 0 then
             fallout.script_overrides()
             if fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), 13, 0)) then
                 fallout.display_msg(fallout.message_str(432, 117))
@@ -80,12 +72,11 @@ function use_obj_on_p_proc()
 end
 
 function use_skill_on_p_proc()
-    local v0 = 0
     if fallout.action_being_used() == 12 then
         fallout.script_overrides()
-        v0 = fallout.roll_vs_skill(fallout.dude_obj(), fallout.action_being_used(), 0)
-        if not(fallout.local_var(0)) then
-            if fallout.is_success(v0) then
+        local roll = fallout.roll_vs_skill(fallout.dude_obj(), fallout.action_being_used(), 0)
+        if fallout.local_var(0) == 0 then
+            if fallout.is_success(roll) then
                 fallout.display_msg(fallout.message_str(432, 102))
                 fallout.set_external_var("field_change", "on")
                 use_all_fields_on()
@@ -94,54 +85,50 @@ function use_skill_on_p_proc()
                 fallout.display_msg(fallout.message_str(432, 103))
             end
             fallout.game_time_advance(fallout.game_ticks(300))
-        else
-            if not(fallout.local_var(1)) then
-                if fallout.is_success(v0) then
-                    fallout.display_msg(fallout.message_str(432, 104))
-                else
-                    fallout.display_msg(fallout.message_str(432, 105))
-                end
-                fallout.game_time_advance(fallout.game_ticks(300))
-                Command01()
+        elseif fallout.local_var(1) == 0 then
+            if fallout.is_success(roll) then
+                fallout.display_msg(fallout.message_str(432, 104))
             else
-                if not(fallout.local_var(2)) then
-                    if fallout.is_success(v0) then
-                        if fallout.is_critical(v0) then
-                            fallout.display_msg(fallout.message_str(432, 106))
-                            fallout.set_external_var("field_change", "off")
-                            use_all_fields_off()
-                        else
-                            fallout.display_msg(fallout.message_str(432, 107))
-                            fallout.set_external_var("field_change", "off")
-                            fallout.set_map_var(16, 0)
-                            fallout.set_map_var(17, 0)
-                            fallout.set_map_var(18, 0)
-                            fallout.set_map_var(19, 0)
-                            fallout.set_map_var(20, 0)
-                            fallout.set_map_var(21, 0)
-                        end
-                    else
-                        fallout.display_msg(fallout.message_str(432, 108))
-                    end
-                    fallout.game_time_advance(fallout.game_ticks(1800))
-                    fallout.set_local_var(2, 1)
-                end
+                fallout.display_msg(fallout.message_str(432, 105))
             end
+            fallout.game_time_advance(fallout.game_ticks(300))
+            Command01()
+        elseif fallout.local_var(2) == 0 then
+            if fallout.is_success(roll) then
+                if fallout.is_critical(roll) then
+                    fallout.display_msg(fallout.message_str(432, 106))
+                    fallout.set_external_var("field_change", "off")
+                    use_all_fields_off()
+                else
+                    fallout.display_msg(fallout.message_str(432, 107))
+                    fallout.set_external_var("field_change", "off")
+                    fallout.set_map_var(16, 0)
+                    fallout.set_map_var(17, 0)
+                    fallout.set_map_var(18, 0)
+                    fallout.set_map_var(19, 0)
+                    fallout.set_map_var(20, 0)
+                    fallout.set_map_var(21, 0)
+                end
+            else
+                fallout.display_msg(fallout.message_str(432, 108))
+            end
+            fallout.game_time_advance(fallout.game_ticks(1800))
+            fallout.set_local_var(2, 1)
         end
     end
 end
 
 function Command01()
-    stat_roll = fallout.do_check(fallout.dude_obj(), 1, fallout.has_trait(0, fallout.dude_obj(), 0))
-    if not(fallout.local_var(1)) then
-        if fallout.is_success(stat_roll) then
-            if fallout.is_critical(stat_roll) then
+    local roll = fallout.do_check(fallout.dude_obj(), 1, fallout.has_trait(0, fallout.dude_obj(), 0))
+    if fallout.local_var(1) == 0 then
+        if fallout.is_success(roll) then
+            if fallout.is_critical(roll) then
                 fallout.display_msg(fallout.message_str(432, 111))
             else
                 fallout.display_msg(fallout.message_str(432, 112))
             end
         else
-            if fallout.is_critical(stat_roll) then
+            if fallout.is_critical(roll) then
                 fallout.display_msg(fallout.message_str(432, 113))
             else
                 fallout.display_msg(fallout.message_str(432, 114))
