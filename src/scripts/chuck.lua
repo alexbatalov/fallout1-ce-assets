@@ -187,7 +187,7 @@ end
 function Chuck12()
     fallout.gsay_reply(664, 143)
     fallout.giq_option(4, 664, 144, Chuck07, 51)
-    fallout.giq_option(5, 664, 145, UpReact, 50)
+    fallout.giq_option(5, 664, 145, reaction.UpReact, 50)
     fallout.giq_option(4, 664, 146, ChuckBye, 50)
 end
 
@@ -219,7 +219,7 @@ end
 function Chuck17()
     fallout.gsay_reply(664, 158)
     fallout.giq_option(4, 664, 159, ChuckBye, 50)
-    fallout.giq_option(4, 664, 150, DownReact, 51)
+    fallout.giq_option(4, 664, 150, reaction.DownReact, 51)
 end
 
 function Chuck18()
