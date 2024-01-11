@@ -7,20 +7,15 @@ local use_skill_on_p_proc
 local damage_p_proc
 
 function start()
-    if fallout.script_action() == 6 then
+    local script_action = fallout.script_action()
+    if script_action == 6 then
         use_p_proc()
-    else
-        if fallout.script_action() == 7 then
-            use_obj_on_p_proc()
-        else
-            if fallout.script_action() == use_skill_on_p_proc() then
-                use_skill_on_p_proc()
-            else
-                if fallout.script_action() == 14 then
-                    damage_p_proc()
-                end
-            end
-        end
+    elseif script_action == 7 then
+        use_obj_on_p_proc()
+    elseif script_action == 8 then
+        use_skill_on_p_proc()
+    elseif script_action == 14 then
+        damage_p_proc()
     end
 end
 
@@ -30,19 +25,18 @@ function use_p_proc()
 end
 
 function use_obj_on_p_proc()
-    local v0 = 0
-    v0 = fallout.obj_pid(fallout.obj_being_used_with())
+    local pid = fallout.obj_pid(fallout.obj_being_used_with())
     if fallout.local_var(0) == 0 then
-        if v0 == 75 then
+        if pid == 75 then
             fallout.script_overrides()
             if fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), 13, 0)) then
                 if fallout.map_var(22) == 1 then
-                    fallout.set_obj_visibility(fallout.external_var("Field1b_Ptr"), 1)
+                    fallout.set_obj_visibility(fallout.external_var("Field1b_Ptr"), true)
                     fallout.display_msg(fallout.message_str(875, 103))
                     fallout.give_exp_points(50)
                     fallout.set_map_var(22, 0)
                 else
-                    fallout.set_obj_visibility(fallout.external_var("Field1b_Ptr"), 0)
+                    fallout.set_obj_visibility(fallout.external_var("Field1b_Ptr"), false)
                     fallout.display_msg(fallout.message_str(875, 105))
                     fallout.set_map_var(22, 1)
                 end
@@ -54,19 +48,18 @@ function use_obj_on_p_proc()
 end
 
 function use_skill_on_p_proc()
-    local v0 = 0
-    v0 = fallout.action_being_used()
+    local skill = fallout.action_being_used()
     if fallout.local_var(0) == 0 then
-        if v0 == 13 then
+        if skill == 13 then
             fallout.script_overrides()
             if fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), 13, -20)) then
                 if fallout.map_var(22) == 1 then
                     fallout.display_msg(fallout.message_str(875, 103))
-                    fallout.set_obj_visibility(fallout.external_var("Field1b_Ptr"), 1)
+                    fallout.set_obj_visibility(fallout.external_var("Field1b_Ptr"), true)
                     fallout.give_exp_points(50)
                     fallout.set_map_var(22, 0)
                 else
-                    fallout.set_obj_visibility(fallout.external_var("Field1b_Ptr"), 0)
+                    fallout.set_obj_visibility(fallout.external_var("Field1b_Ptr"), false)
                     fallout.display_msg(fallout.message_str(875, 105))
                     fallout.set_map_var(22, 1)
                 end
@@ -84,7 +77,7 @@ function damage_p_proc()
         fallout.display_msg(fallout.message_str(875, 102))
     else
         fallout.set_map_var(22, 0)
-        fallout.set_obj_visibility(fallout.self_obj(), 1)
+        fallout.set_obj_visibility(fallout.self_obj(), true)
         fallout.display_msg(fallout.message_str(875, 101))
     end
 end
