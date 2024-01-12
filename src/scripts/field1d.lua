@@ -5,36 +5,35 @@ local map_enter_p_proc
 local map_update_p_proc
 
 function start()
-    if fallout.script_action() == 15 then
+    local script_action = fallout.script_action()
+    if script_action == 15 then
         map_enter_p_proc()
-    else
-        if fallout.script_action() == map_update_p_proc() then
-            map_update_p_proc()
-        end
+    elseif script_action == 23 then
+        map_update_p_proc()
     end
 end
 
 function map_enter_p_proc()
-    fallout.set_external_var("Field1d_Ptr", fallout.self_obj())
+    local self_obj = fallout.self_obj()
+    fallout.set_external_var("Field1d_Ptr", self_obj)
     if (fallout.global_var(262) == 0) or (fallout.map_var(17) == 0) then
-        fallout.set_obj_visibility(fallout.self_obj(), 1)
+        fallout.set_obj_visibility(self_obj, true)
     end
 end
 
 function map_update_p_proc()
-    fallout.set_external_var("Field1d_Ptr", fallout.self_obj())
+    local self_obj = fallout.self_obj()
+    fallout.set_external_var("Field1d_Ptr", self_obj)
     if fallout.global_var(262) == 0 then
         if fallout.map_var(17) == 0 then
-            fallout.set_obj_visibility(fallout.self_obj(), 0)
+            fallout.set_obj_visibility(self_obj, false)
             fallout.set_map_var(17, 1)
         else
-            fallout.set_obj_visibility(fallout.self_obj(), 0)
+            fallout.set_obj_visibility(self_obj, false)
         end
-    else
-        if fallout.global_var(262) == 1 then
-            fallout.set_map_var(17, 1)
-            fallout.set_obj_visibility(fallout.self_obj(), 1)
-        end
+    elseif fallout.global_var(262) == 1 then
+        fallout.set_map_var(17, 1)
+        fallout.set_obj_visibility(self_obj, true)
     end
 end
 
