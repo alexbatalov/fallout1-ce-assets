@@ -8,27 +8,28 @@ local turn_field_on
 local toggle_field
 
 local initialized = false
-local on_tile = 0
+local on_tile = false
 
 function start()
     if not initialized then
-        if fallout.tile_num(fallout.self_obj()) == 21068 then
-            if fallout.obj_pid(fallout.self_obj()) == 33554923 then
+        local self_obj = fallout.self_obj()
+        local self_tile_num = fallout.tile_num(self_obj)
+        local self_pid = fallout.obj_pid(self_obj)
+        if self_tile_num == 21068 then
+            if self_pid == 33554923 then
                 if fallout.external_var("field_change") == "off" then
                     fallout.set_map_var(14, 1)
                 end
-                fallout.set_map_var(8, fallout.self_obj())
+                fallout.set_map_var(8, self_obj)
                 use_p_proc()
             end
-        else
-            if fallout.tile_num(fallout.self_obj()) == 25088 then
-                if fallout.obj_pid(fallout.self_obj()) == 33554923 then
-                    if fallout.external_var("field_change") == "off" then
-                        fallout.set_map_var(15, 1)
-                    end
-                    fallout.set_map_var(9, fallout.self_obj())
-                    use_p_proc()
+        elseif self_tile_num == 25088 then
+            if self_pid == 33554923 then
+                if fallout.external_var("field_change") == "off" then
+                    fallout.set_map_var(15, 1)
                 end
+                fallout.set_map_var(9, self_obj)
+                use_p_proc()
             end
         end
         initialized = true
@@ -48,57 +49,61 @@ function use_p_proc()
         fallout.set_external_var("field_change", "off")
     end
     if fallout.source_obj() ~= fallout.dude_obj() then
-        if fallout.external_var("field_change") == "toggle" then
+        local change = fallout.external_var("field_change")
+        if change == "toggle" then
             toggle_field()
-        else
-            if fallout.external_var("field_change") == "off" then
-                turn_field_off()
-            else
-                if fallout.external_var("field_change") == "on" then
-                    turn_field_on()
-                end
-            end
+        elseif change == "off" then
+            turn_field_off()
+        elseif change == "on" then
+            turn_field_on()
         end
     end
 end
 
 function spatial_p_proc()
-    if (fallout.tile_num(fallout.self_obj()) == 21068) and (fallout.map_var(14) == 0) or ((fallout.tile_num(fallout.self_obj()) == 25088) and (fallout.map_var(15) == 0)) then
-        if fallout.tile_num(fallout.source_obj()) == fallout.tile_num(fallout.self_obj()) then
-            if not(on_tile) then
-                on_tile = 1
-                fallout.critter_dmg(fallout.source_obj(), fallout.random(10, 20), 4)
+    local self_obj = fallout.self_obj()
+    local self_tile_num = fallout.tile_num(self_obj)
+    if (self_tile_num == 21068 and fallout.map_var(14) == 0)
+        or (self_tile_num == 25088 and fallout.map_var(15) == 0) then
+        local source_obj = fallout.source_obj()
+        if fallout.tile_num(source_obj) == self_tile_num then
+            if not on_tile then
+                on_tile = true
+                fallout.critter_dmg(source_obj, fallout.random(10, 20), 4)
             end
         else
-            on_tile = 0
+            on_tile = false
         end
     end
 end
 
 function turn_field_off()
-    fallout.set_obj_visibility(fallout.self_obj(), 1)
-    if fallout.tile_num(fallout.self_obj()) == 21068 then
+    local self_obj = fallout.self_obj()
+    local self_tile_num = fallout.tile_num(self_obj)
+    fallout.set_obj_visibility(self_obj, true)
+    if self_tile_num == 21068 then
         fallout.set_map_var(14, 1)
-    else
-        if fallout.tile_num(fallout.self_obj()) == 25088 then
-            fallout.set_map_var(15, 1)
-        end
+    elseif self_tile_num == 25088 then
+        fallout.set_map_var(15, 1)
     end
 end
 
 function turn_field_on()
-    fallout.set_obj_visibility(fallout.self_obj(), 0)
-    if fallout.tile_num(fallout.self_obj()) == 21068 then
+    local self_obj = fallout.self_obj()
+    local self_tile_num = fallout.tile_num(self_obj)
+    fallout.set_obj_visibility(self_obj, false)
+    if self_tile_num == 21068 then
         fallout.set_map_var(14, 0)
-    else
-        if fallout.tile_num(fallout.self_obj()) == 25088 then
-            fallout.set_map_var(15, 0)
-        end
+    elseif self_tile_num == 25088 then
+        fallout.set_map_var(15, 0)
     end
 end
 
 function toggle_field()
-    if (fallout.tile_num(fallout.self_obj()) == 21068) and (fallout.map_var(14) == 1) or ((fallout.tile_num(fallout.self_obj()) == 25088) and (fallout.map_var(15) == 1)) then
+    local self_obj = fallout.self_obj()
+    local self_tile_num = fallout.tile_num(self_obj)
+    if (self_tile_num == 21068 and fallout.map_var(14) == 1)
+        or (self_tile_num == 25088 and fallout.map_var(15) == 1) then
         turn_field_on()
     else
         turn_field_off()
