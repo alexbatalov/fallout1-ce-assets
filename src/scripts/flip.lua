@@ -23,47 +23,35 @@ local transit
 local FlipLeave
 
 local known = 0
-local hostile = 0
+local hostile = false
 local initialized = false
 local round_counter = 0
 local cell_tile = 23937
 local home_tile = 14338
 
-local exit_line = 0
-
 function start()
     if not initialized then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 43)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 4)
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 43)
+        fallout.critter_add_trait(self_obj, 1, 5, 4)
         initialized = true
-    else
-        if fallout.script_action() == 13 then
-            combat_p_proc()
-        else
-            if fallout.script_action() == 12 then
-                critter_p_proc()
-            else
-                if fallout.script_action() == 18 then
-                    destroy_p_proc()
-                else
-                    if fallout.script_action() == 21 then
-                        look_at_p_proc()
-                    else
-                        if fallout.script_action() == 4 then
-                            pickup_p_proc()
-                        else
-                            if fallout.script_action() == 11 then
-                                talk_p_proc()
-                            else
-                                if fallout.script_action() == 22 then
-                                    timed_event_p_proc()
-                                end
-                            end
-                        end
-                    end
-                end
-            end
-        end
+    end
+
+    local script_action = fallout.script_action()
+    if script_action == 13 then
+        combat_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 22 then
+        timed_event_p_proc()
     end
 end
 
@@ -81,22 +69,24 @@ end
 
 function critter_p_proc()
     if hostile then
-        hostile = 0
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     else
-        if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) and (fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 12) then
+        local self_obj = fallout.self_obj()
+        local dude_obj = fallout.dude_obj()
+        if fallout.obj_can_see_obj(self_obj, dude_obj) and fallout.tile_distance_objs(self_obj, dude_obj) < 12 then
             if fallout.global_var(54) ~= 0 then
                 Flip00()
             else
-                if (fallout.obj_pid(fallout.critter_inven_obj(fallout.dude_obj(), 0)) ~= 113) and (fallout.local_var(4) == 0) then
+                if fallout.obj_pid(fallout.critter_inven_obj(dude_obj, 0)) ~= 113 and fallout.local_var(4) == 0 then
                     fallout.dialogue_system_enter()
                 end
             end
         end
         if time.is_night() then
-            fallout.animate_move_obj_to_tile(fallout.self_obj(), cell_tile, 0)
+            fallout.animate_move_obj_to_tile(self_obj, cell_tile, 0)
         else
-            fallout.animate_move_obj_to_tile(fallout.self_obj(), home_tile, 0)
+            fallout.animate_move_obj_to_tile(self_obj, home_tile, 0)
         end
     end
 end
@@ -116,7 +106,7 @@ function look_at_p_proc()
 end
 
 function pickup_p_proc()
-    hostile = 1
+    hostile = true
 end
 
 function talk_p_proc()
@@ -137,14 +127,13 @@ function talk_p_proc()
 end
 
 function timed_event_p_proc()
-    if fallout.fixed_param() == 1 then
+    local event = fallout.fixed_param()
+    if event == 1 then
         if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
-            hostile = 1
+            hostile = true
         end
-    else
-        if fallout.fixed_param() == 2 then
-            Flip00()
-        end
+    elseif event == 2 then
+        Flip00()
     end
 end
 
@@ -191,7 +180,7 @@ function Flip05()
 end
 
 function FlipCombat()
-    hostile = 1
+    hostile = true
 end
 
 function transit()
@@ -200,12 +189,14 @@ function transit()
 end
 
 function FlipLeave()
-    if fallout.tile_num(fallout.self_obj()) == home_tile then
-        fallout.animate_move_obj_to_tile(fallout.self_obj(), fallout.tile_num_in_direction(home_tile, 0, 5), 0)
+    local self_obj = fallout.self_obj()
+    if fallout.tile_num(self_obj) == home_tile then
+        fallout.animate_move_obj_to_tile(self_obj, fallout.tile_num_in_direction(home_tile, 0, 5), 0)
     else
-        fallout.animate_move_obj_to_tile(fallout.self_obj(), fallout.tile_num_in_direction(fallout.tile_num(fallout.self_obj()), 5, 5), 0)
+        fallout.animate_move_obj_to_tile(self_obj,
+            fallout.tile_num_in_direction(fallout.tile_num(self_obj), 5, 5), 0)
     end
-    fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(5), 2)
+    fallout.add_timer_event(self_obj, fallout.game_ticks(5), 2)
 end
 
 local exports = {}
