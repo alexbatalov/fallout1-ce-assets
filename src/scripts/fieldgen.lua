@@ -6,12 +6,11 @@ local use_skill_on_p_proc
 local turn_field_off
 
 function start()
-    if fallout.script_action() == 7 then
+    local script_action = fallout.script_action()
+    if script_action == 7 then
         use_obj_on_p_proc()
-    else
-        if fallout.script_action() == 8 then
-            use_skill_on_p_proc()
-        end
+    elseif script_action == 8 then
+        use_skill_on_p_proc()
     end
 end
 
@@ -41,21 +40,16 @@ function turn_field_off()
     fallout.set_external_var("field_change", "off")
     fallout.display_msg(fallout.message_str(741, 101))
     if fallout.cur_map_index() == 31 then
-        if fallout.elevation(fallout.self_obj()) == 0 then
-            if fallout.tile_num(fallout.self_obj()) == 15581 then
+        local self_obj = fallout.self_obj()
+        local self_tile_num = fallout.tile_num(self_obj)
+        if fallout.elevation(self_obj) == 0 then
+            if self_tile_num == 15581 then
                 fallout.use_obj(fallout.map_var(4))
-            else
-                if fallout.tile_num(fallout.self_obj()) == 19124 then
-                    fallout.use_obj(fallout.map_var(5))
-                else
-                    if fallout.tile_num(fallout.self_obj()) == 25098 then
-                        fallout.use_obj(fallout.map_var(6))
-                    end
-                end
+            elseif self_tile_num == 19124 then
+                fallout.use_obj(fallout.map_var(5))
+            elseif self_tile_num == 25098 then
+                fallout.use_obj(fallout.map_var(6))
             end
-        end
-    else
-        if fallout.cur_map_index() == 32 then
         end
     end
 end
