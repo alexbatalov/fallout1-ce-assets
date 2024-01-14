@@ -12,50 +12,43 @@ local explode
 local escape
 local dialog_end
 
-local hostile = 0
+local hostile = false
 local initialized = false
-local temp = 0
-local target_hex = 0
 
 function start()
     if not initialized then
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 2)
+        fallout.critter_add_trait(self_obj, 1, 5, 6)
         initialized = true
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 2)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 6)
     end
-    if fallout.script_action() == 21 then
+
+    local script_action = fallout.script_action()
+    if script_action == 21 then
         look_at_p_proc()
-    else
-        if fallout.script_action() == 4 then
-            pickup_p_proc()
-        else
-            if fallout.script_action() == 11 then
-                talk_p_proc()
-            else
-                if fallout.script_action() == 12 then
-                    critter_p_proc()
-                else
-                    if fallout.script_action() == 18 then
-                        destroy_p_proc()
-                    end
-                end
-            end
-        end
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
     end
 end
 
 function combat()
-    hostile = 1
+    hostile = true
 end
 
 function critter_p_proc()
     if fallout.tile_num(fallout.self_obj()) < 25000 then
         explode()
     else
-        if (fallout.map_var(2) == 1) or (fallout.map_var(7) == 1) then
+        if fallout.map_var(2) == 1 or fallout.map_var(7) == 1 then
             escape()
         else
-            if hostile == 1 then
+            if hostile then
                 fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
             end
         end
@@ -64,7 +57,7 @@ end
 
 function pickup_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
-        hostile = 1
+        hostile = true
     end
 end
 
@@ -72,7 +65,7 @@ function talk_p_proc()
     if fallout.obj_pid(fallout.self_obj()) == 16777258 then
         fallout.display_msg(fallout.message_str(682, fallout.random(102, 104)))
     else
-        temp = fallout.random(102, 104)
+        local temp = fallout.random(102, 104)
         if temp == 104 then
             temp = 105
         end
@@ -93,8 +86,7 @@ function explode()
 end
 
 function escape()
-    target_hex = 22912
-    fallout.animate_move_obj_to_tile(fallout.self_obj(), target_hex, 1)
+    fallout.animate_move_obj_to_tile(fallout.self_obj(), 22912, 1)
 end
 
 function dialog_end()
