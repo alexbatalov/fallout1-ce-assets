@@ -13,10 +13,11 @@ function start()
         fallout.set_map_var(10, fallout.self_obj())
         use_p_proc()
         initialized = true
-    else
-        if fallout.script_action() == 6 then
-            use_p_proc()
-        end
+    end
+
+    local script_action = fallout.script_action()
+    if script_action == 6 then
+        use_p_proc()
     end
 end
 
@@ -25,27 +26,24 @@ function use_p_proc()
         fallout.set_external_var("field_change", "off")
     end
     if fallout.source_obj() ~= fallout.dude_obj() then
-        if fallout.external_var("field_change") == "toggle" then
+        local change = fallout.external_var("field_change")
+        if change == "toggle" then
             toggle_field()
-        else
-            if fallout.external_var("field_change") == "off" then
-                turn_field_off()
-            else
-                if fallout.external_var("field_change") == "on" then
-                    turn_field_on()
-                end
-            end
+        elseif change == "off" then
+            turn_field_off()
+        elseif change == "on" then
+            turn_field_on()
         end
     end
 end
 
 function turn_field_off()
-    fallout.set_obj_visibility(fallout.self_obj(), 1)
+    fallout.set_obj_visibility(fallout.self_obj(), true)
     fallout.set_local_var(0, 1)
 end
 
 function turn_field_on()
-    fallout.set_obj_visibility(fallout.self_obj(), 0)
+    fallout.set_obj_visibility(fallout.self_obj(), false)
     fallout.set_local_var(0, 0)
 end
 
