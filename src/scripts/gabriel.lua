@@ -1,14 +1,6 @@
 local fallout = require("fallout")
+local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
-
---
--- Some unreferenced imported varables found.
--- Because of it it is impossible to specify
--- the real names of global variables.
---
-
-local g0 = 1
-local g1 = 0
 
 local start
 local look_at_p_proc
@@ -49,32 +41,17 @@ local Gab28
 local GabBarter
 local GabEnd
 
--- ?import? variable JonPtr
--- ?import? variable Initialize
-
-local get_reaction
-local ReactToLevel
-local LevelToReact
-local UpReact
-local DownReact
-local BottomReact
-local TopReact
-local BigUpReact
-local BigDownReact
-local UpReactLevel
-local DownReactLevel
-local Goodbyes
-
--- ?import? variable exit_line
+local initialized = false
 
 function start()
-    if g0 then
-        if fallout.obj_is_carrying_obj_pid(fallout.self_obj(), 41) == 0 then
-            fallout.item_caps_adjust(fallout.self_obj(), fallout.random(50, 150))
+    if not initialized then
+        local self_obj = fallout.self_obj()
+        if fallout.obj_is_carrying_obj_pid(self_obj, 41) == 0 then
+            fallout.item_caps_adjust(self_obj, fallout.random(50, 150))
         end
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 48)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 28)
-        g0 = 0
+        fallout.critter_add_trait(self_obj, 1, 6, 48)
+        fallout.critter_add_trait(self_obj, 1, 5, 28)
+        initialized = true
     end
 end
 
@@ -100,7 +77,7 @@ function talk_p_proc()
     if fallout.global_var(617) == 1 then
         fallout.float_msg(fallout.self_obj(), fallout.message_str(669, fallout.random(100, 105)), 2)
     else
-        get_reaction()
+        reaction.get_reaction()
         fallout.start_gdialog(156, fallout.self_obj(), -1, -1, -1)
         fallout.gsay_start()
         if fallout.local_var(4) == 0 then
@@ -109,27 +86,23 @@ function talk_p_proc()
             else
                 Gab01()
             end
-        else
-            if fallout.local_var(5) == 1 then
-                if (fallout.local_var(8) == 0) and (fallout.global_var(613) == 2) then
-                    fallout.set_local_var(8, 1)
-                    Gab25()
-                else
-                    Gab27()
-                end
+        elseif fallout.local_var(5) == 1 then
+            if fallout.local_var(8) == 0 and fallout.global_var(613) == 2 then
+                fallout.set_local_var(8, 1)
+                Gab25()
             else
-                if (fallout.global_var(614) == 9201) and (fallout.global_var(265) == 9250) then
-                    Gab20()
+                Gab27()
+            end
+        else
+            if fallout.global_var(614) == 9201 and fallout.global_var(265) == 9250 then
+                Gab20()
+            elseif fallout.global_var(614) == 9201 then
+                Gab13()
+            else
+                if fallout.local_var(6) == 1 or fallout.local_var(7) == 1 then
+                    Gab24()
                 else
-                    if fallout.global_var(614) == 9201 then
-                        Gab13()
-                    else
-                        if (fallout.local_var(6) == 1) or (fallout.local_var(7) == 1) then
-                            Gab24()
-                        else
-                            Gab12()
-                        end
-                    end
+                    Gab12()
                 end
             end
         end
@@ -338,7 +311,7 @@ function Gab23()
         fallout.gsay_reply(156, 181)
     end
     fallout.gsay_option(156, 156, GabEnd, 50)
-    UpReactLevel()
+    reaction.UpReactLevel()
 end
 
 function Gab24()
@@ -389,113 +362,6 @@ function GabBarter()
 end
 
 function GabEnd()
-end
-
-function get_reaction()
-    if fallout.local_var(2) == 0 then
-        fallout.set_local_var(0, 50)
-        fallout.set_local_var(1, 2)
-        fallout.set_local_var(2, 1)
-        fallout.set_local_var(0, fallout.local_var(0) + (5 * fallout.get_critter_stat(fallout.dude_obj(), 3)) - 25)
-        fallout.set_local_var(0, fallout.local_var(0) + (10 * fallout.has_trait(0, fallout.dude_obj(), 10)))
-        if fallout.has_trait(0, fallout.dude_obj(), 39) then
-            if fallout.global_var(155) > 0 then
-                fallout.set_local_var(0, fallout.local_var(0) + fallout.global_var(155))
-            else
-                fallout.set_local_var(0, fallout.local_var(0) - fallout.global_var(155))
-            end
-        else
-            if fallout.local_var(3) == 1 then
-                fallout.set_local_var(0, fallout.local_var(0) - fallout.global_var(155))
-            else
-                fallout.set_local_var(0, fallout.local_var(0) + fallout.global_var(155))
-            end
-        end
-        if fallout.global_var(158) > 2 then
-            fallout.set_local_var(0, fallout.local_var(0) - 30)
-        end
-        if reputation.has_rep_champion() then
-            fallout.set_local_var(0, fallout.local_var(0) + 20)
-        end
-        if reputation.has_rep_berserker() then
-            fallout.set_local_var(0, fallout.local_var(0) - 20)
-        end
-        ReactToLevel()
-    end
-end
-
-function ReactToLevel()
-    if fallout.local_var(0) <= 25 then
-        fallout.set_local_var(1, 1)
-    else
-        if fallout.local_var(0) <= 75 then
-            fallout.set_local_var(1, 2)
-        else
-            fallout.set_local_var(1, 3)
-        end
-    end
-end
-
-function LevelToReact()
-    if fallout.local_var(1) == 1 then
-        fallout.set_local_var(0, fallout.random(1, 25))
-    else
-        if fallout.local_var(1) == 2 then
-            fallout.set_local_var(0, fallout.random(26, 75))
-        else
-            fallout.set_local_var(0, fallout.random(76, 100))
-        end
-    end
-end
-
-function UpReact()
-    fallout.set_local_var(0, fallout.local_var(0) + 10)
-    ReactToLevel()
-end
-
-function DownReact()
-    fallout.set_local_var(0, fallout.local_var(0) - 10)
-    ReactToLevel()
-end
-
-function BottomReact()
-    fallout.set_local_var(1, 1)
-    fallout.set_local_var(0, 1)
-end
-
-function TopReact()
-    fallout.set_local_var(0, 100)
-    fallout.set_local_var(1, 3)
-end
-
-function BigUpReact()
-    fallout.set_local_var(0, fallout.local_var(0) + 25)
-    ReactToLevel()
-end
-
-function BigDownReact()
-    fallout.set_local_var(0, fallout.local_var(0) - 25)
-    ReactToLevel()
-end
-
-function UpReactLevel()
-    fallout.set_local_var(1, fallout.local_var(1) + 1)
-    if fallout.local_var(1) > 3 then
-        fallout.set_local_var(1, 3)
-    end
-    LevelToReact()
-end
-
-function DownReactLevel()
-    fallout.set_local_var(1, fallout.local_var(1) - 1)
-    if fallout.local_var(1) < 1 then
-        fallout.set_local_var(1, 1)
-    end
-    LevelToReact()
-end
-
-function Goodbyes()
-    g1 = fallout.message_str(634, fallout.random(100, 105))
 end
 
 local exports = {}
