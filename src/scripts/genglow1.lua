@@ -7,6 +7,7 @@ local talk_p_proc
 local critter_p_proc
 local damage_p_proc
 local destroy_p_proc
+local look_at_p_proc
 
 local hostile = false
 local initialized = false
@@ -84,4 +85,5 @@ exports.talk_p_proc = talk_p_proc
 exports.critter_p_proc = critter_p_proc
 exports.damage_p_proc = damage_p_proc
 exports.destroy_p_proc = destroy_p_proc
+exports.look_at_p_proc = look_at_p_proc
 return exports
