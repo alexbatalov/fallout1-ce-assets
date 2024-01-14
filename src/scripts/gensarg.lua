@@ -4,7 +4,12 @@ local reputation = require("lib.reputation")
 
 local start
 local do_dialogue
-local pre_dialogue
+local pickup_p_proc
+local talk_p_proc
+local critter_p_proc
+local damage_p_proc
+local destroy_p_proc
+local look_at_p_proc
 local mutan00
 local mutan01
 local mutan02
@@ -32,71 +37,40 @@ local mutan15
 local mutanend
 local mutancbt
 
-local HOSTILE = 0
+local hostile = false
 local initialized = false
-local Weapons = 0
-local DISGUISED = 0
-local again = 0
-local rndx = 0
-
-local exit_line = 0
+local Weapons = false
+local disguised = false
+local again = false
 
 function start()
     if not initialized then
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 34)
+        fallout.critter_add_trait(self_obj, 1, 5, 49)
         initialized = true
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 34)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 49)
+    end
+
+    local script_action = fallout.script_action()
+    if script_action == 14 then
+        damage_p_proc()
     else
-        if fallout.script_action() == 14 then
-            if fallout.global_var(245) == 0 then
-                fallout.set_global_var(245, 1)
-            end
+        if script_action == 11 then
+            talk_p_proc()
         else
-            if fallout.script_action() == 11 then
-                pre_dialogue()
-            else
-                if fallout.script_action() == 4 then
-                    HOSTILE = 1
-                end
+            if script_action == 4 then
+                pickup_p_proc()
             end
         end
     end
-    if fallout.script_action() == 12 then
-        if HOSTILE then
-            HOSTILE = 0
-            fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
-        end
-        if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
-            if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) then
-                if Weapons == 0 then
-                    Weapons = 1
-                    if fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 6 then
-                        fallout.dialogue_system_enter()
-                    end
-                end
-            end
-            DISGUISED = 0
-            if fallout.obj_pid(fallout.critter_inven_obj(fallout.dude_obj(), 0)) == 113 then
-                if fallout.metarule(16, 0) > 1 then
-                    DISGUISED = 0
-                else
-                    DISGUISED = 1
-                end
-            end
-            if (DISGUISED == 0) and (again == 0) then
-                if fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 6 then
-                    again = 1
-                    fallout.dialogue_system_enter()
-                end
-            end
-        end
+    if script_action == 12 then
+        critter_p_proc()
     else
-        if fallout.script_action() == 21 then
-            fallout.script_overrides()
-            fallout.display_msg(fallout.message_str(525, 200))
+        if script_action == 21 then
+            look_at_p_proc()
         else
-            if fallout.script_action() == 18 then
-                reputation.inc_evil_critter()
+            if script_action == 18 then
+                destroy_p_proc()
             end
         end
     end
@@ -107,7 +81,7 @@ function do_dialogue()
     reaction.get_reaction()
     fallout.start_gdialog(525, fallout.self_obj(), 4, -1, -1)
     fallout.gsay_start()
-    if Weapons == 1 then
+    if Weapons then
         mutan01()
     else
         if fallout.local_var(4) ~= 0 then
@@ -121,22 +95,26 @@ function do_dialogue()
     fallout.end_dialogue()
 end
 
-function pre_dialogue()
+function pickup_p_proc()
+    hostile = true
+end
+
+function talk_p_proc()
     if fallout.obj_pid(fallout.critter_inven_obj(fallout.dude_obj(), 0)) == 113 then
         if fallout.metarule(16, 0) > 1 then
-            DISGUISED = 0
+            disguised = false
         else
-            DISGUISED = 1
+            disguised = true
         end
     end
-    if Weapons == 1 then
-        if DISGUISED then
+    if Weapons then
+        if disguised then
             do_dialogue()
         else
             mutan00()
         end
     else
-        if DISGUISED then
+        if disguised then
             do_dialogue()
         else
             mutan00()
@@ -144,23 +122,63 @@ function pre_dialogue()
     end
 end
 
+function critter_p_proc()
+    if hostile then
+        hostile = false
+        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+    end
+    if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
+        if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) then
+            if not Weapons then
+                Weapons = true
+                if fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 6 then
+                    fallout.dialogue_system_enter()
+                end
+            end
+        end
+        disguised = false
+        if fallout.obj_pid(fallout.critter_inven_obj(fallout.dude_obj(), 0)) == 113 then
+            if fallout.metarule(16, 0) > 1 then
+                disguised = false
+            else
+                disguised = true
+            end
+        end
+        if not disguised and not again then
+            if fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 6 then
+                again = true
+                fallout.dialogue_system_enter()
+            end
+        end
+    end
+end
+
+function damage_p_proc()
+    if fallout.global_var(245) == 0 then
+        fallout.set_global_var(245, 1)
+    end
+end
+
+function destroy_p_proc()
+    reputation.inc_evil_critter()
+end
+
+function look_at_p_proc()
+    fallout.script_overrides()
+    fallout.display_msg(fallout.message_str(525, 200))
+end
+
 function mutan00()
-    rndx = fallout.random(1, 12)
+    local rndx = fallout.random(1, 12)
     if rndx < 5 then
         if rndx == 1 then
             fallout.float_msg(fallout.self_obj(), fallout.message_str(524, 100), 2)
-        else
-            if rndx == 2 then
-                fallout.float_msg(fallout.self_obj(), fallout.message_str(524, 101), 2)
-            else
-                if rndx == 3 then
-                    fallout.float_msg(fallout.self_obj(), fallout.message_str(524, 102), 2)
-                else
-                    if rndx == 4 then
-                        fallout.float_msg(fallout.self_obj(), fallout.message_str(524, 103), 2)
-                    end
-                end
-            end
+        elseif rndx == 2 then
+            fallout.float_msg(fallout.self_obj(), fallout.message_str(524, 101), 2)
+        elseif rndx == 3 then
+            fallout.float_msg(fallout.self_obj(), fallout.message_str(524, 102), 2)
+        elseif rndx == 4 then
+            fallout.float_msg(fallout.self_obj(), fallout.message_str(524, 103), 2)
         end
     end
     mutancbt()
@@ -323,13 +341,11 @@ function mutan14()
 end
 
 function mutan15()
-    rndx = fallout.random(1, 2)
+    local rndx = fallout.random(1, 2)
     if rndx == 1 then
         fallout.gsay_message(525, 141, 50)
-    else
-        if rndx == 2 then
-            fallout.gsay_message(525, 142, 50)
-        end
+    elseif rndx == 2 then
+        fallout.gsay_message(525, 142, 50)
     end
 end
 
@@ -337,9 +353,15 @@ function mutanend()
 end
 
 function mutancbt()
-    HOSTILE = 1
+    hostile = true
 end
 
 local exports = {}
 exports.start = start
+exports.pickup_p_proc = pickup_p_proc
+exports.talk_p_proc = talk_p_proc
+exports.critter_p_proc = critter_p_proc
+exports.damage_p_proc = damage_p_proc
+exports.destroy_p_proc = destroy_p_proc
+exports.look_at_p_proc = look_at_p_proc
 return exports
