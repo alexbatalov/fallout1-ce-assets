@@ -7,6 +7,7 @@ local pickup_p_proc
 local talk_p_proc
 local destroy_p_proc
 local look_at_p_proc
+local timed_event_p_proc
 local guard00
 local guard01
 local guard02
@@ -325,4 +326,5 @@ exports.critter_p_proc = critter_p_proc
 exports.damage_p_proc = damage_p_proc
 exports.destroy_p_proc = destroy_p_proc
 exports.look_at_p_proc = look_at_p_proc
+exports.timed_event_p_proc = timed_event_p_proc
 return exports
