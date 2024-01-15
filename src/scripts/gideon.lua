@@ -1,22 +1,13 @@
 local fallout = require("fallout")
 local reputation = require("lib.reputation")
 
---
--- Some unreferenced imported varables found.
--- Because of it it is impossible to specify
--- the real names of global variables.
---
-
-local g0 = 0
-local g1 = 1
-local g2 = 0
-
 local start
 local combat
 local critter_p_proc
 local pickup_p_proc
 local talk_p_proc
 local destroy_p_proc
+local timed_event_p_proc
 local look_at_p_proc
 local combat_p_proc
 local gideon00
@@ -53,60 +44,50 @@ local gideon13a
 local gideonnull
 local dialog_end
 
--- ?import? variable hostile
--- ?import? variable Only_Once
--- ?import? variable temp
--- ?import? variable Psy_Field_Ptr
+local hostile = false
+local initialized = false
 
 function start()
-    if g1 then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 50)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 67)
+    if not initialized then
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 50)
+        fallout.critter_add_trait(self_obj, 1, 5, 67)
+        initialized = true
     end
-    if fallout.script_action() == 21 then
+
+    local script_action = fallout.script_action()
+    if script_action == 21 then
         look_at_p_proc()
-    else
-        if fallout.script_action() == combat_p_proc() then
-            combat_p_proc()
-        else
-            if fallout.script_action() == 4 then
-                pickup_p_proc()
-            else
-                if fallout.script_action() == 11 then
-                    talk_p_proc()
-                else
-                    if fallout.script_action() == 22 then
-                        fallout.animate_move_obj_to_tile(fallout.self_obj(), 15319, 0)
-                    else
-                        if fallout.script_action() == 12 then
-                            critter_p_proc()
-                        else
-                            if fallout.script_action() == 18 then
-                                destroy_p_proc()
-                            end
-                        end
-                    end
-                end
-            end
-        end
+    elseif script_action == 13 then
+        combat_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 22 then
+        timed_event_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
     end
 end
 
 function combat()
     fallout.use_obj(fallout.external_var("contpan"))
-    g0 = 1
+    hostile = true
 end
 
 function critter_p_proc()
-    if g0 then
-        g0 = 0
+    if hostile then
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
 end
 
 function pickup_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
-        g0 = 1
+        hostile = true
     end
 end
 
@@ -125,6 +106,10 @@ end
 
 function destroy_p_proc()
     reputation.inc_evil_critter()
+end
+
+function timed_event_p_proc()
+    fallout.animate_move_obj_to_tile(fallout.self_obj(), 15319, 0)
 end
 
 function look_at_p_proc()
@@ -390,9 +375,9 @@ function gideonnull()
         fallout.use_obj(fallout.external_var("contpan"))
         fallout.use_obj(fallout.dude_obj())
         fallout.add_obj_to_inven(fallout.dude_obj(), fallout.create_object_sid(123, 0, 0, -1))
-        g2 = 1000
-        fallout.display_msg(fallout.message_str(671, 501) .. g2 .. fallout.message_str(671, 502))
-        fallout.give_exp_points(g2)
+        local xp = 1000
+        fallout.display_msg(fallout.message_str(671, 501) .. xp .. fallout.message_str(671, 502))
+        fallout.give_exp_points(xp)
         fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(10), 1)
     end
 end
@@ -406,6 +391,7 @@ exports.critter_p_proc = critter_p_proc
 exports.pickup_p_proc = pickup_p_proc
 exports.talk_p_proc = talk_p_proc
 exports.destroy_p_proc = destroy_p_proc
+exports.timed_event_p_proc = timed_event_p_proc
 exports.look_at_p_proc = look_at_p_proc
 exports.combat_p_proc = combat_p_proc
 return exports
