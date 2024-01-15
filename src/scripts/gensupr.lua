@@ -20,7 +20,7 @@ local GenSuprAlert
 local GenSuprxx
 
 local initialized = false
-local hostile = 0
+local hostile = false
 local round_count = 0
 local home_tile = 7000
 local waypoint = 0
@@ -29,29 +29,23 @@ local exit_line = 0
 
 function start()
     if not initialized then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 34)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 48)
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 34)
+        fallout.critter_add_trait(self_obj, 1, 5, 48)
         initialized = true
-    else
-        if fallout.script_action() == 13 then
-            combat_p_proc()
-        else
-            if fallout.script_action() == 12 then
-                critter_p_proc()
-            else
-                if fallout.script_action() == 18 then
-                    destroy_p_proc()
-                else
-                    if fallout.script_action() == 4 then
-                        pickup_p_proc()
-                    else
-                        if fallout.script_action() == 11 then
-                            talk_p_proc()
-                        end
-                    end
-                end
-            end
-        end
+    end
+
+    local script_action = fallout.script_action()
+    if script_action == 13 then
+        combat_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
     end
 end
 
@@ -65,16 +59,18 @@ function combat_p_proc()
 end
 
 function critter_p_proc()
-    if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
+    local self_obj = fallout.self_obj()
+    local dude_obj = fallout.dude_obj()
+    if fallout.obj_can_see_obj(self_obj, dude_obj) then
         if hostile then
-            hostile = 0
-            fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+            hostile = false
+            fallout.attack(dude_obj, 0, 1, 0, 0, 30000, 0, 0)
         else
             if fallout.global_var(146) ~= 0 then
-                hostile = 1
+                hostile = true
             else
-                if not(fallout.external_var("ignoring_dude")) then
-                    if fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 12 then
+                if fallout.external_var("ignoring_dude") == 0 then
+                    if fallout.tile_distance_objs(self_obj, dude_obj) < 12 then
                         fallout.dialogue_system_enter()
                     end
                 end
@@ -83,24 +79,20 @@ function critter_p_proc()
     end
     if fallout.cur_map_index() == 30 then
         if fallout.map_var(0) ~= 0 then
-            if not(waypoint) then
-                if fallout.tile_num(fallout.self_obj()) ~= 22312 then
-                    fallout.animate_move_obj_to_tile(fallout.self_obj(), 22312, 0)
+            if waypoint == 0 then
+                if fallout.tile_num(self_obj) ~= 22312 then
+                    fallout.animate_move_obj_to_tile(self_obj, 22312, 0)
                 else
                     waypoint = 1
                 end
-            else
-                if waypoint == 1 then
-                    if fallout.tile_num(fallout.self_obj()) ~= 31944 then
-                        fallout.animate_move_obj_to_tile(fallout.self_obj(), 31944, 0)
-                    else
-                        waypoint = 2
-                    end
+            elseif waypoint == 1 then
+                if fallout.tile_num(self_obj) ~= 31944 then
+                    fallout.animate_move_obj_to_tile(self_obj, 31944, 0)
                 else
-                    if waypoint == 2 then
-                        fallout.set_external_var("removal_ptr", fallout.self_obj())
-                    end
+                    waypoint = 2
                 end
+            elseif waypoint == 2 then
+                fallout.set_external_var("removal_ptr", self_obj)
             end
         end
     end
@@ -111,18 +103,18 @@ function destroy_p_proc()
 end
 
 function pickup_p_proc()
-    hostile = 1
+    hostile = true
 end
 
 function talk_p_proc()
     if fallout.global_var(54) ~= 0 then
         GenSupr08()
     else
-        if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) and not(hostile) then
+        if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) and not (hostile) then
             if fallout.random(0, 5) == 5 then
                 GenSupr00()
             else
-                hostile = 1
+                hostile = true
             end
         else
             fallout.start_gdialog(433, fallout.self_obj(), 4, -1, -1)
@@ -136,7 +128,7 @@ end
 
 function GenSupr00()
     fallout.float_msg(fallout.self_obj(), fallout.message_str(433, fallout.random(101, 103)), 2)
-    hostile = 1
+    hostile = true
 end
 
 function GenSupr03()
@@ -167,7 +159,7 @@ function GenSupr03b()
 end
 
 function GenSupr04()
-    hostile = 1
+    hostile = true
     fallout.gsay_message(433, fallout.random(112, 114), 51)
 end
 
@@ -178,7 +170,7 @@ function GenSupr05()
 end
 
 function GenSupr06()
-    hostile = 1
+    hostile = true
     fallout.gsay_message(433, fallout.random(118, 120), 51)
 end
 
@@ -189,12 +181,12 @@ end
 
 function GenSupr08()
     fallout.float_msg(fallout.self_obj(), fallout.message_str(433, fallout.random(124, 127)), 2)
-    hostile = 1
+    hostile = true
 end
 
 function GenSuprAlert()
     fallout.set_global_var(146, 1)
-    hostile = 1
+    hostile = true
 end
 
 function GenSuprxx()
