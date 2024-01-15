@@ -49,36 +49,28 @@ local heather28
 local HeatherEnd
 local combat
 
-local hostile = 0
+local hostile = false
 local initialized = false
-
-local exit_line = 0
 
 function start()
     if not initialized then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 20)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 69)
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 20)
+        fallout.critter_add_trait(self_obj, 1, 5, 69)
         initialized = true
-    else
-        if fallout.script_action() == 12 then
-            critter_p_proc()
-        else
-            if fallout.script_action() == 18 then
-                destroy_p_proc()
-            else
-                if fallout.script_action() == 21 then
-                    look_at_p_proc()
-                else
-                    if fallout.script_action() == 4 then
-                        pickup_p_proc()
-                    else
-                        if fallout.script_action() == 11 then
-                            talk_p_proc()
-                        end
-                    end
-                end
-            end
-        end
+    end
+
+    local script_action = fallout.script_action()
+    if script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
     end
 end
 
@@ -87,7 +79,7 @@ function critter_p_proc()
         fallout.kill_critter(fallout.self_obj(), 57)
     else
         if hostile then
-            hostile = 0
+            hostile = false
             fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
         end
     end
@@ -104,7 +96,7 @@ function look_at_p_proc()
 end
 
 function pickup_p_proc()
-    hostile = 1
+    hostile = true
 end
 
 function talk_p_proc()
@@ -306,7 +298,6 @@ function heather22()
 end
 
 function heather22a()
-    local v0 = 0
     if fallout.item_caps_total(fallout.dude_obj()) >= 300 then
         fallout.item_caps_adjust(fallout.dude_obj(), -300)
         fallout.item_caps_adjust(fallout.self_obj(), 300)
@@ -347,7 +338,7 @@ function HeatherEnd()
 end
 
 function combat()
-    hostile = 1
+    hostile = true
 end
 
 local exports = {}
