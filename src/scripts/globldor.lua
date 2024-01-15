@@ -239,8 +239,9 @@ function use_skill_on_p_proc()
 end
 
 function use_obj_on_p_proc()
-    local pid = fallout.obj_pid(fallout.obj_being_used_with())
-    if pid == 77 then
+    local item_obj = fallout.obj_being_used_with()
+    local item_pid = fallout.obj_pid(item_obj)
+    if item_pid == 77 then
         fallout.script_overrides()
         if fallout.local_var(2) == 0 then
             local roll = fallout.roll_vs_skill(fallout.source_obj(), 11, -20)
@@ -266,15 +267,14 @@ function use_obj_on_p_proc()
                     fallout.display_msg(fallout.message_str(306, 121))
                     fallout.jam_lock(fallout.self_obj())
                     fallout.display_msg(fallout.message_str(306, 110))
-                    -- FIXME: Attempt to delete pid instead of object.
-                    fallout.rm_obj_from_inven(fallout.source_obj(), pid)
-                    fallout.destroy_object(pid)
+                    fallout.rm_obj_from_inven(fallout.source_obj(), item_obj)
+                    fallout.destroy_object(item_obj)
                 else
                     fallout.display_msg(fallout.message_str(306, 122))
                 end
             end
         end
-    elseif pid == 97 then
+    elseif item_pid == 97 then
         fallout.script_overrides()
         fallout.set_local_var(2, 1)
         fallout.obj_unlock(fallout.self_obj())
@@ -290,28 +290,24 @@ end
 
 function description_p_proc()
     fallout.script_overrides()
-    if (fallout.local_var(3) == 0) and (fallout.local_var(2) == 0) then
+    if fallout.local_var(3) == 0 and fallout.local_var(2) == 0 then
         Skill_Checks()
         Display_Armed_And_Locked()
+    elseif fallout.local_var(2) == 0 then
+        Skill_Checks()
+        Display_Trapped()
+    elseif fallout.local_var(3) == 0 then
+        Locks_Check()
+        Display_Locked()
     else
-        if fallout.local_var(2) == 0 then
-            Skill_Checks()
-            Display_Trapped()
-        else
-            if fallout.local_var(3) == 0 then
-                Locks_Check()
-                Display_Locked()
-            else
-                fallout.display_msg(fallout.message_str(306, 123))
-            end
-        end
+        fallout.display_msg(fallout.message_str(306, 123))
     end
 end
 
 function damage_p_proc()
     if fallout.local_var(1) > 3 then
         fallout.set_local_var(2, 1)
-        fallout.set_obj_visibility(fallout.self_obj(), 1)
+        fallout.set_obj_visibility(fallout.self_obj(), true)
         fallout.obj_open(fallout.self_obj())
         fallout.set_local_var(3, 1)
     end
