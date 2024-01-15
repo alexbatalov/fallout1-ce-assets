@@ -27,16 +27,13 @@ local Term15
 local TermEnd
 
 function start()
-    if fallout.script_action() == 6 then
+    local script_action = fallout.script_action()
+    if script_action == 6 then
         use_p_proc()
-    else
-        if fallout.script_action() == 11 then
-            talk_p_proc()
-        else
-            if fallout.script_action() == 8 then
-                use_skill_on_p_proc()
-            end
-        end
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 8 then
+        use_skill_on_p_proc()
     end
 end
 
@@ -50,12 +47,10 @@ function talk_p_proc()
     fallout.gsay_start()
     if fallout.global_var(224) == 0 then
         Term14()
+    elseif fallout.global_var(224) == 1 then
+        Term01()
     else
-        if fallout.global_var(224) == 1 then
-            Term01()
-        else
-            Term09()
-        end
+        Term09()
     end
     fallout.gsay_end()
     fallout.end_dialogue()
