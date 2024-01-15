@@ -5,12 +5,11 @@ local use_p_proc
 local use_obj_on_p_proc
 
 function start()
-    if fallout.script_action() == 6 then
+    local script_action = fallout.script_action()
+    if script_action == 6 then
         use_p_proc()
-    else
-        if fallout.script_action() == 7 then
-            use_obj_on_p_proc()
-        end
+    elseif script_action == 7 then
+        use_obj_on_p_proc()
     end
 end
 
@@ -24,13 +23,14 @@ function use_p_proc()
 end
 
 function use_obj_on_p_proc()
-    local v0 = 0
-    if fallout.obj_pid(fallout.obj_being_used_with()) == 127 then
+    local item_obj = fallout.obj_being_used_with()
+    if fallout.obj_pid(item_obj) == 127 then
         fallout.script_overrides()
         fallout.set_map_var(0, 1)
-        fallout.rm_obj_from_inven(fallout.dude_obj(), fallout.obj_being_used_with())
-        fallout.destroy_object(fallout.obj_being_used_with())
-        v0 = fallout.create_object_sid(33555000, fallout.tile_num(fallout.self_obj()), fallout.elevation(fallout.self_obj()), 511)
+        fallout.rm_obj_from_inven(fallout.dude_obj(), item_obj)
+        fallout.destroy_object(item_obj)
+        local self_obj = fallout.self_obj()
+        fallout.create_object_sid(33555000, fallout.tile_num(self_obj), fallout.elevation(self_obj), 511)
         fallout.display_msg(fallout.message_str(786, 103))
     end
 end
