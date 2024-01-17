@@ -36,33 +36,27 @@ local Lorri25
 local Lorri26
 local Lorri27
 
-local hostile = 0
 local initialized = false
 
 function start()
     if not initialized then
-        if (fallout.global_var(613) == 9103) or (fallout.global_var(613) == 9102) then
+        if fallout.global_var(613) == 9103 or fallout.global_var(613) == 9102 then
             fallout.critter_add_trait(fallout.self_obj(), 1, 6, 0)
         else
             fallout.critter_add_trait(fallout.self_obj(), 1, 6, 49)
         end
         initialized = true
-    else
-        if fallout.script_action() == 18 then
-            destroy_p_proc()
-        else
-            if fallout.script_action() == 21 then
-                look_at_p_proc()
-            else
-                if fallout.script_action() == 4 then
-                    pickup_p_proc()
-                else
-                    if fallout.script_action() == 11 then
-                        talk_p_proc()
-                    end
-                end
-            end
-        end
+    end
+
+    local script_action = fallout.script_action()
+    if script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
     end
 end
 
@@ -117,13 +111,15 @@ end
 function Lorri01()
     fallout.gsay_reply(253, 102)
     fallout.giq_option(4, 253, 103, Lorri02, 50)
-    fallout.giq_option(4, 253, fallout.message_str(253, 104) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(253, 105), Lorri03, 50)
+    fallout.giq_option(4, 253,
+        fallout.message_str(253, 104) ..
+        fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(253, 105), Lorri03, 50)
     fallout.giq_option(-3, 253, 106, Lorri15, 50)
 end
 
 function Lorri02()
     fallout.gsay_reply(253, 107)
-    if not(fallout.local_var(0)) then
+    if fallout.local_var(0) == 0 then
         fallout.giq_option(4, 253, 108, Lorri03, 50)
     end
     fallout.giq_option(4, 253, 109, Lorri16, 50)
