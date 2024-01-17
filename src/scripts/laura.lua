@@ -1,31 +1,13 @@
 local fallout = require("fallout")
+local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
 
---
--- Some unreferenced imported varables found.
--- Because of it it is impossible to specify
--- the real names of global variables.
---
-
-local g0 = 0
-local g1 = 0
-local g2 = 0
-local g3 = 0
-local g4 = 0
-local g5 = 0
-local g6 = 0
-local g7 = 0
-local g8 = 0
-local g9 = 0
-local g10 = 0
-local g11 = 0
-local g12 = 0
-local g13 = 0
-local g14 = 0
-local g15 = 0
-
 local start
-local do_dialogue
+local pickup_p_proc
+local talk_p_proc
+local critter_p_proc
+local look_at_p_proc
+local timed_event_p_proc
 local lauracbt
 local laura01
 local laura01a
@@ -111,39 +93,6 @@ local laurax5
 local laurax6
 local laurax7
 local laurax8
-
--- ?import? variable rndx
--- ?import? variable rndy
--- ?import? variable rndz
--- ?import? variable rndu
--- ?import? variable MALE
--- ?import? variable HOSTILE
--- ?import? variable DESTROYED
--- ?import? variable KILLEDANY
--- ?import? variable CAPTURED
--- ?import? variable AFTERX
--- ?import? variable ILLEGAL
--- ?import? variable ILLEGBEFORE
--- ?import? variable TRESPASS
--- ?import? variable CRIME
--- ?import? variable CHILDREN
--- ?import? variable Black_Door_Ptr
-
-local get_reaction
-local ReactToLevel
-local LevelToReact
-local UpReact
-local DownReact
-local BottomReact
-local TopReact
-local BigUpReact
-local BigDownReact
-local UpReactLevel
-local DownReactLevel
-local Goodbyes
-
--- ?import? variable exit_line
-
 local laura67a
 local laura68a
 local laura69a
@@ -177,121 +126,36 @@ local laura88
 local laura88a
 local lauraend
 
+local MALE = false
+local hostile = false
+local ILLEGAL = false
+local ILLEGALBEFORE = false
+local TRESPASS = 0
+local CRIME = 0
+
 function start()
-    if fallout.script_action() == 11 then
-        do_dialogue()
-    else
-        if fallout.script_action() == 18 then
-            reputation.inc_good_critter()
-        else
-            if (fallout.script_action() == 21) or (fallout.script_action() == 3) then
-                fallout.script_overrides()
-                fallout.display_msg(fallout.message_str(48, 100))
-            else
-                if fallout.script_action() == 4 then
-                    g5 = 1
-                else
-                    if fallout.script_action() == 12 then
-                        fallout.set_external_var("Laura_Ptr", fallout.self_obj())
-                        if fallout.local_var(4) == 1 then
-                            fallout.set_local_var(4, 2)
-                            fallout.set_local_var(9, 1)
-                            fallout.animate_move_obj_to_tile(fallout.self_obj(), 14089, 0)
-                        else
-                            if (fallout.local_var(4) == 2) and (fallout.tile_num(fallout.self_obj()) ~= 14089) then
-                                fallout.animate_move_obj_to_tile(fallout.self_obj(), 14089, 0)
-                            else
-                                if (fallout.local_var(4) == 2) and (fallout.tile_num(fallout.self_obj()) == 14089) then
-                                    fallout.set_local_var(4, 3)
-                                    fallout.obj_unlock(fallout.external_var("Red_Door_Ptr"))
-                                    fallout.use_obj(fallout.external_var("Red_Door_Ptr"))
-                                    fallout.animate_move_obj_to_tile(fallout.self_obj(), 12495, 0)
-                                else
-                                    if (fallout.local_var(4) == 3) and (fallout.tile_num(fallout.self_obj()) ~= 12495) then
-                                        fallout.animate_move_obj_to_tile(fallout.self_obj(), 12495, 0)
-                                    else
-                                        if (fallout.local_var(4) == 3) and (fallout.tile_num(fallout.self_obj()) == 12495) then
-                                            fallout.set_local_var(4, 4)
-                                            fallout.animate_move_obj_to_tile(fallout.self_obj(), 12302, 0)
-                                        else
-                                            if fallout.local_var(4) == 4 then
-                                                fallout.float_msg(fallout.self_obj(), fallout.message_str(766, 178), 8)
-                                                fallout.set_local_var(4, 5)
-                                                fallout.set_local_var(9, 2)
-                                            else
-                                                if fallout.local_var(4) == 5 then
-                                                    fallout.set_local_var(4, 6)
-                                                    fallout.animate_move_obj_to_tile(fallout.self_obj(), 15099, 0)
-                                                else
-                                                    if (fallout.local_var(4) == 6) and (fallout.tile_num(fallout.self_obj()) ~= 15099) then
-                                                        fallout.animate_move_obj_to_tile(fallout.self_obj(), 15099, 0)
-                                                    else
-                                                        if (fallout.local_var(4) == 6) and (fallout.tile_num(fallout.self_obj()) == 15099) then
-                                                            fallout.set_local_var(4, 7)
-                                                            fallout.animate_move_obj_to_tile(fallout.self_obj(), 23301, 0)
-                                                        else
-                                                            if (fallout.local_var(4) == 7) and (fallout.tile_num(fallout.self_obj()) ~= 23301) then
-                                                                fallout.animate_move_obj_to_tile(fallout.self_obj(), 23301, 0)
-                                                            else
-                                                                if (fallout.local_var(4) == 7) and (fallout.tile_num(fallout.self_obj()) == 23301) then
-                                                                    fallout.set_local_var(4, 8)
-                                                                    fallout.animate_move_obj_to_tile(fallout.self_obj(), 27106, 0)
-                                                                else
-                                                                    if (fallout.local_var(4) == 8) and (fallout.tile_num(fallout.self_obj()) ~= 27106) then
-                                                                        fallout.animate_move_obj_to_tile(fallout.self_obj(), 27106, 0)
-                                                                    else
-                                                                        if (fallout.local_var(4) == 8) and (fallout.tile_num(fallout.self_obj()) == 27106) then
-                                                                            fallout.set_local_var(4, 9)
-                                                                            fallout.set_obj_visibility(fallout.self_obj(), 1)
-                                                                        else
-                                                                            if fallout.local_var(5) == 1 then
-                                                                                fallout.set_local_var(5, 2)
-                                                                                fallout.animate_move_obj_to_tile(fallout.self_obj(), 22090, 0)
-                                                                            else
-                                                                                if (fallout.local_var(5) == 2) and (fallout.tile_num(fallout.self_obj()) ~= 22090) then
-                                                                                    fallout.animate_move_obj_to_tile(fallout.self_obj(), 22090, 0)
-                                                                                else
-                                                                                    if (fallout.local_var(5) == 2) and (fallout.tile_num(fallout.self_obj()) == 22090) then
-                                                                                        fallout.set_local_var(5, 3)
-                                                                                    else
-                                                                                        if fallout.local_var(9) == 1 then
-                                                                                            if (fallout.tile_num(fallout.self_obj()) == 22090) or (fallout.tile_num(fallout.self_obj()) == 12495) then
-                                                                                                fallout.set_local_var(9, 0)
-                                                                                            end
-                                                                                        end
-                                                                                    end
-                                                                                end
-                                                                            end
-                                                                        end
-                                                                    end
-                                                                end
-                                                            end
-                                                        end
-                                                    end
-                                                end
-                                            end
-                                        end
-                                    end
-                                end
-                            end
-                        end
-                        if g5 then
-                            g5 = 0
-                            fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
-                        end
-                    else
-                        if fallout.script_action() == 22 then
-                            g5 = 1
-                        end
-                    end
-                end
-            end
-        end
+    local script_action = fallout.script_action()
+    if script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 18 then
+        reputation.inc_good_critter()
+    elseif script_action == 21 or script_action == 3 then
+        look_at_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 22 then
+        timed_event_p_proc()
     end
 end
 
-function do_dialogue()
-    get_reaction()
+function pickup_p_proc()
+    hostile = true
+end
+
+function talk_p_proc()
+    reaction.get_reaction()
     if fallout.local_var(9) == 1 then
         fallout.float_msg(fallout.self_obj(), fallout.message_str(766, 177), 8)
     else
@@ -300,16 +164,16 @@ function do_dialogue()
         else
             fallout.start_gdialog(48, fallout.self_obj(), 4, 3, 8)
             fallout.gsay_start()
-            g4 = fallout.get_critter_stat(fallout.dude_obj(), 34) == 0
-            if g10 then
-                if g11 then
+            MALE = fallout.get_critter_stat(fallout.dude_obj(), 34) == 0
+            if ILLEGAL then
+                if ILLEGALBEFORE then
                     laura63()
                 else
-                    g11 = 1
-                    if g13 == g12 then
+                    ILLEGALBEFORE = true
+                    if CRIME == TRESPASS then
                         laura65()
                     end
-                    if g13 > g12 then
+                    if CRIME > TRESPASS then
                         laura64()
                     end
                 end
@@ -317,12 +181,10 @@ function do_dialogue()
                 if fallout.local_var(6) ~= 0 then
                     if fallout.local_var(7) == 1 then
                         laura61()
+                    elseif fallout.local_var(8) == 1 then
+                        laura21()
                     else
-                        if fallout.local_var(8) == 1 then
-                            laura21()
-                        else
-                            laura16()
-                        end
+                        laura16()
                     end
                 else
                     fallout.set_local_var(6, 1)
@@ -335,12 +197,86 @@ function do_dialogue()
     end
 end
 
+function critter_p_proc()
+    local self_obj = fallout.self_obj()
+    fallout.set_external_var("Laura_Ptr", self_obj)
+    if fallout.local_var(4) == 1 then
+        fallout.set_local_var(4, 2)
+        fallout.set_local_var(9, 1)
+        fallout.animate_move_obj_to_tile(self_obj, 14089, 0)
+    else
+        local v0 = fallout.local_var(4)
+        local v1 = fallout.local_var(5)
+        local self_tile_num = fallout.tile_num(self_obj)
+        if v0 == 2 and self_tile_num ~= 14089 then
+            fallout.animate_move_obj_to_tile(self_obj, 14089, 0)
+        elseif v0 == 2 and self_tile_num == 14089 then
+            fallout.set_local_var(4, 3)
+            local red_door_obj = fallout.external_var("Red_Door_Ptr")
+            fallout.obj_unlock(red_door_obj)
+            fallout.use_obj(red_door_obj)
+            fallout.animate_move_obj_to_tile(self_obj, 12495, 0)
+        elseif v0 == 3 and self_tile_num ~= 12495 then
+            fallout.animate_move_obj_to_tile(self_obj, 12495, 0)
+        elseif v0 == 3 and self_tile_num == 12495 then
+            fallout.set_local_var(4, 4)
+            fallout.animate_move_obj_to_tile(self_obj, 12302, 0)
+        elseif v0 == 4 then
+            fallout.float_msg(self_obj, fallout.message_str(766, 178), 8)
+            fallout.set_local_var(4, 5)
+            fallout.set_local_var(9, 2)
+        elseif v0 == 5 then
+            fallout.set_local_var(4, 6)
+            fallout.animate_move_obj_to_tile(self_obj, 15099, 0)
+        elseif v0 == 6 and self_tile_num ~= 15099 then
+            fallout.animate_move_obj_to_tile(self_obj, 15099, 0)
+        elseif v0 == 6 and self_tile_num == 15099 then
+            fallout.set_local_var(4, 7)
+            fallout.animate_move_obj_to_tile(self_obj, 23301, 0)
+        elseif v0 == 7 and self_tile_num ~= 23301 then
+            fallout.animate_move_obj_to_tile(self_obj, 23301, 0)
+        elseif v0 == 7 and self_tile_num == 23301 then
+            fallout.set_local_var(4, 8)
+            fallout.animate_move_obj_to_tile(self_obj, 27106, 0)
+        elseif v0 == 8 and self_tile_num ~= 27106 then
+            fallout.animate_move_obj_to_tile(self_obj, 27106, 0)
+        elseif v0 == 8 and self_tile_num == 27106 then
+            fallout.set_local_var(4, 9)
+            fallout.set_obj_visibility(self_obj, 1)
+        elseif v1 == 1 then
+            fallout.set_local_var(5, 2)
+            fallout.animate_move_obj_to_tile(self_obj, 22090, 0)
+        elseif v1 == 2 and self_tile_num ~= 22090 then
+            fallout.animate_move_obj_to_tile(self_obj, 22090, 0)
+        elseif v1 == 2 and self_tile_num == 22090 then
+            fallout.set_local_var(5, 3)
+        elseif fallout.local_var(9) == 1 then
+            if self_tile_num == 22090 or self_tile_num == 12495 then
+                fallout.set_local_var(9, 0)
+            end
+        end
+    end
+    if hostile then
+        hostile = false
+        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+    end
+end
+
+function look_at_p_proc()
+    fallout.script_overrides()
+    fallout.display_msg(fallout.message_str(48, 100))
+end
+
+function timed_event_p_proc()
+    hostile = true
+end
+
 function lauracbt()
-    g5 = 1
+    hostile = true
 end
 
 function laura01()
-    if g4 then
+    if MALE then
         fallout.gsay_reply(48, 102)
     else
         fallout.gsay_reply(48, 104)
@@ -392,7 +328,7 @@ function laura10()
 end
 
 function laura11()
-    DownReact()
+    reaction.DownReact()
     fallout.gsay_message(48, 128, 50)
     laurax()
 end
@@ -403,7 +339,7 @@ function laura14()
 end
 
 function laura15()
-    DownReact()
+    reaction.DownReact()
     fallout.gsay_message(48, 132, 50)
     laurax()
 end
@@ -441,7 +377,7 @@ function laura23()
     fallout.giq_option(5, 48, 148, laura24, 50)
     fallout.giq_option(4, 48, 149, laura33, 50)
     fallout.giq_option(4, 48, 150, laura23_1, 50)
-    if g4 then
+    if MALE then
         fallout.giq_option(4, 48, 151, laura60, 50)
     end
     fallout.giq_option(4, 48, 152, laura59, 50)
@@ -493,11 +429,10 @@ function laura29()
 end
 
 function laura30()
-    g3 = fallout.random(1, 2)
-    if g3 == 1 then
+    local rnd = fallout.random(1, 2)
+    if rnd == 1 then
         fallout.gsay_reply(48, 174)
-    end
-    if g3 == 2 then
+    elseif rnd == 2 then
         fallout.gsay_reply(48, 176)
     end
     laura23()
@@ -517,7 +452,7 @@ function laura32()
 end
 
 function laura32a()
-    DownReact()
+    reaction.DownReact()
     laura32()
 end
 
@@ -677,7 +612,7 @@ function laura57()
 end
 
 function laura57_01()
-    DownReact()
+    reaction.DownReact()
     if fallout.local_var(1) > 1 then
         laura58()
     else
@@ -712,24 +647,24 @@ function laura61()
 end
 
 function laura62()
-    DownReact()
+    reaction.DownReact()
     fallout.gsay_message(48, 294, 50)
 end
 
 function laura63()
-    DownReact()
+    reaction.DownReact()
     fallout.gsay_reply(48, 296)
     fallout.giq_option(4, 48, 297, laurax2, 50)
     fallout.giq_option(4, 48, 298, laurax5, 50)
 end
 
 function laura64()
-    DownReact()
+    reaction.DownReact()
     fallout.gsay_message(48, 300, 50)
 end
 
 function laura65()
-    DownReact()
+    reaction.DownReact()
     fallout.gsay_reply(48, 302)
     fallout.giq_option(4, 48, 303, laurax2, 50)
     fallout.giq_option(4, 48, 304, laurax5, 50)
@@ -825,113 +760,6 @@ function laurax7()
 end
 
 function laurax8()
-end
-
-function get_reaction()
-    if fallout.local_var(2) == 0 then
-        fallout.set_local_var(0, 50)
-        fallout.set_local_var(1, 2)
-        fallout.set_local_var(2, 1)
-        fallout.set_local_var(0, fallout.local_var(0) + (5 * fallout.get_critter_stat(fallout.dude_obj(), 3)) - 25)
-        fallout.set_local_var(0, fallout.local_var(0) + (10 * fallout.has_trait(0, fallout.dude_obj(), 10)))
-        if fallout.has_trait(0, fallout.dude_obj(), 39) then
-            if fallout.global_var(155) > 0 then
-                fallout.set_local_var(0, fallout.local_var(0) + fallout.global_var(155))
-            else
-                fallout.set_local_var(0, fallout.local_var(0) - fallout.global_var(155))
-            end
-        else
-            if fallout.local_var(3) == 1 then
-                fallout.set_local_var(0, fallout.local_var(0) - fallout.global_var(155))
-            else
-                fallout.set_local_var(0, fallout.local_var(0) + fallout.global_var(155))
-            end
-        end
-        if fallout.global_var(158) > 2 then
-            fallout.set_local_var(0, fallout.local_var(0) - 30)
-        end
-        if reputation.has_rep_champion() then
-            fallout.set_local_var(0, fallout.local_var(0) + 20)
-        end
-        if reputation.has_rep_berserker() then
-            fallout.set_local_var(0, fallout.local_var(0) - 20)
-        end
-        ReactToLevel()
-    end
-end
-
-function ReactToLevel()
-    if fallout.local_var(0) <= 25 then
-        fallout.set_local_var(1, 1)
-    else
-        if fallout.local_var(0) <= 75 then
-            fallout.set_local_var(1, 2)
-        else
-            fallout.set_local_var(1, 3)
-        end
-    end
-end
-
-function LevelToReact()
-    if fallout.local_var(1) == 1 then
-        fallout.set_local_var(0, fallout.random(1, 25))
-    else
-        if fallout.local_var(1) == 2 then
-            fallout.set_local_var(0, fallout.random(26, 75))
-        else
-            fallout.set_local_var(0, fallout.random(76, 100))
-        end
-    end
-end
-
-function UpReact()
-    fallout.set_local_var(0, fallout.local_var(0) + 10)
-    ReactToLevel()
-end
-
-function DownReact()
-    fallout.set_local_var(0, fallout.local_var(0) - 10)
-    ReactToLevel()
-end
-
-function BottomReact()
-    fallout.set_local_var(1, 1)
-    fallout.set_local_var(0, 1)
-end
-
-function TopReact()
-    fallout.set_local_var(0, 100)
-    fallout.set_local_var(1, 3)
-end
-
-function BigUpReact()
-    fallout.set_local_var(0, fallout.local_var(0) + 25)
-    ReactToLevel()
-end
-
-function BigDownReact()
-    fallout.set_local_var(0, fallout.local_var(0) - 25)
-    ReactToLevel()
-end
-
-function UpReactLevel()
-    fallout.set_local_var(1, fallout.local_var(1) + 1)
-    if fallout.local_var(1) > 3 then
-        fallout.set_local_var(1, 3)
-    end
-    LevelToReact()
-end
-
-function DownReactLevel()
-    fallout.set_local_var(1, fallout.local_var(1) - 1)
-    if fallout.local_var(1) < 1 then
-        fallout.set_local_var(1, 1)
-    end
-    LevelToReact()
-end
-
-function Goodbyes()
-    g15 = fallout.message_str(634, fallout.random(100, 105))
 end
 
 function laura67a()
@@ -1063,4 +891,9 @@ end
 
 local exports = {}
 exports.start = start
+exports.pickup_p_proc = pickup_p_proc
+exports.talk_p_proc = talk_p_proc
+exports.critter_p_proc = critter_p_proc
+exports.look_at_p_proc = look_at_p_proc
+exports.timed_event_p_proc = timed_event_p_proc
 return exports
