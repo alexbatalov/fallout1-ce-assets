@@ -2,6 +2,11 @@ local fallout = require("fallout")
 local reputation = require("lib.reputation")
 
 local start
+local pickup_p_proc
+local destroy_p_proc
+local look_at_p_proc
+local talk_p_proc
+local critter_p_proc
 local lasher00
 local lasher01
 local lasher02
@@ -60,108 +65,118 @@ local lasher44
 local lasherend
 local combat
 
-local Hostile = 0
-local Lasher_Abuse = 0
+local hostile = false
+local Lasher_Abuse = false
 local initialized = false
 
 function start()
     if not initialized then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 20)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 83)
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 20)
+        fallout.critter_add_trait(self_obj, 1, 5, 83)
         initialized = true
     end
-    if (fallout.script_action() == 21) or (fallout.script_action() == 3) then
-        fallout.script_overrides()
-        fallout.display_msg(fallout.message_str(384, 100))
-    else
-        if fallout.script_action() == 4 then
-            Hostile = 1
+
+    local script_action = fallout.script_action()
+    if script_action == 21 or script_action == 3 then
+        look_at_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    end
+end
+
+function pickup_p_proc()
+    hostile = true
+end
+
+function destroy_p_proc()
+    reputation.inc_evil_critter()
+end
+
+function look_at_p_proc()
+    fallout.script_overrides()
+    fallout.display_msg(fallout.message_str(384, 100))
+end
+
+function talk_p_proc()
+    fallout.script_overrides()
+    if fallout.obj_pid(fallout.critter_inven_obj(fallout.dude_obj(), 0)) == 113 then
+        if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) then
+            fallout.start_gdialog(384, fallout.self_obj(), 4, -1, -1)
+            fallout.gsay_start()
+            lasher04()
+            fallout.gsay_end()
+            fallout.end_dialogue()
         else
-            if fallout.script_action() == 18 then
-                reputation.inc_evil_critter()
-            else
-                if fallout.script_action() == 12 then
-                    if (fallout.local_var(1) == 0) and fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
-                        fallout.set_local_var(1, 1)
-                        fallout.dialogue_system_enter()
-                    else
-                        if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) and ((fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3)) then
-                            Hostile = 1
-                        end
-                    end
-                    if Hostile then
-                        Hostile = 0
-                        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
-                    end
-                else
-                    if fallout.script_action() == 11 then
-                        fallout.script_overrides()
-                        if fallout.obj_pid(fallout.critter_inven_obj(fallout.dude_obj(), 0)) == 113 then
-                            if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) then
-                                fallout.start_gdialog(384, fallout.self_obj(), 4, -1, -1)
-                                fallout.gsay_start()
-                                lasher04()
-                                fallout.gsay_end()
-                                fallout.end_dialogue()
-                            else
-                                fallout.start_gdialog(384, fallout.self_obj(), 4, -1, -1)
-                                fallout.gsay_start()
-                                lasher05()
-                                fallout.gsay_end()
-                                fallout.end_dialogue()
-                            end
-                        else
-                            if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) then
-                                fallout.start_gdialog(384, fallout.self_obj(), 4, -1, -1)
-                                fallout.gsay_start()
-                                lasher06()
-                                fallout.gsay_end()
-                                fallout.end_dialogue()
-                            else
-                                if fallout.global_var(195) == 1 then
-                                    fallout.start_gdialog(384, fallout.self_obj(), 4, -1, -1)
-                                    fallout.gsay_start()
-                                    lasher00()
-                                    fallout.gsay_end()
-                                    fallout.end_dialogue()
-                                else
-                                    if fallout.global_var(158) > 2 then
-                                        fallout.start_gdialog(384, fallout.self_obj(), 4, -1, -1)
-                                        fallout.gsay_start()
-                                        lasher01()
-                                        fallout.gsay_end()
-                                        fallout.end_dialogue()
-                                    else
-                                        if reputation.has_rep_berserker() then
-                                            fallout.start_gdialog(384, fallout.self_obj(), 4, -1, -1)
-                                            fallout.gsay_start()
-                                            lasher02()
-                                            fallout.gsay_end()
-                                            fallout.end_dialogue()
-                                        else
-                                            if fallout.local_var(0) == 1 then
-                                                fallout.start_gdialog(384, fallout.self_obj(), 4, -1, -1)
-                                                fallout.gsay_start()
-                                                lasher03()
-                                                fallout.gsay_end()
-                                                fallout.end_dialogue()
-                                            else
-                                                fallout.start_gdialog(384, fallout.self_obj(), 4, -1, -1)
-                                                fallout.gsay_start()
-                                                lasher07()
-                                                fallout.gsay_end()
-                                                fallout.end_dialogue()
-                                            end
-                                        end
-                                    end
-                                end
-                            end
-                        end
-                        fallout.set_local_var(0, 1)
-                    end
-                end
-            end
+            fallout.start_gdialog(384, fallout.self_obj(), 4, -1, -1)
+            fallout.gsay_start()
+            lasher05()
+            fallout.gsay_end()
+            fallout.end_dialogue()
         end
+    else
+        if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) then
+            fallout.start_gdialog(384, fallout.self_obj(), 4, -1, -1)
+            fallout.gsay_start()
+            lasher06()
+            fallout.gsay_end()
+            fallout.end_dialogue()
+        elseif fallout.global_var(195) == 1 then
+            fallout.start_gdialog(384, fallout.self_obj(), 4, -1, -1)
+            fallout.gsay_start()
+            lasher00()
+            fallout.gsay_end()
+            fallout.end_dialogue()
+        elseif fallout.global_var(158) > 2 then
+            fallout.start_gdialog(384, fallout.self_obj(), 4, -1, -1)
+            fallout.gsay_start()
+            lasher01()
+            fallout.gsay_end()
+            fallout.end_dialogue()
+        elseif reputation.has_rep_berserker() then
+            fallout.start_gdialog(384, fallout.self_obj(), 4, -1, -1)
+            fallout.gsay_start()
+            lasher02()
+            fallout.gsay_end()
+            fallout.end_dialogue()
+        elseif fallout.local_var(0) == 1 then
+            fallout.start_gdialog(384, fallout.self_obj(), 4, -1, -1)
+            fallout.gsay_start()
+            lasher03()
+            fallout.gsay_end()
+            fallout.end_dialogue()
+        else
+            fallout.start_gdialog(384, fallout.self_obj(), 4, -1, -1)
+            fallout.gsay_start()
+            lasher07()
+            fallout.gsay_end()
+            fallout.end_dialogue()
+        end
+    end
+    fallout.set_local_var(0, 1)
+end
+
+function critter_p_proc()
+    local self_obj = fallout.self_obj()
+    local dude_obj = fallout.dude_obj()
+    local self_can_see_dude = fallout.obj_can_see_obj(self_obj, dude_obj)
+    if fallout.local_var(1) == 0 and self_can_see_dude then
+        fallout.set_local_var(1, 1)
+        fallout.dialogue_system_enter()
+    else
+        if self_can_see_dude and ((fallout.obj_item_subtype(fallout.critter_inven_obj(dude_obj, 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(dude_obj, 2)) == 3)) then
+            hostile = true
+        end
+    end
+    if hostile then
+        hostile = false
+        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
 end
 
@@ -428,9 +443,8 @@ function lasher23()
 end
 
 function lasher24()
-    local v0 = 0
-    v0 = fallout.create_object_sid(142, 0, 0, -1)
-    fallout.add_obj_to_inven(fallout.dude_obj(), v0)
+    local item_obj = fallout.create_object_sid(142, 0, 0, -1)
+    fallout.add_obj_to_inven(fallout.dude_obj(), item_obj)
     fallout.gsay_message(384, 189, 50)
 end
 
@@ -462,9 +476,8 @@ function lasher27()
 end
 
 function lasher28()
-    local v0 = 0
-    v0 = fallout.create_object_sid(142, 0, 0, -1)
-    fallout.add_obj_to_inven(fallout.dude_obj(), v0)
+    local item_obj = fallout.create_object_sid(142, 0, 0, -1)
+    fallout.add_obj_to_inven(fallout.dude_obj(), item_obj)
     fallout.gsay_message(384, 198, 50)
 end
 
@@ -554,9 +567,14 @@ function lasherend()
 end
 
 function combat()
-    Hostile = 1
+    hostile = true
 end
 
 local exports = {}
 exports.start = start
+exports.pickup_p_proc = pickup_p_proc
+exports.destroy_p_proc = destroy_p_proc
+exports.look_at_p_proc = look_at_p_proc
+exports.talk_p_proc = talk_p_proc
+exports.critter_p_proc = critter_p_proc
 return exports
