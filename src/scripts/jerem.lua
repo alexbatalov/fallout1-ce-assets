@@ -2,7 +2,12 @@ local fallout = require("fallout")
 local reputation = require("lib.reputation")
 
 local start
-local pre_dialogue
+local pickup_p_proc
+local talk_p_proc
+local critter_p_proc
+local destroy_p_proc
+local look_at_p_proc
+local timed_event_p_proc
 local do_dialogue
 local checkarea
 local jerem00
@@ -51,15 +56,12 @@ local jeremend
 local jeremcbt
 local jeremret
 
-local HOSTILE = 0
+local hostile = false
 local initialized = false
-local Weapons = 0
-local DISGUISED = 0
+local disguised = false
 local again = 0
 local area = 0
-local here = 0
-local moving = 1
-local my_hex = 0
+local moving = true
 local home_tile = 0
 
 local jerem16
@@ -73,162 +75,137 @@ function start()
         fallout.set_local_var(4, 12098)
     end
     if not initialized then
-        initialized = true
         home_tile = 12098
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 34)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 69)
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 34)
+        fallout.critter_add_trait(self_obj, 1, 5, 69)
         if fallout.global_var(233) == 1 then
-            fallout.set_obj_visibility(fallout.self_obj(), 1)
-            moving = 0
+            fallout.set_obj_visibility(self_obj, true)
+            moving = false
         else
             if fallout.global_var(232) == 1 then
-                fallout.set_obj_visibility(fallout.self_obj(), 1)
-                moving = 0
-                fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(300), 1)
+                fallout.set_obj_visibility(self_obj, true)
+                moving = false
+                fallout.add_timer_event(self_obj, fallout.game_ticks(300), 1)
             end
         end
+        initialized = true
+    end
+    if fallout.global_var(233) ~= 1 then
+        local script_action = fallout.script_action()
+        if script_action == 11 then
+            talk_p_proc()
+        elseif script_action == 22 then
+            timed_event_p_proc()
+        elseif script_action == 4 then
+            pickup_p_proc()
+        elseif script_action == 12 then
+            critter_p_proc()
+        elseif script_action == 21 or script_action == 3 then
+            look_at_p_proc()
+        elseif script_action == 18 then
+            destroy_p_proc()
+        end
+    end
+end
+
+function pickup_p_proc()
+    hostile = true
+end
+
+function talk_p_proc()
+    again = again + 1
+    if fallout.obj_pid(fallout.critter_inven_obj(fallout.dude_obj(), 0)) == 113 then
+        if fallout.metarule(16, 0) > 1 then
+            disguised = false
+        else
+            disguised = true
+        end
+    end
+    if not disguised and again > 1 then
+        jerem29()
     else
-        if fallout.global_var(233) ~= 1 then
-            if fallout.script_action() == 11 then
-                pre_dialogue()
+        again = again - 1
+        do_dialogue()
+    end
+end
+
+function critter_p_proc()
+    fallout.set_map_var(1, 0)
+    local self_obj = fallout.self_obj()
+    local dude_obj = fallout.dude_obj()
+    if fallout.tile_distance_objs(dude_obj, self_obj) < 8 then
+        fallout.set_map_var(1, 1)
+    end
+    if hostile then
+        hostile = false
+        fallout.attack(dude_obj, 0, 1, 0, 0, 30000, 0, 0)
+    end
+    if moving then
+        if fallout.tile_num(self_obj) == fallout.local_var(4) then
+            if fallout.local_var(1) ~= 0 then
+                fallout.set_local_var(3, fallout.local_var(3) + 1)
             else
-                if fallout.script_action() == 22 then
-                    if fallout.fixed_param() == 1 then
-                        moving = 1
-                        fallout.set_global_var(232, 0)
-                        if fallout.local_var(1) == 0 then
-                            fallout.move_to(fallout.self_obj(), home_tile, 0)
-                            fallout.set_local_var(3, 7)
-                            fallout.set_local_var(4, 12098)
-                            fallout.set_obj_visibility(fallout.self_obj(), 0)
-                        end
-                    else
-                        if fallout.fixed_param() == 2 then
-                            fallout.set_local_var(2, 2)
-                        else
-                            if fallout.fixed_param() == 3 then
-                                moving = 1
-                                fallout.set_local_var(4, 19685)
-                                fallout.set_local_var(3, 4)
-                                fallout.set_local_var(1, 0)
-                                fallout.animate_move_obj_to_tile(fallout.self_obj(), fallout.local_var(4), 0)
-                            end
-                        end
-                    end
+                fallout.set_local_var(3, fallout.local_var(3) - 1)
+            end
+            if fallout.local_var(3) > 7 then
+                moving = false
+                fallout.set_local_var(1, 0)
+                fallout.set_local_var(3, 6)
+                fallout.set_obj_visibility(self_obj, 1)
+                fallout.set_global_var(232, 1)
+                fallout.move_to(self_obj, 7000, 0)
+                fallout.add_timer_event(self_obj, fallout.game_ticks(300), 1)
+            elseif fallout.local_var(3) < 0 then
+                moving = false
+                fallout.set_local_var(1, 1)
+                fallout.set_local_var(3, 1)
+                fallout.add_timer_event(self_obj, fallout.game_ticks(300), 1)
+            elseif fallout.local_var(3) == 5 and fallout.local_var(1) == 0 then
+                moving = false
+                fallout.add_timer_event(self_obj, fallout.game_ticks(60), 3)
+            end
+            if fallout.local_var(3) == 0 then
+                fallout.set_local_var(4, 20936)
+            elseif fallout.local_var(3) == 1 then
+                fallout.set_local_var(4, 25336)
+            elseif fallout.local_var(3) == 2 then
+                fallout.set_local_var(4, 25721)
+            elseif fallout.local_var(3) == 3 then
+                fallout.set_local_var(4, 27915)
+            elseif fallout.local_var(3) == 4 then
+                fallout.set_local_var(4, 26094)
+            elseif fallout.local_var(3) == 5 then
+                fallout.set_local_var(4, 19685)
+            elseif fallout.local_var(3) == 6 then
+                if fallout.local_var(1) == 0 then
+                    fallout.set_local_var(4, 12889)
                 else
-                    if fallout.script_action() == 4 then
-                        HOSTILE = 1
-                    end
+                    fallout.set_local_var(4, 14689)
+                end
+            elseif fallout.local_var(3) == 7 then
+                fallout.set_local_var(4, 12098)
+            end
+        else
+            fallout.animate_move_obj_to_tile(self_obj, fallout.local_var(4), 0)
+        end
+        if fallout.obj_can_see_obj(self_obj, dude_obj) then
+            disguised = false
+            if fallout.obj_pid(fallout.critter_inven_obj(dude_obj, 0)) == 113 then
+                if fallout.metarule(16, 0) > 1 then
+                    disguised = false
+                else
+                    disguised = true
                 end
             end
-            if fallout.script_action() == 12 then
-                fallout.set_map_var(1, 0)
-                if fallout.tile_distance_objs(fallout.dude_obj(), fallout.self_obj()) < 8 then
-                    fallout.set_map_var(1, 1)
-                end
-                if HOSTILE then
-                    HOSTILE = 0
-                    fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
-                end
-                if moving then
-                    my_hex = fallout.tile_num(fallout.self_obj())
-                    if my_hex == fallout.local_var(4) then
-                        if fallout.local_var(1) ~= 0 then
-                            fallout.set_local_var(3, fallout.local_var(3) + 1)
-                        else
-                            fallout.set_local_var(3, fallout.local_var(3) - 1)
-                        end
-                        if fallout.local_var(3) > 7 then
-                            moving = 0
-                            fallout.set_local_var(1, 0)
-                            fallout.set_local_var(3, 6)
-                            fallout.set_obj_visibility(fallout.self_obj(), 1)
-                            fallout.set_global_var(232, 1)
-                            fallout.move_to(fallout.self_obj(), 7000, 0)
-                            fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(300), 1)
-                        else
-                            if fallout.local_var(3) < 0 then
-                                moving = 0
-                                fallout.set_local_var(1, 1)
-                                fallout.set_local_var(3, 1)
-                                fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(300), 1)
-                            else
-                                if (fallout.local_var(3) == 5) and (fallout.local_var(1) == 0) then
-                                    moving = 0
-                                    fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(60), 3)
-                                end
-                            end
-                        end
-                        if fallout.local_var(3) == 0 then
-                            fallout.set_local_var(4, 20936)
-                        else
-                            if fallout.local_var(3) == 1 then
-                                fallout.set_local_var(4, 25336)
-                            else
-                                if fallout.local_var(3) == 2 then
-                                    fallout.set_local_var(4, 25721)
-                                else
-                                    if fallout.local_var(3) == 3 then
-                                        fallout.set_local_var(4, 27915)
-                                    else
-                                        if fallout.local_var(3) == 4 then
-                                            fallout.set_local_var(4, 26094)
-                                        else
-                                            if fallout.local_var(3) == 5 then
-                                                fallout.set_local_var(4, 19685)
-                                            else
-                                                if fallout.local_var(3) == 6 then
-                                                    if fallout.local_var(1) == 0 then
-                                                        fallout.set_local_var(4, 12889)
-                                                    else
-                                                        fallout.set_local_var(4, 14689)
-                                                    end
-                                                else
-                                                    if fallout.local_var(3) == 7 then
-                                                        fallout.set_local_var(4, 12098)
-                                                    end
-                                                end
-                                            end
-                                        end
-                                    end
-                                end
-                            end
-                        end
-                    else
-                        fallout.animate_move_obj_to_tile(fallout.self_obj(), fallout.local_var(4), 0)
-                    end
-                    if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
-                        DISGUISED = 0
-                        if fallout.obj_pid(fallout.critter_inven_obj(fallout.dude_obj(), 0)) == 113 then
-                            if fallout.metarule(16, 0) > 1 then
-                                DISGUISED = 0
-                            else
-                                DISGUISED = 1
-                            end
-                        end
-                        if (DISGUISED == 0) and (again < 2) then
-                            if fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 6 then
-                                if fallout.local_var(2) < 1 then
-                                    fallout.set_local_var(2, 1)
-                                    fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(15), 2)
-                                    fallout.dialogue_system_enter()
-                                else
-                                    if fallout.local_var(2) > 1 then
-                                        jerem29()
-                                    end
-                                end
-                            end
-                        end
-                    end
-                end
-            else
-                if (fallout.script_action() == 21) or (fallout.script_action() == 3) then
-                    fallout.script_overrides()
-                    fallout.display_msg(fallout.message_str(672, 100))
-                else
-                    if fallout.script_action() == 18 then
-                        fallout.set_global_var(233, 1)
-                        reputation.inc_evil_critter()
+            if not disguised and again < 2 then
+                if fallout.tile_distance_objs(self_obj, dude_obj) < 6 then
+                    if fallout.local_var(2) < 1 then
+                        fallout.set_local_var(2, 1)
+                        fallout.add_timer_event(self_obj, fallout.game_ticks(15), 2)
+                        fallout.dialogue_system_enter()
+                    elseif fallout.local_var(2) > 1 then
+                        jerem29()
                     end
                 end
             end
@@ -236,20 +213,35 @@ function start()
     end
 end
 
-function pre_dialogue()
-    again = again + 1
-    if fallout.obj_pid(fallout.critter_inven_obj(fallout.dude_obj(), 0)) == 113 then
-        if fallout.metarule(16, 0) > 1 then
-            DISGUISED = 0
-        else
-            DISGUISED = 1
+function destroy_p_proc()
+    fallout.set_global_var(233, 1)
+    reputation.inc_evil_critter()
+end
+
+function look_at_p_proc()
+    fallout.script_overrides()
+    fallout.display_msg(fallout.message_str(672, 100))
+end
+
+function timed_event_p_proc()
+    local event = fallout.fixed_param()
+    if event == 1 then
+        moving = true
+        fallout.set_global_var(232, 0)
+        if fallout.local_var(1) == 0 then
+            fallout.move_to(fallout.self_obj(), home_tile, 0)
+            fallout.set_local_var(3, 7)
+            fallout.set_local_var(4, 12098)
+            fallout.set_obj_visibility(fallout.self_obj(), 0)
         end
-    end
-    if (DISGUISED == 0) and (again > 1) then
-        jerem29()
-    else
-        again = again - 1
-        do_dialogue()
+    elseif event == 2 then
+        fallout.set_local_var(2, 2)
+    elseif event == 3 then
+        moving = true
+        fallout.set_local_var(4, 19685)
+        fallout.set_local_var(3, 4)
+        fallout.set_local_var(1, 0)
+        fallout.animate_move_obj_to_tile(fallout.self_obj(), fallout.local_var(4), 0)
     end
 end
 
@@ -260,22 +252,18 @@ function do_dialogue()
     again = again + 1
     if fallout.obj_pid(fallout.critter_inven_obj(fallout.dude_obj(), 0)) == 113 then
         if fallout.metarule(16, 0) > 1 then
-            DISGUISED = 0
+            disguised = false
         else
-            DISGUISED = 1
+            disguised = true
         end
         if again == 1 then
             jerem00()
+        elseif again > 2 then
+            jerem26()
+        elseif (again == 2) and (fallout.global_var(231) == 1) then
+            jerem23()
         else
-            if again > 2 then
-                jerem26()
-            else
-                if (again == 2) and (fallout.global_var(231) == 1) then
-                    jerem23()
-                else
-                    jerem00()
-                end
-            end
+            jerem00()
         end
     else
         if area == 50 then
@@ -284,21 +272,17 @@ function do_dialogue()
             else
                 jerem13()
             end
-        else
-            if area == 2 then
-                if again > 1 then
-                    jerem28()
-                else
-                    jerem19()
-                end
+        elseif area == 2 then
+            if again > 1 then
+                jerem28()
             else
-                if area == 1 then
-                    if again > 1 then
-                        jerem28()
-                    else
-                        jerem20()
-                    end
-                end
+                jerem19()
+            end
+        elseif area == 1 then
+            if again > 1 then
+                jerem28()
+            else
+                jerem20()
             end
         end
     end
@@ -307,34 +291,22 @@ function do_dialogue()
 end
 
 function checkarea()
-    here = fallout.tile_num(fallout.dude_obj())
+    local here = fallout.tile_num(fallout.dude_obj())
     area = 2
     if fallout.tile_distance(here, 13475) < 15 then
         area = 1
-    else
-        if fallout.tile_distance(here, 13296) < 15 then
-            area = 1
-        else
-            if fallout.tile_distance(here, 16089) < 15 then
-                area = 1
-            else
-                if fallout.tile_distance(here, 25726) < 15 then
-                    area = 50
-                else
-                    if fallout.tile_distance(here, 27322) < 15 then
-                        area = 50
-                    else
-                        if fallout.tile_distance(here, 25737) < 15 then
-                            area = 50
-                        else
-                            if fallout.tile_distance(here, 22136) < 15 then
-                                area = 50
-                            end
-                        end
-                    end
-                end
-            end
-        end
+    elseif fallout.tile_distance(here, 13296) < 15 then
+        area = 1
+    elseif fallout.tile_distance(here, 16089) < 15 then
+        area = 1
+    elseif fallout.tile_distance(here, 25726) < 15 then
+        area = 50
+    elseif fallout.tile_distance(here, 27322) < 15 then
+        area = 50
+    elseif fallout.tile_distance(here, 25737) < 15 then
+        area = 50
+    elseif fallout.tile_distance(here, 22136) < 15 then
+        area = 50
     end
 end
 
@@ -652,7 +624,7 @@ function jeremend()
 end
 
 function jeremcbt()
-    HOSTILE = 1
+    hostile = true
 end
 
 function jeremret()
