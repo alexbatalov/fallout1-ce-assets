@@ -13,7 +13,6 @@ local pickup_p_proc
 
 local initialized = false
 local PsstTime = 0
-local Hostile = 0
 
 local timed_event_p_proc
 
