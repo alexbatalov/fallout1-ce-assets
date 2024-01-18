@@ -1,14 +1,5 @@
 local fallout = require("fallout")
 
---
--- Some unreferenced imported varables found.
--- Because of it it is impossible to specify
--- the real names of global variables.
---
-
-local g0 = 0
-local g1 = 0
-
 local start
 local talk_p_proc
 local use_p_proc
@@ -44,76 +35,67 @@ local RadioStrg1
 local RadioStrg2
 local RadioVats1
 
--- ?import? variable hascode
--- ?import? variable got_exp
--- ?import? variable field_change
+local got_exp = false
 
 function start()
-    if fallout.script_action() == 11 then
+    local script_action = fallout.script_action()
+    if script_action == 11 then
         talk_p_proc()
-    else
-        if fallout.script_action() == 6 then
-            use_p_proc()
-        end
+    elseif script_action == 6 then
+        use_p_proc()
     end
 end
 
 function talk_p_proc()
-    if fallout.cur_map_index() == 30 then
+    local cur_map_index = fallout.cur_map_index()
+    if cur_map_index == 30 then
         RadioEnt()
-    else
-        if fallout.cur_map_index() == 31 then
-            if fallout.elevation(fallout.dude_obj()) == 0 then
-                RadioStrg1()
-            else
-                RadioStrg2()
-            end
+    elseif cur_map_index == 31 then
+        if fallout.elevation(fallout.dude_obj()) == 0 then
+            RadioStrg1()
         else
-            if fallout.cur_map_index() == 32 then
-                if fallout.elevation(fallout.dude_obj()) == 0 then
-                    RadioVats1()
-                else
-                    Radio08()
-                end
-            else
-                Radio08()
-            end
+            RadioStrg2()
         end
+    elseif cur_map_index == 32 then
+        if fallout.elevation(fallout.dude_obj()) == 0 then
+            RadioVats1()
+        else
+            Radio08()
+        end
+    else
+        Radio08()
     end
-    if g1 then
-        g1 = 0
+    if got_exp then
+        got_exp = false
         fallout.display_msg(fallout.message_str(361, 139))
         fallout.give_exp_points(1500)
     end
 end
 
 function use_p_proc()
-    if fallout.cur_map_index() == 30 then
+    local cur_map_index = fallout.cur_map_index()
+    if cur_map_index == 30 then
         fallout.dialogue_system_enter()
-    else
-        if fallout.cur_map_index() == 31 then
-            if fallout.elevation(fallout.dude_obj()) == 0 then
-                RadioStrg1()
-            else
-                RadioStrg2()
-            end
+    elseif cur_map_index == 31 then
+        if fallout.elevation(fallout.dude_obj()) == 0 then
+            RadioStrg1()
         else
-            if fallout.cur_map_index() == 32 then
-                if fallout.elevation(fallout.dude_obj()) == 0 then
-                    RadioVats1()
-                else
-                    Radio08()
-                end
-            else
-                Radio08()
-            end
+            RadioStrg2()
         end
+    elseif cur_map_index == 32 then
+        if fallout.elevation(fallout.dude_obj()) == 0 then
+            RadioVats1()
+        else
+            Radio08()
+        end
+    else
+        Radio08()
     end
 end
 
 function Radio01()
     fallout.set_map_var(0, 1)
-    g1 = 1
+    got_exp = true
     fallout.gsay_message(361, 106, 0)
 end
 
@@ -154,19 +136,19 @@ end
 
 function Radio05()
     fallout.set_map_var(0, 1)
-    g1 = 1
+    got_exp = true
     fallout.gsay_message(361, 116, 0)
 end
 
 function Radio06()
     fallout.set_map_var(0, 1)
-    g1 = 1
+    got_exp = true
     fallout.gsay_message(361, 117, 0)
 end
 
 function Radio07()
     fallout.set_map_var(0, 1)
-    g1 = 1
+    got_exp = true
     fallout.gsay_message(361, 118, 0)
 end
 
@@ -179,12 +161,11 @@ function Radio10()
 end
 
 function Radio11()
-    local v0 = 0
-    v0 = fallout.message_str(361, 121)
+    local msg = fallout.message_str(361, 121)
     if fallout.is_success(fallout.do_check(fallout.dude_obj(), 4, 0)) then
-        v0 = v0 .. fallout.message_str(361, 122)
+        msg = msg .. fallout.message_str(361, 122)
     end
-    fallout.display_msg(v0)
+    fallout.display_msg(msg)
 end
 
 function Radio12()
@@ -201,18 +182,18 @@ function Radio13()
 end
 
 function Radio14()
-    local v0 = 0
-    local v1 = 0
-    if fallout.get_critter_stat(fallout.dude_obj(), 4) > fallout.get_critter_stat(fallout.dude_obj(), 1) then
-        v0 = 4
+    local dude_obj = fallout.dude_obj()
+    local stat
+    if fallout.get_critter_stat(dude_obj, 4) > fallout.get_critter_stat(dude_obj, 1) then
+        stat = 4
     else
-        v0 = 1
+        stat = 1
     end
-    v1 = fallout.message_str(361, 125)
-    if fallout.is_success(fallout.do_check(fallout.dude_obj(), v0, 0)) then
-        v1 = v1 .. fallout.message_str(361, 126)
+    local msg = fallout.message_str(361, 125)
+    if fallout.is_success(fallout.do_check(dude_obj, stat, 0)) then
+        msg = msg .. fallout.message_str(361, 126)
     end
-    fallout.display_msg(v1)
+    fallout.display_msg(msg)
 end
 
 function Radio21()
@@ -234,7 +215,7 @@ function Radio23()
 end
 
 function Radio23a()
-    if fallout.local_var(1) or not(fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), 14, 10))) then
+    if fallout.local_var(1) ~= 0 or not fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), 14, 10)) then
         Radio24()
     else
         Radio25()
@@ -306,17 +287,13 @@ end
 function RadioStrg1()
     if fallout.global_var(608) ~= 0 then
         Radio14()
-    else
-        if fallout.global_var(610) ~= 0 then
-            Radio12()
+    elseif fallout.global_var(610) ~= 0 then
+        Radio12()
+    elseif fallout.global_var(146) ~= 0 then
+        if fallout.map_var(12) == 3 then
+            Radio13()
         else
-            if fallout.global_var(146) ~= 0 then
-                if fallout.map_var(12) == 3 then
-                    Radio13()
-                else
-                    Radio11()
-                end
-            end
+            Radio11()
         end
     end
 end
@@ -324,36 +301,26 @@ end
 function RadioStrg2()
     if fallout.global_var(608) ~= 0 then
         Radio14()
+    elseif fallout.global_var(610) ~= 0 then
+        Radio21()
+    elseif fallout.global_var(146) ~= 0 then
+        Radio22()
     else
-        if fallout.global_var(610) ~= 0 then
-            Radio21()
-        else
-            if fallout.global_var(146) ~= 0 then
-                Radio22()
-            else
-                Radio23()
-            end
-        end
+        Radio23()
     end
 end
 
 function RadioVats1()
     if fallout.global_var(608) ~= 0 then
         Radio12()
+    elseif fallout.map_var(6) ~= 0 and fallout.map_var(7) ~= 0 and fallout.local_var(0) == 0 then
+        Radio36()
+    elseif fallout.global_var(610) ~= 0 then
+        Radio31()
+    elseif fallout.global_var(146) ~= 0 then
+        Radio22()
     else
-        if fallout.map_var(6) and fallout.map_var(7) and not(fallout.local_var(0)) then
-            Radio36()
-        else
-            if fallout.global_var(610) ~= 0 then
-                Radio31()
-            else
-                if fallout.global_var(146) ~= 0 then
-                    Radio22()
-                else
-                    Radio23()
-                end
-            end
-        end
+        Radio23()
     end
 end
 
