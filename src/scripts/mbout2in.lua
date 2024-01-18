@@ -9,20 +9,15 @@ local alert
 local damage_p_proc
 
 function start()
-    if fallout.script_action() == 21 then
+    local script_action = fallout.script_action()
+    if script_action == 21 then
         look_at_p_proc()
-    else
-        if fallout.script_action() == 6 then
-            use_p_proc()
-        else
-            if fallout.script_action() == 7 then
-                use_obj_on_p_proc()
-            else
-                if fallout.script_action() == 8 then
-                    use_skill_on_p_proc()
-                end
-            end
-        end
+    elseif script_action == 6 then
+        use_p_proc()
+    elseif script_action == 7 then
+        use_obj_on_p_proc()
+    elseif script_action == 8 then
+        use_skill_on_p_proc()
     end
 end
 
@@ -36,10 +31,10 @@ function use_p_proc()
         fallout.obj_unlock(fallout.self_obj())
         fallout.float_msg(fallout.external_var("Katja_ptr"), fallout.message_str(623, 172), 0)
     else
-        if not(fallout.obj_is_locked(fallout.self_obj())) then
+        if not fallout.obj_is_locked(fallout.self_obj()) then
             fallout.load_map(31, 12)
         else
-            if (fallout.map_var(1) == 1) or (fallout.global_var(271) == 1) then
+            if fallout.map_var(1) == 1 or fallout.global_var(271) == 1 then
                 fallout.display_msg(fallout.message_str(526, 101))
                 fallout.obj_unlock(fallout.self_obj())
             else
@@ -51,7 +46,7 @@ end
 
 function use_obj_on_p_proc()
     if fallout.obj_pid(fallout.obj_being_used_with()) == 77 then
-        if not(fallout.obj_is_locked(fallout.self_obj())) then
+        if not fallout.obj_is_locked(fallout.self_obj()) then
             fallout.script_overrides()
             fallout.display_msg(fallout.message_str(526, 102))
         else
@@ -73,7 +68,7 @@ end
 
 function use_skill_on_p_proc()
     if fallout.action_being_used() == 9 then
-        if not(fallout.obj_is_locked(fallout.self_obj())) then
+        if not fallout.obj_is_locked(fallout.self_obj()) then
             fallout.display_msg(fallout.message_str(526, 102))
         else
             if fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), 9, -60)) then
