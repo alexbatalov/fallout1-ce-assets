@@ -42,19 +42,18 @@ local MilesEnd
 local initialized = false
 local DisplayMessage = 100
 
-local exit_line = 0
-
 function start()
     if not initialized then
-        if fallout.obj_is_carrying_obj_pid(fallout.self_obj(), 41) == 0 then
-            fallout.item_caps_adjust(fallout.self_obj(), fallout.random(500, 750))
+        local self_obj = fallout.self_obj()
+        if fallout.obj_is_carrying_obj_pid(self_obj, 41) == 0 then
+            fallout.item_caps_adjust(self_obj, fallout.random(500, 750))
         end
-        if (fallout.global_var(613) == 9103) or (fallout.global_var(613) == 9102) then
-            fallout.critter_add_trait(fallout.self_obj(), 1, 6, 0)
+        if fallout.global_var(613) == 9103 or fallout.global_var(613) == 9102 then
+            fallout.critter_add_trait(self_obj, 1, 6, 0)
         else
-            fallout.critter_add_trait(fallout.self_obj(), 1, 6, 49)
+            fallout.critter_add_trait(self_obj, 1, 6, 49)
         end
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 6)
+        fallout.critter_add_trait(self_obj, 1, 5, 6)
         initialized = true
     end
 end
@@ -81,7 +80,7 @@ function talk_p_proc()
     if fallout.global_var(251) == 1 then
         fallout.float_msg(fallout.self_obj(), fallout.message_str(669, fallout.random(100, 105)), 2)
     else
-        if (fallout.local_var(4) == 1) and (fallout.get_critter_stat(fallout.dude_obj(), 4) < 4) then
+        if fallout.local_var(4) == 1 and fallout.get_critter_stat(fallout.dude_obj(), 4) < 4 then
             fallout.float_msg(fallout.self_obj(), fallout.message_str(249, 152), 0)
         else
             if fallout.local_var(5) == 2 then
@@ -96,40 +95,30 @@ function talk_p_proc()
                     if fallout.global_var(138) == 0 then
                         DisplayMessage = 118
                         Miles04()
-                    else
-                        if fallout.global_var(138) == 1 then
-                            Miles13()
-                        else
-                            if fallout.global_var(138) == 9302 then
-                                Miles18()
+                    elseif fallout.global_var(138) == 1 then
+                        Miles13()
+                    elseif fallout.global_var(138) == 9302 then
+                        Miles18()
+                    elseif fallout.global_var(138) == 9303 then
+                        Miles19()
+                    elseif fallout.global_var(138) == 9304 then
+                        if fallout.local_var(5) == 0 then
+                            if fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 3) ~= 0 then
+                                Miles22()
                             else
-                                if fallout.global_var(138) == 9303 then
-                                    Miles19()
-                                else
-                                    if fallout.global_var(138) == 9304 then
-                                        if fallout.local_var(5) == 0 then
-                                            if fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 3) then
-                                                Miles22()
-                                            else
-                                                Miles22a()
-                                            end
-                                        else
-                                            if fallout.local_var(5) == 9305 then
-                                                if fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 3) then
-                                                    Miles24()
-                                                else
-                                                    Miles29()
-                                                end
-                                            else
-                                                if fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 3) then
-                                                    Miles28()
-                                                else
-                                                    Miles29()
-                                                end
-                                            end
-                                        end
-                                    end
-                                end
+                                Miles22a()
+                            end
+                        elseif fallout.local_var(5) == 9305 then
+                            if fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 3) ~= 0 then
+                                Miles24()
+                            else
+                                Miles29()
+                            end
+                        else
+                            if fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 3) ~= 0 then
+                                Miles28()
+                            else
+                                Miles29()
                             end
                         end
                     end
@@ -229,7 +218,7 @@ end
 
 function Miles13()
     fallout.gsay_reply(249, 123)
-    if fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 98) then
+    if fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 98) ~= 0 then
         fallout.gsay_option(249, 124, Miles15, 50)
     else
         fallout.gsay_option(249, 125, Miles14, 50)
@@ -254,28 +243,28 @@ function Miles16()
 end
 
 function Miles17()
-    local v0 = 0
+    local item_obj
     fallout.gsay_message(249, 133, 50)
-    v0 = fallout.obj_carrying_pid_obj(fallout.dude_obj(), 98)
-    fallout.rm_obj_from_inven(fallout.dude_obj(), v0)
-    fallout.destroy_object(v0)
+    item_obj = fallout.obj_carrying_pid_obj(fallout.dude_obj(), 98)
+    fallout.rm_obj_from_inven(fallout.dude_obj(), item_obj)
+    fallout.destroy_object(item_obj)
     fallout.item_caps_adjust(fallout.dude_obj(), 125)
-    v0 = fallout.create_object_sid(40, 0, 0, -1)
-    fallout.add_mult_objs_to_inven(fallout.dude_obj(), v0, 3)
+    item_obj = fallout.create_object_sid(40, 0, 0, -1)
+    fallout.add_mult_objs_to_inven(fallout.dude_obj(), item_obj, 3)
     fallout.set_global_var(138, 9304)
     fallout.gsay_message(249, 137, 50)
 end
 
 function Miles17a()
-    local v0 = 0
+    local item_obj
     reaction.UpReactLevel()
     fallout.gsay_message(249, 133, 50)
-    v0 = fallout.obj_carrying_pid_obj(fallout.dude_obj(), 98)
-    fallout.rm_obj_from_inven(fallout.dude_obj(), v0)
-    fallout.destroy_object(v0)
+    item_obj = fallout.obj_carrying_pid_obj(fallout.dude_obj(), 98)
+    fallout.rm_obj_from_inven(fallout.dude_obj(), item_obj)
+    fallout.destroy_object(item_obj)
     fallout.item_caps_adjust(fallout.dude_obj(), 150)
-    v0 = fallout.create_object_sid(40, 0, 0, -1)
-    fallout.add_mult_objs_to_inven(fallout.dude_obj(), v0, 4)
+    item_obj = fallout.create_object_sid(40, 0, 0, -1)
+    fallout.add_mult_objs_to_inven(fallout.dude_obj(), item_obj, 4)
     fallout.set_global_var(138, 9304)
     fallout.gsay_message(249, 137, 50)
 end
@@ -287,15 +276,15 @@ function Miles18()
 end
 
 function Miles19()
-    local v0 = 0
+    local item_obj
     fallout.gsay_message(249, 135, 50)
     fallout.gsay_message(249, 136, 50)
-    v0 = fallout.obj_carrying_pid_obj(fallout.dude_obj(), 98)
-    fallout.rm_obj_from_inven(fallout.dude_obj(), v0)
-    fallout.destroy_object(v0)
+    item_obj = fallout.obj_carrying_pid_obj(fallout.dude_obj(), 98)
+    fallout.rm_obj_from_inven(fallout.dude_obj(), item_obj)
+    fallout.destroy_object(item_obj)
     fallout.item_caps_adjust(fallout.dude_obj(), 250)
-    v0 = fallout.create_object_sid(40, 0, 0, -1)
-    fallout.add_mult_objs_to_inven(fallout.dude_obj(), v0, 6)
+    item_obj = fallout.create_object_sid(40, 0, 0, -1)
+    fallout.add_mult_objs_to_inven(fallout.dude_obj(), item_obj, 6)
     fallout.set_global_var(138, 9304)
     fallout.gsay_message(249, 137, 50)
 end
@@ -318,7 +307,7 @@ end
 
 function Miles24()
     fallout.gsay_reply(249, 142)
-    if fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 237) then
+    if fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 237) ~= 0 then
         fallout.gsay_option(249, 143, Miles25, 50)
     else
         fallout.gsay_option(249, 144, MilesEnd, 50)
@@ -326,11 +315,10 @@ function Miles24()
 end
 
 function Miles25()
-    local v0 = 0
     fallout.gsay_reply(249, 145)
-    v0 = fallout.obj_carrying_pid_obj(fallout.dude_obj(), 237)
-    fallout.rm_obj_from_inven(fallout.dude_obj(), v0)
-    fallout.add_obj_to_inven(fallout.self_obj(), v0)
+    local item_obj = fallout.obj_carrying_pid_obj(fallout.dude_obj(), 237)
+    fallout.rm_obj_from_inven(fallout.dude_obj(), item_obj)
+    fallout.add_obj_to_inven(fallout.self_obj(), item_obj)
     fallout.set_local_var(5, 9306)
     fallout.gsay_option(249, 146, Miles28, 50)
     fallout.gsay_option(249, 147, Miles27, 50)
@@ -341,22 +329,22 @@ function Miles27()
 end
 
 function Miles28()
-    local v0 = 0
-    local v1 = 0
+    local item_obj1
+    local item_obj2
     fallout.gsay_message(249, 149, 50)
     fallout.gfade_out(600)
     fallout.game_time_advance(10 * 60 * 60 * 24)
     fallout.gfade_in(600)
     fallout.gsay_message(249, 150, 50)
-    v1 = fallout.create_object_sid(42, 0, 0, -1)
-    fallout.move_obj_inven_to_obj(fallout.dude_obj(), v1)
-    fallout.move_obj_inven_to_obj(v1, fallout.dude_obj())
-    v0 = fallout.obj_carrying_pid_obj(fallout.dude_obj(), 3)
-    fallout.rm_obj_from_inven(fallout.dude_obj(), v0)
-    fallout.destroy_object(v0)
-    fallout.destroy_object(v1)
-    v0 = fallout.create_object_sid(232, 0, 0, -1)
-    fallout.add_obj_to_inven(fallout.dude_obj(), v0)
+    item_obj2 = fallout.create_object_sid(42, 0, 0, -1)
+    fallout.move_obj_inven_to_obj(fallout.dude_obj(), item_obj2)
+    fallout.move_obj_inven_to_obj(item_obj2, fallout.dude_obj())
+    item_obj1 = fallout.obj_carrying_pid_obj(fallout.dude_obj(), 3)
+    fallout.rm_obj_from_inven(fallout.dude_obj(), item_obj1)
+    fallout.destroy_object(item_obj1)
+    fallout.destroy_object(item_obj2)
+    item_obj1 = fallout.create_object_sid(232, 0, 0, -1)
+    fallout.add_obj_to_inven(fallout.dude_obj(), item_obj1)
     fallout.set_local_var(5, 2)
 end
 
