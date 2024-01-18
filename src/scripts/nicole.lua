@@ -62,14 +62,13 @@ local NicoleEnd
 local initialized = false
 local DisplayMessage = 100
 
-local exit_line = 0
-
 function start()
     if not initialized then
-        if fallout.obj_is_carrying_obj_pid(fallout.self_obj(), 41) == 0 then
-            fallout.item_caps_adjust(fallout.self_obj(), fallout.random(50, 150))
+        local self_obj = fallout.self_obj()
+        if fallout.obj_is_carrying_obj_pid(self_obj, 41) == 0 then
+            fallout.item_caps_adjust(self_obj, fallout.random(50, 150))
         end
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 46)
+        fallout.critter_add_trait(self_obj, 1, 6, 46)
         initialized = true
     end
 end
@@ -88,7 +87,7 @@ function talk_p_proc()
     if fallout.global_var(256) == 1 then
         fallout.float_msg(fallout.self_obj(), fallout.message_str(669, fallout.random(100, 105)), 2)
     else
-        if (fallout.local_var(4) == 1) and (fallout.get_critter_stat(fallout.dude_obj(), 4) < 4) then
+        if fallout.local_var(4) == 1 and fallout.get_critter_stat(fallout.dude_obj(), 4) < 4 then
             fallout.float_msg(fallout.self_obj(), fallout.message_str(54, 286), 0)
         else
             if fallout.local_var(2) == 0 then
