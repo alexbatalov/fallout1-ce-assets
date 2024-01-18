@@ -94,44 +94,33 @@ local talk_p_proc
 local destroy_p_proc
 local look_at_p_proc
 
-local hostile = 0
+local hostile = false
 local initialized = false
-local Open_Door = 0
-local item = 0
 local conmod = 0
 local femmod = 0
-local Hear_28 = 0
-local Hear_29 = 0
-local Hear_50 = 0
+local Hear_28 = false
+local Hear_29 = false
 local temp = 0
-local temp2 = 0
-
-local exit_line = 0
 
 function start()
     if not initialized then
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 44)
+        fallout.critter_add_trait(self_obj, 1, 5, 64)
         initialized = true
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 44)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 64)
     end
-    if fallout.script_action() == 21 then
+
+    local script_action = fallout.script_action()
+    if script_action == 21 then
         look_at_p_proc()
-    else
-        if fallout.script_action() == 4 then
-            pickup_p_proc()
-        else
-            if fallout.script_action() == 11 then
-                talk_p_proc()
-            else
-                if fallout.script_action() == 12 then
-                    critter_p_proc()
-                else
-                    if fallout.script_action() == 18 then
-                        destroy_p_proc()
-                    end
-                end
-            end
-        end
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
     end
 end
 
@@ -267,14 +256,15 @@ function goto18()
 end
 
 function goto19()
+    local item_obj
     fallout.gsay_message(0, fallout.message_str(320, 134), 49)
     reaction.TopReact()
-    item = fallout.create_object_sid(27, 0, 0, -1)
-    fallout.add_obj_to_inven(fallout.dude_obj(), item)
-    item = fallout.create_object_sid(27, 0, 0, -1)
-    fallout.add_obj_to_inven(fallout.dude_obj(), item)
-    item = fallout.create_object_sid(27, 0, 0, -1)
-    fallout.add_obj_to_inven(fallout.dude_obj(), item)
+    item_obj = fallout.create_object_sid(27, 0, 0, -1)
+    fallout.add_obj_to_inven(fallout.dude_obj(), item_obj)
+    item_obj = fallout.create_object_sid(27, 0, 0, -1)
+    fallout.add_obj_to_inven(fallout.dude_obj(), item_obj)
+    item_obj = fallout.create_object_sid(27, 0, 0, -1)
+    fallout.add_obj_to_inven(fallout.dude_obj(), item_obj)
 end
 
 function goto20()
@@ -293,12 +283,13 @@ function goto22()
 end
 
 function goto23()
+    local item_obj
     fallout.gsay_message(0, fallout.message_str(320, 141), 50)
     reaction.TopReact()
-    item = fallout.create_object_sid(110, 0, 0, -1)
-    fallout.add_obj_to_inven(fallout.dude_obj(), item)
-    item = fallout.create_object_sid(110, 0, 0, -1)
-    fallout.add_obj_to_inven(fallout.dude_obj(), item)
+    item_obj = fallout.create_object_sid(110, 0, 0, -1)
+    fallout.add_obj_to_inven(fallout.dude_obj(), item_obj)
+    item_obj = fallout.create_object_sid(110, 0, 0, -1)
+    fallout.add_obj_to_inven(fallout.dude_obj(), item_obj)
 end
 
 function goto24()
@@ -326,18 +317,18 @@ function goto27()
 end
 
 function goto28()
-    Hear_28 = 1
+    Hear_28 = true
     fallout.gsay_reply(0, fallout.message_str(320, 152))
-    if Hear_29 == 0 then
+    if not Hear_29 then
         fallout.giq_option(4, 320, fallout.message_str(320, 153), goto29, 50)
     end
     fallout.giq_option(4, 320, fallout.message_str(320, 154), gotoend, 50)
 end
 
 function goto29()
-    Hear_29 = 1
+    Hear_29 = true
     fallout.gsay_reply(0, fallout.message_str(320, 155))
-    if Hear_28 == 0 then
+    if not Hear_28 then
         fallout.giq_option(8, 320, fallout.message_str(320, 156), goto30, 50)
         fallout.giq_option(4, 320, fallout.message_str(320, 157), goto28, 50)
     end
@@ -346,17 +337,15 @@ end
 
 function goto30()
     fallout.gsay_reply(0, fallout.message_str(320, 159))
-    fallout.giq_option(8, 320, fallout.message_str(320, 160), UpReact, 50)
+    fallout.giq_option(8, 320, fallout.message_str(320, 160), reaction.UpReact, 50)
 end
 
 function goto38()
     fallout.gsay_reply(0, fallout.message_str(320, 167))
-    temp2 = fallout.map_var(11) + 1
-    fallout.set_map_var(11, temp2)
-    temp2 = fallout.map_var(9) - 1
-    fallout.set_map_var(9, temp2)
-    item = fallout.create_object_sid(temp, 0, 0, -1)
-    fallout.add_obj_to_inven(fallout.dude_obj(), item)
+    fallout.set_map_var(11, fallout.map_var(11) + 1)
+    fallout.set_map_var(9, fallout.map_var(9) - 1)
+    local item_obj = fallout.create_object_sid(temp, 0, 0, -1)
+    fallout.add_obj_to_inven(fallout.dude_obj(), item_obj)
     fallout.giq_option(4, 320, fallout.message_str(320, 168), gotoend, 50)
     if fallout.map_var(9) > 0 then
         fallout.giq_option(4, 320, fallout.message_str(320, 169), goto43, 50)
@@ -452,7 +441,7 @@ function goto47()
     end
     fallout.giq_option(4, 320, fallout.message_str(320, 186), gotoend, 50)
     fallout.giq_option(4, 320, fallout.message_str(320, 187), goto47a, 51)
-    if (fallout.global_var(304) == 1) and (fallout.local_var(8) == 0) then
+    if fallout.global_var(304) == 1 and fallout.local_var(8) == 0 then
         fallout.set_local_var(8, 1)
         fallout.giq_option(4, 320, fallout.message_str(320, 240), goto72, 50)
     end
@@ -476,26 +465,16 @@ function goto49()
     end
     if fallout.map_var(12) > 0 then
         goto146b()
-    else
-        if fallout.map_var(13) > 0 then
-            goto147()
-        else
-            if fallout.map_var(14) > 0 then
-                goto148()
-            else
-                if fallout.map_var(15) > 0 then
-                    goto149()
-                else
-                    if fallout.map_var(16) > 0 then
-                        goto150()
-                    else
-                        if fallout.map_var(10) > fallout.map_var(11) then
-                            goto144()
-                        end
-                    end
-                end
-            end
-        end
+    elseif fallout.map_var(13) > 0 then
+        goto147()
+    elseif fallout.map_var(14) > 0 then
+        goto148()
+    elseif fallout.map_var(15) > 0 then
+        goto149()
+    elseif fallout.map_var(16) > 0 then
+        goto150()
+    elseif fallout.map_var(10) > fallout.map_var(11) then
+        goto144()
     end
 end
 
@@ -589,8 +568,8 @@ function goto73c()
 end
 
 function goto74()
-    item = fallout.create_object_sid(229, 0, 0, -1)
-    fallout.add_obj_to_inven(fallout.dude_obj(), item)
+    local item_obj = fallout.create_object_sid(229, 0, 0, -1)
+    fallout.add_obj_to_inven(fallout.dude_obj(), item_obj)
     fallout.gsay_reply(0, fallout.message_str(320, 251))
     fallout.giq_option(4, 320, fallout.message_str(320, 252), gotoend, 50)
 end
@@ -716,12 +695,10 @@ end
 
 function goto146a()
     fallout.gsay_reply(0, fallout.message_str(320, 235))
-    temp2 = fallout.map_var(20) - 1
-    fallout.set_map_var(20, temp2)
-    temp2 = fallout.map_var(9) - 1
-    fallout.set_map_var(9, temp2)
-    item = fallout.create_object_sid(115, 0, 0, -1)
-    fallout.add_obj_to_inven(fallout.dude_obj(), item)
+    fallout.set_map_var(20, fallout.map_var(20) - 1)
+    fallout.set_map_var(9, fallout.map_var(9) - 1)
+    local item_obj = fallout.create_object_sid(115, 0, 0, -1)
+    fallout.add_obj_to_inven(fallout.dude_obj(), item_obj)
     fallout.giq_option(4, 320, fallout.message_str(320, 224), gotoend, 50)
     if fallout.map_var(9) > 0 then
         fallout.giq_option(4, 320, fallout.message_str(320, 225), goto43, 50)
@@ -730,12 +707,10 @@ end
 
 function goto146b()
     fallout.gsay_reply(0, fallout.message_str(320, 223))
-    temp2 = fallout.map_var(12) - 1
-    fallout.set_map_var(12, temp2)
-    temp2 = fallout.map_var(9) - 1
-    fallout.set_map_var(9, temp2)
-    item = fallout.create_object_sid(13, 0, 0, -1)
-    fallout.add_obj_to_inven(fallout.dude_obj(), item)
+    fallout.set_map_var(12, fallout.map_var(12) - 1)
+    fallout.set_map_var(9, fallout.map_var(9) - 1)
+    local item_obj = fallout.create_object_sid(13, 0, 0, -1)
+    fallout.add_obj_to_inven(fallout.dude_obj(), item_obj)
     fallout.giq_option(4, 320, fallout.message_str(320, 224), gotoend, 50)
     if fallout.map_var(9) > 0 then
         fallout.giq_option(4, 320, fallout.message_str(320, 225), goto43, 50)
@@ -744,12 +719,10 @@ end
 
 function goto147()
     fallout.gsay_reply(0, fallout.message_str(320, 226))
-    temp2 = fallout.map_var(13) - 1
-    fallout.set_map_var(13, temp2)
-    temp2 = fallout.map_var(9) - 1
-    fallout.set_map_var(9, temp2)
-    item = fallout.create_object_sid(16, 0, 0, -1)
-    fallout.add_obj_to_inven(fallout.dude_obj(), item)
+    fallout.set_map_var(13, fallout.map_var(13) - 1)
+    fallout.set_map_var(9, fallout.map_var(9) - 1)
+    local item_obj = fallout.create_object_sid(16, 0, 0, -1)
+    fallout.add_obj_to_inven(fallout.dude_obj(), item_obj)
     fallout.giq_option(4, 320, fallout.message_str(320, 227), gotoend, 50)
     if fallout.map_var(9) > 0 then
         fallout.giq_option(4, 320, fallout.message_str(320, 228), goto43, 50)
@@ -758,12 +731,10 @@ end
 
 function goto148()
     fallout.gsay_reply(0, fallout.message_str(320, 229))
-    temp2 = fallout.map_var(14) - 1
-    fallout.set_map_var(14, temp2)
-    temp2 = fallout.map_var(9) - 1
-    fallout.set_map_var(9, temp2)
-    item = fallout.create_object_sid(239, 0, 0, -1)
-    fallout.add_obj_to_inven(fallout.dude_obj(), item)
+    fallout.set_map_var(14, fallout.map_var(14) - 1)
+    fallout.set_map_var(9, fallout.map_var(9) - 1)
+    local item_obj = fallout.create_object_sid(239, 0, 0, -1)
+    fallout.add_obj_to_inven(fallout.dude_obj(), item_obj)
     fallout.giq_option(4, 320, fallout.message_str(320, 230), gotoend, 50)
     if fallout.map_var(9) > 0 then
         fallout.giq_option(4, 320, fallout.message_str(320, 231), goto43, 50)
@@ -772,12 +743,10 @@ end
 
 function goto149()
     fallout.gsay_reply(0, fallout.message_str(320, 232))
-    temp2 = fallout.map_var(15) - 1
-    fallout.set_map_var(15, temp2)
-    temp2 = fallout.map_var(9) - 1
-    fallout.set_map_var(9, temp2)
-    item = fallout.create_object_sid(3, 0, 0, -1)
-    fallout.add_obj_to_inven(fallout.dude_obj(), item)
+    fallout.set_map_var(15, fallout.map_var(15) - 1)
+    fallout.set_map_var(9, fallout.map_var(9) - 1)
+    local item_obj = fallout.create_object_sid(3, 0, 0, -1)
+    fallout.add_obj_to_inven(fallout.dude_obj(), item_obj)
     fallout.giq_option(4, 320, fallout.message_str(320, 233), gotoend, 50)
     if fallout.map_var(9) > 0 then
         fallout.giq_option(4, 320, fallout.message_str(320, 234), goto43, 50)
@@ -786,12 +755,10 @@ end
 
 function goto150()
     fallout.gsay_reply(0, fallout.message_str(320, 235))
-    temp2 = fallout.map_var(16) - 1
-    fallout.set_map_var(16, temp2)
-    temp2 = fallout.map_var(9) - 1
-    fallout.set_map_var(9, temp2)
-    item = fallout.create_object_sid(52, 0, 0, -1)
-    fallout.add_obj_to_inven(fallout.dude_obj(), item)
+    fallout.set_map_var(16, fallout.map_var(16) - 1)
+    fallout.set_map_var(9, fallout.map_var(9) - 1)
+    local item_obj = fallout.create_object_sid(52, 0, 0, -1)
+    fallout.add_obj_to_inven(fallout.dude_obj(), item_obj)
     fallout.giq_option(4, 320, fallout.message_str(320, 236), gotoend, 50)
     if fallout.map_var(9) > 0 then
         fallout.giq_option(4, 320, fallout.message_str(320, 237), goto43, 50)
@@ -812,7 +779,7 @@ function do_dialogue()
 end
 
 function combat()
-    hostile = 1
+    hostile = true
 end
 
 function gotoend()
@@ -820,21 +787,21 @@ end
 
 function critter_p_proc()
     if fallout.global_var(250) ~= 0 then
-        hostile = 1
+        hostile = true
     end
     if fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) > 12 then
-        hostile = 0
+        hostile = false
     end
     if hostile then
         fallout.set_global_var(250, 1)
-        hostile = 0
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
 end
 
 function pickup_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
-        hostile = 1
+        hostile = true
     end
 end
 
