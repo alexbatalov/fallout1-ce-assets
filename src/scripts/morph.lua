@@ -3,7 +3,13 @@ local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
 
 local start
-local do_dialogue
+local pickup_p_proc
+local talk_p_proc
+local critter_p_proc
+local damage_p_proc
+local destroy_p_proc
+local look_at_p_proc
+local timed_event_p_proc
 local morphend
 local morphcbt
 local morph02
@@ -94,85 +100,45 @@ local morph32a
 local morph39a
 local morph05b
 
-local MALE = 0
-local ONTHEJOB = 0
-local DESTROYED = 0
-local LIED = 0
-local ONCEBEFORE = 0
-local TRESPASS = 0
-local Signal_wait = 0
-local deliver_player = 0
+local Signal_wait = false
 local initialized = false
-
-local exit_line = 0
 
 function start()
     if not initialized then
-        initialized = true
+        local self_obj = fallout.self_obj()
         if fallout.cur_map_index() == 18 then
-            fallout.critter_add_trait(fallout.self_obj(), 1, 6, 20)
+            fallout.critter_add_trait(self_obj, 1, 6, 20)
         else
-            fallout.critter_add_trait(fallout.self_obj(), 1, 6, 55)
+            fallout.critter_add_trait(self_obj, 1, 6, 55)
         end
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 82)
+        fallout.critter_add_trait(self_obj, 1, 5, 82)
+        initialized = true
     end
-    if fallout.script_action() == 11 then
-        do_dialogue()
-    else
-        if (fallout.script_action() == 21) or (fallout.script_action() == 3) then
-            fallout.script_overrides()
-            fallout.display_msg(fallout.message_str(53, 100))
-        else
-            if fallout.script_action() == 22 then
-                if fallout.fixed_param() == 1 then
-                    if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
-                        fallout.dialogue_system_enter()
-                    else
-                        Signal_wait = 0
-                    end
-                else
-                    if (fallout.fixed_param() == 2) and not(fallout.combat_is_initialized()) then
-                        fallout.set_obj_visibility(fallout.self_obj(), 1)
-                    end
-                end
-            else
-                if fallout.script_action() == 18 then
-                    reputation.inc_evil_critter()
-                    fallout.display_msg(fallout.message_str(53, 500))
-                    fallout.give_exp_points(1000)
-                else
-                    if fallout.script_action() == 4 then
-                        fallout.set_local_var(5, 2)
-                    else
-                        if fallout.script_action() == 14 then
-                            fallout.set_local_var(5, 1)
-                        else
-                            if fallout.script_action() == 12 then
-                                if fallout.global_var(241) == 1 then
-                                    fallout.set_global_var(241, 2)
-                                    fallout.add_timer_event(fallout.external_var("Master_Ptr"), fallout.game_ticks(5), 1)
-                                    fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(5), 2)
-                                    fallout.dialogue_system_enter()
-                                end
-                                if fallout.local_var(5) == 2 then
-                                    fallout.set_local_var(5, 1)
-                                    fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
-                                end
-                                if fallout.tile_num(fallout.self_obj()) == 23457 then
-                                    fallout.set_obj_visibility(fallout.self_obj(), 1)
-                                end
-                            end
-                        end
-                    end
-                end
-            end
-        end
+
+    local script_action = fallout.script_action()
+    if script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 21 or script_action == 3 then
+        look_at_p_proc()
+    elseif script_action == 22 then
+        timed_event_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 14 then
+        damage_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
     end
 end
 
-function do_dialogue()
+function pickup_p_proc()
+    fallout.set_local_var(5, 2)
+end
+
+function talk_p_proc()
     reaction.get_reaction()
-    MALE = fallout.get_critter_stat(fallout.dude_obj(), 34) == 0
     if fallout.local_var(5) ~= 0 then
         fallout.float_msg(fallout.self_obj(), fallout.message_str(766, 172), 2)
         morphcbt()
@@ -183,7 +149,7 @@ function do_dialogue()
             fallout.animate_move_obj_to_tile(fallout.self_obj(), 23457, 0)
         else
             if Signal_wait then
-                Signal_wait = 0
+                Signal_wait = false
                 morph04a()
             else
                 if fallout.cur_map_index() == 17 then
@@ -208,6 +174,52 @@ function do_dialogue()
     end
 end
 
+function critter_p_proc()
+    if fallout.global_var(241) == 1 then
+        fallout.set_global_var(241, 2)
+        fallout.add_timer_event(fallout.external_var("Master_Ptr"), fallout.game_ticks(5), 1)
+        fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(5), 2)
+        fallout.dialogue_system_enter()
+    end
+    if fallout.local_var(5) == 2 then
+        fallout.set_local_var(5, 1)
+        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+    end
+    if fallout.tile_num(fallout.self_obj()) == 23457 then
+        fallout.set_obj_visibility(fallout.self_obj(), 1)
+    end
+end
+
+function damage_p_proc()
+    fallout.set_local_var(5, 1)
+end
+
+function destroy_p_proc()
+    reputation.inc_evil_critter()
+    fallout.display_msg(fallout.message_str(53, 500))
+    fallout.give_exp_points(1000)
+end
+
+function look_at_p_proc()
+    fallout.script_overrides()
+    fallout.display_msg(fallout.message_str(53, 100))
+end
+
+function timed_event_p_proc()
+    local event = fallout.fixed_param()
+    if event == 1 then
+        if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
+            fallout.dialogue_system_enter()
+        else
+            Signal_wait = false
+        end
+    elseif event == 2 then
+        if not fallout.combat_is_initialized() then
+            fallout.set_obj_visibility(fallout.self_obj(), true)
+        end
+    end
+end
+
 function morphend()
 end
 
@@ -219,7 +231,9 @@ function morph02()
     fallout.gsay_reply(53, 101)
     fallout.giq_option(4, 53, 102, morph02_1, 50)
     fallout.giq_option(5, 53, 103, morph02_3, 50)
-    fallout.giq_option(4, 53, fallout.message_str(53, 104) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(53, 105), morph27, 50)
+    fallout.giq_option(4, 53,
+        fallout.message_str(53, 104) ..
+        fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(53, 105), morph27, 50)
     fallout.giq_option(4, 53, 106, morph06, 51)
     fallout.giq_option(-3, 53, 107, morph02a, 50)
 end
@@ -669,12 +683,11 @@ function morph65()
 end
 
 function morphx()
-    Signal_wait = 1
+    Signal_wait = true
     fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(15), 1)
 end
 
 function morphx2()
-    deliver_player = 1
     fallout.set_global_var(241, 1)
     fallout.load_map("mstrlr34.map", 12)
 end
@@ -716,4 +729,11 @@ end
 
 local exports = {}
 exports.start = start
+exports.pickup_p_proc = pickup_p_proc
+exports.talk_p_proc = talk_p_proc
+exports.critter_p_proc = critter_p_proc
+exports.damage_p_proc = damage_p_proc
+exports.destroy_p_proc = destroy_p_proc
+exports.look_at_p_proc = look_at_p_proc
+exports.timed_event_p_proc = timed_event_p_proc
 return exports
