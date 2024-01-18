@@ -45,39 +45,32 @@ local NeilQuest
 local NeilCombat
 local NeilEnd
 
-local hostile = 0
+local hostile = false
 local initialized = false
 
 function start()
     if not initialized then
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 46)
         initialized = true
-    else
-        if fallout.script_action() == 12 then
-            critter_p_proc()
-        else
-            if fallout.script_action() == 18 then
-                destroy_p_proc()
-            else
-                if fallout.script_action() == 21 then
-                    look_at_p_proc()
-                else
-                    if fallout.script_action() == 4 then
-                        pickup_p_proc()
-                    else
-                        if fallout.script_action() == 11 then
-                            talk_p_proc()
-                        end
-                    end
-                end
-            end
-        end
+    end
+
+    local script_action = fallout.script_action()
+    if script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
     end
 end
 
 function critter_p_proc()
     if hostile then
-        hostile = 0
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
 end
@@ -96,7 +89,7 @@ function look_at_p_proc()
 end
 
 function pickup_p_proc()
-    hostile = 1
+    hostile = true
 end
 
 function talk_p_proc()
@@ -106,25 +99,21 @@ function talk_p_proc()
     else
         if fallout.global_var(133) == 1 then
             Neil27()
+        elseif fallout.global_var(133) == 2 and fallout.local_var(5) == 0 then
+            fallout.set_local_var(5, 1)
+            fallout.start_gdialog(271, fallout.self_obj(), 4, -1, -1)
+            fallout.gsay_start()
+            Neil28()
+            fallout.gsay_end()
+            fallout.end_dialogue()
+        elseif fallout.global_var(132) == 1 and fallout.local_var(6) == 0 then
+            Neil31()
         else
-            if (fallout.global_var(133) == 2) and (fallout.local_var(5) == 0) then
-                fallout.set_local_var(5, 1)
-                fallout.start_gdialog(271, fallout.self_obj(), 4, -1, -1)
-                fallout.gsay_start()
-                Neil28()
-                fallout.gsay_end()
-                fallout.end_dialogue()
-            else
-                if (fallout.global_var(132) == 1) and (fallout.local_var(6) == 0) then
-                    Neil31()
-                else
-                    fallout.start_gdialog(271, fallout.self_obj(), 4, -1, -1)
-                    fallout.gsay_start()
-                    Neil01()
-                    fallout.gsay_end()
-                    fallout.end_dialogue()
-                end
-            end
+            fallout.start_gdialog(271, fallout.self_obj(), 4, -1, -1)
+            fallout.gsay_start()
+            Neil01()
+            fallout.gsay_end()
+            fallout.end_dialogue()
         end
     end
 end
@@ -134,12 +123,14 @@ function Neil00()
 end
 
 function Neil01()
+    local dude_name = fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1)
     fallout.gsay_reply(271, 103)
     fallout.giq_option(-3, 271, 104, Neil02, 50)
     fallout.giq_option(-3, 271, 105, Neil03, 50)
     fallout.giq_option(-3, 271, 106, NeilCombat, 50)
-    fallout.giq_option(4, 271, fallout.message_str(271, 107) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(271, 108), Neil07, 50)
-    fallout.giq_option(4, 271, fallout.message_str(271, 109) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(271, 110), NeilCombat, 50)
+    fallout.giq_option(4, 271, fallout.message_str(271, 107) .. dude_name .. fallout.message_str(271, 108), Neil07, 50)
+    fallout.giq_option(4, 271, fallout.message_str(271, 109) .. dude_name .. fallout.message_str(271, 110), NeilCombat,
+        50)
     fallout.giq_option(5, 271, 111, Neil16, 50)
     fallout.giq_option(6, 271, 112, Neil24, 50)
     fallout.giq_option(8, 271, 113, Neil26, 50)
@@ -247,7 +238,6 @@ function Neil16a()
 end
 
 function Neil17()
-    local v0 = 0
     fallout.item_caps_adjust(fallout.dude_obj(), 200)
     fallout.gsay_message(271, fallout.message_str(271, 159) .. " " .. fallout.message_str(271, 160), 50)
     NeilCombat()
@@ -345,7 +335,7 @@ function NeilQuest()
 end
 
 function NeilCombat()
-    hostile = 1
+    hostile = true
 end
 
 function NeilEnd()
