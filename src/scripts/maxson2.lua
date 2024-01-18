@@ -1,5 +1,6 @@
 local fallout = require("fallout")
 local reaction = require("lib.reaction")
+local reputation = require("lib.reputation")
 
 local start
 local combat
@@ -49,60 +50,53 @@ local Maxson34
 local MaxsonEnd
 local Remove_Player
 
-local hostile = 0
+local hostile = false
 local initialized = false
-local Denounce_Player = 0
-
-local exit_line = 0
+local Denounce_Player = false
 
 function start()
     if not initialized then
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 44)
+        fallout.critter_add_trait(self_obj, 1, 5, 80)
         initialized = true
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 44)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 80)
     end
-    if fallout.script_action() == 21 then
+
+    local script_action = fallout.script_action()
+    if script_action == 21 then
         look_at_p_proc()
-    else
-        if fallout.script_action() == 4 then
-            pickup_p_proc()
-        else
-            if fallout.script_action() == 11 then
-                talk_p_proc()
-            else
-                if fallout.script_action() == 12 then
-                    critter_p_proc()
-                else
-                    if fallout.script_action() == 18 then
-                        destroy_p_proc()
-                    end
-                end
-            end
-        end
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
     end
 end
 
 function combat()
-    hostile = 1
+    hostile = true
 end
 
 function critter_p_proc()
     if fallout.global_var(250) ~= 0 then
-        hostile = 1
+        hostile = true
     end
     if fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) > 12 then
-        hostile = 0
+        hostile = false
     end
     if hostile then
         fallout.set_global_var(250, 1)
-        hostile = 0
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
 end
 
 function pickup_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
-        hostile = 1
+        hostile = true
     end
 end
 
@@ -110,31 +104,23 @@ function talk_p_proc()
     reaction.get_reaction()
     fallout.start_gdialog(52, fallout.self_obj(), 4, 12, 5)
     fallout.gsay_start()
-    if (fallout.global_var(223) == 1) or (fallout.global_var(223) == 2) then
+    if fallout.global_var(223) == 1 or fallout.global_var(223) == 2 then
         Maxson34()
+    elseif fallout.local_var(5) == 1 then
+        Maxson22()
+    elseif fallout.global_var(78) == 2 then
+        Maxson20()
+    elseif fallout.local_var(4) == 0 then
+        fallout.set_local_var(4, 1)
+        Maxson01()
+    elseif fallout.local_var(1) == 1 then
+        Maxson21()
     else
-        if fallout.local_var(5) == 1 then
-            Maxson22()
-        else
-            if fallout.global_var(78) == 2 then
-                Maxson20()
-            else
-                if fallout.local_var(4) == 0 then
-                    fallout.set_local_var(4, 1)
-                    Maxson01()
-                else
-                    if fallout.local_var(1) == 1 then
-                        Maxson21()
-                    else
-                        Maxson19()
-                    end
-                end
-            end
-        end
+        Maxson19()
     end
     fallout.gsay_end()
     fallout.end_dialogue()
-    if Denounce_Player == 1 then
+    if Denounce_Player then
         Remove_Player()
     end
 end
@@ -152,7 +138,7 @@ function destroy_p_proc()
             fallout.set_global_var(156, 0)
         end
         fallout.set_global_var(159, fallout.global_var(159) + 1)
-        if (fallout.global_var(159) % 5) == 0 then
+        if fallout.global_var(159) % 5 == 0 then
             fallout.set_global_var(155, fallout.global_var(155) - 1)
         end
     end
@@ -262,17 +248,17 @@ end
 
 function Maxson11()
     fallout.gsay_message(52, 229, 51)
-    Denounce_Player = 1
+    Denounce_Player = true
 end
 
 function Maxson12()
     fallout.gsay_message(52, 229, 51)
-    Denounce_Player = 1
+    Denounce_Player = true
 end
 
 function Maxson13()
     fallout.gsay_message(52, 231, 51)
-    Denounce_Player = 1
+    Denounce_Player = true
 end
 
 function Maxson14()
@@ -376,10 +362,9 @@ function Maxson27()
 end
 
 function Maxson28()
-    local v0 = 0
     fallout.set_local_var(6, 1)
-    v0 = fallout.create_object_sid(216, 0, 0, -1)
-    fallout.add_obj_to_inven(fallout.dude_obj(), v0)
+    local item_obj = fallout.create_object_sid(216, 0, 0, -1)
+    fallout.add_obj_to_inven(fallout.dude_obj(), item_obj)
     fallout.gsay_reply(52, 186)
     fallout.giq_option(4, 52, 349, Maxson27, 50)
     fallout.giq_option(4, 52, 350, Maxson18, 50)
