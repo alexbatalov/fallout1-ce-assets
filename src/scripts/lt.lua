@@ -72,22 +72,6 @@ local Ltx3
 local Ltx4
 local Ltx6
 local Torture
-
-local rndx = 0
-local rndy = 0
-local rndz = 0
-local hostile = 0
-local HEREBEFORE = 0
-local go_to_cell = 0
-local DESTROYED = 0
-local KILLEDANY = 0
-local initialized = false
-local hit_dude = 0
-local torture_setting = 0
-local End_The_Game = 0
-
-local exit_line = 0
-
 local Lt40_5
 local Lt50
 local Lt51
@@ -107,38 +91,37 @@ local Lt64
 local Lt65
 local Lt66
 
+local hostile = false
+local initialized = false
+local hit_dude = false
+local torture_setting = 0
+local End_The_Game = false
+
 function start()
-    local v0 = 0
     if not initialized then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 34)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 49)
-        fallout.set_external_var("Lt_ptr", fallout.self_obj())
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 34)
+        fallout.critter_add_trait(self_obj, 1, 5, 49)
+        fallout.set_external_var("Lt_ptr", self_obj)
         if fallout.local_var(6) == 0 then
-            v0 = fallout.create_object_sid(58, 0, 0, 947)
-            fallout.add_obj_to_inven(fallout.self_obj(), v0)
+            local item_obj = fallout.create_object_sid(58, 0, 0, 947)
+            fallout.add_obj_to_inven(self_obj, item_obj)
             fallout.set_local_var(6, 1)
         end
         initialized = true
-    else
-        if fallout.script_action() == 12 then
-            critter_p_proc()
-        else
-            if fallout.script_action() == 18 then
-                destroy_p_proc()
-            else
-                if fallout.script_action() == 21 then
-                    look_at_p_proc()
-                else
-                    if fallout.script_action() == 11 then
-                        talk_p_proc()
-                    else
-                        if fallout.script_action() == 22 then
-                            timed_event_p_proc()
-                        end
-                    end
-                end
-            end
-        end
+    end
+
+    local script_action = fallout.script_action()
+    if script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 22 then
+        timed_event_p_proc()
     end
 end
 
@@ -154,26 +137,26 @@ end
 
 function critter_p_proc()
     if hostile then
-        hostile = 0
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     else
-        if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
+        local self_obj = fallout.self_obj()
+        local dude_obj = fallout.dude_obj()
+        if fallout.obj_can_see_obj(self_obj, dude_obj) then
             if torture_setting > 0 then
-                if hit_dude == 0 then
+                if not hit_dude then
                     Torture()
                 end
             else
-                if fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 12 then
-                    if not(fallout.global_var(276)) then
-                        if not(fallout.local_var(4)) then
+                if fallout.tile_distance_objs(self_obj, dude_obj) < 12 then
+                    if fallout.global_var(276) == 0 then
+                        if fallout.local_var(4) == 0 then
                             fallout.dialogue_system_enter()
-                        else
-                            if not(fallout.local_var(5)) then
-                                fallout.dialogue_system_enter()
-                            end
+                        elseif fallout.local_var(5) == 0 then
+                            fallout.dialogue_system_enter()
                         end
                     else
-                        hostile = 1
+                        hostile = true
                     end
                 end
             end
@@ -199,36 +182,26 @@ function talk_p_proc()
         if torture_setting == 2 then
             Lt36()
             torture_setting = 3
+        elseif torture_setting == 3 then
+            Lt37b()
+            torture_setting = 4
+        elseif torture_setting == 4 then
+            Lt38()
+            torture_setting = 5
+        elseif fallout.global_var(57) == 1 then
+            Lt01()
+        elseif fallout.global_var(57) == 2 then
+            Lt41()
+        elseif fallout.global_var(57) == 3 then
+            Lt46()
         else
-            if torture_setting == 3 then
-                Lt37b()
-                torture_setting = 4
-            else
-                if torture_setting == 4 then
-                    Lt38()
-                    torture_setting = 5
-                else
-                    if fallout.global_var(57) == 1 then
-                        Lt01()
-                    else
-                        if fallout.global_var(57) == 2 then
-                            Lt41()
-                        else
-                            if fallout.global_var(57) == 3 then
-                                Lt46()
-                            else
-                                Lt45()
-                            end
-                        end
-                    end
-                end
-            end
+            Lt45()
         end
         fallout.gsay_end()
         fallout.end_dialogue()
     else
         fallout.float_msg(fallout.self_obj(), fallout.message_str(50, 236), 2)
-        hostile = 1
+        hostile = true
     end
     if fallout.local_var(7) == 1 then
         fallout.set_local_var(7, 2)
@@ -243,8 +216,8 @@ function talk_p_proc()
         fallout.reg_anim_func(3, 0)
         fallout.gfade_in(600)
     end
-    if End_The_Game == 1 then
-        fallout.set_obj_visibility(fallout.dude_obj(), 1)
+    if End_The_Game then
+        fallout.set_obj_visibility(fallout.dude_obj(), true)
         fallout.move_to(fallout.dude_obj(), 12528, 1)
         fallout.move_to(fallout.self_obj(), 12528, 1)
         fallout.play_gmovie(10)
@@ -254,32 +227,27 @@ function talk_p_proc()
 end
 
 function timed_event_p_proc()
-    if fallout.fixed_param() == 1 then
+    local event = fallout.fixed_param()
+    if event == 1 then
         if torture_setting == 1 then
             fallout.critter_dmg(fallout.dude_obj(), fallout.get_critter_stat(fallout.dude_obj(), 35) // 3, 0)
-        else
-            if torture_setting == 2 then
-                fallout.critter_dmg(fallout.dude_obj(), fallout.get_critter_stat(fallout.dude_obj(), 35) // 2, 0)
-            else
-                if torture_setting == 3 then
-                    fallout.critter_dmg(fallout.dude_obj(), fallout.get_critter_stat(fallout.dude_obj(), 35) - 1, 0)
-                end
-            end
+        elseif torture_setting == 2 then
+            fallout.critter_dmg(fallout.dude_obj(), fallout.get_critter_stat(fallout.dude_obj(), 35) // 2, 0)
+        elseif torture_setting == 3 then
+            fallout.critter_dmg(fallout.dude_obj(), fallout.get_critter_stat(fallout.dude_obj(), 35) - 1, 0)
         end
         fallout.anim(fallout.dude_obj(), 37, 0)
         torture_setting = torture_setting + 1
         fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(3), 2)
-    else
-        if fallout.fixed_param() == 2 then
-            hit_dude = 0
-            fallout.game_ui_enable()
-            fallout.dialogue_system_enter()
-        end
+    elseif event == 2 then
+        hit_dude = false
+        fallout.game_ui_enable()
+        fallout.dialogue_system_enter()
     end
 end
 
 function Ltcbt()
-    hostile = 1
+    hostile = true
 end
 
 function Lt01()
@@ -631,7 +599,7 @@ function Ltx2()
 end
 
 function Ltx3()
-    End_The_Game = 1
+    End_The_Game = true
 end
 
 function Ltx4()
@@ -644,15 +612,18 @@ function Ltx6()
 end
 
 function Torture()
-    if fallout.tile_num(fallout.self_obj()) ~= fallout.tile_num_in_direction(fallout.tile_num(fallout.dude_obj()), 1, 1) then
-        fallout.animate_move_obj_to_tile(fallout.self_obj(), fallout.tile_num_in_direction(fallout.tile_num(fallout.dude_obj()), 1, 1), 0)
+    local self_obj = fallout.self_obj()
+    local dude_obj = fallout.dude_obj()
+    if fallout.tile_num(self_obj) ~= fallout.tile_num_in_direction(fallout.tile_num(dude_obj), 1, 1) then
+        fallout.animate_move_obj_to_tile(self_obj,
+            fallout.tile_num_in_direction(fallout.tile_num(dude_obj), 1, 1), 0)
     else
         fallout.game_ui_disable()
-        fallout.anim(fallout.self_obj(), 1000, 4)
-        fallout.anim(fallout.self_obj(), 16, 0)
-        fallout.anim(fallout.dude_obj(), 20, 0)
-        fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(torture_setting), 1)
-        hit_dude = 1
+        fallout.anim(self_obj, 1000, 4)
+        fallout.anim(self_obj, 16, 0)
+        fallout.anim(dude_obj, 20, 0)
+        fallout.add_timer_event(self_obj, fallout.game_ticks(torture_setting), 1)
+        hit_dude = true
     end
 end
 
