@@ -3,7 +3,11 @@ local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
 
 local start
-local do_dialogue
+local pickup_p_proc
+local talk_p_proc
+local critter_p_proc
+local destroy_p_proc
+local look_at_p_proc
 local loxley00a
 local loxley01
 local loxley02
@@ -120,52 +124,36 @@ local loxley89
 local loxley91
 local combat
 
-local rndx = 0
-local rndy = 0
-local rndz = 0
-local MALE = 0
-local HOSTILE = 0
-local DESTROYED = 0
-local KILLEDANY = 0
-local CAPTURED = 0
-local ILLEGBEFORE = 0
-local ILLEGAL = 0
+local MALE = false
+local hostile = false
+local ILLEGBEFORE = false
+local ILLEGAL = false
 local TRESPASS = 0
 local CRIME = 0
-local floatReward = 0
-
-local exit_line = 0
+local floatReward = false
 
 local loxley00
 
 function start()
-    local v0 = 0
-    if fallout.script_action() == 11 then
-        do_dialogue()
-    else
-        if (fallout.script_action() == 21) or (fallout.script_action() == 3) then
-            fallout.script_overrides()
-            fallout.display_msg(fallout.message_str(49, 100))
-        else
-            if fallout.script_action() == 4 then
-                combat()
-            else
-                if fallout.script_action() == 12 then
-                    if HOSTILE then
-                        HOSTILE = 0
-                        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
-                    end
-                else
-                    if fallout.script_action() == 18 then
-                        reputation.inc_good_critter()
-                    end
-                end
-            end
-        end
+    local script_action = fallout.script_action()
+    if script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 21 or script_action == 3 then
+        look_at_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
     end
 end
 
-function do_dialogue()
+function pickup_p_proc()
+    combat()
+end
+
+function talk_p_proc()
     reaction.get_reaction()
     fallout.set_global_var(207, 1)
     MALE = fallout.get_critter_stat(fallout.dude_obj(), 34) == 0
@@ -200,24 +188,22 @@ function do_dialogue()
                 loxley27()
                 fallout.gsay_end()
                 fallout.end_dialogue()
-            else
-                if fallout.global_var(107) == 0 then
-                    if fallout.local_var(1) > 1 then
-                        fallout.start_gdialog(49, fallout.self_obj(), 4, 17, 3)
-                        fallout.gsay_start()
-                        loxley01()
-                        fallout.gsay_end()
-                        fallout.end_dialogue()
-                    else
-                        fallout.start_gdialog(49, fallout.self_obj(), 4, 17, 3)
-                        fallout.gsay_start()
-                        loxley24()
-                        fallout.gsay_end()
-                        fallout.end_dialogue()
-                    end
+            elseif fallout.global_var(107) == 0 then
+                if fallout.local_var(1) > 1 then
+                    fallout.start_gdialog(49, fallout.self_obj(), 4, 17, 3)
+                    fallout.gsay_start()
+                    loxley01()
+                    fallout.gsay_end()
+                    fallout.end_dialogue()
                 else
-                    fallout.display_msg(fallout.message_str(49, 267))
+                    fallout.start_gdialog(49, fallout.self_obj(), 4, 17, 3)
+                    fallout.gsay_start()
+                    loxley24()
+                    fallout.gsay_end()
+                    fallout.end_dialogue()
                 end
+            else
+                fallout.display_msg(fallout.message_str(49, 267))
             end
         else
             fallout.set_local_var(4, 1)
@@ -236,15 +222,33 @@ function do_dialogue()
             end
         end
     end
-    if floatReward == 1 then
-        floatReward = 0
+    if floatReward then
+        floatReward = false
         fallout.float_msg(fallout.self_obj(), fallout.message_str(49, 268), 2)
     end
 end
 
+function critter_p_proc()
+    if hostile then
+        hostile = false
+        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+    end
+end
+
+function destroy_p_proc()
+    reputation.inc_good_critter()
+end
+
+function look_at_p_proc()
+    fallout.script_overrides()
+    fallout.display_msg(fallout.message_str(49, 100))
+end
+
 function loxley00a()
     fallout.gsay_reply(49, 104)
-    fallout.giq_option(4, 49, fallout.message_str(49, 105) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(49, 106), loxley02, 50)
+    fallout.giq_option(4, 49,
+        fallout.message_str(49, 105) ..
+        fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(49, 106), loxley02, 50)
     fallout.giq_option(4, 49, 107, loxley00a1, 51)
     fallout.giq_option(4, 49, 108, loxley22, 50)
 end
@@ -255,7 +259,9 @@ function loxley01()
     else
         fallout.gsay_reply(49, 110)
     end
-    fallout.giq_option(4, 49, fallout.message_str(49, 111) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(49, 112), loxley02, 50)
+    fallout.giq_option(4, 49,
+        fallout.message_str(49, 111) ..
+        fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(49, 112), loxley02, 50)
     fallout.giq_option(4, 49, 113, loxley01a, 51)
     fallout.giq_option(4, 49, 114, loxley22, 50)
     fallout.giq_option(5, 49, 115, loxley01b, 49)
@@ -390,7 +396,9 @@ end
 
 function loxley21()
     fallout.gsay_reply(49, 162)
-    fallout.giq_option(4, 49, fallout.message_str(49, 163) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(49, 164), loxley02, 50)
+    fallout.giq_option(4, 49,
+        fallout.message_str(49, 163) ..
+        fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(49, 164), loxley02, 50)
     fallout.giq_option(4, 49, 165, loxley10, 51)
 end
 
@@ -403,7 +411,9 @@ end
 
 function loxley23()
     fallout.gsay_reply(49, 170)
-    fallout.giq_option(4, 49, fallout.message_str(49, 171) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(49, 172), loxley02, 50)
+    fallout.giq_option(4, 49,
+        fallout.message_str(49, 171) ..
+        fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(49, 172), loxley02, 50)
     fallout.giq_option(4, 49, 173, loxley23a, 51)
     fallout.giq_option(4, 49, 174, loxley22, 50)
     fallout.giq_option(5, 49, 175, loxley23b, 49)
@@ -437,12 +447,11 @@ function loxley27()
 end
 
 function loxley29()
-    local v0 = 0
-    v0 = fallout.obj_carrying_pid_obj(fallout.dude_obj(), 119)
+    local item_obj = fallout.obj_carrying_pid_obj(fallout.dude_obj(), 119)
     reaction.UpReact()
-    if fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 119) then
-        fallout.rm_obj_from_inven(fallout.dude_obj(), v0)
-        fallout.add_obj_to_inven(fallout.self_obj(), v0)
+    if item_obj ~= nil then
+        fallout.rm_obj_from_inven(fallout.dude_obj(), item_obj)
+        fallout.add_obj_to_inven(fallout.self_obj(), item_obj)
     end
     fallout.give_exp_points(500)
     fallout.display_msg(fallout.message_str(766, 103) .. 500 .. fallout.message_str(766, 104))
@@ -659,7 +668,7 @@ end
 
 function loxleyx3()
     fallout.set_map_var(3, 1)
-    floatReward = 1
+    floatReward = true
 end
 
 function loxleyx4()
@@ -741,7 +750,7 @@ function loxley25a()
 end
 
 function loxley27a()
-    if fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 119) then
+    if fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 119) ~= 0 then
         loxley29()
     else
         fallout.set_local_var(5, fallout.local_var(5) + 1)
@@ -879,7 +888,7 @@ function loxley91()
 end
 
 function combat()
-    HOSTILE = 1
+    hostile = true
 end
 
 function loxley00()
@@ -890,4 +899,9 @@ end
 
 local exports = {}
 exports.start = start
+exports.pickup_p_proc = pickup_p_proc
+exports.talk_p_proc = talk_p_proc
+exports.critter_p_proc = critter_p_proc
+exports.destroy_p_proc = destroy_p_proc
+exports.look_at_p_proc = look_at_p_proc
 return exports
