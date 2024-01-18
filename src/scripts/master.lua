@@ -67,95 +67,60 @@ local master202
 local master203
 local mastercbt
 local masterend
+local talk_p_proc
+local critter_p_proc
 local damage_p_proc
 local combat_p_proc
 local map_enter_p_proc
+local destroy_p_proc
+local look_at_p_proc
+local timed_event_p_proc
 
-local MALE = 0
-local HOSTILE = 0
-local DISARM = 0
+local hostile = false
 local initialized = false
-local LIEUTENANTS = 0
-local everyother = 1
-local wimpyother = 1
-local so_long = 0
-
-local exit_line = 0
+local everyother = true
+local wimpyother = true
+local so_long = false
 
 function start()
     if not initialized then
+        local self_obj = fallout.self_obj()
+        fallout.set_external_var("Master_Ptr", self_obj)
+        fallout.critter_add_trait(self_obj, 1, 6, 55)
+        fallout.critter_add_trait(self_obj, 1, 5, 70)
         initialized = true
-        fallout.set_external_var("Master_Ptr", fallout.self_obj())
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 55)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 70)
     end
-    if fallout.script_action() == 15 then
+
+    local script_action = fallout.script_action()
+    if script_action == 15 then
         map_enter_p_proc()
     end
-    if fallout.script_action() == 14 then
+    if script_action == 14 then
         damage_p_proc()
-    end
-    if fallout.script_action() == 13 then
+    elseif script_action == 13 then
         combat_p_proc()
-    end
-    if fallout.script_action() == 11 then
-        if fallout.global_var(18) == 0 then
-            do_dialogue()
-        end
-    else
-        if fallout.script_action() == 18 then
-            reputation.inc_evil_critter()
-            fallout.set_global_var(18, 1)
-            if fallout.global_var(17) == 0 then
-                fallout.set_global_var(51, 1)
-            end
-            fallout.set_global_var(309, 2)
-            if fallout.global_var(55) == 0 then
-                fallout.set_global_var(55, time.game_time_in_seconds())
-            end
-        else
-            if fallout.script_action() == 21 then
-                fallout.script_overrides()
-                fallout.display_msg(fallout.message_str(51, 100))
-            else
-                if fallout.script_action() == 22 then
-                    fallout.set_global_var(241, 3)
-                    fallout.dialogue_system_enter()
-                else
-                    if fallout.script_action() == 12 then
-                        if fallout.local_var(5) ~= 0 then
-                            if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
-                                HOSTILE = 1
-                            end
-                        end
-                        if HOSTILE then
-                            fallout.set_local_var(5, 1)
-                            HOSTILE = 0
-                            fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
-                        end
-                        if fallout.global_var(241) == 2 then
-                        else
-                            if fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 10 then
-                                fallout.dialogue_system_enter()
-                            end
-                        end
-                    end
-                end
-            end
-        end
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 22 then
+        timed_event_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
     end
 end
 
 function gameover()
-    so_long = 1
+    so_long = true
 end
 
 function giveme()
-    local v0 = 0
     if fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 194) then
-        v0 = fallout.obj_carrying_pid_obj(fallout.dude_obj(), 194)
-        fallout.rm_obj_from_inven(fallout.dude_obj(), v0)
-        fallout.destroy_object(v0)
+        local item_obj = fallout.obj_carrying_pid_obj(fallout.dude_obj(), 194)
+        fallout.rm_obj_from_inven(fallout.dude_obj(), item_obj)
+        fallout.destroy_object(item_obj)
         master14()
     else
         master13()
@@ -166,24 +131,21 @@ function do_dialogue()
     reaction.get_reaction()
     fallout.start_gdialog(51, fallout.self_obj(), 4, 6, 11)
     fallout.gsay_start()
-    MALE = fallout.get_critter_stat(fallout.dude_obj(), 34) == 0
     if fallout.local_var(5) ~= 0 then
         master203()
-    else
-        if fallout.local_var(4) ~= 0 then
-            if fallout.global_var(56) ~= 0 then
-                master46()
-            else
-                if fallout.is_success(fallout.do_check(fallout.dude_obj(), 3, -1)) then
-                    master43()
-                else
-                    master44()
-                end
-            end
+    elseif fallout.local_var(4) ~= 0 then
+        if fallout.global_var(56) ~= 0 then
+            master46()
         else
-            fallout.set_local_var(4, 1)
-            master00()
+            if fallout.is_success(fallout.do_check(fallout.dude_obj(), 3, -1)) then
+                master43()
+            else
+                master44()
+            end
         end
+    else
+        fallout.set_local_var(4, 1)
+        master00()
     end
     fallout.gsay_end()
     fallout.end_dialogue()
@@ -271,7 +233,7 @@ function master09()
     fallout.gsay_reply(51, 130)
     fallout.giq_option(5, 51, 131, mastercbt, 51)
     fallout.giq_option(6, 51, 132, master10, 50)
-    if fallout.obj_carrying_pid_obj(fallout.dude_obj(), 194) or fallout.global_var(310) then
+    if fallout.obj_carrying_pid_obj(fallout.dude_obj(), 194) ~= nil or fallout.global_var(310) ~= 0 then
         fallout.giq_option(7, 51, 133, master11, 50)
     end
 end
@@ -465,7 +427,7 @@ end
 function master38()
     fallout.gsay_reply(51, 195)
     fallout.giq_option(5, 51, 197, mastercbt, 51)
-    if (fallout.global_var(108) == 1) or (fallout.global_var(108) == 2) then
+    if fallout.global_var(108) == 1 or fallout.global_var(108) == 2 then
         fallout.giq_option(5, 51, 198, master38_2, 50)
     end
 end
@@ -552,10 +514,35 @@ function master203()
 end
 
 function mastercbt()
-    HOSTILE = 1
+    hostile = true
 end
 
 function masterend()
+end
+
+function talk_p_proc()
+    if fallout.global_var(18) == 0 then
+        do_dialogue()
+    end
+end
+
+function critter_p_proc()
+    if fallout.local_var(5) ~= 0 then
+        if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
+            hostile = true
+        end
+    end
+    if hostile then
+        fallout.set_local_var(5, 1)
+        hostile = false
+        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+    end
+    if fallout.global_var(241) == 2 then
+    else
+        if fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 10 then
+            fallout.dialogue_system_enter()
+        end
+    end
 end
 
 function damage_p_proc()
@@ -564,20 +551,20 @@ end
 
 function combat_p_proc()
     if fallout.fixed_param() == 4 then
-        if everyother == 1 then
-            everyother = 0
+        if everyother then
+            everyother = false
             if fallout.combat_difficulty() == 0 then
-                if wimpyother == 1 then
-                    wimpyother = 0
+                if wimpyother then
+                    wimpyother = false
                     fallout.set_map_var(4, 1)
                 else
-                    wimpyother = 1
+                    wimpyother = true
                 end
             else
                 fallout.set_map_var(4, 1)
             end
         else
-            everyother = 1
+            everyother = true
         end
     end
 end
@@ -586,9 +573,36 @@ function map_enter_p_proc()
     fallout.animate_stand_obj(fallout.self_obj())
 end
 
+function destroy_p_proc()
+    reputation.inc_evil_critter()
+    fallout.set_global_var(18, 1)
+    if fallout.global_var(17) == 0 then
+        fallout.set_global_var(51, 1)
+    end
+    fallout.set_global_var(309, 2)
+    if fallout.global_var(55) == 0 then
+        fallout.set_global_var(55, time.game_time_in_seconds())
+    end
+end
+
+function look_at_p_proc()
+    fallout.script_overrides()
+    fallout.display_msg(fallout.message_str(51, 100))
+end
+
+function timed_event_p_proc()
+    fallout.set_global_var(241, 3)
+    fallout.dialogue_system_enter()
+end
+
 local exports = {}
 exports.start = start
+exports.talk_p_proc = talk_p_proc
+exports.critter_p_proc = critter_p_proc
 exports.damage_p_proc = damage_p_proc
 exports.combat_p_proc = combat_p_proc
 exports.map_enter_p_proc = map_enter_p_proc
+exports.destroy_p_proc = destroy_p_proc
+exports.look_at_p_proc = look_at_p_proc
+exports.timed_event_p_proc = timed_event_p_proc
 return exports
