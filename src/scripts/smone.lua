@@ -8,79 +8,69 @@ local pickup_p_proc
 local talk_p_proc
 local destroy_p_proc
 local look_at_p_proc
+local timed_event_p_proc
 local zamin
 local goto00
 local goto01
 local goto02
 local goto03
 
-local my_tile = 0
-local lesson_ptr = 0
-local hostile = 0
+local lesson = 0
+local hostile = false
 local initialized = false
-local DISGUISED = 0
-local ARMED = 0
-local PICK = 0
+local disguised = false
+local armed = false
 
 function start()
     if not initialized then
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 34)
+        fallout.critter_add_trait(self_obj, 1, 5, 48)
         initialized = true
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 34)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 48)
     end
-    if fallout.script_action() == 21 then
+
+    local script_action = fallout.script_action()
+    if script_action == 21 then
         look_at_p_proc()
-    else
-        if fallout.script_action() == 4 then
-            pickup_p_proc()
-        else
-            if fallout.script_action() == 11 then
-                talk_p_proc()
-            else
-                if fallout.script_action() == 22 then
-                    if hostile < 1 then
-                        lesson_ptr = lesson_ptr + 1
-                        fallout.set_local_var(1, lesson_ptr)
-                        goto00()
-                    end
-                else
-                    if fallout.script_action() == 12 then
-                        critter_p_proc()
-                    else
-                        if fallout.script_action() == 18 then
-                            destroy_p_proc()
-                        end
-                    end
-                end
-            end
-        end
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 22 then
+        timed_event_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
     end
 end
 
 function combat()
-    hostile = 1
+    hostile = true
 end
 
 function critter_p_proc()
+    local self_obj = fallout.self_obj()
+    local dude_obj = fallout.dude_obj()
     if hostile then
-        hostile = 0
-        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+        hostile = false
+        fallout.attack(dude_obj, 0, 1, 0, 0, 30000, 0, 0)
     end
-    my_tile = fallout.tile_num(fallout.self_obj())
-    if my_tile == 12098 then
-        fallout.move_to(fallout.self_obj(), 7000, 0)
+    local self_tile_num = fallout.tile_num(self_obj)
+    if self_tile_num == 12098 then
+        fallout.move_to(self_obj, 7000, 0)
     else
-        if fallout.tile_distance(my_tile, fallout.tile_num(fallout.dude_obj())) < 12 then
+        if fallout.tile_distance(self_tile_num, fallout.tile_num(dude_obj)) < 12 then
             if fallout.local_var(2) ~= 1 then
                 fallout.set_local_var(2, 1)
-                lesson_ptr = 0
-                fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(1), 0)
+                lesson = 0
+                fallout.add_timer_event(self_obj, fallout.game_ticks(1), 0)
             end
         end
     end
-    if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
+    if fallout.obj_can_see_obj(self_obj, dude_obj) then
         zamin()
-        if (ARMED == 1) or (DISGUISED == 0) then
+        if armed or not disguised then
             combat()
         end
     end
@@ -88,13 +78,13 @@ end
 
 function pickup_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
-        hostile = 1
+        hostile = true
     end
 end
 
 function talk_p_proc()
     zamin()
-    if (ARMED == 1) or (DISGUISED == 0) then
+    if armed or not disguised then
         combat()
     end
 end
@@ -107,57 +97,48 @@ function look_at_p_proc()
     fallout.script_overrides()
 end
 
+function timed_event_p_proc()
+    if not hostile then
+        lesson = lesson + 1
+        fallout.set_local_var(1, lesson)
+        goto00()
+    end
+end
+
 function zamin()
-    DISGUISED = 0
-    ARMED = 0
+    disguised = false
+    armed = false
     if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) then
-        ARMED = 1
+        armed = true
     end
     if fallout.obj_pid(fallout.critter_inven_obj(fallout.dude_obj(), 0)) == 113 then
         if fallout.metarule(16, 0) > 1 then
-            DISGUISED = 0
+            disguised = false
         else
-            DISGUISED = 1
+            disguised = true
         end
     end
 end
 
 function goto00()
-    PICK = lesson_ptr
-    if PICK == 1 then
+    if lesson == 1 then
         fallout.float_msg(fallout.self_obj(), fallout.message_str(694, 101), 2)
-    else
-        if PICK == 2 then
-            fallout.float_msg(fallout.external_var("patient"), fallout.message_str(694, 102), 8)
-        else
-            if PICK == 3 then
-                fallout.float_msg(fallout.self_obj(), fallout.message_str(694, 103), 2)
-            else
-                if PICK == 4 then
-                    goto01()
-                else
-                    if PICK == 5 then
-                        goto02()
-                    else
-                        if PICK == 6 then
-                            fallout.float_msg(fallout.external_var("patient"), fallout.message_str(694, 108), 8)
-                        else
-                            if PICK == 7 then
-                                fallout.float_msg(fallout.self_obj(), fallout.message_str(694, 109), 2)
-                            else
-                                if PICK == 8 then
-                                    fallout.float_msg(fallout.external_var("patient"), fallout.message_str(694, 110), 8)
-                                else
-                                    if PICK == 9 then
-                                        goto03()
-                                    end
-                                end
-                            end
-                        end
-                    end
-                end
-            end
-        end
+    elseif lesson == 2 then
+        fallout.float_msg(fallout.external_var("patient"), fallout.message_str(694, 102), 8)
+    elseif lesson == 3 then
+        fallout.float_msg(fallout.self_obj(), fallout.message_str(694, 103), 2)
+    elseif lesson == 4 then
+        goto01()
+    elseif lesson == 5 then
+        goto02()
+    elseif lesson == 6 then
+        fallout.float_msg(fallout.external_var("patient"), fallout.message_str(694, 108), 8)
+    elseif lesson == 7 then
+        fallout.float_msg(fallout.self_obj(), fallout.message_str(694, 109), 2)
+    elseif lesson == 8 then
+        fallout.float_msg(fallout.external_var("patient"), fallout.message_str(694, 110), 8)
+    elseif lesson == 9 then
+        goto03()
     end
     fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(3), 1)
 end
@@ -190,4 +171,5 @@ exports.pickup_p_proc = pickup_p_proc
 exports.talk_p_proc = talk_p_proc
 exports.destroy_p_proc = destroy_p_proc
 exports.look_at_p_proc = look_at_p_proc
+exports.timed_event_p_proc = timed_event_p_proc
 return exports
