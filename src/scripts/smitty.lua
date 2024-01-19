@@ -29,19 +29,18 @@ local SmittyEnd
 local initialized = false
 local DisplayMessage = 100
 
-local exit_line = 0
-
 function start()
     if not initialized then
-        if fallout.obj_is_carrying_obj_pid(fallout.self_obj(), 41) == 0 then
-            fallout.item_caps_adjust(fallout.self_obj(), fallout.random(500, 750))
+        local self_obj = fallout.self_obj()
+        if fallout.obj_is_carrying_obj_pid(self_obj, 41) == 0 then
+            fallout.item_caps_adjust(self_obj, fallout.random(500, 750))
         end
-        if (fallout.global_var(613) == 9103) or (fallout.global_var(613) == 9102) then
-            fallout.critter_add_trait(fallout.self_obj(), 1, 6, 0)
+        if fallout.global_var(613) == 9103 or fallout.global_var(613) == 9102 then
+            fallout.critter_add_trait(self_obj, 1, 6, 0)
         else
-            fallout.critter_add_trait(fallout.self_obj(), 1, 6, 49)
+            fallout.critter_add_trait(self_obj, 1, 6, 49)
         end
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 6)
+        fallout.critter_add_trait(self_obj, 1, 5, 6)
         initialized = true
     end
 end
@@ -68,7 +67,7 @@ function talk_p_proc()
     if fallout.global_var(251) == 1 then
         fallout.float_msg(fallout.self_obj(), fallout.message_str(669, fallout.random(100, 105)), 2)
     else
-        if (fallout.local_var(4) == 1) and (fallout.get_critter_stat(fallout.dude_obj(), 4) < 4) then
+        if fallout.local_var(4) == 1 and fallout.get_critter_stat(fallout.dude_obj(), 4) < 4 then
             fallout.float_msg(fallout.self_obj(), fallout.message_str(250, 117), 0)
         else
             if fallout.local_var(5) == 2 then
@@ -79,27 +78,23 @@ function talk_p_proc()
                 fallout.gsay_start()
                 if fallout.global_var(138) == 9303 then
                     Smitty11()
+                elseif fallout.global_var(138) == 9304 then
+                    if fallout.local_var(5) == 0 then
+                        Smitty12()
+                    elseif fallout.local_var(5) == 9307 then
+                        if fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 15) ~= 0 then
+                            Smitty14()
+                        else
+                            Smitty15()
+                        end
+                    end
                 else
-                    if fallout.global_var(138) == 9304 then
-                        if fallout.local_var(5) == 0 then
-                            Smitty12()
-                        else
-                            if fallout.local_var(5) == 9307 then
-                                if fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 15) then
-                                    Smitty14()
-                                else
-                                    Smitty15()
-                                end
-                            end
-                        end
+                    if fallout.local_var(1) < 2 then
+                        DisplayMessage = 103
+                        Smitty01()
                     else
-                        if fallout.local_var(1) < 2 then
-                            DisplayMessage = 103
-                            Smitty01()
-                        else
-                            DisplayMessage = 102
-                            Smitty01()
-                        end
+                        DisplayMessage = 102
+                        Smitty01()
                     end
                 end
                 fallout.gsay_end()
@@ -134,7 +129,7 @@ function Smitty01()
     if fallout.local_var(4) == 0 then
         fallout.giq_option(4, 250, 104, Smitty03, 50)
     end
-    if (fallout.global_var(138) < 9303) and (fallout.global_var(138) > 2) then
+    if fallout.global_var(138) < 9303 and fallout.global_var(138) > 2 then
         fallout.giq_option(4, 250, 105, Smitty10, 50)
     end
     fallout.giq_option(4, 250, 106, Smitty02, 50)
@@ -202,7 +197,7 @@ end
 function Smitty12()
     fallout.gsay_message(250, 125, 50)
     fallout.set_local_var(5, 9307)
-    if fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 15) then
+    if fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 15) ~= 0 then
         Smitty14()
     end
 end
@@ -213,22 +208,22 @@ function Smitty14()
 end
 
 function Smitty14a()
-    local v0 = 0
-    local v1 = 0
+    local item_obj1
+    local item_obj2
     fallout.gsay_message(250, 128, 50)
-    v1 = fallout.create_object_sid(42, 0, 0, -1)
-    fallout.move_obj_inven_to_obj(fallout.dude_obj(), v1)
-    fallout.move_obj_inven_to_obj(v1, fallout.dude_obj())
-    v0 = fallout.obj_carrying_pid_obj(fallout.dude_obj(), 15)
-    fallout.rm_obj_from_inven(fallout.dude_obj(), v0)
-    fallout.destroy_object(v0)
-    fallout.destroy_object(v1)
+    item_obj2 = fallout.create_object_sid(42, 0, 0, -1)
+    fallout.move_obj_inven_to_obj(fallout.dude_obj(), item_obj2)
+    fallout.move_obj_inven_to_obj(item_obj2, fallout.dude_obj())
+    item_obj1 = fallout.obj_carrying_pid_obj(fallout.dude_obj(), 15)
+    fallout.rm_obj_from_inven(fallout.dude_obj(), item_obj1)
+    fallout.destroy_object(item_obj1)
+    fallout.destroy_object(item_obj2)
     fallout.gfade_out(600)
     fallout.game_time_advance(10 * 60 * 60 * 2)
     fallout.gfade_in(600)
     fallout.gsay_message(250, 129, 50)
-    v0 = fallout.create_object_sid(233, 0, 0, -1)
-    fallout.add_obj_to_inven(fallout.dude_obj(), v0)
+    item_obj1 = fallout.create_object_sid(233, 0, 0, -1)
+    fallout.add_obj_to_inven(fallout.dude_obj(), item_obj1)
     fallout.set_local_var(5, 2)
 end
 
