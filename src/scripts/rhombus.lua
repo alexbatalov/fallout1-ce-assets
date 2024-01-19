@@ -77,7 +77,7 @@ local pickup_p_proc
 local talk_p_proc
 local destroy_p_proc
 local look_at_p_proc
-local timeforwhat
+local timed_event_p_proc
 local kickout
 local Remove_Player
 
@@ -85,22 +85,11 @@ local MAD = 0
 local Q1 = 0
 local Q2 = 0
 local Q4 = 0
-local rndx = 0
-local rndy = 0
-local rndz = 0
-local VATS = 0
-local MALE = 0
-local HOSTILE = 0
-local ILLEGAL = 0
+local hostile = false
+local ILLEGAL = false
 local initialized = false
-local here = 0
 local conmod = 0
-local loot = 0
-local sense = 0
-local denounce = 0
-local Test = 0
-
-local exit_line = 0
+local denounce = false
 
 local rhombus00
 local rhombus34
@@ -109,31 +98,25 @@ local rhombus49
 
 function start()
     if not initialized then
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 44)
+        fallout.critter_add_trait(self_obj, 1, 5, 81)
         initialized = true
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 44)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 81)
     end
-    if fallout.script_action() == 22 then
-        timeforwhat()
-    end
-    if fallout.script_action() == 21 then
+
+    local script_action = fallout.script_action()
+    if script_action == 22 then
+        timed_event_p_proc()
+    elseif script_action == 21 then
         look_at_p_proc()
-    else
-        if fallout.script_action() == 4 then
-            pickup_p_proc()
-        else
-            if fallout.script_action() == 11 then
-                talk_p_proc()
-            else
-                if fallout.script_action() == 12 then
-                    critter_p_proc()
-                else
-                    if fallout.script_action() == 18 then
-                        destroy_p_proc()
-                    end
-                end
-            end
-        end
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
     end
 end
 
@@ -141,9 +124,8 @@ function do_dialogue()
     fallout.start_gdialog(56, fallout.self_obj(), 4, 20, 5)
     reaction.get_reaction()
     fallout.gsay_start()
-    MALE = fallout.get_critter_stat(fallout.dude_obj(), 34) == 0
     if ILLEGAL then
-        ILLEGAL = 0
+        ILLEGAL = false
         conmod = (fallout.get_critter_stat(fallout.dude_obj(), 3) - 5) * 10
         if fallout.local_var(5) == 1 then
             rhombus51()
@@ -151,7 +133,7 @@ function do_dialogue()
             rhombus55()
         end
     else
-        if MAD then
+        if MAD ~= 0 then
             if MAD < 3 then
                 anger()
             else
@@ -163,7 +145,7 @@ function do_dialogue()
     end
     fallout.gsay_end()
     fallout.end_dialogue()
-    if denounce == 1 then
+    if denounce then
         Remove_Player()
     end
 end
@@ -219,18 +201,16 @@ function rhombus07()
     Q1 = Q1 + 1
     if Q1 > 4 then
         anger()
+    elseif Q1 > 3 then
+        annoyed()
     else
-        if Q1 > 3 then
-            annoyed()
-        else
-            if Q1 > 1 then
-                fallout.gsay_message(56, 179, 50)
-            end
-            fallout.gsay_reply(56, 118)
-            fallout.giq_option(4, 56, 119, rhombus08, 50)
-            fallout.giq_option(4, 56, 120, rhombus12, 50)
-            fallout.giq_option(6, 56, 121, rhombus19, 50)
+        if Q1 > 1 then
+            fallout.gsay_message(56, 179, 50)
         end
+        fallout.gsay_reply(56, 118)
+        fallout.giq_option(4, 56, 119, rhombus08, 50)
+        fallout.giq_option(4, 56, 120, rhombus12, 50)
+        fallout.giq_option(6, 56, 121, rhombus19, 50)
     end
 end
 
@@ -248,7 +228,7 @@ function rhombus09()
 end
 
 function rhombus09_1()
-    if MALE then
+    if fallout.get_critter_stat(fallout.dude_obj(), 34) == 0 then
         rhombus11()
     else
         if fallout.is_success(fallout.do_check(fallout.dude_obj(), 3, -1)) then
@@ -328,20 +308,16 @@ function rhombus21()
     Q2 = Q2 + 1
     if Q2 > 4 then
         anger()
+    elseif Q2 > 3 then
+        annoyed()
     else
-        if Q2 > 3 then
-            annoyed()
-        else
-            if Q2 == 2 then
-                fallout.gsay_message(56, 180, 50)
-            else
-                if Q2 == 3 then
-                    fallout.gsay_message(56, 179, 50)
-                end
-            end
-            fallout.gsay_message(56, 159, 50)
-            rhombus00()
+        if Q2 == 2 then
+            fallout.gsay_message(56, 180, 50)
+        elseif Q2 == 3 then
+            fallout.gsay_message(56, 179, 50)
         end
+        fallout.gsay_message(56, 159, 50)
+        rhombus00()
     end
 end
 
@@ -363,26 +339,22 @@ function rhombus23()
     Q4 = Q4 + 1
     if Q4 > 4 then
         anger()
+    elseif Q4 > 3 then
+        annoyed()
     else
-        if Q4 > 3 then
-            annoyed()
-        else
-            if fallout.global_var(73) == 0 then
-                fallout.set_global_var(73, 1)
-            end
-            if fallout.global_var(75) == 0 then
-                fallout.set_global_var(75, 1)
-            end
-            if Q4 == 2 then
-                fallout.gsay_message(56, 180, 50)
-            else
-                if Q4 == 3 then
-                    fallout.gsay_message(56, 179, 50)
-                end
-            end
-            fallout.gsay_message(56, 163, 50)
-            rhombus00()
+        if fallout.global_var(73) == 0 then
+            fallout.set_global_var(73, 1)
         end
+        if fallout.global_var(75) == 0 then
+            fallout.set_global_var(75, 1)
+        end
+        if Q4 == 2 then
+            fallout.gsay_message(56, 180, 50)
+        elseif Q4 == 3 then
+            fallout.gsay_message(56, 179, 50)
+        end
+        fallout.gsay_message(56, 163, 50)
+        rhombus00()
     end
 end
 
@@ -522,8 +494,8 @@ function rhombus51()
 end
 
 function rhombus51a()
-    Test = fallout.roll_vs_skill(fallout.dude_obj(), 14, conmod)
-    if fallout.is_success(Test) then
+    local roll = fallout.roll_vs_skill(fallout.dude_obj(), 14, conmod)
+    if fallout.is_success(roll) then
         rhombus52()
     else
         rhombus53()
@@ -552,8 +524,8 @@ function rhombus55()
 end
 
 function rhombus56()
-    Test = fallout.roll_vs_skill(fallout.dude_obj(), 14, conmod)
-    if fallout.is_critical(Test) then
+    local roll = fallout.roll_vs_skill(fallout.dude_obj(), 14, conmod)
+    if fallout.is_critical(roll) then
         combat()
     else
         kickout()
@@ -579,15 +551,11 @@ function anger()
     MAD = MAD + 1
     if MAD == 1 then
         fallout.gsay_message(56, 182, 51)
-    else
-        if MAD == 2 then
-            fallout.gsay_message(56, 117, 51)
-        else
-            if MAD == 3 then
-                fallout.gsay_message(56, 177, 51)
-                kickout()
-            end
-        end
+    elseif MAD == 2 then
+        fallout.gsay_message(56, 117, 51)
+    elseif MAD == 3 then
+        fallout.gsay_message(56, 177, 51)
+        kickout()
     end
 end
 
@@ -597,82 +565,83 @@ function annoyed()
 end
 
 function combat()
-    HOSTILE = 1
+    hostile = true
 end
 
 function critter_p_proc()
+    local self_obj = fallout.self_obj()
+    local dude_obj = fallout.dude_obj()
     if fallout.global_var(250) ~= 0 then
-        HOSTILE = 1
+        hostile = true
     end
-    if fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) > 12 then
-        HOSTILE = 0
+    if fallout.tile_distance_objs(self_obj, dude_obj) > 12 then
+        hostile = false
     end
-    if HOSTILE then
+    if hostile then
         fallout.set_global_var(250, 1)
-        HOSTILE = 0
-        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+        hostile = false
+        fallout.attack(dude_obj, 0, 1, 0, 0, 30000, 0, 0)
     else
-        if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) and (ILLEGAL == 0) then
-            here = fallout.tile_num(fallout.dude_obj())
-            if fallout.tile_distance(here, 24130) < 6 then
-                ILLEGAL = 1
+        local self_tile_num = fallout.tile_num(self_obj)
+        local dude_tile_num = fallout.tile_num(dude_obj)
+        if fallout.obj_can_see_obj(self_obj, dude_obj) and not ILLEGAL then
+            if fallout.tile_distance(dude_tile_num, 24130) < 6 then
+                ILLEGAL = true
             else
-                if fallout.tile_distance(here, 24322) < 6 then
-                    ILLEGAL = 1
+                if fallout.tile_distance(dude_tile_num, 24322) < 6 then
+                    ILLEGAL = true
                 end
             end
             if fallout.map_var(19) > 0 then
-                ILLEGAL = 1
+                ILLEGAL = true
                 fallout.set_map_var(19, 0)
             else
-                if (fallout.tile_num(fallout.self_obj()) == 22123) and (fallout.tile_distance(here, 22930) < 3) then
-                    fallout.float_msg(fallout.self_obj(), fallout.message_str(56, 209), 3)
+                if self_tile_num == 22123 and fallout.tile_distance(dude_tile_num, 22930) < 3 then
+                    fallout.float_msg(self_obj, fallout.message_str(56, 209), 3)
                 end
             end
             if ILLEGAL then
-                loot = 0
-                loot = fallout.obj_carrying_pid_obj(fallout.dude_obj(), 229)
-                if loot then
-                    fallout.rm_obj_from_inven(fallout.dude_obj(), loot)
-                    fallout.add_obj_to_inven(fallout.external_var("locker_ptr"), loot)
+                local item_obj = fallout.obj_carrying_pid_obj(dude_obj, 229)
+                if item_obj ~= nil then
+                    fallout.rm_obj_from_inven(dude_obj, item_obj)
+                    fallout.add_obj_to_inven(fallout.external_var("locker_ptr"), item_obj)
                     fallout.display_msg(fallout.message_str(56, 207))
                 end
                 fallout.set_local_var(5, fallout.local_var(5) + 1)
                 fallout.dialogue_system_enter()
             end
         else
-            if (fallout.local_var(7) == 1) and (fallout.tile_num(fallout.self_obj()) ~= 22123) then
-                fallout.animate_move_obj_to_tile(fallout.self_obj(), 22123, 0)
+            if fallout.local_var(7) == 1 and self_tile_num ~= 22123 then
+                fallout.animate_move_obj_to_tile(self_obj, 22123, 0)
+            elseif fallout.local_var(7) == 2 and self_tile_num ~= 23928 then
+                fallout.animate_move_obj_to_tile(self_obj, 23928, 0)
             else
-                if (fallout.local_var(7) == 2) and (fallout.tile_num(fallout.self_obj()) ~= 23928) then
-                    fallout.animate_move_obj_to_tile(fallout.self_obj(), 23928, 0)
-                else
-                    if fallout.local_var(7) == 3 then
-                        if fallout.local_var(5) > 0 then
-                            sense = 0
-                        else
-                            sense = 1
+                if fallout.local_var(7) == 3 then
+                    local sense
+                    if fallout.local_var(5) > 0 then
+                        sense = 0
+                    else
+                        sense = 1
+                    end
+                    if fallout.map_var(19) > sense then
+                        fallout.float_msg(self_obj, fallout.message_str(56, 206), 3)
+                        fallout.set_map_var(19, 0)
+                        fallout.set_local_var(7, 2)
+                        fallout.add_timer_event(self_obj, fallout.game_ticks(30), 1)
+                    else
+                        if self_tile_num ~= 23920 then
+                            fallout.animate_move_obj_to_tile(self_obj, 23920, 0)
                         end
-                        if fallout.map_var(19) > sense then
-                            fallout.float_msg(fallout.self_obj(), fallout.message_str(56, 206), 3)
-                            fallout.set_map_var(19, 0)
-                            fallout.set_local_var(7, 2)
-                            fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(30), 1)
-                        else
-                            if fallout.tile_num(fallout.self_obj()) ~= 23920 then
-                                fallout.animate_move_obj_to_tile(fallout.self_obj(), 23920, 0)
-                            end
+                    end
+                else
+                    if time.is_night() then
+                        if fallout.local_var(8) == 0 then
+                            fallout.set_local_var(8, 1)
+                            fallout.set_local_var(7, 3)
                         end
                     else
-                        if time.is_night() then
-                            if fallout.local_var(8) == 0 then
-                                fallout.set_local_var(8, 1)
-                                fallout.set_local_var(7, 3)
-                            end
-                        else
-                            fallout.set_local_var(8, 0)
-                            fallout.set_local_var(7, 1)
-                        end
+                        fallout.set_local_var(8, 0)
+                        fallout.set_local_var(7, 1)
                     end
                 end
             end
@@ -682,7 +651,7 @@ end
 
 function pickup_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
-        HOSTILE = 1
+        hostile = true
     end
 end
 
@@ -701,7 +670,7 @@ function look_at_p_proc()
     fallout.display_msg(fallout.message_str(56, 100))
 end
 
-function timeforwhat()
+function timed_event_p_proc()
     if time.is_night() then
         if fallout.local_var(7) == 2 then
             fallout.set_local_var(7, 3)
@@ -710,7 +679,7 @@ function timeforwhat()
 end
 
 function kickout()
-    denounce = 1
+    denounce = true
 end
 
 function Remove_Player()
@@ -752,4 +721,5 @@ exports.pickup_p_proc = pickup_p_proc
 exports.talk_p_proc = talk_p_proc
 exports.destroy_p_proc = destroy_p_proc
 exports.look_at_p_proc = look_at_p_proc
+exports.timed_event_p_proc = timed_event_p_proc
 return exports
