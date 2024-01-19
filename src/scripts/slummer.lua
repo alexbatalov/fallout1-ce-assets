@@ -3,8 +3,11 @@ local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
 
 local start
-local do_dialogue
-local social_skills
+local pickup_p_proc
+local talk_p_proc
+local critter_p_proc
+local destroy_p_proc
+local look_at_p_proc
 local slummer00
 local slummer01
 local slummer02
@@ -97,52 +100,45 @@ local slummerend
 local slummercombat
 local weapon_check
 
-local hostile = 0
-local armed = 0
-local LASHERKNOWN = 0
+local hostile = false
+local armed = false
+local LASHERKNOWN = false
 local initialized = false
-
-local exit_line = 0
 
 function start()
     if not initialized then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 20)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 69)
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 20)
+        fallout.critter_add_trait(self_obj, 1, 5, 69)
         initialized = true
     end
-    if fallout.script_action() == 11 then
-        do_dialogue()
-    else
-        if (fallout.script_action() == 21) or (fallout.script_action() == 3) then
-            fallout.script_overrides()
-            fallout.display_msg(fallout.message_str(391, 100))
-        else
-            if fallout.script_action() == 18 then
-                reputation.inc_evil_critter()
-            else
-                if fallout.script_action() == 4 then
-                    hostile = 1
-                else
-                    if fallout.script_action() == 12 then
-                        if hostile then
-                            hostile = 0
-                            fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
-                        end
-                    end
-                end
-            end
-        end
+
+    local script_action = fallout.script_action()
+    if script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 21 or script_action == 3 then
+        look_at_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
     end
 end
 
-function do_dialogue()
+function pickup_p_proc()
+    hostile = true
+end
+
+function talk_p_proc()
     reaction.get_reaction()
     weapon_check()
     fallout.start_gdialog(-1, fallout.self_obj(), 4, -1, -1)
     fallout.gsay_start()
     if fallout.obj_pid(fallout.critter_inven_obj(fallout.dude_obj(), 0)) == 113 then
         if fallout.local_var(4) == 0 then
-            if armed == 1 then
+            if armed then
                 slummer02()
             else
                 slummer03()
@@ -156,25 +152,21 @@ function do_dialogue()
         if fallout.global_var(195) == 1 then
             slummer00()
         else
-            if armed == 1 then
+            if armed then
                 if reputation.has_rep_champion() then
                     slummer04()
+                elseif fallout.global_var(158) > 2 or reputation.has_rep_berserker() then
+                    slummer06()
                 else
-                    if (fallout.global_var(158) > 2) or (reputation.has_rep_berserker()) then
-                        slummer06()
-                    else
-                        slummer05()
-                    end
+                    slummer05()
                 end
             else
                 if reputation.has_rep_champion() then
                     slummer07()
+                elseif fallout.global_var(158) > 2 or reputation.has_rep_berserker() then
+                    slummer09()
                 else
-                    if (fallout.global_var(158) > 2) or (reputation.has_rep_berserker()) then
-                        slummer09()
-                    else
-                        slummer08()
-                    end
+                    slummer08()
                 end
             end
         end
@@ -183,10 +175,20 @@ function do_dialogue()
     fallout.end_dialogue()
 end
 
-function social_skills()
+function critter_p_proc()
+    if hostile then
+        hostile = false
+        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+    end
+end
+
+function destroy_p_proc()
+    reputation.inc_evil_critter()
+end
+
+function look_at_p_proc()
     fallout.script_overrides()
-    reaction.get_reaction()
-    do_dialogue()
+    fallout.display_msg(fallout.message_str(391, 100))
 end
 
 function slummer00()
@@ -339,7 +341,7 @@ function slummer10a()
 end
 
 function slummer11()
-    LASHERKNOWN = 1
+    LASHERKNOWN = true
     fallout.gsay_message(391, 163, 50)
 end
 
@@ -464,7 +466,7 @@ function slummer21a()
 end
 
 function slummer22()
-    LASHERKNOWN = 1
+    LASHERKNOWN = true
     fallout.gsay_reply(391, 198)
     fallout.giq_option(7, 391, 199, slummer50, 50)
     fallout.giq_option(7, 391, 200, slummer49, 50)
@@ -573,7 +575,7 @@ end
 
 function slummer32()
     fallout.set_global_var(196, 1)
-    LASHERKNOWN = 1
+    LASHERKNOWN = true
     fallout.gsay_message(391, 242, 50)
 end
 
@@ -894,17 +896,22 @@ end
 
 function slummercombat()
     fallout.set_global_var(195, 1)
-    hostile = 1
+    hostile = true
 end
 
 function weapon_check()
     if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) then
-        armed = 1
+        armed = true
     else
-        armed = 0
+        armed = false
     end
 end
 
 local exports = {}
 exports.start = start
+exports.pickup_p_proc = pickup_p_proc
+exports.talk_p_proc = talk_p_proc
+exports.critter_p_proc = critter_p_proc
+exports.destroy_p_proc = destroy_p_proc
+exports.look_at_p_proc = look_at_p_proc
 return exports
