@@ -34,10 +34,6 @@ function start()
     end
 end
 
-function combat()
-    hostile = true
-end
-
 function critter_p_proc()
     local self_obj = fallout.self_obj()
     local dude_obj = fallout.dude_obj()
