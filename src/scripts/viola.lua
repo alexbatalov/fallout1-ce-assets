@@ -2,7 +2,11 @@ local fallout = require("fallout")
 local reputation = require("lib.reputation")
 
 local start
-local do_dialogue
+local pickup_p_proc
+local talk_p_proc
+local critter_p_proc
+local destroy_p_proc
+local look_at_p_proc
 local viola00
 local viola01
 local viola02
@@ -90,86 +94,68 @@ local violaend
 local violacombat
 local weapon_check
 
-local hostile = 0
-local armed = 0
-local GENDER = 0
-local LASHERKNOWN = 0
+local hostile = false
+local armed = false
 local initialized = false
-local TALKEDTOLAURA = 0
-local LAURAWARNING = 0
-
-local exit_line = 0
+local TALKEDTOLAURA = false
+local LAURAWARNING = false
 
 function start()
     if not initialized then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 20)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 69)
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 20)
+        fallout.critter_add_trait(self_obj, 1, 5, 69)
         initialized = true
     end
-    if fallout.script_action() == 11 then
-        do_dialogue()
-    else
-        if (fallout.script_action() == 21) or (fallout.script_action() == 3) then
-            fallout.script_overrides()
-            fallout.display_msg(fallout.message_str(496, 100))
-        else
-            if fallout.script_action() == 18 then
-                reputation.inc_evil_critter()
-            else
-                if fallout.script_action() == 4 then
-                    hostile = 1
-                else
-                    if fallout.script_action() == 12 then
-                        if hostile then
-                            hostile = 0
-                            fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
-                        end
-                    end
-                end
-            end
-        end
+
+    local script_action = fallout.script_action()
+    if script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 21 or script_action == 3 then
+        look_at_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
     end
 end
 
-function do_dialogue()
-    GENDER = fallout.get_critter_stat(fallout.dude_obj(), 34)
+function pickup_p_proc()
+    hostile = true
+end
+
+function talk_p_proc()
     weapon_check()
     fallout.start_gdialog(-1, fallout.self_obj(), 4, -1, -1)
     fallout.gsay_start()
-    if (fallout.local_var(4) == 1) and (fallout.get_critter_stat(fallout.dude_obj(), 4) < 4) then
+    if fallout.local_var(4) == 1 and fallout.get_critter_stat(fallout.dude_obj(), 4) < 4 then
         fallout.gsay_message(496, 143, 51)
     else
-        if (fallout.global_var(195) == 1) and not(fallout.obj_pid(fallout.critter_inven_obj(fallout.dude_obj(), 0)) == 113) then
+        if fallout.global_var(195) == 1 and fallout.obj_pid(fallout.critter_inven_obj(fallout.dude_obj(), 0)) ~= 113 then
             viola00()
         else
-            if TALKEDTOLAURA == 1 then
-                if LAURAWARNING == 0 then
+            if TALKEDTOLAURA then
+                if not LAURAWARNING then
                     viola01()
                 else
                     viola02()
                 end
             else
-                if armed == 1 then
+                if armed then
                     viola03()
-                else
-                    if (fallout.local_var(4) == 1) and (LAURAWARNING == 0) then
-                        viola04()
+                elseif fallout.local_var(4) == 1 and not LAURAWARNING then
+                    viola04()
+                elseif not armed then
+                    if fallout.obj_pid(fallout.critter_inven_obj(fallout.dude_obj(), 0)) == 113 then
+                        viola05()
+                    elseif reputation.has_rep_champion() then
+                        viola06()
+                    elseif fallout.global_var(158) > 2 and reputation.has_rep_berserker() then
+                        viola07()
                     else
-                        if armed == 0 then
-                            if fallout.obj_pid(fallout.critter_inven_obj(fallout.dude_obj(), 0)) == 113 then
-                                viola05()
-                            else
-                                if reputation.has_rep_champion() then
-                                    viola06()
-                                else
-                                    if (fallout.global_var(158) > 2) and (reputation.has_rep_berserker()) then
-                                        viola07()
-                                    else
-                                        viola08()
-                                    end
-                                end
-                            end
-                        end
+                        viola08()
                     end
                 end
             end
@@ -180,8 +166,24 @@ function do_dialogue()
     fallout.end_dialogue()
 end
 
+function critter_p_proc()
+    if hostile then
+        hostile = false
+        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+    end
+end
+
+function destroy_p_proc()
+    reputation.inc_evil_critter()
+end
+
+function look_at_p_proc()
+    fallout.script_overrides()
+    fallout.display_msg(fallout.message_str(496, 100))
+end
+
 function viola00()
-    if GENDER == 0 then
+    if fallout.get_critter_stat(fallout.dude_obj(), 34) == 0 then
         fallout.gsay_reply(496, 101)
     else
         fallout.gsay_reply(496, 102)
@@ -198,7 +200,7 @@ function viola00()
 end
 
 function viola01()
-    LAURAWARNING = 1
+    LAURAWARNING = true
     fallout.gsay_reply(496, 109)
     fallout.giq_option(7, 496, 110, viola13, 50)
     fallout.giq_option(4, 496, 111, viola14, 50)
@@ -251,7 +253,7 @@ function viola05a()
 end
 
 function viola06()
-    if GENDER == 0 then
+    if fallout.get_critter_stat(fallout.dude_obj(), 34) == 0 then
         fallout.gsay_reply(496, 129)
     else
         fallout.gsay_reply(496, 130)
@@ -274,7 +276,7 @@ function viola06a()
 end
 
 function viola07()
-    if GENDER == 0 then
+    if fallout.get_critter_stat(fallout.dude_obj(), 34) == 0 then
         fallout.gsay_reply(496, 136)
     else
         fallout.gsay_reply(496, 137)
@@ -625,7 +627,7 @@ function viola60()
 end
 
 function viola61()
-    if GENDER == 0 then
+    if fallout.get_critter_stat(fallout.dude_obj(), 34) == 0 then
         fallout.gsay_message(496, 273, 50)
     else
         fallout.gsay_message(496, 274, 50)
@@ -633,7 +635,7 @@ function viola61()
 end
 
 function viola62()
-    if GENDER == 0 then
+    if fallout.get_critter_stat(fallout.dude_obj(), 34) == 0 then
         fallout.gsay_message(496, 275, 50)
     else
         fallout.gsay_message(496, 276, 50)
@@ -662,7 +664,7 @@ function viola66()
 end
 
 function viola67()
-    if GENDER == 0 then
+    if fallout.get_critter_stat(fallout.dude_obj(), 34) == 0 then
         fallout.gsay_message(496, 286, 50)
     else
         fallout.gsay_message(496, 287, 50)
@@ -714,7 +716,7 @@ function viola74()
 end
 
 function viola75()
-    if GENDER == 0 then
+    if fallout.get_critter_stat(fallout.dude_obj(), 34) == 0 then
         fallout.gsay_message(496, 295, 50)
     else
         fallout.gsay_message(496, 296, 50)
@@ -734,17 +736,22 @@ end
 
 function violacombat()
     fallout.set_global_var(195, 1)
-    hostile = 1
+    hostile = true
 end
 
 function weapon_check()
     if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) then
-        armed = 1
+        armed = true
     else
-        armed = 0
+        armed = false
     end
 end
 
 local exports = {}
 exports.start = start
+exports.pickup_p_proc = pickup_p_proc
+exports.talk_p_proc = talk_p_proc
+exports.critter_p_proc = critter_p_proc
+exports.destroy_p_proc = destroy_p_proc
+exports.look_at_p_proc = look_at_p_proc
 return exports
