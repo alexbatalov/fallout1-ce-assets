@@ -2,7 +2,13 @@ local fallout = require("fallout")
 local reputation = require("lib.reputation")
 
 local start
-local do_dialogue
+local pickup_p_proc
+local talk_p_proc
+local critter_p_proc
+local damage_p_proc
+local destroy_p_proc
+local look_at_p_proc
+local timed_event_p_proc
 local moveme
 local goto00
 local goto00a
@@ -20,15 +26,14 @@ local gotoend
 local gotocbt
 local gotoret
 
-local HOSTILE = 0
+local hostile = false
 local initialized = false
-local DISGUISED = 0
-local ARMED = 0
-local moving = 1
-local my_hex = 0
+local disguised = false
+local armed = false
+local moving = true
 local home_tile = 0
 local smoke_tile = 0
-local indlog = 0
+local indlog = false
 
 function start()
     if fallout.local_var(4) == 0 then
@@ -38,81 +43,59 @@ function start()
         fallout.set_local_var(7, 22091)
     end
     if not initialized then
-        initialized = true
         home_tile = 23488
         smoke_tile = 21299
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 34)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 49)
+        local self_obj = fallout.self_obj()
+        fallout.critter_add_trait(self_obj, 1, 6, 34)
+        fallout.critter_add_trait(self_obj, 1, 5, 49)
         if fallout.local_var(0) == 1 then
-            fallout.set_obj_visibility(fallout.self_obj(), 1)
-            moving = 0
+            fallout.set_obj_visibility(self_obj, true)
+            moving = false
         end
+        initialized = true
     else
         if fallout.local_var(0) ~= 1 then
-            if fallout.script_action() == 14 then
-                if fallout.global_var(245) == 0 then
-                    fallout.set_global_var(245, 1)
-                end
-            else
-                if fallout.script_action() == 11 then
-                    do_dialogue()
-                else
-                    if fallout.script_action() == 22 then
-                        if fallout.fixed_param() == 1 then
-                            moving = 1
-                        end
-                    else
-                        if fallout.script_action() == 4 then
-                            HOSTILE = 1
-                        end
-                    end
-                end
-            end
-            if fallout.script_action() == 12 then
-                if HOSTILE then
-                    HOSTILE = 0
-                    fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
-                else
-                    if moving then
-                        moveme()
-                    end
-                end
-            else
-                if fallout.script_action() == 21 then
-                    fallout.script_overrides()
-                    if fallout.local_var(3) ~= 0 then
-                        fallout.display_msg(fallout.message_str(811, 302))
-                    else
-                        fallout.display_msg(fallout.message_str(811, 200))
-                    end
-                else
-                    if fallout.script_action() == 18 then
-                        fallout.set_local_var(0, 1)
-                        reputation.inc_evil_critter()
-                    end
-                end
+            local script_action = fallout.script_action()
+            if script_action == 14 then
+                damage_p_proc()
+            elseif script_action == 11 then
+                talk_p_proc()
+            elseif script_action == 22 then
+                timed_event_p_proc()
+            elseif script_action == 4 then
+                pickup_p_proc()
+            elseif script_action == 12 then
+                critter_p_proc()
+            elseif script_action == 21 then
+                look_at_p_proc()
+            elseif script_action == 18 then
+                destroy_p_proc()
             end
         end
     end
 end
 
-function do_dialogue()
+function pickup_p_proc()
+    hostile = true
+end
+
+function talk_p_proc()
     fallout.start_gdialog(811, fallout.self_obj(), 4, -1, -1)
     fallout.gsay_start()
-    indlog = 1
-    ARMED = 0
-    DISGUISED = 0
+    indlog = true
+    armed = false
+    disguised = false
     if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) then
-        ARMED = 1
+        armed = true
     end
     if fallout.obj_pid(fallout.critter_inven_obj(fallout.dude_obj(), 0)) == 113 then
         if fallout.metarule(16, 0) > 1 then
-            DISGUISED = 0
+            disguised = false
         else
-            DISGUISED = 1
+            disguised = true
         end
     end
-    if (DISGUISED == 0) or (ARMED == 1) then
+    if not disguised or armed then
         goto01()
     else
         if fallout.local_var(2) == 1 then
@@ -122,14 +105,52 @@ function do_dialogue()
             goto00()
         end
     end
-    indlog = 0
+    indlog = false
     fallout.gsay_end()
     fallout.end_dialogue()
 end
 
+function critter_p_proc()
+    if hostile then
+        hostile = false
+        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+    else
+        if moving then
+            moveme()
+        end
+    end
+end
+
+function damage_p_proc()
+    if fallout.global_var(245) == 0 then
+        fallout.set_global_var(245, 1)
+    end
+end
+
+function destroy_p_proc()
+    fallout.set_local_var(0, 1)
+    reputation.inc_evil_critter()
+end
+
+function look_at_p_proc()
+    fallout.script_overrides()
+    if fallout.local_var(3) ~= 0 then
+        fallout.display_msg(fallout.message_str(811, 302))
+    else
+        fallout.display_msg(fallout.message_str(811, 200))
+    end
+end
+
+function timed_event_p_proc()
+    if fallout.fixed_param() == 1 then
+        moving = true
+    end
+end
+
 function moveme()
-    my_hex = fallout.tile_num(fallout.self_obj())
-    if my_hex == fallout.local_var(7) then
+    local self_obj = fallout.self_obj()
+    local self_tile_num = fallout.tile_num(self_obj)
+    if self_tile_num == fallout.local_var(7) then
         fallout.set_local_var(3, 0)
         if fallout.local_var(5) ~= 0 then
             fallout.set_local_var(6, fallout.local_var(6) + 1)
@@ -138,50 +159,44 @@ function moveme()
         end
         if fallout.local_var(6) > 2 then
             fallout.set_local_var(3, 1)
-            moving = 0
+            moving = false
             fallout.set_local_var(6, 1)
             fallout.set_local_var(5, 0)
-            fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(180), 1)
-        else
-            if fallout.local_var(6) < 0 then
-                moving = 0
-                fallout.set_local_var(6, 1)
-                fallout.set_local_var(5, 1)
-                fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(600), 1)
-            end
+            fallout.add_timer_event(self_obj, fallout.game_ticks(180), 1)
+        elseif fallout.local_var(6) < 0 then
+            moving = false
+            fallout.set_local_var(6, 1)
+            fallout.set_local_var(5, 1)
+            fallout.add_timer_event(self_obj, fallout.game_ticks(600), 1)
         end
         if fallout.local_var(6) == 0 then
             fallout.set_local_var(7, home_tile)
-        else
-            if fallout.local_var(6) == 1 then
-                fallout.set_local_var(7, 22091)
-            else
-                if fallout.local_var(6) == 2 then
-                    fallout.set_local_var(7, smoke_tile)
-                end
-            end
+        elseif fallout.local_var(6) == 1 then
+            fallout.set_local_var(7, 22091)
+        elseif fallout.local_var(6) == 2 then
+            fallout.set_local_var(7, smoke_tile)
         end
     else
-        fallout.animate_move_obj_to_tile(fallout.self_obj(), fallout.local_var(7), 0)
+        fallout.animate_move_obj_to_tile(self_obj, fallout.local_var(7), 0)
     end
-    if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
-        ARMED = 0
-        DISGUISED = 0
+    if fallout.obj_can_see_obj(self_obj, fallout.dude_obj()) then
+        armed = false
+        disguised = false
         if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) then
-            ARMED = 1
+            armed = true
         end
         if fallout.obj_pid(fallout.critter_inven_obj(fallout.dude_obj(), 0)) == 113 then
             if fallout.metarule(16, 0) > 1 then
-                DISGUISED = 0
+                disguised = false
             else
-                DISGUISED = 1
+                disguised = true
             end
         end
-        if (DISGUISED == 0) or (ARMED == 1) then
-            if fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 6 then
+        if not disguised or armed then
+            if fallout.tile_distance_objs(self_obj, fallout.dude_obj()) < 6 then
                 if fallout.local_var(1) < 1 then
                     fallout.set_local_var(1, 1)
-                    fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(15), 2)
+                    fallout.add_timer_event(self_obj, fallout.game_ticks(15), 2)
                     fallout.dialogue_system_enter()
                 end
             end
@@ -275,7 +290,7 @@ function gotoend()
 end
 
 function gotocbt()
-    HOSTILE = 1
+    hostile = true
 end
 
 function gotoret()
