@@ -3,6 +3,9 @@ local light = require("lib.light")
 local time = require("lib.time")
 
 local start
+local map_enter_p_proc
+local map_exit_p_proc
+local map_update_p_proc
 local stranger
 local choose_start
 local North_table
@@ -93,14 +96,17 @@ local Scenes
 local Place_critter
 local hunters
 
-local party_elevation = 0
-local dude_start_hex = 0
-
 fallout.create_external_var("Ian_ptr")
 fallout.create_external_var("Dog_ptr")
 fallout.create_external_var("Tycho_ptr")
 fallout.create_external_var("Katja_ptr")
 fallout.create_external_var("Tandi_ptr")
+
+fallout.set_external_var("Ian_ptr", nil)
+fallout.set_external_var("Dog_ptr", nil)
+fallout.set_external_var("Tycho_ptr", nil)
+fallout.set_external_var("Katja_ptr", nil)
+fallout.set_external_var("Tandi_ptr", nil)
 
 local Dude_tile = 0
 local Place_Holder = 0
@@ -109,11 +115,11 @@ local Tot_Critter_A = 0
 local Tot_Critter_B = 0
 local Scorpions_Killed = 0
 local Skill_roll = 0
-local Item = 0
-local money = 0
+local Item = nil
+local money = nil
 local Ranger_rerolls = 0
-local victim = 0
-local Critter = 0
+local victim = nil
+local Critter = nil
 local Inner_ring = 0
 local Outer_ring = 0
 local Critter_direction = 0
@@ -129,150 +135,121 @@ fallout.create_external_var("random_seed_1")
 fallout.create_external_var("random_seed_2")
 fallout.create_external_var("random_seed_3")
 
+fallout.set_external_var("random_seed_1", 0)
+fallout.set_external_var("random_seed_2", 0)
+fallout.set_external_var("random_seed_3", 0)
+
 function start()
-    if fallout.script_action() == 15 then
-        dude_rot = fallout.random(0, 5)
-        fallout.set_global_var(335, 0)
-        if (fallout.global_var(32) ~= 1) and fallout.metarule(14, 0) then
-            Ranger_rerolls = fallout.has_trait(0, fallout.dude_obj(), 47)
-            fallout.set_global_var(334, 0)
-            while Encounter_Num == 0 do
-                Encounter_Num = fallout.random(1, 6) + fallout.random(1, 6) + fallout.random(1, 6)
-                if fallout.get_critter_stat(fallout.dude_obj(), 6) > 8 then
-                    Encounter_Num = Encounter_Num + 2
-                else
-                    if fallout.get_critter_stat(fallout.dude_obj(), 6) > 6 then
-                        Encounter_Num = Encounter_Num + 1
-                    else
-                        if fallout.get_critter_stat(fallout.dude_obj(), 6) < 3 then
-                            Encounter_Num = Encounter_Num - 1
-                        end
-                    end
-                end
-                if (fallout.global_var(123) ~= 3) and (fallout.global_var(158) > 2) and fallout.random(0, 1) then
-                    Encounter_Num = 7
-                else
-                    if Encounter_Num <= 3 then
-                        Encounter_Num = 1
-                    else
-                        if Encounter_Num <= 5 then
-                            Encounter_Num = 2
-                        else
-                            if Encounter_Num <= 8 then
-                                Encounter_Num = 3
-                            else
-                                if Encounter_Num <= 12 then
-                                    Encounter_Num = 4
-                                else
-                                    if Encounter_Num <= 15 then
-                                        Encounter_Num = 5
-                                    else
-                                        Encounter_Num = 6
-                                    end
-                                end
-                            end
-                        end
-                    end
-                end
-                if fallout.global_var(65) == 0 then
-                    North_table()
-                else
-                    if fallout.global_var(65) == 1 then
-                        South_table()
-                    else
-                        if fallout.global_var(65) == 5 then
-                            Shady_table()
-                        else
-                            if fallout.global_var(65) == 6 then
-                                Raider_table()
-                            else
-                                if fallout.global_var(65) == 7 then
-                                    Junk_table()
-                                else
-                                    if fallout.global_var(65) == 8 then
-                                        Hub_table()
-                                    else
-                                        if fallout.global_var(65) == 9 then
-                                            Necrop_table()
-                                        else
-                                            if fallout.global_var(65) == 10 then
-                                                Steel_table()
-                                            else
-                                                if fallout.global_var(65) == 11 then
-                                                    Vats_table()
-                                                else
-                                                    if fallout.global_var(65) == 12 then
-                                                        Glow_table()
-                                                    else
-                                                        if fallout.global_var(65) == 14 then
-                                                            Death_table()
-                                                        else
-                                                            if fallout.global_var(65) == 13 then
-                                                                Bone_table()
-                                                            else
-                                                                if fallout.random(0, 1) then
-                                                                    North_table()
-                                                                else
-                                                                    South_table()
-                                                                end
-                                                            end
-                                                        end
-                                                    end
-                                                end
-                                            end
-                                        end
-                                    end
-                                end
-                            end
-                        end
-                    end
-                end
+    local script_action = fallout.script_action()
+    if script_action == 15 then
+        map_enter_p_proc()
+    elseif script_action == 23 then
+        map_update_p_proc()
+    elseif script_action == 16 then
+        map_exit_p_proc()
+    end
+end
+
+function map_enter_p_proc()
+    dude_rot = fallout.random(0, 5)
+    fallout.set_global_var(335, 0)
+    if fallout.global_var(32) ~= 1 and fallout.metarule(14, 0) ~= 0 then
+        Ranger_rerolls = fallout.has_trait(0, fallout.dude_obj(), 47)
+        fallout.set_global_var(334, 0)
+        while Encounter_Num == 0 do
+            Encounter_Num = fallout.random(1, 6) + fallout.random(1, 6) + fallout.random(1, 6)
+            if fallout.get_critter_stat(fallout.dude_obj(), 6) > 8 then
+                Encounter_Num = Encounter_Num + 2
+            elseif fallout.get_critter_stat(fallout.dude_obj(), 6) > 6 then
+                Encounter_Num = Encounter_Num + 1
+            elseif fallout.get_critter_stat(fallout.dude_obj(), 6) < 3 then
+                Encounter_Num = Encounter_Num - 1
             end
-        else
-            if fallout.metarule(14, 0) then
-                dude_pos = fallout.random(0, 3)
-                Dude_tile = fallout.tile_num(fallout.dude_obj())
-                Scenes()
-                if dude_pos == 0 then
-                    fallout.override_map_start(109, 72, 0, dude_rot)
-                else
-                    if dude_pos == 1 then
-                        fallout.override_map_start(131, 102, 0, dude_rot)
-                    else
-                        if dude_pos == 2 then
-                            fallout.override_map_start(90, 112, 0, dude_rot)
-                        else
-                            fallout.override_map_start(80, 86, 0, dude_rot)
-                        end
-                    end
-                end
+            if fallout.global_var(123) ~= 3 and fallout.global_var(158) > 2 and fallout.random(0, 1) ~= 0 then
+                Encounter_Num = 7
+            elseif Encounter_Num <= 3 then
+                Encounter_Num = 1
+            elseif Encounter_Num <= 5 then
+                Encounter_Num = 2
+            elseif Encounter_Num <= 8 then
+                Encounter_Num = 3
+            elseif Encounter_Num <= 12 then
+                Encounter_Num = 4
+            elseif Encounter_Num <= 15 then
+                Encounter_Num = 5
+            else
+                Encounter_Num = 6
+            end
+            if fallout.global_var(65) == 0 then
+                North_table()
+            elseif fallout.global_var(65) == 1 then
+                South_table()
+            elseif fallout.global_var(65) == 5 then
+                Shady_table()
+            elseif fallout.global_var(65) == 6 then
+                Raider_table()
+            elseif fallout.global_var(65) == 7 then
+                Junk_table()
+            elseif fallout.global_var(65) == 8 then
+                Hub_table()
+            elseif fallout.global_var(65) == 9 then
+                Necrop_table()
+            elseif fallout.global_var(65) == 10 then
+                Steel_table()
+            elseif fallout.global_var(65) == 11 then
+                Vats_table()
+            elseif fallout.global_var(65) == 12 then
+                Glow_table()
+            elseif fallout.global_var(65) == 14 then
+                Death_table()
+            elseif fallout.global_var(65) == 13 then
+                Bone_table()
+            elseif fallout.random(0, 1) ~= 0 then
+                North_table()
+            else
+                South_table()
             end
         end
-        light.lighting()
     else
-        if fallout.script_action() == 23 then
-            light.lighting()
-        else
-            if fallout.script_action() == 16 then
-                Skill_roll = fallout.roll_vs_skill(fallout.dude_obj(), 17, 0)
-                if Scorpions_Killed == 1 then
-                    if fallout.is_success(Skill_roll) then
-                        if fallout.is_critical(Skill_roll) then
-                            fallout.display_msg(fallout.message_str(112, 100))
-                        else
-                            fallout.display_msg(fallout.message_str(112, 101))
-                        end
-                    else
-                        if fallout.is_critical(Skill_roll) then
-                            fallout.display_msg(fallout.message_str(112, 102))
-                        else
-                            fallout.display_msg(fallout.message_str(112, 103))
-                        end
-                    end
-                end
+        if fallout.metarule(14, 0) ~= 0 then
+            dude_pos = fallout.random(0, 3)
+            Dude_tile = fallout.tile_num(fallout.dude_obj())
+            Scenes()
+            if dude_pos == 0 then
+                fallout.override_map_start(109, 72, 0, dude_rot)
+            elseif dude_pos == 1 then
+                fallout.override_map_start(131, 102, 0, dude_rot)
+            elseif dude_pos == 2 then
+                fallout.override_map_start(90, 112, 0, dude_rot)
+            else
+                fallout.override_map_start(80, 86, 0, dude_rot)
             end
         end
     end
+    light.lighting()
+end
+
+function map_exit_p_proc()
+    Skill_roll = fallout.roll_vs_skill(fallout.dude_obj(), 17, 0)
+    if Scorpions_Killed == 1 then
+        if fallout.is_success(Skill_roll) then
+            if fallout.is_critical(Skill_roll) then
+                fallout.display_msg(fallout.message_str(112, 100))
+            else
+                fallout.display_msg(fallout.message_str(112, 101))
+            end
+        else
+            if fallout.is_critical(Skill_roll) then
+                fallout.display_msg(fallout.message_str(112, 102))
+            else
+                fallout.display_msg(fallout.message_str(112, 103))
+            end
+        end
+    end
+end
+
+function map_update_p_proc()
+    light.lighting()
 end
 
 function stranger()
@@ -283,7 +260,7 @@ function stranger()
         Critter_direction = fallout.random(0, 5)
         Outer_ring = 7
         Inner_ring = 4
-        Place_critter()
+        Critter = Place_critter()
         Critter_direction = dude_rot + (fallout.random(0, 2) - 1)
         while Critter_direction < 0 do
             Critter_direction = Critter_direction + 6
@@ -296,16 +273,15 @@ function stranger()
         fallout.add_obj_to_inven(Critter, Item)
         Item = fallout.create_object_sid(40, 0, 0, -1)
         fallout.add_mult_objs_to_inven(Critter, Item, 2)
-        Item = fallout.item_caps_adjust(Critter, fallout.random(7, 30) * ((2 * fallout.has_trait(0, fallout.dude_obj(), 20)) + 1))
+        Item = fallout.item_caps_adjust(Critter,
+            fallout.random(7, 30) * ((2 * fallout.has_trait(0, fallout.dude_obj(), 20)) + 1))
         v0 = fallout.global_var(288)
         if v0 == 1 then
             fallout.set_global_var(288, 10)
+        elseif v0 == 2 then
+            fallout.set_global_var(288, 9)
         else
-            if v0 == 2 then
-                fallout.set_global_var(288, 9)
-            else
-                fallout.set_global_var(288, 15)
-            end
+            fallout.set_global_var(288, 15)
         end
     end
 end
@@ -318,16 +294,12 @@ function choose_start()
         else
             if dude_pos == 0 then
                 fallout.override_map_start(109, 72, 0, dude_rot)
+            elseif dude_pos == 1 then
+                fallout.override_map_start(131, 102, 0, dude_rot)
+            elseif dude_pos == 2 then
+                fallout.override_map_start(90, 112, 0, dude_rot)
             else
-                if dude_pos == 1 then
-                    fallout.override_map_start(131, 102, 0, dude_rot)
-                else
-                    if dude_pos == 2 then
-                        fallout.override_map_start(90, 112, 0, dude_rot)
-                    else
-                        fallout.override_map_start(80, 86, 0, dude_rot)
-                    end
-                end
+                fallout.override_map_start(80, 86, 0, dude_rot)
             end
         end
     else
@@ -337,31 +309,23 @@ function choose_start()
             else
                 if dude_pos == 0 then
                     fallout.override_map_start(109, 72, 0, dude_rot)
+                elseif dude_pos == 1 then
+                    fallout.override_map_start(131, 102, 0, dude_rot)
+                elseif dude_pos == 2 then
+                    fallout.override_map_start(90, 112, 0, dude_rot)
                 else
-                    if dude_pos == 1 then
-                        fallout.override_map_start(131, 102, 0, dude_rot)
-                    else
-                        if dude_pos == 2 then
-                            fallout.override_map_start(90, 112, 0, dude_rot)
-                        else
-                            fallout.override_map_start(80, 86, 0, dude_rot)
-                        end
-                    end
+                    fallout.override_map_start(80, 86, 0, dude_rot)
                 end
             end
         else
             if dude_pos == 0 then
                 fallout.override_map_start(109, 72, 0, dude_rot)
+            elseif dude_pos == 1 then
+                fallout.override_map_start(131, 102, 0, dude_rot)
+            elseif dude_pos == 2 then
+                fallout.override_map_start(90, 112, 0, dude_rot)
             else
-                if dude_pos == 1 then
-                    fallout.override_map_start(131, 102, 0, dude_rot)
-                else
-                    if dude_pos == 2 then
-                        fallout.override_map_start(90, 112, 0, dude_rot)
-                    else
-                        fallout.override_map_start(80, 86, 0, dude_rot)
-                    end
-                end
+                fallout.override_map_start(80, 86, 0, dude_rot)
             end
         end
     end
@@ -370,9 +334,9 @@ function choose_start()
 end
 
 function North_table()
-    if Ranger_rerolls then
+    if Ranger_rerolls ~= 0 then
         Ranger_rerolls = Ranger_rerolls - 1
-        if (Encounter_Num == 1) or (Encounter_Num == 2) or (Encounter_Num == 3) or (Encounter_Num == 4) or (Encounter_Num == 7) then
+        if Encounter_Num == 1 or Encounter_Num == 2 or Encounter_Num == 3 or Encounter_Num == 4 or Encounter_Num == 7 then
             Encounter_Num = 0
         end
     end
@@ -381,40 +345,29 @@ function North_table()
         fallout.set_global_var(295, 0)
         fallout.debug_msg("Northern Desert encounter type: " .. Encounter_Num)
     end
-    if Encounter_Num then
-        choose_start()
+    if Encounter_Num ~= 0 then
         if Encounter_Num == 1 then
             North1()
+        elseif Encounter_Num == 2 then
+            North2()
+        elseif Encounter_Num == 3 then
+            North3()
+        elseif Encounter_Num == 4 then
+            North4()
+        elseif Encounter_Num == 5 then
+            North5()
+        elseif Encounter_Num == 6 then
+            North6()
         else
-            if Encounter_Num == 2 then
-                North2()
-            else
-                if Encounter_Num == 3 then
-                    North3()
-                else
-                    if Encounter_Num == 4 then
-                        North4()
-                    else
-                        if Encounter_Num == 5 then
-                            North5()
-                        else
-                            if Encounter_Num == 6 then
-                                North6()
-                            else
-                                hunters()
-                            end
-                        end
-                    end
-                end
-            end
+            hunters()
         end
     end
 end
 
 function South_table()
-    if Ranger_rerolls then
+    if Ranger_rerolls ~= 0 then
         Ranger_rerolls = Ranger_rerolls - 1
-        if (Encounter_Num == 2) or (Encounter_Num == 4) or (Encounter_Num == 5) or (Encounter_Num == 6) or (Encounter_Num == 7) then
+        if Encounter_Num == 2 or Encounter_Num == 4 or Encounter_Num == 5 or Encounter_Num == 6 or Encounter_Num == 7 then
             Encounter_Num = 0
         end
     end
@@ -423,38 +376,28 @@ function South_table()
         fallout.set_global_var(295, 0)
         fallout.debug_msg("Southern Desert encounter type: " .. Encounter_Num)
     end
-    if Encounter_Num then
+    if Encounter_Num ~= 0 then
         choose_start()
         if Encounter_Num == 1 then
             South1()
+        elseif Encounter_Num == 2 then
+            South2()
+        elseif Encounter_Num == 3 then
+            South3()
+        elseif Encounter_Num == 4 then
+            South4()
+        elseif Encounter_Num == 5 then
+            South5()
+        elseif Encounter_Num == 6 then
+            South6()
         else
-            if Encounter_Num == 2 then
-                South2()
-            else
-                if Encounter_Num == 3 then
-                    South3()
-                else
-                    if Encounter_Num == 4 then
-                        South4()
-                    else
-                        if Encounter_Num == 5 then
-                            South5()
-                        else
-                            if Encounter_Num == 6 then
-                                South6()
-                            else
-                                hunters()
-                            end
-                        end
-                    end
-                end
-            end
+            hunters()
         end
     end
 end
 
 function Shady_table()
-    if Ranger_rerolls then
+    if Ranger_rerolls ~= 0 then
         Ranger_rerolls = Ranger_rerolls - 1
         if (Encounter_Num == 1) or (Encounter_Num == 3) or (Encounter_Num == 7) then
             Encounter_Num = 0
@@ -465,40 +408,30 @@ function Shady_table()
         fallout.set_global_var(295, 0)
         fallout.debug_msg("Shady Sands Desert encounter type: " .. Encounter_Num)
     end
-    if Encounter_Num then
+    if Encounter_Num ~= 0 then
         choose_start()
         if Encounter_Num == 1 then
             Shady1()
+        elseif Encounter_Num == 2 then
+            Shady2()
+        elseif Encounter_Num == 3 then
+            Shady3()
+        elseif Encounter_Num == 4 then
+            Shady4()
+        elseif Encounter_Num == 5 then
+            Shady5()
+        elseif Encounter_Num == 6 then
+            Shady6()
         else
-            if Encounter_Num == 2 then
-                Shady2()
-            else
-                if Encounter_Num == 3 then
-                    Shady3()
-                else
-                    if Encounter_Num == 4 then
-                        Shady4()
-                    else
-                        if Encounter_Num == 5 then
-                            Shady5()
-                        else
-                            if Encounter_Num == 6 then
-                                Shady6()
-                            else
-                                hunters()
-                            end
-                        end
-                    end
-                end
-            end
+            hunters()
         end
     end
 end
 
 function Raider_table()
-    if Ranger_rerolls then
+    if Ranger_rerolls ~= 0 then
         Ranger_rerolls = Ranger_rerolls - 1
-        if (Encounter_Num == 1) or (Encounter_Num == 3) or (Encounter_Num == 4) or (Encounter_Num == 7) then
+        if Encounter_Num == 1 or Encounter_Num == 3 or Encounter_Num == 4 or Encounter_Num == 7 then
             Encounter_Num = 0
         end
     end
@@ -507,40 +440,30 @@ function Raider_table()
         fallout.set_global_var(295, 0)
         fallout.debug_msg("Raiders Desert encounter type: " .. Encounter_Num)
     end
-    if Encounter_Num then
+    if Encounter_Num ~= 0 then
         choose_start()
         if Encounter_Num == 1 then
             Raider1()
+        elseif Encounter_Num == 2 then
+            Raider2()
+        elseif Encounter_Num == 3 then
+            Raider3()
+        elseif Encounter_Num == 4 then
+            Raider4()
+        elseif Encounter_Num == 5 then
+            Raider5()
+        elseif Encounter_Num == 6 then
+            Raider6()
         else
-            if Encounter_Num == 2 then
-                Raider2()
-            else
-                if Encounter_Num == 3 then
-                    Raider3()
-                else
-                    if Encounter_Num == 4 then
-                        Raider4()
-                    else
-                        if Encounter_Num == 5 then
-                            Raider5()
-                        else
-                            if Encounter_Num == 6 then
-                                Raider6()
-                            else
-                                hunters()
-                            end
-                        end
-                    end
-                end
-            end
+            hunters()
         end
     end
 end
 
 function Junk_table()
-    if Ranger_rerolls then
+    if Ranger_rerolls ~= 0 then
         Ranger_rerolls = Ranger_rerolls - 1
-        if (Encounter_Num == 1) or (Encounter_Num == 2) or (Encounter_Num == 3) or (Encounter_Num == 4) or (Encounter_Num == 7) then
+        if Encounter_Num == 1 or Encounter_Num == 2 or Encounter_Num == 3 or Encounter_Num == 4 or Encounter_Num == 7 then
             Encounter_Num = 0
         end
     end
@@ -549,40 +472,30 @@ function Junk_table()
         fallout.set_global_var(295, 0)
         fallout.debug_msg("Junk Town Desert encounter type: " .. Encounter_Num)
     end
-    if Encounter_Num then
+    if Encounter_Num ~= 0 then
         choose_start()
         if Encounter_Num == 1 then
             Junk1()
+        elseif Encounter_Num == 2 then
+            Junk2()
+        elseif Encounter_Num == 3 then
+            Junk3()
+        elseif Encounter_Num == 4 then
+            Junk4()
+        elseif Encounter_Num == 5 then
+            Junk5()
+        elseif Encounter_Num == 6 then
+            Junk6()
         else
-            if Encounter_Num == 2 then
-                Junk2()
-            else
-                if Encounter_Num == 3 then
-                    Junk3()
-                else
-                    if Encounter_Num == 4 then
-                        Junk4()
-                    else
-                        if Encounter_Num == 5 then
-                            Junk5()
-                        else
-                            if Encounter_Num == 6 then
-                                Junk6()
-                            else
-                                hunters()
-                            end
-                        end
-                    end
-                end
-            end
+            hunters()
         end
     end
 end
 
 function Hub_table()
-    if Ranger_rerolls then
+    if Ranger_rerolls ~= 0 then
         Ranger_rerolls = Ranger_rerolls - 1
-        if (Encounter_Num == 2) or (Encounter_Num == 3) or (Encounter_Num == 4) or (Encounter_Num == 7) then
+        if Encounter_Num == 2 or Encounter_Num == 3 or Encounter_Num == 4 or Encounter_Num == 7 then
             Encounter_Num = 0
         end
     end
@@ -591,40 +504,30 @@ function Hub_table()
         fallout.set_global_var(295, 0)
         fallout.debug_msg("Hub Desert encounter type: " .. Encounter_Num)
     end
-    if Encounter_Num then
+    if Encounter_Num ~= 0 then
         choose_start()
         if Encounter_Num == 1 then
             Hub1()
+        elseif Encounter_Num == 2 then
+            Hub2()
+        elseif Encounter_Num == 3 then
+            Hub3()
+        elseif Encounter_Num == 4 then
+            Hub4()
+        elseif Encounter_Num == 5 then
+            Hub5()
+        elseif Encounter_Num == 6 then
+            Hub6()
         else
-            if Encounter_Num == 2 then
-                Hub2()
-            else
-                if Encounter_Num == 3 then
-                    Hub3()
-                else
-                    if Encounter_Num == 4 then
-                        Hub4()
-                    else
-                        if Encounter_Num == 5 then
-                            Hub5()
-                        else
-                            if Encounter_Num == 6 then
-                                Hub6()
-                            else
-                                hunters()
-                            end
-                        end
-                    end
-                end
-            end
+            hunters()
         end
     end
 end
 
 function Necrop_table()
-    if Ranger_rerolls then
+    if Ranger_rerolls ~= 0 then
         Ranger_rerolls = Ranger_rerolls - 1
-        if (Encounter_Num == 2) or (Encounter_Num == 3) or (Encounter_Num == 5) or (Encounter_Num == 7) then
+        if Encounter_Num == 2 or Encounter_Num == 3 or Encounter_Num == 5 or Encounter_Num == 7 then
             Encounter_Num = 0
         end
     end
@@ -633,40 +536,30 @@ function Necrop_table()
         fallout.set_global_var(295, 0)
         fallout.debug_msg("Necropolis Desert encounter type: " .. Encounter_Num)
     end
-    if Encounter_Num then
+    if Encounter_Num ~= 0 then
         choose_start()
         if Encounter_Num == 1 then
             Necrop1()
+        elseif Encounter_Num == 2 then
+            Necrop2()
+        elseif Encounter_Num == 3 then
+            Necrop3()
+        elseif Encounter_Num == 4 then
+            Necrop4()
+        elseif Encounter_Num == 5 then
+            Necrop5()
+        elseif Encounter_Num == 6 then
+            Necrop6()
         else
-            if Encounter_Num == 2 then
-                Necrop2()
-            else
-                if Encounter_Num == 3 then
-                    Necrop3()
-                else
-                    if Encounter_Num == 4 then
-                        Necrop4()
-                    else
-                        if Encounter_Num == 5 then
-                            Necrop5()
-                        else
-                            if Encounter_Num == 6 then
-                                Necrop6()
-                            else
-                                hunters()
-                            end
-                        end
-                    end
-                end
-            end
+            hunters()
         end
     end
 end
 
 function Steel_table()
-    if Ranger_rerolls then
+    if Ranger_rerolls ~= 0 then
         Ranger_rerolls = Ranger_rerolls - 1
-        if (Encounter_Num == 1) or (Encounter_Num == 2) or (Encounter_Num == 4) or (Encounter_Num == 7) then
+        if Encounter_Num == 1 or Encounter_Num == 2 or Encounter_Num == 4 or Encounter_Num == 7 then
             Encounter_Num = 0
         end
     end
@@ -675,40 +568,30 @@ function Steel_table()
         fallout.set_global_var(295, 0)
         fallout.debug_msg("Brotherhood of Steel Desert encounter type: " .. Encounter_Num)
     end
-    if Encounter_Num then
+    if Encounter_Num ~= 0 then
         choose_start()
         if Encounter_Num == 1 then
             Steel1()
+        elseif Encounter_Num == 2 then
+            Steel2()
+        elseif Encounter_Num == 3 then
+            Steel3()
+        elseif Encounter_Num == 4 then
+            Steel4()
+        elseif Encounter_Num == 5 then
+            Steel5()
+        elseif Encounter_Num == 6 then
+            Steel6()
         else
-            if Encounter_Num == 2 then
-                Steel2()
-            else
-                if Encounter_Num == 3 then
-                    Steel3()
-                else
-                    if Encounter_Num == 4 then
-                        Steel4()
-                    else
-                        if Encounter_Num == 5 then
-                            Steel5()
-                        else
-                            if Encounter_Num == 6 then
-                                Steel6()
-                            else
-                                hunters()
-                            end
-                        end
-                    end
-                end
-            end
+            hunters()
         end
     end
 end
 
 function Vats_table()
-    if Ranger_rerolls then
+    if Ranger_rerolls ~= 0 then
         Ranger_rerolls = Ranger_rerolls - 1
-        if (Encounter_Num == 1) or (Encounter_Num == 2) or (Encounter_Num == 3) or (Encounter_Num == 4) or (Encounter_Num == 7) then
+        if Encounter_Num == 1 or Encounter_Num == 2 or Encounter_Num == 3 or Encounter_Num == 4 or Encounter_Num == 7 then
             Encounter_Num = 0
         end
     end
@@ -717,40 +600,30 @@ function Vats_table()
         fallout.set_global_var(295, 0)
         fallout.debug_msg("Vats Desert encounter type: " .. Encounter_Num)
     end
-    if Encounter_Num then
+    if Encounter_Num ~= 0 then
         choose_start()
         if Encounter_Num == 1 then
             Vats1()
+        elseif Encounter_Num == 2 then
+            Vats2()
+        elseif Encounter_Num == 3 then
+            Vats3()
+        elseif Encounter_Num == 4 then
+            Vats4()
+        elseif Encounter_Num == 5 then
+            Vats5()
+        elseif Encounter_Num == 6 then
+            Vats6()
         else
-            if Encounter_Num == 2 then
-                Vats2()
-            else
-                if Encounter_Num == 3 then
-                    Vats3()
-                else
-                    if Encounter_Num == 4 then
-                        Vats4()
-                    else
-                        if Encounter_Num == 5 then
-                            Vats5()
-                        else
-                            if Encounter_Num == 6 then
-                                Vats6()
-                            else
-                                hunters()
-                            end
-                        end
-                    end
-                end
-            end
+            hunters()
         end
     end
 end
 
 function Glow_table()
-    if Ranger_rerolls then
+    if Ranger_rerolls ~= 0 then
         Ranger_rerolls = Ranger_rerolls - 1
-        if (Encounter_Num == 1) or (Encounter_Num == 3) or (Encounter_Num == 4) or (Encounter_Num == 5) or (Encounter_Num == 7) then
+        if Encounter_Num == 1 or Encounter_Num == 3 or Encounter_Num == 4 or Encounter_Num == 5 or Encounter_Num == 7 then
             Encounter_Num = 0
         end
     end
@@ -759,40 +632,30 @@ function Glow_table()
         fallout.set_global_var(295, 0)
         fallout.debug_msg("Glow Desert encounter type: " .. Encounter_Num)
     end
-    if Encounter_Num then
+    if Encounter_Num ~= 0 then
         choose_start()
         if Encounter_Num == 1 then
             Glow1()
+        elseif Encounter_Num == 2 then
+            Glow2()
+        elseif Encounter_Num == 3 then
+            Glow3()
+        elseif Encounter_Num == 4 then
+            Glow4()
+        elseif Encounter_Num == 5 then
+            Glow5()
+        elseif Encounter_Num == 6 then
+            Glow6()
         else
-            if Encounter_Num == 2 then
-                Glow2()
-            else
-                if Encounter_Num == 3 then
-                    Glow3()
-                else
-                    if Encounter_Num == 4 then
-                        Glow4()
-                    else
-                        if Encounter_Num == 5 then
-                            Glow5()
-                        else
-                            if Encounter_Num == 6 then
-                                Glow6()
-                            else
-                                hunters()
-                            end
-                        end
-                    end
-                end
-            end
+            hunters()
         end
     end
 end
 
 function Bone_table()
-    if Ranger_rerolls then
+    if Ranger_rerolls ~= 0 then
         Ranger_rerolls = Ranger_rerolls - 1
-        if (Encounter_Num == 1) or (Encounter_Num == 3) or (Encounter_Num == 5) or (Encounter_Num == 7) then
+        if Encounter_Num == 1 or Encounter_Num == 3 or Encounter_Num == 5 or Encounter_Num == 7 then
             Encounter_Num = 0
         end
     end
@@ -801,40 +664,30 @@ function Bone_table()
         fallout.set_global_var(295, 0)
         fallout.debug_msg("Bone Desert encounter type: " .. Encounter_Num)
     end
-    if Encounter_Num then
+    if Encounter_Num ~= 0 then
         choose_start()
         if Encounter_Num == 1 then
             Bone1()
+        elseif Encounter_Num == 2 then
+            Bone2()
+        elseif Encounter_Num == 3 then
+            Bone3()
+        elseif Encounter_Num == 4 then
+            Bone4()
+        elseif Encounter_Num == 5 then
+            Bone5()
+        elseif Encounter_Num == 6 then
+            Bone6()
         else
-            if Encounter_Num == 2 then
-                Bone2()
-            else
-                if Encounter_Num == 3 then
-                    Bone3()
-                else
-                    if Encounter_Num == 4 then
-                        Bone4()
-                    else
-                        if Encounter_Num == 5 then
-                            Bone5()
-                        else
-                            if Encounter_Num == 6 then
-                                Bone6()
-                            else
-                                hunters()
-                            end
-                        end
-                    end
-                end
-            end
+            hunters()
         end
     end
 end
 
 function Death_table()
-    if Ranger_rerolls then
+    if Ranger_rerolls ~= 0 then
         Ranger_rerolls = Ranger_rerolls - 1
-        if (Encounter_Num == 1) or (Encounter_Num == 2) or (Encounter_Num == 4) or (Encounter_Num == 6) or (Encounter_Num == 7) then
+        if Encounter_Num == 1 or Encounter_Num == 2 or Encounter_Num == 4 or Encounter_Num == 6 or Encounter_Num == 7 then
             Encounter_Num = 0
         end
     end
@@ -843,32 +696,22 @@ function Death_table()
         fallout.set_global_var(295, 0)
         fallout.debug_msg("Death Claw encounter type: " .. Encounter_Num)
     end
-    if Encounter_Num then
+    if Encounter_Num ~= 0 then
         choose_start()
         if Encounter_Num == 1 then
             Death1()
+        elseif Encounter_Num == 2 then
+            Death2()
+        elseif Encounter_Num == 3 then
+            Death3()
+        elseif Encounter_Num == 4 then
+            Death4()
+        elseif Encounter_Num == 5 then
+            Death5()
+        elseif Encounter_Num == 6 then
+            Death6()
         else
-            if Encounter_Num == 2 then
-                Death2()
-            else
-                if Encounter_Num == 3 then
-                    Death3()
-                else
-                    if Encounter_Num == 4 then
-                        Death4()
-                    else
-                        if Encounter_Num == 5 then
-                            Death5()
-                        else
-                            if Encounter_Num == 6 then
-                                Death6()
-                            else
-                                hunters()
-                            end
-                        end
-                    end
-                end
-            end
+            hunters()
         end
     end
 end
@@ -882,7 +725,7 @@ function North1()
     group_angle = fallout.random(0, 5)
     Critter_type = 16777227
     Critter_script = 12
-    while Tot_Critter_A do
+    while Tot_Critter_A > 0 do
         Critter_direction = group_angle + (fallout.random(0, 2) - 1)
         while Critter_direction < 0 do
             Critter_direction = Critter_direction + 6
@@ -890,29 +733,19 @@ function North1()
         if Critter_direction > 5 then
             Critter_direction = Critter_direction % 6
         end
-        Place_critter()
+        Critter = Place_critter()
         if group_angle == 0 then
             Critter_direction = 3
-        else
-            if group_angle == 1 then
-                Critter_direction = 4
-            else
-                if group_angle == 2 then
-                    Critter_direction = 5
-                else
-                    if group_angle == 3 then
-                        Critter_direction = 0
-                    else
-                        if group_angle == 4 then
-                            Critter_direction = 1
-                        else
-                            if group_angle == 5 then
-                                Critter_direction = 2
-                            end
-                        end
-                    end
-                end
-            end
+        elseif group_angle == 1 then
+            Critter_direction = 4
+        elseif group_angle == 2 then
+            Critter_direction = 5
+        elseif group_angle == 3 then
+            Critter_direction = 0
+        elseif group_angle == 4 then
+            Critter_direction = 1
+        elseif group_angle == 5 then
+            Critter_direction = 2
         end
         if fallout.random(0, 2) == 0 then
             Critter_direction = Critter_direction + (fallout.random(0, 2) - 1)
@@ -933,25 +766,17 @@ function North1()
     else
         if group_angle == 1 then
             group_angle = 4
-        else
-            if group_angle == 2 then
-                group_angle = 5
-            else
-                if group_angle == 3 then
-                    group_angle = 0
-                else
-                    if group_angle == 4 then
-                        group_angle = 1
-                    else
-                        if group_angle == 5 then
-                            group_angle = 2
-                        end
-                    end
-                end
-            end
+        elseif group_angle == 2 then
+            group_angle = 5
+        elseif group_angle == 3 then
+            group_angle = 0
+        elseif group_angle == 4 then
+            group_angle = 1
+        elseif group_angle == 5 then
+            group_angle = 2
         end
     end
-    while Tot_Critter_B do
+    while Tot_Critter_B > 0 do
         if fallout.random(0, 3) == 3 then
             Critter_type = 16777226
         else
@@ -964,29 +789,19 @@ function North1()
         if Critter_direction > 5 then
             Critter_direction = Critter_direction % 6
         end
-        Place_critter()
+        Critter = Place_critter()
         if group_angle == 0 then
             Critter_direction = 3
-        else
-            if group_angle == 1 then
-                Critter_direction = 4
-            else
-                if group_angle == 2 then
-                    Critter_direction = 5
-                else
-                    if group_angle == 3 then
-                        Critter_direction = 0
-                    else
-                        if group_angle == 4 then
-                            Critter_direction = 1
-                        else
-                            if group_angle == 5 then
-                                Critter_direction = 2
-                            end
-                        end
-                    end
-                end
-            end
+        elseif group_angle == 1 then
+            Critter_direction = 4
+        elseif group_angle == 2 then
+            Critter_direction = 5
+        elseif group_angle == 3 then
+            Critter_direction = 0
+        elseif group_angle == 4 then
+            Critter_direction = 1
+        elseif group_angle == 5 then
+            Critter_direction = 2
         end
         if fallout.random(0, 2) == 0 then
             Critter_direction = Critter_direction + (fallout.random(0, 2) - 1)
@@ -1024,7 +839,7 @@ function North2()
     end
     Critter_type = 16777419
     Critter_script = 749
-    while Tot_Critter_A do
+    while Tot_Critter_A > 0 do
         Critter_direction = group_angle + (fallout.random(0, 2) - 1)
         while Critter_direction < 0 do
             Critter_direction = Critter_direction + 6
@@ -1032,14 +847,15 @@ function North2()
         if Critter_direction > 5 then
             Critter_direction = Critter_direction % 6
         end
-        Place_critter()
+        Critter = Place_critter()
         if v0 then
-            fallout.anim(Critter, 1000, fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
+            fallout.anim(Critter, 1000,
+                fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
         else
             fallout.anim(Critter, 1000, fallout.random(0, 5))
         end
-        if fallout.random(0, 1) then
-            if fallout.random(0, 1) then
+        if fallout.random(0, 1) ~= 0 then
+            if fallout.random(0, 1) ~= 0 then
                 Item = fallout.create_object_sid(18, 0, 0, -1)
             else
                 Item = fallout.create_object_sid(8, 0, 0, -1)
@@ -1048,13 +864,14 @@ function North2()
             Item = fallout.create_object_sid(4, 0, 0, -1)
         end
         fallout.add_obj_to_inven(Critter, Item)
-        Item = fallout.item_caps_adjust(Critter, (fallout.random(1, 20) * fallout.has_trait(0, fallout.dude_obj(), 20)) + 1)
+        Item = fallout.item_caps_adjust(Critter,
+            (fallout.random(1, 20) * fallout.has_trait(0, fallout.dude_obj(), 20)) + 1)
         Tot_Critter_A = Tot_Critter_A - 1
     end
     Outer_ring = Outer_ring + 2
     Inner_ring = Inner_ring + 2
-    while Tot_Critter_B do
-        if fallout.random(0, 1) then
+    while Tot_Critter_B > 0 do
+        if fallout.random(0, 1) ~= 0 then
             Critter_type = 16777449
         else
             Critter_type = 16777432
@@ -1066,14 +883,15 @@ function North2()
         if Critter_direction > 5 then
             Critter_direction = Critter_direction % 6
         end
-        Place_critter()
+        Critter = Place_critter()
         if v0 then
-            fallout.anim(Critter, 1000, fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
+            fallout.anim(Critter, 1000,
+                fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
         else
             fallout.anim(Critter, 1000, fallout.random(0, 5))
         end
-        if fallout.random(0, 1) then
-            if fallout.random(0, 1) then
+        if fallout.random(0, 1) ~= 0 then
+            if fallout.random(0, 1) ~= 0 then
                 Item = fallout.create_object_sid(18, 0, 0, -1)
             else
                 Item = fallout.create_object_sid(8, 0, 0, -1)
@@ -1082,7 +900,8 @@ function North2()
             Item = fallout.create_object_sid(4, 0, 0, -1)
         end
         fallout.add_obj_to_inven(Critter, Item)
-        Item = fallout.item_caps_adjust(Critter, fallout.random(1, 25) * (fallout.has_trait(0, fallout.dude_obj(), 20) + 1))
+        Item = fallout.item_caps_adjust(Critter,
+            fallout.random(1, 25) * (fallout.has_trait(0, fallout.dude_obj(), 20) + 1))
         Tot_Critter_B = Tot_Critter_B - 1
     end
     fallout.set_global_var(288, 1)
@@ -1097,20 +916,21 @@ function North3()
     Critter_type = 16777227
     Critter_script = 12
     group_angle = fallout.random(0, 5)
-    while Tot_Critter_A do
+    while Tot_Critter_A > 0 do
         Critter_direction = group_angle
-        Place_critter()
-        fallout.anim(Critter, 1000, fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
+        Critter = Place_critter()
+        fallout.anim(Critter, 1000,
+            fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
         Tot_Critter_A = Tot_Critter_A - 1
     end
     Critter_type = 16777229
     Critter_direction = fallout.random(0, 5)
     Outer_ring = 4
     Inner_ring = 2
-    Place_critter()
+    Critter = Place_critter()
     fallout.anim(Critter, 1000, fallout.random(0, 5))
     Item = fallout.item_caps_adjust(Critter, fallout.random(40, 100) * (fallout.has_trait(0, fallout.dude_obj(), 20) + 1))
-    if fallout.random(0, 1) then
+    if fallout.random(0, 1) ~= 0 then
         Item = fallout.create_object_sid(40, 0, 0, -1)
         fallout.add_obj_to_inven(Critter, Item)
     end
@@ -1127,7 +947,7 @@ function North4()
     Inner_ring = fallout.get_critter_stat(fallout.dude_obj(), 1) // 2
     Critter_type = 16777227
     Critter_script = 12
-    while Tot_Critter_A do
+    while Tot_Critter_A > 0 do
         Critter_direction = group_angle + (fallout.random(0, 3 * 2) - 3)
         while Critter_direction < 0 do
             Critter_direction = Critter_direction + 6
@@ -1135,8 +955,9 @@ function North4()
         if Critter_direction > 5 then
             Critter_direction = Critter_direction % 6
         end
-        Place_critter()
-        fallout.anim(Critter, 1000, fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
+        Critter = Place_critter()
+        fallout.anim(Critter, 1000,
+            fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
         Tot_Critter_A = Tot_Critter_A - 1
     end
     fallout.set_global_var(288, 1)
@@ -1149,14 +970,14 @@ function North5()
     Outer_ring = (fallout.get_critter_stat(fallout.dude_obj(), 1) // 2) + 8
     Inner_ring = (fallout.get_critter_stat(fallout.dude_obj(), 1) // 2) + 4
     Critter_script = 222
-    while Tot_Critter_A do
+    while Tot_Critter_A > 0 do
         if fallout.random(0, 3) == 3 then
             Critter_type = 16777226
         else
             Critter_type = 16777378
         end
         Critter_direction = fallout.random(0, 2)
-        Place_critter()
+        Critter = Place_critter()
         fallout.anim(Critter, 1000, fallout.random(0, 5))
         Tot_Critter_A = Tot_Critter_A - 1
     end
@@ -1185,7 +1006,8 @@ function North6()
                 if v0 == 1 then
                     fallout.display_msg(fallout.message_str(112, 112) .. v1 .. fallout.message_str(112, 113))
                 else
-                    fallout.display_msg(fallout.message_str(112, 114) .. v0 .. fallout.message_str(112, 115) .. v1 .. fallout.message_str(112, 116))
+                    fallout.display_msg(fallout.message_str(112, 114) ..
+                        v0 .. fallout.message_str(112, 115) .. v1 .. fallout.message_str(112, 116))
                 end
                 fallout.critter_injure(fallout.dude_obj(), 2)
             else
@@ -1200,7 +1022,8 @@ function North6()
                     if v1 == 1 then
                         fallout.display_msg(fallout.message_str(112, 120) .. v0 .. fallout.message_str(112, 121))
                     else
-                        fallout.display_msg(fallout.message_str(112, 122) .. v0 .. fallout.message_str(112, 123) .. v1 .. fallout.message_str(112, 124))
+                        fallout.display_msg(fallout.message_str(112, 122) ..
+                            v0 .. fallout.message_str(112, 123) .. v1 .. fallout.message_str(112, 124))
                     end
                 end
                 fallout.critter_injure(fallout.dude_obj(), 2)
@@ -1213,16 +1036,15 @@ function North6()
 end
 
 function South1()
-    local v0 = 0
     fallout.display_msg(fallout.message_str(112, 131))
     Tot_Critter_A = fallout.random(6, 10)
     Outer_ring = 7
     Inner_ring = 10
     Critter_type = 16777244
     Critter_script = 941
-    while Tot_Critter_A do
+    while Tot_Critter_A > 0 do
         Critter_direction = 1
-        Place_critter()
+        Critter = Place_critter()
         fallout.anim(Critter, 1000, 4)
         Tot_Critter_A = Tot_Critter_A - 1
     end
@@ -1236,7 +1058,7 @@ function South2()
     Critter_type = 16777227
     Critter_script = 12
     group_angle = fallout.random(0, 5)
-    while Tot_Critter_A do
+    while Tot_Critter_A > 0 do
         Critter_direction = group_angle + (fallout.random(0, 2 * 2) - 2)
         while Critter_direction < 0 do
             Critter_direction = Critter_direction + 6
@@ -1244,8 +1066,9 @@ function South2()
         if Critter_direction > 5 then
             Critter_direction = Critter_direction % 6
         end
-        Place_critter()
-        fallout.anim(Critter, 1000, fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
+        Critter = Place_critter()
+        fallout.anim(Critter, 1000,
+            fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
         Tot_Critter_A = Tot_Critter_A - 1
     end
     fallout.set_global_var(288, 2)
@@ -1273,7 +1096,8 @@ function South3()
                 if v0 == 1 then
                     fallout.display_msg(fallout.message_str(112, 112) .. v1 .. fallout.message_str(112, 113))
                 else
-                    fallout.display_msg(fallout.message_str(112, 114) .. v0 .. fallout.message_str(112, 115) .. v1 .. fallout.message_str(112, 116))
+                    fallout.display_msg(fallout.message_str(112, 114) ..
+                        v0 .. fallout.message_str(112, 115) .. v1 .. fallout.message_str(112, 116))
                 end
                 fallout.critter_injure(fallout.dude_obj(), 2)
             else
@@ -1288,7 +1112,8 @@ function South3()
                     if v1 == 1 then
                         fallout.display_msg(fallout.message_str(112, 120) .. v0 .. fallout.message_str(112, 121))
                     else
-                        fallout.display_msg(fallout.message_str(112, 122) .. v0 .. fallout.message_str(112, 123) .. v1 .. fallout.message_str(112, 124))
+                        fallout.display_msg(fallout.message_str(112, 122) ..
+                            v0 .. fallout.message_str(112, 123) .. v1 .. fallout.message_str(112, 124))
                     end
                 end
                 fallout.critter_injure(fallout.dude_obj(), 2)
@@ -1307,8 +1132,8 @@ function South4()
     Inner_ring = (fallout.get_critter_stat(fallout.dude_obj(), 1) // 2) + 2
     Critter_script = 749
     group_angle = fallout.random(0, 5)
-    while Tot_Critter_A do
-        if fallout.random(0, 1) then
+    while Tot_Critter_A > 0 do
+        if fallout.random(0, 1) ~= 0 then
             Critter_type = 16777449
         else
             Critter_type = 16777432
@@ -1320,10 +1145,11 @@ function South4()
         if Critter_direction > 5 then
             Critter_direction = Critter_direction % 6
         end
-        Place_critter()
-        fallout.anim(Critter, 1000, fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
-        if fallout.random(0, 1) then
-            if fallout.random(0, 1) then
+        Critter = Place_critter()
+        fallout.anim(Critter, 1000,
+            fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
+        if fallout.random(0, 1) ~= 0 then
+            if fallout.random(0, 1) ~= 0 then
                 Item = fallout.create_object_sid(34, 0, 0, -1)
                 fallout.add_obj_to_inven(Critter, Item)
                 if fallout.has_trait(0, fallout.dude_obj(), 40) then
@@ -1340,7 +1166,8 @@ function South4()
             Item = fallout.create_object_sid(7, 0, 0, -1)
         end
         fallout.add_obj_to_inven(Critter, Item)
-        Item = fallout.item_caps_adjust(Critter, fallout.random(10, 30) * (fallout.has_trait(0, fallout.dude_obj(), 20) + 1))
+        Item = fallout.item_caps_adjust(Critter,
+            fallout.random(10, 30) * (fallout.has_trait(0, fallout.dude_obj(), 20) + 1))
         Tot_Critter_A = Tot_Critter_A - 1
     end
     fallout.set_global_var(288, 2)
@@ -1354,7 +1181,7 @@ function South5()
     Inner_ring = (fallout.get_critter_stat(fallout.dude_obj(), 1) // 2) + 5
     Critter_script = 943
     group_angle = fallout.random(0, 5)
-    while Tot_Critter_A do
+    while Tot_Critter_A > 0 do
         if fallout.random(0, 4) == 4 then
             Critter_type = 16777226
         else
@@ -1367,7 +1194,7 @@ function South5()
         if Critter_direction > 5 then
             Critter_direction = Critter_direction % 6
         end
-        Place_critter()
+        Critter = Place_critter()
         fallout.anim(Critter, 1000, fallout.random(0, 5))
         Tot_Critter_A = Tot_Critter_A - 1
     end
@@ -1383,7 +1210,7 @@ function South6()
     group_angle = fallout.random(0, 5)
     Critter_type = 16777227
     Critter_script = 12
-    while Tot_Critter_A do
+    while Tot_Critter_A > 0 do
         Critter_direction = group_angle + (fallout.random(0, 2 * 2) - 2)
         while Critter_direction < 0 do
             Critter_direction = Critter_direction + 6
@@ -1391,8 +1218,9 @@ function South6()
         if Critter_direction > 5 then
             Critter_direction = Critter_direction % 6
         end
-        Place_critter()
-        fallout.anim(Critter, 1000, fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
+        Critter = Place_critter()
+        fallout.anim(Critter, 1000,
+            fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
         Tot_Critter_A = Tot_Critter_A - 1
     end
     fallout.set_global_var(288, 2)
@@ -1413,7 +1241,7 @@ function Shady1()
     Inner_ring = 8
     Critter_type = 16777255
     Critter_script = 713
-    while Tot_Critter_A do
+    while Tot_Critter_A > 0 do
         Critter_direction = group_angle + (fallout.random(0, 2) - 1)
         while Critter_direction < 0 do
             Critter_direction = Critter_direction + 6
@@ -1421,29 +1249,19 @@ function Shady1()
         if Critter_direction > 5 then
             Critter_direction = Critter_direction % 6
         end
-        Place_critter()
+        Critter = Place_critter()
         if group_angle == 0 then
             Critter_direction = 3
-        else
-            if group_angle == 1 then
-                Critter_direction = 4
-            else
-                if group_angle == 2 then
-                    Critter_direction = 5
-                else
-                    if group_angle == 3 then
-                        Critter_direction = 0
-                    else
-                        if group_angle == 4 then
-                            Critter_direction = 1
-                        else
-                            if group_angle == 5 then
-                                Critter_direction = 2
-                            end
-                        end
-                    end
-                end
-            end
+        elseif group_angle == 1 then
+            Critter_direction = 4
+        elseif group_angle == 2 then
+            Critter_direction = 5
+        elseif group_angle == 3 then
+            Critter_direction = 0
+        elseif group_angle == 4 then
+            Critter_direction = 1
+        elseif group_angle == 5 then
+            Critter_direction = 2
         end
         if fallout.random(0, 2) == 0 then
             Critter_direction = Critter_direction + (fallout.random(0, 2) - 1)
@@ -1455,7 +1273,8 @@ function Shady1()
             end
         end
         fallout.anim(Critter, 1000, Critter_direction)
-        Item = fallout.item_caps_adjust(Critter, (fallout.random(1, 12) * fallout.has_trait(0, fallout.dude_obj(), 20)) + 1)
+        Item = fallout.item_caps_adjust(Critter,
+            (fallout.random(1, 12) * fallout.has_trait(0, fallout.dude_obj(), 20)) + 1)
         Tot_Critter_A = Tot_Critter_A - 1
     end
     victim = Critter
@@ -1463,28 +1282,18 @@ function Shady1()
     Critter_script = 749
     if group_angle == 0 then
         group_angle = 3
-    else
-        if group_angle == 1 then
-            group_angle = 4
-        else
-            if group_angle == 2 then
-                group_angle = 5
-            else
-                if group_angle == 3 then
-                    group_angle = 0
-                else
-                    if group_angle == 4 then
-                        group_angle = 1
-                    else
-                        if group_angle == 5 then
-                            group_angle = 2
-                        end
-                    end
-                end
-            end
-        end
+    elseif group_angle == 1 then
+        group_angle = 4
+    elseif group_angle == 2 then
+        group_angle = 5
+    elseif group_angle == 3 then
+        group_angle = 0
+    elseif group_angle == 4 then
+        group_angle = 1
+    elseif group_angle == 5 then
+        group_angle = 2
     end
-    while Tot_Critter_B do
+    while Tot_Critter_B > 0 do
         Critter_direction = group_angle + (fallout.random(0, 2) - 1)
         while Critter_direction < 0 do
             Critter_direction = Critter_direction + 6
@@ -1492,29 +1301,19 @@ function Shady1()
         if Critter_direction > 5 then
             Critter_direction = Critter_direction % 6
         end
-        Place_critter()
+        Critter = Place_critter()
         if group_angle == 0 then
             Critter_direction = 3
-        else
-            if group_angle == 1 then
-                Critter_direction = 4
-            else
-                if group_angle == 2 then
-                    Critter_direction = 5
-                else
-                    if group_angle == 3 then
-                        Critter_direction = 0
-                    else
-                        if group_angle == 4 then
-                            Critter_direction = 1
-                        else
-                            if group_angle == 5 then
-                                Critter_direction = 2
-                            end
-                        end
-                    end
-                end
-            end
+        elseif group_angle == 1 then
+            Critter_direction = 4
+        elseif group_angle == 2 then
+            Critter_direction = 5
+        elseif group_angle == 3 then
+            Critter_direction = 0
+        elseif group_angle == 4 then
+            Critter_direction = 1
+        elseif group_angle == 5 then
+            Critter_direction = 2
         end
         if fallout.random(0, 2) == 0 then
             Critter_direction = Critter_direction + (fallout.random(0, 2) - 1)
@@ -1528,7 +1327,8 @@ function Shady1()
         fallout.anim(Critter, 1000, Critter_direction)
         Item = fallout.create_object_sid(7, 0, 0, -1)
         fallout.add_obj_to_inven(Critter, Item)
-        Item = fallout.item_caps_adjust(Critter, (fallout.random(1, 13) * fallout.has_trait(0, fallout.dude_obj(), 20)) + 1)
+        Item = fallout.item_caps_adjust(Critter,
+            (fallout.random(1, 13) * fallout.has_trait(0, fallout.dude_obj(), 20)) + 1)
         Tot_Critter_B = Tot_Critter_B - 1
     end
     fallout.attack_setup(Critter, victim)
@@ -1557,7 +1357,8 @@ function Shady2()
                 if v0 == 1 then
                     fallout.display_msg(fallout.message_str(112, 112) .. v1 .. fallout.message_str(112, 113))
                 else
-                    fallout.display_msg(fallout.message_str(112, 114) .. v0 .. fallout.message_str(112, 115) .. v1 .. fallout.message_str(112, 116))
+                    fallout.display_msg(fallout.message_str(112, 114) ..
+                        v0 .. fallout.message_str(112, 115) .. v1 .. fallout.message_str(112, 116))
                 end
                 fallout.critter_injure(fallout.dude_obj(), 2)
             else
@@ -1573,7 +1374,8 @@ function Shady2()
                     if v1 == 1 then
                         fallout.display_msg(fallout.message_str(112, 120) .. v0 .. fallout.message_str(112, 121))
                     else
-                        fallout.display_msg(fallout.message_str(112, 122) .. v0 .. fallout.message_str(112, 123) .. v1 .. fallout.message_str(112, 124))
+                        fallout.display_msg(fallout.message_str(112, 122) ..
+                            v0 .. fallout.message_str(112, 123) .. v1 .. fallout.message_str(112, 124))
                     end
                     fallout.critter_injure(fallout.dude_obj(), 2)
                 end
@@ -1593,10 +1395,11 @@ function Shady3()
     Inner_ring = (fallout.get_critter_stat(fallout.dude_obj(), 1) // 2) + 3
     Critter_type = 16777227
     Critter_script = 12
-    while Tot_Critter_A do
+    while Tot_Critter_A > 0 do
         Critter_direction = fallout.random(0, 4)
-        Place_critter()
-        fallout.anim(Critter, 1000, fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
+        Critter = Place_critter()
+        fallout.anim(Critter, 1000,
+            fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
         Tot_Critter_A = Tot_Critter_A - 1
     end
     fallout.set_global_var(288, 1)
@@ -1604,7 +1407,7 @@ function Shady3()
 end
 
 function Shady4()
-    if not(fallout.global_var(331)) then
+    if fallout.global_var(331) == 0 then
         fallout.display_msg(fallout.message_str(112, 170))
     else
         fallout.display_msg(fallout.message_str(112, 305))
@@ -1614,7 +1417,7 @@ function Shady4()
     Inner_ring = (fallout.get_critter_stat(fallout.dude_obj(), 1) // 2) + 3
     group_angle = dude_rot
     fallout.set_global_var(289, 0)
-    if not(fallout.global_var(331)) then
+    if fallout.global_var(331) == 0 then
         Critter_type = 16777246
         Critter_script = 243
         Critter_direction = group_angle + (fallout.random(0, 2) - 1)
@@ -1624,8 +1427,9 @@ function Shady4()
         if Critter_direction > 5 then
             Critter_direction = Critter_direction % 6
         end
-        Place_critter()
-        fallout.anim(Critter, 1000, fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
+        Critter = Place_critter()
+        fallout.anim(Critter, 1000,
+            fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
         Item = fallout.create_object_sid(71, 0, 0, -1)
         fallout.add_obj_to_inven(Critter, Item)
         Item = fallout.create_object_sid(29, 0, 0, -1)
@@ -1640,14 +1444,15 @@ function Shady4()
         fallout.add_mult_objs_to_inven(Critter, Item, fallout.random(0, 1))
         Item = fallout.create_object_sid(81, 0, 0, -1)
         fallout.add_mult_objs_to_inven(Critter, Item, fallout.random(0, 3))
-        Item = fallout.item_caps_adjust(Critter, fallout.random(25, 100) * (fallout.has_trait(0, fallout.dude_obj(), 20) + 1))
+        Item = fallout.item_caps_adjust(Critter,
+            fallout.random(25, 100) * (fallout.has_trait(0, fallout.dude_obj(), 20) + 1))
         victim = Critter
     else
         fallout.set_global_var(289, 1)
     end
     Critter_type = 16777218
     Critter_script = 757
-    while Tot_Critter_B do
+    while Tot_Critter_B > 0 do
         Critter_direction = group_angle + (fallout.random(0, 2) - 1)
         while Critter_direction < 0 do
             Critter_direction = Critter_direction + 6
@@ -1655,9 +1460,9 @@ function Shady4()
         if Critter_direction > 5 then
             Critter_direction = Critter_direction % 6
         end
-        Place_critter()
-        if not(fallout.global_var(331)) then
-            if fallout.random(0, 1) then
+        Critter = Place_critter()
+        if fallout.global_var(331) == 0 then
+            if fallout.random(0, 1) ~= 0 then
                 Critter_direction = group_angle + (fallout.random(0, 4) - 2)
                 while Critter_direction < 0 do
                     Critter_direction = Critter_direction + 6
@@ -1670,13 +1475,15 @@ function Shady4()
                 fallout.anim(Critter, 1000, fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(victim)))
             end
         else
-            fallout.anim(Critter, 1000, fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
+            fallout.anim(Critter, 1000,
+                fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
         end
         Item = fallout.create_object_sid(10, 0, 0, -1)
         fallout.add_obj_to_inven(Critter, Item)
         Item = fallout.create_object_sid(34, 0, 0, -1)
         fallout.add_mult_objs_to_inven(Critter, Item, fallout.has_trait(0, fallout.dude_obj(), 40) + 1)
-        Item = fallout.item_caps_adjust(Critter, fallout.random(1, 6) * (fallout.has_trait(0, fallout.dude_obj(), 20) + 1))
+        Item = fallout.item_caps_adjust(Critter,
+            fallout.random(1, 6) * (fallout.has_trait(0, fallout.dude_obj(), 20) + 1))
         Tot_Critter_B = Tot_Critter_B - 1
     end
 end
@@ -1687,7 +1494,7 @@ function Shady5()
     Inner_ring = (fallout.get_critter_stat(fallout.dude_obj(), 1) // 2) + 3
     Critter_direction = dude_rot
     Critter_type = 16777246
-    if fallout.random(0, 1) then
+    if fallout.random(0, 1) ~= 0 then
         Critter_type = 16777246
         Critter_script = 699
     else
@@ -1695,7 +1502,7 @@ function Shady5()
         Critter_script = 749
     end
     Critter_script = -1
-    Place_critter()
+    Critter = Place_critter()
     fallout.anim(Critter, 1000, fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
     Item = fallout.create_object_sid(8, 0, 0, -1)
     fallout.add_obj_to_inven(Critter, Item)
@@ -1717,10 +1524,11 @@ function Shady5()
     end
     Critter_type = 16777284
     Critter_script = 735
-    while Tot_Critter_A do
+    while Tot_Critter_A > 0 do
         Critter_direction = fallout.random(0, 5)
-        Place_critter()
-        fallout.anim(Critter, 1000, fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
+        Critter = Place_critter()
+        fallout.anim(Critter, 1000,
+            fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
         Tot_Critter_A = Tot_Critter_A - 1
     end
     fallout.set_global_var(288, 1)
@@ -1755,7 +1563,7 @@ function Shady6()
             if fallout.has_trait(0, fallout.dude_obj(), 40) then
                 v0 = 4
             end
-            while v0 do
+            while v0 > 0 do
                 Item = fallout.create_object_sid(29, 0, 0, -1)
                 fallout.critter_attempt_placement(Item, Critter_tile, 0)
                 v0 = v0 - 1
@@ -1802,18 +1610,18 @@ function Raider1()
     Critter_type = 16777244
     Critter_script = -1
     Critter_direction = fallout.random(0, 5)
-    Place_critter()
+    Critter = Place_critter()
     fallout.anim(Critter, 1000, fallout.random(0, 5))
     fallout.kill_critter(Critter, 61)
     Critter_type = 16777244
     Critter_script = -1
     Critter_direction = fallout.random(0, 5)
-    Place_critter()
+    Critter = Place_critter()
     fallout.anim(Critter, 1000, fallout.random(0, 5))
     fallout.kill_critter(Critter, 61)
     Critter_script = 750
-    while Tot_Critter_A do
-        if fallout.random(0, 1) then
+    while Tot_Critter_A > 0 do
+        if fallout.random(0, 1) ~= 0 then
             Critter_type = 16777449
         else
             Critter_type = 16777432
@@ -1825,29 +1633,19 @@ function Raider1()
         if Critter_direction > 5 then
             Critter_direction = Critter_direction % 6
         end
-        Place_critter()
+        Critter = Place_critter()
         if group_angle == 0 then
             Critter_direction = 3
-        else
-            if group_angle == 1 then
-                Critter_direction = 4
-            else
-                if group_angle == 2 then
-                    Critter_direction = 5
-                else
-                    if group_angle == 3 then
-                        Critter_direction = 0
-                    else
-                        if group_angle == 4 then
-                            Critter_direction = 1
-                        else
-                            if group_angle == 5 then
-                                Critter_direction = 2
-                            end
-                        end
-                    end
-                end
-            end
+        elseif group_angle == 1 then
+            Critter_direction = 4
+        elseif group_angle == 2 then
+            Critter_direction = 5
+        elseif group_angle == 3 then
+            Critter_direction = 0
+        elseif group_angle == 4 then
+            Critter_direction = 1
+        elseif group_angle == 5 then
+            Critter_direction = 2
         end
         if fallout.random(0, 2) == 0 then
             Critter_direction = Critter_direction + (fallout.random(0, 2) - 1)
@@ -1861,8 +1659,8 @@ function Raider1()
         fallout.anim(Critter, 1000, Critter_direction)
         Item = fallout.create_object_sid(4, 0, 0, -1)
         fallout.add_obj_to_inven(Critter, Item)
-        if fallout.random(0, 1) then
-            if fallout.random(0, 1) then
+        if fallout.random(0, 1) ~= 0 then
+            if fallout.random(0, 1) ~= 0 then
                 Item = fallout.create_object_sid(34, 0, 0, -1)
                 fallout.add_mult_objs_to_inven(Critter, Item, fallout.has_trait(0, fallout.dude_obj(), 40) + 1)
                 Item = fallout.create_object_sid(10, 0, 0, -1)
@@ -1878,7 +1676,7 @@ function Raider1()
         Tot_Critter_A = Tot_Critter_A - 1
     end
     victim = Critter
-    if fallout.random(0, 1) then
+    if fallout.random(0, 1) ~= 0 then
         Critter_type = 16777449
     else
         Critter_type = 16777432
@@ -1891,29 +1689,19 @@ function Raider1()
     if Critter_direction > 5 then
         Critter_direction = Critter_direction % 6
     end
-    Place_critter()
+    Critter = Place_critter()
     if group_angle == 0 then
         Critter_direction = 3
-    else
-        if group_angle == 1 then
-            Critter_direction = 4
-        else
-            if group_angle == 2 then
-                Critter_direction = 5
-            else
-                if group_angle == 3 then
-                    Critter_direction = 0
-                else
-                    if group_angle == 4 then
-                        Critter_direction = 1
-                    else
-                        if group_angle == 5 then
-                            Critter_direction = 2
-                        end
-                    end
-                end
-            end
-        end
+    elseif group_angle == 1 then
+        Critter_direction = 4
+    elseif group_angle == 2 then
+        Critter_direction = 5
+    elseif group_angle == 3 then
+        Critter_direction = 0
+    elseif group_angle == 4 then
+        Critter_direction = 1
+    elseif group_angle == 5 then
+        Critter_direction = 2
     end
     if fallout.random(0, 2) == 0 then
         Critter_direction = Critter_direction + (fallout.random(0, 2) - 1)
@@ -1934,28 +1722,18 @@ function Raider1()
     Critter_script = 755
     if group_angle == 0 then
         group_angle = 3
-    else
-        if group_angle == 1 then
-            group_angle = 4
-        else
-            if group_angle == 2 then
-                group_angle = 5
-            else
-                if group_angle == 3 then
-                    group_angle = 0
-                else
-                    if group_angle == 4 then
-                        group_angle = 1
-                    else
-                        if group_angle == 5 then
-                            group_angle = 2
-                        end
-                    end
-                end
-            end
-        end
+    elseif group_angle == 1 then
+        group_angle = 4
+    elseif group_angle == 2 then
+        group_angle = 5
+    elseif group_angle == 3 then
+        group_angle = 0
+    elseif group_angle == 4 then
+        group_angle = 1
+    elseif group_angle == 5 then
+        group_angle = 2
     end
-    while Tot_Critter_B do
+    while Tot_Critter_B > 0 do
         Critter_direction = group_angle + (fallout.random(0, 2) - 1)
         while Critter_direction < 0 do
             Critter_direction = Critter_direction + 6
@@ -1963,29 +1741,19 @@ function Raider1()
         if Critter_direction > 5 then
             Critter_direction = Critter_direction % 6
         end
-        Place_critter()
+        Critter = Place_critter()
         if group_angle == 0 then
             Critter_direction = 3
-        else
-            if group_angle == 1 then
-                Critter_direction = 4
-            else
-                if group_angle == 2 then
-                    Critter_direction = 5
-                else
-                    if group_angle == 3 then
-                        Critter_direction = 0
-                    else
-                        if group_angle == 4 then
-                            Critter_direction = 1
-                        else
-                            if group_angle == 5 then
-                                Critter_direction = 2
-                            end
-                        end
-                    end
-                end
-            end
+        elseif group_angle == 1 then
+            Critter_direction = 4
+        elseif group_angle == 2 then
+            Critter_direction = 5
+        elseif group_angle == 3 then
+            Critter_direction = 0
+        elseif group_angle == 4 then
+            Critter_direction = 1
+        elseif group_angle == 5 then
+            Critter_direction = 2
         end
         if fallout.random(0, 2) == 0 then
             Critter_direction = Critter_direction + (fallout.random(0, 2) - 1)
@@ -2017,29 +1785,19 @@ function Raider1()
     if Critter_direction > 5 then
         Critter_direction = Critter_direction % 6
     end
-    Place_critter()
+    Critter = Place_critter()
     if group_angle == 0 then
         Critter_direction = 3
-    else
-        if group_angle == 1 then
-            Critter_direction = 4
-        else
-            if group_angle == 2 then
-                Critter_direction = 5
-            else
-                if group_angle == 3 then
-                    Critter_direction = 0
-                else
-                    if group_angle == 4 then
-                        Critter_direction = 1
-                    else
-                        if group_angle == 5 then
-                            Critter_direction = 2
-                        end
-                    end
-                end
-            end
-        end
+    elseif group_angle == 1 then
+        Critter_direction = 4
+    elseif group_angle == 2 then
+        Critter_direction = 5
+    elseif group_angle == 3 then
+        Critter_direction = 0
+    elseif group_angle == 4 then
+        Critter_direction = 1
+    elseif group_angle == 5 then
+        Critter_direction = 2
     end
     if fallout.random(0, 2) == 0 then
         Critter_direction = Critter_direction + (fallout.random(0, 2) - 1)
@@ -2061,9 +1819,10 @@ function Raider1()
     Critter_type = 16777229
     Critter_script = 753
     Critter_direction = fallout.random(0, 5)
-    Place_critter()
+    Critter = Place_critter()
     fallout.critter_dmg(Critter, 5, 0)
-    Item = fallout.item_caps_adjust(Critter, fallout.random(100, 300) * (fallout.has_trait(0, fallout.dude_obj(), 20) + 1))
+    Item = fallout.item_caps_adjust(Critter,
+        fallout.random(100, 300) * (fallout.has_trait(0, fallout.dude_obj(), 20) + 1))
     if fallout.random(1, 10) > 6 then
         Item = fallout.create_object_sid(47, 0, 0, -1)
         fallout.add_obj_to_inven(Critter, Item)
@@ -2105,7 +1864,8 @@ function Raider2()
                 if v0 == 1 then
                     fallout.display_msg(fallout.message_str(112, 112) .. v1 .. fallout.message_str(112, 113))
                 else
-                    fallout.display_msg(fallout.message_str(112, 114) .. v0 .. fallout.message_str(112, 115) .. v1 .. fallout.message_str(112, 116))
+                    fallout.display_msg(fallout.message_str(112, 114) ..
+                        v0 .. fallout.message_str(112, 115) .. v1 .. fallout.message_str(112, 116))
                 end
                 fallout.critter_injure(fallout.dude_obj(), 2)
             else
@@ -2121,7 +1881,8 @@ function Raider2()
                     if v1 == 1 then
                         fallout.display_msg(fallout.message_str(112, 120) .. v0 .. fallout.message_str(112, 121))
                     else
-                        fallout.display_msg(fallout.message_str(112, 122) .. v0 .. fallout.message_str(112, 123) .. v1 .. fallout.message_str(112, 124))
+                        fallout.display_msg(fallout.message_str(112, 122) ..
+                            v0 .. fallout.message_str(112, 123) .. v1 .. fallout.message_str(112, 124))
                     end
                     fallout.critter_injure(fallout.dude_obj(), 2)
                 end
@@ -2140,10 +1901,11 @@ function Raider3()
     Inner_ring = (fallout.get_critter_stat(fallout.dude_obj(), 1) // 2) + 2
     Critter_type = 16777227
     Critter_script = 12
-    while Tot_Critter_A do
+    while Tot_Critter_A > 0 do
         Critter_direction = fallout.random(4, 5)
-        Place_critter()
-        fallout.anim(Critter, 1000, fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
+        Critter = Place_critter()
+        fallout.anim(Critter, 1000,
+            fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
         Tot_Critter_A = Tot_Critter_A - 1
     end
     fallout.set_global_var(288, 1)
@@ -2157,9 +1919,9 @@ function Raider4()
     Tot_Critter_A = fallout.random(4, 6)
     group_angle = fallout.random(0, 5)
     Critter_script = 749
-    while Tot_Critter_A do
-        if fallout.random(0, 1) then
-            if fallout.random(0, 1) then
+    while Tot_Critter_A > 0 do
+        if fallout.random(0, 1) ~= 0 then
+            if fallout.random(0, 1) ~= 0 then
                 Critter_type = 16777449
             else
                 Critter_type = 16777432
@@ -2174,29 +1936,19 @@ function Raider4()
         if Critter_direction > 5 then
             Critter_direction = Critter_direction % 6
         end
-        Place_critter()
+        Critter = Place_critter()
         if group_angle == 0 then
             Critter_direction = 3
-        else
-            if group_angle == 1 then
-                Critter_direction = 4
-            else
-                if group_angle == 2 then
-                    Critter_direction = 5
-                else
-                    if group_angle == 3 then
-                        Critter_direction = 0
-                    else
-                        if group_angle == 4 then
-                            Critter_direction = 1
-                        else
-                            if group_angle == 5 then
-                                Critter_direction = 2
-                            end
-                        end
-                    end
-                end
-            end
+        elseif group_angle == 1 then
+            Critter_direction = 4
+        elseif group_angle == 2 then
+            Critter_direction = 5
+        elseif group_angle == 3 then
+            Critter_direction = 0
+        elseif group_angle == 4 then
+            Critter_direction = 1
+        elseif group_angle == 5 then
+            Critter_direction = 2
         end
         if fallout.random(0, 2) == 0 then
             Critter_direction = Critter_direction + (fallout.random(0, 2) - 1)
@@ -2210,8 +1962,8 @@ function Raider4()
         fallout.anim(Critter, 1000, Critter_direction)
         Item = fallout.create_object_sid(4, 0, 0, -1)
         fallout.add_obj_to_inven(Critter, Item)
-        if fallout.random(0, 1) then
-            if fallout.random(0, 1) then
+        if fallout.random(0, 1) ~= 0 then
+            if fallout.random(0, 1) ~= 0 then
                 Item = fallout.create_object_sid(10, 0, 0, -1)
             else
                 Item = fallout.create_object_sid(18, 0, 0, -1)
@@ -2220,7 +1972,7 @@ function Raider4()
             Item = fallout.create_object_sid(8, 0, 0, -1)
         end
         fallout.add_obj_to_inven(Critter, Item)
-        if fallout.random(0, 1) then
+        if fallout.random(0, 1) ~= 0 then
             Item = fallout.create_object_sid(124, 0, 0, -1)
             fallout.add_obj_to_inven(Critter, Item)
         end
@@ -2237,12 +1989,12 @@ function Raider5()
     Critter_direction = dude_rot
     Critter_type = 16777254
     Critter_script = 700
-    Place_critter()
+    Critter = Place_critter()
     fallout.anim(Critter, 1000, fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
     Item = fallout.create_object_sid(4, 0, 0, -1)
     fallout.add_obj_to_inven(Critter, Item)
-    if fallout.random(0, 1) then
-        if fallout.random(0, 1) then
+    if fallout.random(0, 1) ~= 0 then
+        if fallout.random(0, 1) ~= 0 then
             Item = fallout.create_object_sid(10, 0, 0, -1)
         else
             Item = fallout.create_object_sid(18, 0, 0, -1)
@@ -2251,8 +2003,9 @@ function Raider5()
         Item = fallout.create_object_sid(8, 0, 0, -1)
     end
     fallout.add_obj_to_inven(Critter, Item)
-    if fallout.random(0, 1) then
-        Item = fallout.item_caps_adjust(Critter, fallout.random(5, 10) * (fallout.has_trait(0, fallout.dude_obj(), 20) + 1))
+    if fallout.random(0, 1) ~= 0 then
+        Item = fallout.item_caps_adjust(Critter,
+            fallout.random(5, 10) * (fallout.has_trait(0, fallout.dude_obj(), 20) + 1))
     end
 end
 
@@ -2262,9 +2015,9 @@ function Raider6()
     Outer_ring = (fallout.get_critter_stat(fallout.dude_obj(), 1) // 2) + 4
     Inner_ring = (fallout.get_critter_stat(fallout.dude_obj(), 1) // 2) + 2
     Critter_script = -1
-    while Tot_Critter_A do
-        if fallout.random(0, 1) then
-            if fallout.random(0, 1) then
+    while Tot_Critter_A > 0 do
+        if fallout.random(0, 1) ~= 0 then
+            if fallout.random(0, 1) ~= 0 then
                 Critter_type = 16777449
             else
                 Critter_type = 16777432
@@ -2273,14 +2026,14 @@ function Raider6()
             Critter_type = 16777319
         end
         Critter_direction = fallout.random(0, 5)
-        Place_critter()
+        Critter = Place_critter()
         fallout.anim(Critter, 1000, fallout.random(0, 5))
         fallout.kill_critter(Critter, 61)
         Tot_Critter_A = Tot_Critter_A - 1
     end
     Critter_type = 16777252
     Critter_direction = fallout.random(0, 5)
-    Place_critter()
+    Critter = Place_critter()
     fallout.anim(Critter, 1000, fallout.random(0, 5))
     fallout.kill_critter(Critter, 61)
 end
@@ -2292,10 +2045,11 @@ function Junk1()
     Inner_ring = (fallout.get_critter_stat(fallout.dude_obj(), 1) // 2) + 2
     Critter_type = 16777227
     Critter_script = 12
-    while Tot_Critter_A do
+    while Tot_Critter_A > 0 do
         Critter_direction = fallout.random(0, 4)
-        Place_critter()
-        fallout.anim(Critter, 1000, fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
+        Critter = Place_critter()
+        fallout.anim(Critter, 1000,
+            fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
         Tot_Critter_A = Tot_Critter_A - 1
     end
     fallout.set_global_var(288, 1)
@@ -2323,7 +2077,8 @@ function Junk2()
                 if v0 == 1 then
                     fallout.display_msg(fallout.message_str(112, 112) .. v1 .. fallout.message_str(112, 113))
                 else
-                    fallout.display_msg(fallout.message_str(112, 114) .. v0 .. fallout.message_str(112, 115) .. v1 .. fallout.message_str(112, 116))
+                    fallout.display_msg(fallout.message_str(112, 114) ..
+                        v0 .. fallout.message_str(112, 115) .. v1 .. fallout.message_str(112, 116))
                 end
                 fallout.critter_injure(fallout.dude_obj(), 2)
             else
@@ -2339,7 +2094,8 @@ function Junk2()
                     if v1 == 1 then
                         fallout.display_msg(fallout.message_str(112, 120) .. v0 .. fallout.message_str(112, 121))
                     else
-                        fallout.display_msg(fallout.message_str(112, 122) .. v0 .. fallout.message_str(112, 123) .. v1 .. fallout.message_str(112, 124))
+                        fallout.display_msg(fallout.message_str(112, 122) ..
+                            v0 .. fallout.message_str(112, 123) .. v1 .. fallout.message_str(112, 124))
                     end
                     fallout.critter_injure(fallout.dude_obj(), 2)
                 end
@@ -2359,7 +2115,7 @@ function Junk3()
     group_angle = fallout.random(0, 5)
     Critter_type = 16777379
     Critter_script = 693
-    while Tot_Critter_A do
+    while Tot_Critter_A > 0 do
         Critter_direction = group_angle + (fallout.random(0, 2) - 1)
         while Critter_direction < 0 do
             Critter_direction = Critter_direction + 6
@@ -2367,7 +2123,7 @@ function Junk3()
         if Critter_direction > 5 then
             Critter_direction = Critter_direction % 6
         end
-        Place_critter()
+        Critter = Place_critter()
         fallout.anim(Critter, 1000, fallout.random(0, 5))
         Tot_Critter_A = Tot_Critter_A - 1
     end
@@ -2383,7 +2139,7 @@ function Junk4()
     Critter_type = 16777452
     Critter_script = 437
     group_angle = fallout.random(0, 5)
-    while Tot_Critter_A do
+    while Tot_Critter_A > 0 do
         Critter_direction = group_angle + (fallout.random(0, 2) - 1)
         while Critter_direction < 0 do
             Critter_direction = Critter_direction + 6
@@ -2391,15 +2147,16 @@ function Junk4()
         if Critter_direction > 5 then
             Critter_direction = Critter_direction % 6
         end
-        Place_critter()
+        Critter = Place_critter()
         if fallout.random(1, 3) == 1 then
             fallout.anim(Critter, 1000, fallout.random(0, 5))
         else
-            fallout.anim(Critter, 1000, fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
+            fallout.anim(Critter, 1000,
+                fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
         end
         Item = fallout.create_object_sid(4, 0, 0, -1)
         fallout.add_obj_to_inven(Critter, Item)
-        if fallout.random(0, 1) then
+        if fallout.random(0, 1) ~= 0 then
             Item = fallout.create_object_sid(10, 0, 0, -1)
             fallout.add_obj_to_inven(Critter, Item)
             Item = fallout.create_object_sid(34, 0, 0, -1)
@@ -2437,7 +2194,7 @@ function Junk5()
     Item = fallout.create_object_sid(33554499, fallout.tile_num_in_direction(v0, 1, 5), 0, -1)
     Critter_type = 16777245
     Critter_script = 752
-    while Tot_Critter_A do
+    while Tot_Critter_A > 0 do
         Critter_direction = group_angle + (fallout.random(0, 2) - 1)
         while Critter_direction < 0 do
             Critter_direction = Critter_direction + 6
@@ -2445,9 +2202,10 @@ function Junk5()
         if Critter_direction > 5 then
             Critter_direction = Critter_direction % 6
         end
-        Place_critter()
+        Critter = Place_critter()
         fallout.anim(Critter, 1000, fallout.random(0, 5))
-        Item = fallout.item_caps_adjust(Critter, fallout.random(50, 150) * (fallout.has_trait(0, fallout.dude_obj(), 20) + 1))
+        Item = fallout.item_caps_adjust(Critter,
+            fallout.random(50, 150) * (fallout.has_trait(0, fallout.dude_obj(), 20) + 1))
         Item = fallout.create_object_sid(30, 0, 0, -1)
         fallout.add_mult_objs_to_inven(Critter, Item, fallout.random(1, 4))
         Item = fallout.create_object_sid(29, 0, 0, -1)
@@ -2464,7 +2222,7 @@ function Junk5()
     end
     Critter_type = 16777243
     Critter_script = 755
-    while Tot_Critter_B do
+    while Tot_Critter_B > 0 do
         Critter_direction = group_angle + (fallout.random(0, 2) - 1)
         while Critter_direction < 0 do
             Critter_direction = Critter_direction + 6
@@ -2472,21 +2230,21 @@ function Junk5()
         if Critter_direction > 5 then
             Critter_direction = Critter_direction % 6
         end
-        Place_critter()
+        Critter = Place_critter()
         fallout.anim(Critter, 1000, fallout.random(0, 5))
         Item = fallout.create_object_sid(4, 0, 0, -1)
         fallout.add_obj_to_inven(Critter, Item)
-        if fallout.random(0, 1) then
+        if fallout.random(0, 1) ~= 0 then
             Item = fallout.create_object_sid(18, 0, 0, -1)
             fallout.add_obj_to_inven(Critter, Item)
             Item = fallout.create_object_sid(31, 0, 0, -1)
             fallout.add_mult_objs_to_inven(Critter, Item, fallout.has_trait(0, fallout.dude_obj(), 40) + 1)
-            continue
+        else
+            Item = fallout.create_object_sid(10, 0, 0, -1)
+            fallout.add_obj_to_inven(Critter, Item)
+            Item = fallout.create_object_sid(34, 0, 0, -1)
+            fallout.add_mult_objs_to_inven(Critter, Item, fallout.has_trait(0, fallout.dude_obj(), 40) + 1)
         end
-        Item = fallout.create_object_sid(10, 0, 0, -1)
-        fallout.add_obj_to_inven(Critter, Item)
-        Item = fallout.create_object_sid(34, 0, 0, -1)
-        fallout.add_mult_objs_to_inven(Critter, Item, fallout.has_trait(0, fallout.dude_obj(), 40) + 1)
         Tot_Critter_B = Tot_Critter_B - 1
     end
 end
@@ -2501,44 +2259,40 @@ function Junk6()
     if fallout.get_critter_stat(fallout.dude_obj(), 6) < 3 then
         Item = fallout.create_object_sid(71, 0, 0, -1)
         fallout.critter_attempt_placement(Item, Critter_tile, 0)
-    else
-        if fallout.get_critter_stat(fallout.dude_obj(), 6) == 8 then
-            Item = fallout.create_object_sid(71, 0, 0, -1)
-            fallout.critter_attempt_placement(Item, Critter_tile, 0)
+    elseif fallout.get_critter_stat(fallout.dude_obj(), 6) == 8 then
+        Item = fallout.create_object_sid(71, 0, 0, -1)
+        fallout.critter_attempt_placement(Item, Critter_tile, 0)
+        Item = fallout.create_object_sid(29, 0, 0, -1)
+        fallout.critter_attempt_placement(Item, Critter_tile, 0)
+        if fallout.has_trait(0, fallout.dude_obj(), 40) then
             Item = fallout.create_object_sid(29, 0, 0, -1)
             fallout.critter_attempt_placement(Item, Critter_tile, 0)
-            if fallout.has_trait(0, fallout.dude_obj(), 40) then
-                Item = fallout.create_object_sid(29, 0, 0, -1)
-                fallout.critter_attempt_placement(Item, Critter_tile, 0)
-            end
-            Item = fallout.create_object_sid(46, 0, 0, -1)
-            fallout.critter_attempt_placement(Item, Critter_tile, 0)
-            fallout.add_mult_objs_to_inven(Item, v1, 6 * (fallout.has_trait(0, fallout.dude_obj(), 20) + 1))
-        else
-            if fallout.get_critter_stat(fallout.dude_obj(), 6) > 8 then
-                Item = fallout.create_object_sid(71, 0, 0, -1)
-                fallout.critter_attempt_placement(Item, Critter_tile, 0)
-                if fallout.has_trait(0, fallout.dude_obj(), 40) then
-                    v0 = 4
-                end
-                while v0 do
-                    Item = fallout.create_object_sid(29, 0, 0, -1)
-                    fallout.critter_attempt_placement(Item, Critter_tile, 0)
-                    v0 = v0 - 1
-                end
-                Item = fallout.create_object_sid(46, 0, 0, -1)
-                fallout.add_mult_objs_to_inven(Item, v1, 122 * (fallout.has_trait(0, fallout.dude_obj(), 20) + 1))
-                fallout.critter_attempt_placement(Item, Critter_tile, 0)
-                Item = fallout.create_object_sid(8, 0, 0, -1)
-                fallout.critter_attempt_placement(Item, Critter_tile, 0)
-            else
-                Item = fallout.create_object_sid(71, 0, 0, -1)
-                fallout.critter_attempt_placement(Item, Critter_tile, 0)
-                Item = fallout.create_object_sid(46, 0, 0, -1)
-                fallout.add_mult_objs_to_inven(Item, v1, 4 * (fallout.has_trait(0, fallout.dude_obj(), 20) + 1))
-                fallout.critter_attempt_placement(Item, Critter_tile, 0)
-            end
         end
+        Item = fallout.create_object_sid(46, 0, 0, -1)
+        fallout.critter_attempt_placement(Item, Critter_tile, 0)
+        fallout.add_mult_objs_to_inven(Item, v1, 6 * (fallout.has_trait(0, fallout.dude_obj(), 20) + 1))
+    elseif fallout.get_critter_stat(fallout.dude_obj(), 6) > 8 then
+        Item = fallout.create_object_sid(71, 0, 0, -1)
+        fallout.critter_attempt_placement(Item, Critter_tile, 0)
+        if fallout.has_trait(0, fallout.dude_obj(), 40) then
+            v0 = 4
+        end
+        while v0 do
+            Item = fallout.create_object_sid(29, 0, 0, -1)
+            fallout.critter_attempt_placement(Item, Critter_tile, 0)
+            v0 = v0 - 1
+        end
+        Item = fallout.create_object_sid(46, 0, 0, -1)
+        fallout.add_mult_objs_to_inven(Item, v1, 122 * (fallout.has_trait(0, fallout.dude_obj(), 20) + 1))
+        fallout.critter_attempt_placement(Item, Critter_tile, 0)
+        Item = fallout.create_object_sid(8, 0, 0, -1)
+        fallout.critter_attempt_placement(Item, Critter_tile, 0)
+    else
+        Item = fallout.create_object_sid(71, 0, 0, -1)
+        fallout.critter_attempt_placement(Item, Critter_tile, 0)
+        Item = fallout.create_object_sid(46, 0, 0, -1)
+        fallout.add_mult_objs_to_inven(Item, v1, 4 * (fallout.has_trait(0, fallout.dude_obj(), 20) + 1))
+        fallout.critter_attempt_placement(Item, Critter_tile, 0)
     end
 end
 
@@ -2559,7 +2313,8 @@ function Hub1()
             else
                 v1 = fallout.random(2, 3)
             end
-            fallout.display_msg(fallout.message_str(112, 114) .. v0 .. fallout.message_str(112, 115) .. v1 .. fallout.message_str(112, 116))
+            fallout.display_msg(fallout.message_str(112, 114) ..
+                v0 .. fallout.message_str(112, 115) .. v1 .. fallout.message_str(112, 116))
             fallout.critter_injure(fallout.dude_obj(), 2)
         end
         fallout.critter_dmg(fallout.dude_obj(), v1, 0)
@@ -2574,9 +2329,9 @@ function Hub2()
     Outer_ring = (fallout.get_critter_stat(fallout.dude_obj(), 1) // 2) + 6
     Inner_ring = (fallout.get_critter_stat(fallout.dude_obj(), 1) // 2) + 2
     Critter_script = 749
-    while Tot_Critter_A do
-        if fallout.random(0, 1) then
-            if fallout.random(0, 1) then
+    while Tot_Critter_A > 0 do
+        if fallout.random(0, 1) ~= 0 then
+            if fallout.random(0, 1) ~= 0 then
                 Critter_type = 16777254
             else
                 Critter_type = 16777235
@@ -2585,12 +2340,12 @@ function Hub2()
             Critter_type = 16777243
         end
         Critter_direction = fallout.random(3, 5)
-        Place_critter()
+        Critter = Place_critter()
         fallout.anim(Critter, 1000, fallout.random(0, 2))
         Item = fallout.create_object_sid(4, 0, 0, -1)
         fallout.add_obj_to_inven(Critter, Item)
-        if fallout.random(0, 1) then
-            if fallout.random(0, 1) then
+        if fallout.random(0, 1) ~= 0 then
+            if fallout.random(0, 1) ~= 0 then
                 Item = fallout.create_object_sid(9, 0, 0, -1)
             else
                 Item = fallout.create_object_sid(10, 0, 0, -1)
@@ -2599,7 +2354,8 @@ function Hub2()
             Item = fallout.create_object_sid(8, 0, 0, -1)
         end
         fallout.add_obj_to_inven(Critter, Item)
-        Item = fallout.item_caps_adjust(Critter, fallout.random(10, 30) * (fallout.has_trait(0, fallout.dude_obj(), 20) + 1))
+        Item = fallout.item_caps_adjust(Critter,
+            fallout.random(10, 30) * (fallout.has_trait(0, fallout.dude_obj(), 20) + 1))
         if fallout.random(0, 3) == 3 then
             Item = fallout.create_object_sid(40, 0, 0, -1)
             fallout.add_obj_to_inven(Critter, Item)
@@ -2630,15 +2386,15 @@ function Hub3()
     Inner_ring = (fallout.get_critter_stat(fallout.dude_obj(), 1) // 2) + 2
     Critter_type = 16777227
     Critter_script = 12
-    while Tot_Critter_A do
+    while Tot_Critter_A > 0 do
         Critter_direction = fallout.random(0, 4)
-        Place_critter()
+        Critter = Place_critter()
         Tot_Critter_A = Tot_Critter_A - 1
     end
     Critter_type = 16777382
-    while Tot_Critter_B do
+    while Tot_Critter_B > 0 do
         Critter_direction = fallout.random(0, 4)
-        Place_critter()
+        Critter = Place_critter()
         Tot_Critter_B = Tot_Critter_B - 1
     end
     fallout.set_global_var(288, 2)
@@ -2651,17 +2407,18 @@ function Hub4()
     Inner_ring = (fallout.get_critter_stat(fallout.dude_obj(), 1) // 2) + 3
     Tot_Critter_A = fallout.random(4, 6)
     Critter_script = 573
-    while Tot_Critter_A do
+    while Tot_Critter_A > 0 do
         Critter_direction = fallout.random(0, 2)
-        if fallout.random(0, 1) then
+        if fallout.random(0, 1) ~= 0 then
             Critter_type = 16777243
         else
             Critter_type = 16777253
         end
-        Place_critter()
+        Critter = Place_critter()
         fallout.anim(Critter, 1000, fallout.random(3, 5))
-        Item = fallout.item_caps_adjust(Critter, fallout.random(20, 50) * (fallout.has_trait(0, fallout.dude_obj(), 20) + 1))
-        if fallout.random(0, 1) then
+        Item = fallout.item_caps_adjust(Critter,
+            fallout.random(20, 50) * (fallout.has_trait(0, fallout.dude_obj(), 20) + 1))
+        if fallout.random(0, 1) ~= 0 then
             Item = fallout.create_object_sid(9, 0, 0, -1)
         else
             Item = fallout.create_object_sid(18, 0, 0, -1)
@@ -2686,17 +2443,18 @@ function Hub5()
     Inner_ring = (fallout.get_critter_stat(fallout.dude_obj(), 1) // 2) + 3
     Tot_Critter_A = fallout.random(5, 8)
     Critter_script = 755
-    while Tot_Critter_A do
+    while Tot_Critter_A > 0 do
         Critter_direction = fallout.random(0, 2)
-        if fallout.random(0, 1) then
+        if fallout.random(0, 1) ~= 0 then
             Critter_type = 16777243
         else
             Critter_type = 16777253
         end
-        Place_critter()
+        Critter = Place_critter()
         fallout.anim(Critter, 1000, fallout.random(3, 5))
-        Item = fallout.item_caps_adjust(Critter, fallout.random(20, 50) * (fallout.has_trait(0, fallout.dude_obj(), 20) + 1))
-        if fallout.random(0, 1) then
+        Item = fallout.item_caps_adjust(Critter,
+            fallout.random(20, 50) * (fallout.has_trait(0, fallout.dude_obj(), 20) + 1))
+        if fallout.random(0, 1) ~= 0 then
             Item = fallout.create_object_sid(9, 0, 0, -1)
         else
             Item = fallout.create_object_sid(18, 0, 0, -1)
@@ -2708,8 +2466,9 @@ function Hub5()
     Inner_ring = (fallout.get_critter_stat(fallout.dude_obj(), 1) // 2) + 2
     Critter_type = 16777229
     Critter_script = 752
-    Place_critter()
-    Item = fallout.item_caps_adjust(Critter, fallout.random(100, 300) * (fallout.has_trait(0, fallout.dude_obj(), 20) + 1))
+    Critter = Place_critter()
+    Item = fallout.item_caps_adjust(Critter,
+        fallout.random(100, 300) * (fallout.has_trait(0, fallout.dude_obj(), 20) + 1))
     Item = fallout.create_object_sid(71, 0, 0, -1)
     fallout.add_mult_objs_to_inven(Critter, Item, fallout.random(0, 4))
     Item = fallout.create_object_sid(81, 0, 0, -1)
@@ -2735,14 +2494,14 @@ function Hub6()
     Inner_ring = (fallout.get_critter_stat(fallout.dude_obj(), 1) // 2) + 3
     Critter_type = 16777244
     Critter_script = 34
-    while Tot_Critter_A do
+    while Tot_Critter_A > 0 do
         Critter_direction = fallout.random(0, 5)
-        Place_critter()
+        Critter = Place_critter()
         Tot_Critter_A = Tot_Critter_A - 1
     end
     Critter_type = 16777386
     Critter_script = -1
-    Place_critter()
+    Critter = Place_critter()
 end
 
 function Necrop1()
@@ -2766,7 +2525,8 @@ function Necrop1()
                 if v0 == 1 then
                     fallout.display_msg(fallout.message_str(112, 112) .. v1 .. fallout.message_str(112, 113))
                 else
-                    fallout.display_msg(fallout.message_str(112, 114) .. v0 .. fallout.message_str(112, 115) .. v1 .. fallout.message_str(112, 116))
+                    fallout.display_msg(fallout.message_str(112, 114) ..
+                        v0 .. fallout.message_str(112, 115) .. v1 .. fallout.message_str(112, 116))
                 end
                 fallout.critter_injure(fallout.dude_obj(), 2)
             else
@@ -2782,7 +2542,8 @@ function Necrop1()
                     if v1 == 1 then
                         fallout.display_msg(fallout.message_str(112, 120) .. v0 .. fallout.message_str(112, 121))
                     else
-                        fallout.display_msg(fallout.message_str(112, 122) .. v0 .. fallout.message_str(112, 123) .. v1 .. fallout.message_str(112, 124))
+                        fallout.display_msg(fallout.message_str(112, 122) ..
+                            v0 .. fallout.message_str(112, 123) .. v1 .. fallout.message_str(112, 124))
                     end
                     fallout.critter_injure(fallout.dude_obj(), 2)
                 end
@@ -2803,7 +2564,7 @@ function Necrop2()
     group_angle = fallout.random(0, 5)
     Critter_script = 12
     Dude_tile = Dude_tile + (200 * (fallout.random(0, 4) - 2))
-    while Tot_Critter_A do
+    while Tot_Critter_A > 0 do
         if fallout.random(0, 3) == 3 then
             Critter_type = 16777382
         else
@@ -2816,29 +2577,19 @@ function Necrop2()
         if Critter_direction > 5 then
             Critter_direction = Critter_direction % 6
         end
-        Place_critter()
+        Critter = Place_critter()
         if group_angle == 0 then
             Critter_direction = 3
-        else
-            if group_angle == 1 then
-                Critter_direction = 4
-            else
-                if group_angle == 2 then
-                    Critter_direction = 5
-                else
-                    if group_angle == 3 then
-                        Critter_direction = 0
-                    else
-                        if group_angle == 4 then
-                            Critter_direction = 1
-                        else
-                            if group_angle == 5 then
-                                Critter_direction = 2
-                            end
-                        end
-                    end
-                end
-            end
+        elseif group_angle == 1 then
+            Critter_direction = 4
+        elseif group_angle == 2 then
+            Critter_direction = 5
+        elseif group_angle == 3 then
+            Critter_direction = 0
+        elseif group_angle == 4 then
+            Critter_direction = 1
+        elseif group_angle == 5 then
+            Critter_direction = 2
         end
         if fallout.random(0, 2) == 0 then
             Critter_direction = Critter_direction + (fallout.random(0, 2) - 1)
@@ -2856,28 +2607,18 @@ function Necrop2()
     Critter_script = 222
     if group_angle == 0 then
         group_angle = 3
-    else
-        if group_angle == 1 then
-            group_angle = 4
-        else
-            if group_angle == 2 then
-                group_angle = 5
-            else
-                if group_angle == 3 then
-                    group_angle = 0
-                else
-                    if group_angle == 4 then
-                        group_angle = 1
-                    else
-                        if group_angle == 5 then
-                            group_angle = 2
-                        end
-                    end
-                end
-            end
-        end
+    elseif group_angle == 1 then
+        group_angle = 4
+    elseif group_angle == 2 then
+        group_angle = 5
+    elseif group_angle == 3 then
+        group_angle = 0
+    elseif group_angle == 4 then
+        group_angle = 1
+    elseif group_angle == 5 then
+        group_angle = 2
     end
-    while Tot_Critter_B do
+    while Tot_Critter_B > 0 do
         if fallout.random(0, 2) == 2 then
             Critter_type = 16777226
         else
@@ -2890,29 +2631,19 @@ function Necrop2()
         if Critter_direction > 5 then
             Critter_direction = Critter_direction % 6
         end
-        Place_critter()
+        Critter = Place_critter()
         if group_angle == 0 then
             Critter_direction = 3
-        else
-            if group_angle == 1 then
-                Critter_direction = 4
-            else
-                if group_angle == 2 then
-                    Critter_direction = 5
-                else
-                    if group_angle == 3 then
-                        Critter_direction = 0
-                    else
-                        if group_angle == 4 then
-                            Critter_direction = 1
-                        else
-                            if group_angle == 5 then
-                                Critter_direction = 2
-                            end
-                        end
-                    end
-                end
-            end
+        elseif group_angle == 1 then
+            Critter_direction = 4
+        elseif group_angle == 2 then
+            Critter_direction = 5
+        elseif group_angle == 3 then
+            Critter_direction = 0
+        elseif group_angle == 4 then
+            Critter_direction = 1
+        elseif group_angle == 5 then
+            Critter_direction = 2
         end
         if fallout.random(0, 2) == 0 then
             Critter_direction = Critter_direction + (fallout.random(0, 2) - 1)
@@ -2939,7 +2670,7 @@ function Necrop3()
     group_angle = fallout.random(0, 5)
     Critter_type = 16777230
     Critter_script = 953
-    while Tot_Critter_A do
+    while Tot_Critter_A > 0 do
         Critter_direction = group_angle + (fallout.random(0, 2) - 1)
         while Critter_direction < 0 do
             Critter_direction = Critter_direction + 6
@@ -2947,8 +2678,9 @@ function Necrop3()
         if Critter_direction > 5 then
             Critter_direction = Critter_direction % 6
         end
-        Place_critter()
-        fallout.anim(Critter, 1000, fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
+        Critter = Place_critter()
+        fallout.anim(Critter, 1000,
+            fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
         Tot_Critter_A = Tot_Critter_A - 1
     end
     fallout.set_global_var(288, 1)
@@ -2956,42 +2688,43 @@ function Necrop3()
 end
 
 function Necrop4()
-    local v0 = 0
-    local v1 = 0
+    local tile_num = 0
     local v2 = 0
     fallout.display_msg(fallout.message_str(112, 128))
-    Item = fallout.create_object_sid(33554653, fallout.tile_num_in_direction(Dude_tile + fallout.random(0, 8) - 4, fallout.random(0, 5), fallout.random(5, 8)), 0, -1)
-    Item = fallout.create_object_sid(33554654, fallout.tile_num_in_direction(Dude_tile + fallout.random(0, 8) - 4, fallout.random(0, 5), fallout.random(5, 8)), 0, -1)
-    Item = fallout.create_object_sid(33554747, fallout.tile_num_in_direction(Dude_tile + fallout.random(0, 8) - 4, fallout.random(0, 5), fallout.random(5, 8)), 0, -1)
+    Item = fallout.create_object_sid(33554653,
+        fallout.tile_num_in_direction(Dude_tile + fallout.random(0, 8) - 4, fallout.random(0, 5), fallout.random(5, 8)),
+        0, -1)
+    Item = fallout.create_object_sid(33554654,
+        fallout.tile_num_in_direction(Dude_tile + fallout.random(0, 8) - 4, fallout.random(0, 5), fallout.random(5, 8)),
+        0, -1)
+    Item = fallout.create_object_sid(33554747,
+        fallout.tile_num_in_direction(Dude_tile + fallout.random(0, 8) - 4, fallout.random(0, 5), fallout.random(5, 8)),
+        0, -1)
     if fallout.random(0, 3) == 3 then
-        v1 = fallout.tile_num_in_direction(fallout.tile_num(fallout.dude_obj()), fallout.random(0, 5), fallout.random(0, 5))
+        tile_num = fallout.tile_num_in_direction(fallout.tile_num(fallout.dude_obj()), fallout.random(0, 5),
+            fallout.random(0, 5))
         v2 = fallout.random(0, 4)
         if v2 == 0 then
-            v0 = fallout.create_object_sid(29, v1, 0, -1)
-        else
-            if v2 == 1 then
-                v0 = fallout.create_object_sid(30, v1, 0, -1)
-            else
-                if v2 == 2 then
-                    v0 = fallout.create_object_sid(34, v1, 0, -1)
-                else
-                    if v2 == 3 then
-                        v0 = fallout.create_object_sid(31, v1, 0, -1)
-                    else
-                        if v2 == 4 then
-                            v0 = fallout.create_object_sid(111, v1, 0, -1)
-                        end
-                    end
-                end
-            end
+            fallout.create_object_sid(29, tile_num, 0, -1)
+        elseif v2 == 1 then
+            fallout.create_object_sid(30, tile_num, 0, -1)
+        elseif v2 == 2 then
+            fallout.create_object_sid(34, tile_num, 0, -1)
+        elseif v2 == 3 then
+            fallout.create_object_sid(31, tile_num, 0, -1)
+        elseif v2 == 4 then
+            fallout.create_object_sid(111, tile_num, 0, -1)
         end
     end
-    v1 = fallout.tile_num_in_direction(fallout.tile_num(fallout.dude_obj()), fallout.random(0, 5), fallout.random(3, 5))
-    v0 = fallout.create_object_sid(33554541, v1, 0, -1)
-    v1 = fallout.tile_num_in_direction(fallout.tile_num(fallout.dude_obj()), fallout.random(0, 5), fallout.random(3, 5))
-    v0 = fallout.create_object_sid(33554437, v1, 0, -1)
-    v1 = fallout.tile_num_in_direction(fallout.tile_num(fallout.dude_obj()), fallout.random(0, 5), fallout.random(3, 5))
-    v0 = fallout.create_object_sid(33554524, v1, 0, -1)
+    tile_num = fallout.tile_num_in_direction(fallout.tile_num(fallout.dude_obj()), fallout.random(0, 5),
+        fallout.random(3, 5))
+    fallout.create_object_sid(33554541, tile_num, 0, -1)
+    tile_num = fallout.tile_num_in_direction(fallout.tile_num(fallout.dude_obj()), fallout.random(0, 5),
+        fallout.random(3, 5))
+    fallout.create_object_sid(33554437, tile_num, 0, -1)
+    tile_num = fallout.tile_num_in_direction(fallout.tile_num(fallout.dude_obj()), fallout.random(0, 5),
+        fallout.random(3, 5))
+    fallout.create_object_sid(33554524, tile_num, 0, -1)
 end
 
 function Necrop5()
@@ -3002,7 +2735,7 @@ function Necrop5()
     group_angle = fallout.random(0, 5)
     Critter_type = 16777230
     Critter_script = 953
-    while Tot_Critter_A do
+    while Tot_Critter_A > 0 do
         Critter_direction = group_angle + (fallout.random(0, 2) - 1)
         while Critter_direction < 0 do
             Critter_direction = Critter_direction + 6
@@ -3010,8 +2743,9 @@ function Necrop5()
         if Critter_direction > 5 then
             Critter_direction = Critter_direction % 6
         end
-        Place_critter()
-        fallout.anim(Critter, 1000, fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
+        Critter = Place_critter()
+        fallout.anim(Critter, 1000,
+            fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
         Tot_Critter_A = Tot_Critter_A - 1
     end
     fallout.set_global_var(288, 1)
@@ -3019,54 +2753,55 @@ function Necrop5()
 end
 
 function Necrop6()
-    local v0 = 0
-    local v1 = 0
+    local item_obj
     fallout.display_msg(fallout.message_str(112, 130))
     Outer_ring = (fallout.get_critter_stat(fallout.dude_obj(), 1) // 3) + 4
     Inner_ring = (fallout.get_critter_stat(fallout.dude_obj(), 1) // 3) + 2
-    if fallout.random(0, 1) then
+    if fallout.random(0, 1) ~= 0 then
         Critter_type = 16777254
     else
         Critter_type = 16777253
     end
     Critter_script = -1
     Critter_direction = fallout.random(0, 5)
-    Place_critter()
+    Critter = Place_critter()
     fallout.anim(Critter, 1000, fallout.random(0, 5))
     if fallout.random(0, 3) == 3 then
-        v1 = fallout.create_object_sid(40, 0, 0, -1)
-        fallout.add_obj_to_inven(v0, v1)
+        item_obj = fallout.create_object_sid(40, 0, 0, -1)
+        fallout.add_obj_to_inven(Critter, item_obj)
     end
     if fallout.random(0, 3) == 3 then
-        v1 = fallout.item_caps_adjust(v0, fallout.random(50, 100) * (fallout.has_trait(0, fallout.dude_obj(), 20) + 1))
+        item_obj = fallout.item_caps_adjust(Critter,
+            fallout.random(50, 100) * (fallout.has_trait(0, fallout.dude_obj(), 20) + 1))
     end
     if fallout.random(0, 3) == 3 then
-        v1 = fallout.create_object_sid(90, 0, 0, -1)
-        fallout.add_obj_to_inven(v0, v1)
+        item_obj = fallout.create_object_sid(90, 0, 0, -1)
+        fallout.add_obj_to_inven(Critter, item_obj)
     end
     if fallout.random(0, 3) == 3 then
-        v1 = fallout.create_object_sid(10, 0, 0, -1)
-        fallout.add_obj_to_inven(v0, v1)
+        item_obj = fallout.create_object_sid(10, 0, 0, -1)
+        fallout.add_obj_to_inven(Critter, item_obj)
     end
     if fallout.random(0, 3) == 3 then
-        v1 = fallout.create_object_sid(8, 0, 0, -1)
-        fallout.add_obj_to_inven(v0, v1)
+        item_obj = fallout.create_object_sid(8, 0, 0, -1)
+        fallout.add_obj_to_inven(Critter, item_obj)
     end
     if fallout.random(0, 3) == 3 then
-        v1 = fallout.create_object_sid(1, 0, 0, -1)
-        fallout.add_obj_to_inven(v0, v1)
+        item_obj = fallout.create_object_sid(1, 0, 0, -1)
+        fallout.add_obj_to_inven(Critter, item_obj)
     end
     if fallout.random(0, 3) == 3 then
-        v1 = fallout.create_object_sid(127, 0, 0, -1)
-        fallout.add_obj_to_inven(v0, v1)
+        item_obj = fallout.create_object_sid(127, 0, 0, -1)
+        fallout.add_obj_to_inven(Critter, item_obj)
     end
     if fallout.random(0, 3) == 3 then
-        v1 = fallout.create_object_sid(51, 0, 0, -1)
-        fallout.add_obj_to_inven(v0, v1)
+        item_obj = fallout.create_object_sid(51, 0, 0, -1)
+        fallout.add_obj_to_inven(Critter, item_obj)
     end
-    v1 = fallout.create_object_sid(106, 0, 0, -1)
-    fallout.add_obj_to_inven(v0, v1)
-    v1 = fallout.item_caps_adjust(v0, fallout.random(3, 9) * (fallout.has_trait(0, fallout.dude_obj(), 20) + 1))
+    item_obj = fallout.create_object_sid(106, 0, 0, -1)
+    fallout.add_obj_to_inven(Critter, item_obj)
+    item_obj = fallout.item_caps_adjust(Critter,
+        fallout.random(3, 9) * (fallout.has_trait(0, fallout.dude_obj(), 20) + 1))
     fallout.kill_critter(Critter, 61)
 end
 
@@ -3079,7 +2814,7 @@ function Steel1()
     group_angle = fallout.random(0, 5)
     fallout.set_external_var("random_seed_1", 0)
     Critter_script = 759
-    if fallout.random(0, 1) then
+    if fallout.random(0, 1) ~= 0 then
         Critter_type = 16777491
     else
         Critter_type = 16777494
@@ -3091,29 +2826,19 @@ function Steel1()
     if Critter_direction > 5 then
         Critter_direction = Critter_direction % 6
     end
-    Place_critter()
+    Critter = Place_critter()
     if group_angle == 0 then
         Critter_direction = 3
-    else
-        if group_angle == 1 then
-            Critter_direction = 4
-        else
-            if group_angle == 2 then
-                Critter_direction = 5
-            else
-                if group_angle == 3 then
-                    Critter_direction = 0
-                else
-                    if group_angle == 4 then
-                        Critter_direction = 1
-                    else
-                        if group_angle == 5 then
-                            Critter_direction = 2
-                        end
-                    end
-                end
-            end
-        end
+    elseif group_angle == 1 then
+        Critter_direction = 4
+    elseif group_angle == 2 then
+        Critter_direction = 5
+    elseif group_angle == 3 then
+        Critter_direction = 0
+    elseif group_angle == 4 then
+        Critter_direction = 1
+    elseif group_angle == 5 then
+        Critter_direction = 2
     end
     if fallout.random(0, 2) == 0 then
         Critter_direction = Critter_direction + (fallout.random(0, 2) - 1)
@@ -3129,8 +2854,8 @@ function Steel1()
     fallout.add_obj_to_inven(Critter, Item)
     victim = Critter
     Critter_script = 758
-    while Tot_Critter_A do
-        if fallout.random(0, 1) then
+    while Tot_Critter_A > 0 do
+        if fallout.random(0, 1) ~= 0 then
             Critter_type = 16777490
         else
             Critter_type = 16777493
@@ -3142,29 +2867,19 @@ function Steel1()
         if Critter_direction > 5 then
             Critter_direction = Critter_direction % 6
         end
-        Place_critter()
+        Critter = Place_critter()
         if group_angle == 0 then
             Critter_direction = 3
-        else
-            if group_angle == 1 then
-                Critter_direction = 4
-            else
-                if group_angle == 2 then
-                    Critter_direction = 5
-                else
-                    if group_angle == 3 then
-                        Critter_direction = 0
-                    else
-                        if group_angle == 4 then
-                            Critter_direction = 1
-                        else
-                            if group_angle == 5 then
-                                Critter_direction = 2
-                            end
-                        end
-                    end
-                end
-            end
+        elseif group_angle == 1 then
+            Critter_direction = 4
+        elseif group_angle == 2 then
+            Critter_direction = 5
+        elseif group_angle == 3 then
+            Critter_direction = 0
+        elseif group_angle == 4 then
+            Critter_direction = 1
+        elseif group_angle == 5 then
+            Critter_direction = 2
         end
         if fallout.random(0, 2) == 0 then
             Critter_direction = Critter_direction + (fallout.random(0, 2) - 1)
@@ -3190,28 +2905,18 @@ function Steel1()
     Critter_script = 850
     if group_angle == 0 then
         group_angle = 3
-    else
-        if group_angle == 1 then
-            group_angle = 4
-        else
-            if group_angle == 2 then
-                group_angle = 5
-            else
-                if group_angle == 3 then
-                    group_angle = 0
-                else
-                    if group_angle == 4 then
-                        group_angle = 1
-                    else
-                        if group_angle == 5 then
-                            group_angle = 2
-                        end
-                    end
-                end
-            end
-        end
+    elseif group_angle == 1 then
+        group_angle = 4
+    elseif group_angle == 2 then
+        group_angle = 5
+    elseif group_angle == 3 then
+        group_angle = 0
+    elseif group_angle == 4 then
+        group_angle = 1
+    elseif group_angle == 5 then
+        group_angle = 2
     end
-    while Tot_Critter_B do
+    while Tot_Critter_B > 0 do
         Critter_direction = group_angle + (fallout.random(0, 2) - 1)
         while Critter_direction < 0 do
             Critter_direction = Critter_direction + 6
@@ -3219,29 +2924,19 @@ function Steel1()
         if Critter_direction > 5 then
             Critter_direction = Critter_direction % 6
         end
-        Place_critter()
+        Critter = Place_critter()
         if group_angle == 0 then
             Critter_direction = 3
-        else
-            if group_angle == 1 then
-                Critter_direction = 4
-            else
-                if group_angle == 2 then
-                    Critter_direction = 5
-                else
-                    if group_angle == 3 then
-                        Critter_direction = 0
-                    else
-                        if group_angle == 4 then
-                            Critter_direction = 1
-                        else
-                            if group_angle == 5 then
-                                Critter_direction = 2
-                            end
-                        end
-                    end
-                end
-            end
+        elseif group_angle == 1 then
+            Critter_direction = 4
+        elseif group_angle == 2 then
+            Critter_direction = 5
+        elseif group_angle == 3 then
+            Critter_direction = 0
+        elseif group_angle == 4 then
+            Critter_direction = 1
+        elseif group_angle == 5 then
+            Critter_direction = 2
         end
         if fallout.random(0, 2) == 0 then
             Critter_direction = Critter_direction + (fallout.random(0, 2) - 1)
@@ -3279,14 +2974,15 @@ function Steel2()
     Inner_ring = (fallout.get_critter_stat(fallout.dude_obj(), 1) // 3) + 3
     Critter_type = 16777227
     Critter_script = 12
-    while Tot_Critter_A do
+    while Tot_Critter_A > 0 do
         Critter_direction = fallout.random(3, 5)
-        Place_critter()
+        Critter = Place_critter()
         if fallout.random(1, 3) == 1 then
             fallout.anim(Critter, 1000, fallout.random(0, 5))
-            continue
+        else
+            fallout.anim(Critter, 1000,
+                fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
         end
-        fallout.anim(Critter, 1000, fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
         Tot_Critter_A = Tot_Critter_A - 1
     end
     fallout.set_global_var(288, 3)
@@ -3314,7 +3010,8 @@ function Steel3()
                 if v0 == 1 then
                     fallout.display_msg(fallout.message_str(112, 112) .. v1 .. fallout.message_str(112, 113))
                 else
-                    fallout.display_msg(fallout.message_str(112, 114) .. v0 .. fallout.message_str(112, 115) .. v1 .. fallout.message_str(112, 116))
+                    fallout.display_msg(fallout.message_str(112, 114) ..
+                        v0 .. fallout.message_str(112, 115) .. v1 .. fallout.message_str(112, 116))
                 end
                 fallout.critter_injure(fallout.dude_obj(), 2)
             else
@@ -3329,7 +3026,8 @@ function Steel3()
                     if v1 == 1 then
                         fallout.display_msg(fallout.message_str(112, 120) .. v0 .. fallout.message_str(112, 121))
                     else
-                        fallout.display_msg(fallout.message_str(112, 122) .. v0 .. fallout.message_str(112, 123) .. v1 .. fallout.message_str(112, 124))
+                        fallout.display_msg(fallout.message_str(112, 122) ..
+                            v0 .. fallout.message_str(112, 123) .. v1 .. fallout.message_str(112, 124))
                     end
                     fallout.critter_injure(fallout.dude_obj(), 2)
                 end
@@ -3348,7 +3046,7 @@ function Steel4()
     Inner_ring = (fallout.get_critter_stat(fallout.dude_obj(), 1) // 3) + 4
     group_angle = dude_rot
     fallout.set_external_var("random_seed_1", 0)
-    if fallout.random(0, 1) then
+    if fallout.random(0, 1) ~= 0 then
         Critter_type = 16777491
     else
         Critter_type = 16777494
@@ -3361,29 +3059,19 @@ function Steel4()
     if Critter_direction > 5 then
         Critter_direction = Critter_direction % 6
     end
-    Place_critter()
+    Critter = Place_critter()
     if group_angle == 0 then
         Critter_direction = 3
-    else
-        if group_angle == 1 then
-            Critter_direction = 4
-        else
-            if group_angle == 2 then
-                Critter_direction = 5
-            else
-                if group_angle == 3 then
-                    Critter_direction = 0
-                else
-                    if group_angle == 4 then
-                        Critter_direction = 1
-                    else
-                        if group_angle == 5 then
-                            Critter_direction = 2
-                        end
-                    end
-                end
-            end
-        end
+    elseif group_angle == 1 then
+        Critter_direction = 4
+    elseif group_angle == 2 then
+        Critter_direction = 5
+    elseif group_angle == 3 then
+        Critter_direction = 0
+    elseif group_angle == 4 then
+        Critter_direction = 1
+    elseif group_angle == 5 then
+        Critter_direction = 2
     end
     if fallout.random(0, 2) == 0 then
         Critter_direction = Critter_direction + (fallout.random(0, 2) - 1)
@@ -3398,8 +3086,8 @@ function Steel4()
     Item = fallout.create_object_sid(28, 0, 0, -1)
     fallout.add_obj_to_inven(Critter, Item)
     Critter_script = 758
-    while Tot_Critter_A do
-        if fallout.random(0, 1) then
+    while Tot_Critter_A > 0 do
+        if fallout.random(0, 1) ~= 0 then
             Critter_type = 16777490
         else
             Critter_type = 16777493
@@ -3411,29 +3099,19 @@ function Steel4()
         if Critter_direction > 5 then
             Critter_direction = Critter_direction % 6
         end
-        Place_critter()
+        Critter = Place_critter()
         if group_angle == 0 then
             Critter_direction = 3
-        else
-            if group_angle == 1 then
-                Critter_direction = 4
-            else
-                if group_angle == 2 then
-                    Critter_direction = 5
-                else
-                    if group_angle == 3 then
-                        Critter_direction = 0
-                    else
-                        if group_angle == 4 then
-                            Critter_direction = 1
-                        else
-                            if group_angle == 5 then
-                                Critter_direction = 2
-                            end
-                        end
-                    end
-                end
-            end
+        elseif group_angle == 1 then
+            Critter_direction = 4
+        elseif group_angle == 2 then
+            Critter_direction = 5
+        elseif group_angle == 3 then
+            Critter_direction = 0
+        elseif group_angle == 4 then
+            Critter_direction = 1
+        elseif group_angle == 5 then
+            Critter_direction = 2
         end
         if fallout.random(0, 2) == 0 then
             Critter_direction = Critter_direction + (fallout.random(0, 2) - 1)
@@ -3485,65 +3163,67 @@ function Steel5()
         fallout.critter_attempt_placement(Critter, Critter_tile, 0)
     end
     Tot_Critter_A = fallout.random(1, 2)
-    while Tot_Critter_A do
+    while Tot_Critter_A > 0 do
         Critter_type = 16777244
         Critter_script = 34
         Critter_direction = fallout.random(0, 5)
-        Place_critter()
+        Critter = Place_critter()
         fallout.anim(Critter, 1000, fallout.random(0, 5))
         Tot_Critter_A = Tot_Critter_A - 1
     end
     Tot_Critter_A = fallout.random(2, 4)
     Critter_type = 16777245
     Critter_script = 752
-    while Tot_Critter_A do
+    while Tot_Critter_A > 0 do
         Critter_direction = fallout.random(0, 5)
-        Place_critter()
+        Critter = Place_critter()
         fallout.anim(Critter, 1000, fallout.random(0, 5))
-        if fallout.random(0, 1) then
+        if fallout.random(0, 1) ~= 0 then
             Item = fallout.create_object_sid(71, 0, 0, -1)
             fallout.add_obj_to_inven(Critter, Item)
         end
-        if fallout.random(0, 1) then
+        if fallout.random(0, 1) ~= 0 then
             Item = fallout.create_object_sid(29, 0, 0, -1)
             fallout.add_mult_objs_to_inven(Critter, Item, 2 * (fallout.has_trait(0, fallout.dude_obj(), 40) + 1))
         end
-        if fallout.random(0, 1) then
+        if fallout.random(0, 1) ~= 0 then
             Item = fallout.create_object_sid(30, 0, 0, -1)
             fallout.add_mult_objs_to_inven(Critter, Item, 1 * (fallout.has_trait(0, fallout.dude_obj(), 40) + 1))
         end
-        if fallout.random(0, 1) then
+        if fallout.random(0, 1) ~= 0 then
             Item = fallout.create_object_sid(34, 0, 0, -1)
             fallout.add_mult_objs_to_inven(Critter, Item, 2 * (fallout.has_trait(0, fallout.dude_obj(), 40) + 1))
         end
-        if fallout.random(0, 1) then
+        if fallout.random(0, 1) ~= 0 then
             Item = fallout.create_object_sid(40, 0, 0, -1)
             fallout.add_mult_objs_to_inven(Critter, Item, fallout.random(0, 4))
         end
-        if fallout.random(0, 1) then
+        if fallout.random(0, 1) ~= 0 then
             Item = fallout.create_object_sid(47, 0, 0, -1)
             fallout.add_mult_objs_to_inven(Critter, Item, fallout.random(0, 1))
         end
-        if fallout.random(0, 1) then
+        if fallout.random(0, 1) ~= 0 then
             Item = fallout.create_object_sid(81, 0, 0, -1)
             fallout.add_mult_objs_to_inven(Critter, Item, fallout.random(0, 3))
         end
-        Item = fallout.item_caps_adjust(Critter, fallout.random(12, 32) * (fallout.has_trait(0, fallout.dude_obj(), 20) + 1))
+        Item = fallout.item_caps_adjust(Critter,
+            fallout.random(12, 32) * (fallout.has_trait(0, fallout.dude_obj(), 20) + 1))
         Tot_Critter_A = Tot_Critter_A - 1
     end
     Tot_Critter_B = fallout.random(6, 8)
     Critter_script = 755
-    while Tot_Critter_B do
+    while Tot_Critter_B > 0 do
         Critter_direction = fallout.random(0, 5)
-        if fallout.random(0, 1) then
+        if fallout.random(0, 1) ~= 0 then
             Critter_type = 16777243
         else
             Critter_type = 16777238
         end
-        Place_critter()
+        Critter = Place_critter()
         fallout.anim(Critter, 1000, fallout.random(0, 5))
-        Item = fallout.item_caps_adjust(Critter, fallout.random(1, 15) * (fallout.has_trait(0, fallout.dude_obj(), 20) + 1))
-        if fallout.random(0, 1) then
+        Item = fallout.item_caps_adjust(Critter,
+            fallout.random(1, 15) * (fallout.has_trait(0, fallout.dude_obj(), 20) + 1))
+        if fallout.random(0, 1) ~= 0 then
             Item = fallout.create_object_sid(95, 0, 0, -1)
             fallout.add_obj_to_inven(Critter, Item)
             if fallout.has_trait(0, fallout.dude_obj(), 40) then
@@ -3561,7 +3241,7 @@ function Steel5()
             Item = fallout.create_object_sid(10, 0, 0, -1)
         end
         fallout.add_obj_to_inven(Critter, Item)
-        if fallout.random(0, 1) then
+        if fallout.random(0, 1) ~= 0 then
             if fallout.random(0, 2) == 0 then
                 Item = fallout.create_object_sid(125, 0, 0, -1)
             else
@@ -3582,7 +3262,7 @@ function Steel6()
     group_angle = fallout.random(0, 5)
     fallout.set_external_var("random_seed_1", 0)
     Critter_script = 759
-    if fallout.random(0, 1) then
+    if fallout.random(0, 1) ~= 0 then
         Critter_type = 16777491
     else
         Critter_type = 16777494
@@ -3594,29 +3274,19 @@ function Steel6()
     if Critter_direction > 5 then
         Critter_direction = Critter_direction % 6
     end
-    Place_critter()
+    Critter = Place_critter()
     if group_angle == 0 then
         Critter_direction = 3
-    else
-        if group_angle == 1 then
-            Critter_direction = 4
-        else
-            if group_angle == 2 then
-                Critter_direction = 5
-            else
-                if group_angle == 3 then
-                    Critter_direction = 0
-                else
-                    if group_angle == 4 then
-                        Critter_direction = 1
-                    else
-                        if group_angle == 5 then
-                            Critter_direction = 2
-                        end
-                    end
-                end
-            end
-        end
+    elseif group_angle == 1 then
+        Critter_direction = 4
+    elseif group_angle == 2 then
+        Critter_direction = 5
+    elseif group_angle == 3 then
+        Critter_direction = 0
+    elseif group_angle == 4 then
+        Critter_direction = 1
+    elseif group_angle == 5 then
+        Critter_direction = 2
     end
     if fallout.random(0, 2) == 0 then
         Critter_direction = Critter_direction + (fallout.random(0, 2) - 1)
@@ -3631,8 +3301,8 @@ function Steel6()
     Item = fallout.create_object_sid(28, 0, 0, -1)
     fallout.add_obj_to_inven(Critter, Item)
     Critter_script = 758
-    while Tot_Critter_A do
-        if fallout.random(0, 1) then
+    while Tot_Critter_A > 0 do
+        if fallout.random(0, 1) ~= 0 then
             Critter_type = 16777490
         else
             Critter_type = 16777493
@@ -3644,29 +3314,19 @@ function Steel6()
         if Critter_direction > 5 then
             Critter_direction = Critter_direction % 6
         end
-        Place_critter()
+        Critter = Place_critter()
         if group_angle == 0 then
             Critter_direction = 3
-        else
-            if group_angle == 1 then
-                Critter_direction = 4
-            else
-                if group_angle == 2 then
-                    Critter_direction = 5
-                else
-                    if group_angle == 3 then
-                        Critter_direction = 0
-                    else
-                        if group_angle == 4 then
-                            Critter_direction = 1
-                        else
-                            if group_angle == 5 then
-                                Critter_direction = 2
-                            end
-                        end
-                    end
-                end
-            end
+        elseif group_angle == 1 then
+            Critter_direction = 4
+        elseif group_angle == 2 then
+            Critter_direction = 5
+        elseif group_angle == 3 then
+            Critter_direction = 0
+        elseif group_angle == 4 then
+            Critter_direction = 1
+        elseif group_angle == 5 then
+            Critter_direction = 2
         end
         if fallout.random(0, 2) == 0 then
             Critter_direction = Critter_direction + (fallout.random(0, 2) - 1)
@@ -3683,10 +3343,10 @@ function Steel6()
             fallout.add_obj_to_inven(Critter, Item)
             Item = fallout.create_object_sid(37, 0, 0, -1)
             fallout.add_mult_objs_to_inven(Critter, Item, fallout.random(1, 3))
-            continue
+        else
+            Item = fallout.create_object_sid(12, 0, 0, -1)
+            fallout.add_obj_to_inven(Critter, Item)
         end
-        Item = fallout.create_object_sid(12, 0, 0, -1)
-        fallout.add_obj_to_inven(Critter, Item)
         Tot_Critter_A = Tot_Critter_A - 1
     end
     victim = Critter
@@ -3694,28 +3354,18 @@ function Steel6()
     Critter_script = 749
     if group_angle == 0 then
         group_angle = 3
-    else
-        if group_angle == 1 then
-            group_angle = 4
-        else
-            if group_angle == 2 then
-                group_angle = 5
-            else
-                if group_angle == 3 then
-                    group_angle = 0
-                else
-                    if group_angle == 4 then
-                        group_angle = 1
-                    else
-                        if group_angle == 5 then
-                            group_angle = 2
-                        end
-                    end
-                end
-            end
-        end
+    elseif group_angle == 1 then
+        group_angle = 4
+    elseif group_angle == 2 then
+        group_angle = 5
+    elseif group_angle == 3 then
+        group_angle = 0
+    elseif group_angle == 4 then
+        group_angle = 1
+    elseif group_angle == 5 then
+        group_angle = 2
     end
-    while Tot_Critter_B do
+    while Tot_Critter_B > 0 do
         Critter_direction = group_angle + (fallout.random(0, 2) - 1)
         while Critter_direction < 0 do
             Critter_direction = Critter_direction + 6
@@ -3723,29 +3373,19 @@ function Steel6()
         if Critter_direction > 5 then
             Critter_direction = Critter_direction % 6
         end
-        Place_critter()
+        Critter = Place_critter()
         if group_angle == 0 then
             Critter_direction = 3
-        else
-            if group_angle == 1 then
-                Critter_direction = 4
-            else
-                if group_angle == 2 then
-                    Critter_direction = 5
-                else
-                    if group_angle == 3 then
-                        Critter_direction = 0
-                    else
-                        if group_angle == 4 then
-                            Critter_direction = 1
-                        else
-                            if group_angle == 5 then
-                                Critter_direction = 2
-                            end
-                        end
-                    end
-                end
-            end
+        elseif group_angle == 1 then
+            Critter_direction = 4
+        elseif group_angle == 2 then
+            Critter_direction = 5
+        elseif group_angle == 3 then
+            Critter_direction = 0
+        elseif group_angle == 4 then
+            Critter_direction = 1
+        elseif group_angle == 5 then
+            Critter_direction = 2
         end
         if fallout.random(0, 2) == 0 then
             Critter_direction = Critter_direction + (fallout.random(0, 2) - 1)
@@ -3769,7 +3409,7 @@ function Steel6()
             Item = fallout.create_object_sid(8, 0, 0, -1)
             fallout.add_obj_to_inven(Critter, Item)
         end
-        if fallout.random(0, 1) then
+        if fallout.random(0, 1) ~= 0 then
             Item = fallout.create_object_sid(40, 0, 0, -1)
             fallout.add_obj_to_inven(Critter, Item)
         end
@@ -3789,10 +3429,11 @@ function Vats1()
     Inner_ring = (fallout.get_critter_stat(fallout.dude_obj(), 1) // 3) + 3
     Critter_type = 16777403
     Critter_script = 850
-    while Tot_Critter_A do
+    while Tot_Critter_A > 0 do
         Critter_direction = fallout.random(0, 2)
-        Place_critter()
-        fallout.anim(Critter, 1000, fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
+        Critter = Place_critter()
+        fallout.anim(Critter, 1000,
+            fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
         if fallout.random(0, 1) == 1 then
             if fallout.random(0, 3) == 0 then
                 Item = fallout.create_object_sid(11, 0, 0, -1)
@@ -3807,10 +3448,11 @@ function Vats1()
     end
     Critter_type = 16777241
     Critter_script = 854
-    while Tot_Critter_B do
+    while Tot_Critter_B > 0 do
         Critter_direction = fallout.random(0, 2)
-        Place_critter()
-        fallout.anim(Critter, 1000, fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
+        Critter = Place_critter()
+        fallout.anim(Critter, 1000,
+            fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
         Item = fallout.create_object_sid(12, 0, 0, -1)
         fallout.add_obj_to_inven(Critter, Item)
         Item = fallout.create_object_sid(35, 0, 0, -1)
@@ -3823,7 +3465,7 @@ end
 
 function Vats2()
     fallout.display_msg(fallout.message_str(112, 254))
-    if fallout.random(0, 1) then
+    if fallout.random(0, 1) ~= 0 then
         Critter_type = 16777259
         Critter_script = 953
     else
@@ -3833,10 +3475,11 @@ function Vats2()
     Tot_Critter_A = fallout.random(3, 5)
     Outer_ring = (fallout.get_critter_stat(fallout.dude_obj(), 1) // 3) + 5
     Inner_ring = (fallout.get_critter_stat(fallout.dude_obj(), 1) // 3) + 2
-    while Tot_Critter_A do
+    while Tot_Critter_A > 0 do
         Critter_direction = fallout.random(0, 2)
-        Place_critter()
-        fallout.anim(Critter, 1000, fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
+        Critter = Place_critter()
+        fallout.anim(Critter, 1000,
+            fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
         Tot_Critter_A = Tot_Critter_A - 1
     end
     fallout.set_global_var(288, 3)
@@ -3850,19 +3493,21 @@ function Vats3()
     Inner_ring = (fallout.get_critter_stat(fallout.dude_obj(), 1) // 3) + 2
     Critter_type = 16777261
     Critter_script = 953
-    while Tot_Critter_A do
+    while Tot_Critter_A > 0 do
         Critter_direction = fallout.random(0, 2)
-        Place_critter()
-        fallout.anim(Critter, 1000, fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
+        Critter = Place_critter()
+        fallout.anim(Critter, 1000,
+            fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
         Tot_Critter_A = Tot_Critter_A - 1
     end
     Critter_type = 16777259
     Critter_script = 953
     Tot_Critter_A = 1
-    while Tot_Critter_A do
+    while Tot_Critter_A > 0 do
         Critter_direction = fallout.random(0, 2)
-        Place_critter()
-        fallout.anim(Critter, 1000, fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
+        Critter = Place_critter()
+        fallout.anim(Critter, 1000,
+            fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
         Tot_Critter_A = Tot_Critter_A - 1
     end
     Outer_ring = (fallout.get_critter_stat(fallout.dude_obj(), 1) // 2) + 6
@@ -3870,22 +3515,23 @@ function Vats3()
     Tot_Critter_A = fallout.random(2, 3)
     Critter_type = 16777403
     Critter_script = 850
-    while Tot_Critter_A do
+    while Tot_Critter_A > 0 do
         Critter_direction = fallout.random(0, 2)
-        Place_critter()
-        fallout.anim(Critter, 1000, fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
+        Critter = Place_critter()
+        fallout.anim(Critter, 1000,
+            fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
         Tot_Critter_A = Tot_Critter_A - 1
     end
     Critter_type = 16777241
     Critter_script = 854
     Critter_direction = fallout.random(0, 2)
-    Place_critter()
+    Critter = Place_critter()
     fallout.anim(Critter, 1000, fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
     Item = fallout.create_object_sid(118, 0, 0, -1)
     fallout.add_obj_to_inven(Critter, Item)
     Item = fallout.create_object_sid(38, 0, 0, -1)
     fallout.add_mult_objs_to_inven(Critter, Item, fallout.has_trait(0, fallout.dude_obj(), 40) + 2)
-    if not(fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 100)) then
+    if fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 100) == 0 then
         Item = fallout.create_object_sid(100, 0, 0, -1)
         fallout.add_obj_to_inven(Critter, Item)
     end
@@ -3900,9 +3546,9 @@ function Vats4()
     Inner_ring = (fallout.get_critter_stat(fallout.dude_obj(), 1) // 2) + 6
     Critter_type = 16777403
     Critter_script = 850
-    while Tot_Critter_A do
+    while Tot_Critter_A > 0 do
         Critter_direction = fallout.random(0, 2)
-        Place_critter()
+        Critter = Place_critter()
         fallout.anim(Critter, 1000, fallout.random(3, 4))
         if fallout.random(0, 1) == 1 then
             if fallout.random(0, 1) == 1 then
@@ -3919,9 +3565,9 @@ function Vats4()
     Critter_type = 16777241
     Critter_script = 854
     Tot_Critter_B = 1
-    while Tot_Critter_B do
+    while Tot_Critter_B > 0 do
         Critter_direction = fallout.random(0, 2)
-        Place_critter()
+        Critter = Place_critter()
         fallout.anim(Critter, 1000, fallout.random(3, 4))
         Item = fallout.create_object_sid(12, 0, 0, -1)
         fallout.add_obj_to_inven(Critter, Item)
@@ -3934,7 +3580,7 @@ function Vats4()
     Critter_type = 16777261
     Critter_script = 953
     Critter_direction = fallout.random(0, 2)
-    Place_critter()
+    Critter = Place_critter()
     fallout.anim(Critter, 1000, fallout.random(3, 4))
     fallout.set_global_var(288, 3)
     stranger()
@@ -3957,7 +3603,8 @@ function Vats5()
             if v0 == 1 then
                 fallout.display_msg(fallout.message_str(112, 112) .. v1 .. fallout.message_str(112, 113))
             else
-                fallout.display_msg(fallout.message_str(112, 114) .. v0 .. fallout.message_str(112, 115) .. v1 .. fallout.message_str(112, 116))
+                fallout.display_msg(fallout.message_str(112, 114) ..
+                    v0 .. fallout.message_str(112, 115) .. v1 .. fallout.message_str(112, 116))
             end
             fallout.critter_injure(fallout.dude_obj(), 2)
         else
@@ -3973,7 +3620,8 @@ function Vats5()
                 if v1 == 1 then
                     fallout.display_msg(fallout.message_str(112, 120) .. v0 .. fallout.message_str(112, 121))
                 else
-                    fallout.display_msg(fallout.message_str(112, 122) .. v0 .. fallout.message_str(112, 123) .. v1 .. fallout.message_str(112, 124))
+                    fallout.display_msg(fallout.message_str(112, 122) ..
+                        v0 .. fallout.message_str(112, 123) .. v1 .. fallout.message_str(112, 124))
                 end
                 fallout.critter_injure(fallout.dude_obj(), 2)
             end
@@ -3985,15 +3633,29 @@ end
 
 function Vats6()
     fallout.display_msg(fallout.message_str(112, 279))
-    Item = fallout.create_object_sid(33554804, fallout.tile_num_in_direction(Dude_tile + fallout.random(0, 8) - 4, fallout.random(0, 5), fallout.random(8, 10)), 0, -1)
-    Item = fallout.create_object_sid(33554653, fallout.tile_num_in_direction(Dude_tile + fallout.random(0, 8) - 4, fallout.random(0, 5), fallout.random(5, 9)), 0, -1)
-    Item = fallout.create_object_sid(33554654, fallout.tile_num_in_direction(Dude_tile + fallout.random(0, 8) - 4, fallout.random(0, 5), fallout.random(5, 9)), 0, -1)
-    Item = fallout.create_object_sid(33554747, fallout.tile_num_in_direction(Dude_tile + fallout.random(0, 8) - 4, fallout.random(0, 5), fallout.random(5, 9)), 0, -1)
-    Item = fallout.create_object_sid(33555207, fallout.tile_num_in_direction(Dude_tile + fallout.random(0, 8) - 4, fallout.random(0, 5), fallout.random(5, 9)), 0, -1)
+    Item = fallout.create_object_sid(33554804,
+        fallout.tile_num_in_direction(Dude_tile + fallout.random(0, 8) - 4, fallout.random(0, 5), fallout.random(8, 10)),
+        0, -1)
+    Item = fallout.create_object_sid(33554653,
+        fallout.tile_num_in_direction(Dude_tile + fallout.random(0, 8) - 4, fallout.random(0, 5), fallout.random(5, 9)),
+        0, -1)
+    Item = fallout.create_object_sid(33554654,
+        fallout.tile_num_in_direction(Dude_tile + fallout.random(0, 8) - 4, fallout.random(0, 5), fallout.random(5, 9)),
+        0, -1)
+    Item = fallout.create_object_sid(33554747,
+        fallout.tile_num_in_direction(Dude_tile + fallout.random(0, 8) - 4, fallout.random(0, 5), fallout.random(5, 9)),
+        0, -1)
+    Item = fallout.create_object_sid(33555207,
+        fallout.tile_num_in_direction(Dude_tile + fallout.random(0, 8) - 4, fallout.random(0, 5), fallout.random(5, 9)),
+        0, -1)
     if time.is_night() then
-        Item = fallout.create_object_sid(33554433, fallout.tile_num_in_direction(Dude_tile + fallout.random(0, 8) - 4, fallout.random(0, 5), fallout.random(8, 10)), 0, -1)
-        if fallout.random(0, 1) then
-            Item = fallout.create_object_sid(33554433, fallout.tile_num_in_direction(Dude_tile + fallout.random(0, 8) - 4, fallout.random(0, 5), fallout.random(8, 10)), 0, -1)
+        Item = fallout.create_object_sid(33554433,
+            fallout.tile_num_in_direction(Dude_tile + fallout.random(0, 8) - 4, fallout.random(0, 5),
+                fallout.random(8, 10)), 0, -1)
+        if fallout.random(0, 1) ~= 0 then
+            Item = fallout.create_object_sid(33554433,
+                fallout.tile_num_in_direction(Dude_tile + fallout.random(0, 8) - 4, fallout.random(0, 5),
+                    fallout.random(8, 10)), 0, -1)
         end
     end
     Outer_ring = (fallout.get_critter_stat(fallout.dude_obj(), 1) // 2) + 6
@@ -4002,7 +3664,7 @@ function Vats6()
     Critter_type = 16777403
     Critter_script = 850
     Tot_Critter_A = fallout.random(2, 3)
-    while Tot_Critter_A do
+    while Tot_Critter_A > 0 do
         Critter_direction = group_angle + (fallout.random(0, 2) - 1)
         while Critter_direction < 0 do
             Critter_direction = Critter_direction + 6
@@ -4010,8 +3672,9 @@ function Vats6()
         if Critter_direction > 5 then
             Critter_direction = Critter_direction % 6
         end
-        Place_critter()
-        fallout.anim(Critter, 1000, fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
+        Critter = Place_critter()
+        fallout.anim(Critter, 1000,
+            fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
         Tot_Critter_A = Tot_Critter_A - 1
     end
     Critter_type = 16777241
@@ -4024,7 +3687,7 @@ function Vats6()
     if Critter_direction > 5 then
         Critter_direction = Critter_direction % 6
     end
-    Place_critter()
+    Critter = Place_critter()
     fallout.anim(Critter, 1000, fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
     Item = fallout.create_object_sid(12, 0, 0, -1)
     fallout.add_obj_to_inven(Critter, Item)
@@ -4037,28 +3700,18 @@ function Vats6()
     Tot_Critter_A = 2
     if group_angle == 0 then
         group_angle = 3
-    else
-        if group_angle == 1 then
-            group_angle = 4
-        else
-            if group_angle == 2 then
-                group_angle = 5
-            else
-                if group_angle == 3 then
-                    group_angle = 0
-                else
-                    if group_angle == 4 then
-                        group_angle = 1
-                    else
-                        if group_angle == 5 then
-                            group_angle = 2
-                        end
-                    end
-                end
-            end
-        end
+    elseif group_angle == 1 then
+        group_angle = 4
+    elseif group_angle == 2 then
+        group_angle = 5
+    elseif group_angle == 3 then
+        group_angle = 0
+    elseif group_angle == 4 then
+        group_angle = 1
+    elseif group_angle == 5 then
+        group_angle = 2
     end
-    while Tot_Critter_A do
+    while Tot_Critter_A > 0 do
         Critter_direction = group_angle + (fallout.random(0, 2) - 1)
         while Critter_direction < 0 do
             Critter_direction = Critter_direction + 6
@@ -4066,8 +3719,9 @@ function Vats6()
         if Critter_direction > 5 then
             Critter_direction = Critter_direction % 6
         end
-        Place_critter()
-        fallout.anim(Critter, 1000, fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
+        Critter = Place_critter()
+        fallout.anim(Critter, 1000,
+            fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
         Tot_Critter_A = Tot_Critter_A - 1
     end
     fallout.set_global_var(288, 3)
@@ -4082,24 +3736,26 @@ function Glow1()
     Inner_ring = (fallout.get_critter_stat(fallout.dude_obj(), 1) // 2) + 4
     Critter_type = 16777403
     Critter_script = 850
-    while Tot_Critter_A do
+    while Tot_Critter_A > 0 do
         Critter_direction = fallout.random(0, 5)
-        Place_critter()
-        fallout.anim(Critter, 1000, fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
+        Critter = Place_critter()
+        fallout.anim(Critter, 1000,
+            fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
         Tot_Critter_A = Tot_Critter_A - 1
     end
-    if fallout.random(0, 1) then
+    if fallout.random(0, 1) ~= 0 then
         Critter_type = 16777241
         Critter_script = 854
         Critter_direction = fallout.random(0, 5)
-        Place_critter()
-        fallout.anim(Critter, 1000, fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
+        Critter = Place_critter()
+        fallout.anim(Critter, 1000,
+            fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
         Item = fallout.create_object_sid(118, 0, 0, -1)
         fallout.add_obj_to_inven(Critter, Item)
         if fallout.has_trait(0, fallout.dude_obj(), 40) then
             v0 = 5
         end
-        while v0 do
+        while v0 > 0 do
             Item = fallout.create_object_sid(38, 0, 0, -1)
             fallout.add_obj_to_inven(Critter, Item)
             v0 = v0 - 1
@@ -4110,11 +3766,10 @@ function Glow1()
 end
 
 function Glow2()
-    local v0 = 0
     fallout.display_msg(fallout.message_str(112, 281))
-    v0 = fallout.game_time_hour()
+    local game_time_hour = fallout.game_time_hour()
     Tot_Critter_A = fallout.random(3, 5)
-    if (v0 > 600) and (v0 < 1900) then
+    if game_time_hour > 600 and game_time_hour < 1900 then
         Outer_ring = (fallout.get_critter_stat(fallout.dude_obj(), 1) // 3) + 5
         Inner_ring = (fallout.get_critter_stat(fallout.dude_obj(), 1) // 3) + 2
     else
@@ -4123,17 +3778,19 @@ function Glow2()
     end
     Critter_type = 16777261
     Critter_script = 953
-    while Tot_Critter_A do
+    while Tot_Critter_A > 0 do
         Critter_direction = fallout.random(0, 5)
-        Place_critter()
-        fallout.anim(Critter, 1000, fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
+        Critter = Place_critter()
+        fallout.anim(Critter, 1000,
+            fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
         Tot_Critter_A = Tot_Critter_A - 1
     end
-    if fallout.random(0, 1) then
+    if fallout.random(0, 1) ~= 0 then
         Critter_direction = fallout.random(0, 4)
         Critter_type = 16777259
-        Place_critter()
-        fallout.anim(Critter, 1000, fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
+        Critter = Place_critter()
+        fallout.anim(Critter, 1000,
+            fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
     end
     fallout.set_global_var(288, 3)
     stranger()
@@ -4145,10 +3802,11 @@ function Glow3()
     Outer_ring = (fallout.get_critter_stat(fallout.dude_obj(), 1) // 2) + 8
     Inner_ring = (fallout.get_critter_stat(fallout.dude_obj(), 1) // 2) + 5
     Critter_type = 16777227
-    while Tot_Critter_A do
+    while Tot_Critter_A > 0 do
         Critter_direction = fallout.random(0, 4)
-        Place_critter()
-        fallout.anim(Critter, 1000, fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
+        Critter = Place_critter()
+        fallout.anim(Critter, 1000,
+            fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
         Item = fallout.create_object_sid(92, 0, 0, -1)
         fallout.add_obj_to_inven(Critter, Item)
         Tot_Critter_A = Tot_Critter_A - 1
@@ -4164,10 +3822,11 @@ function Glow4()
     Critter_type = 16777261
     Critter_script = 953
     Tot_Critter_A = 1
-    while Tot_Critter_A do
+    while Tot_Critter_A > 0 do
         Critter_direction = fallout.random(0, 2)
-        Place_critter()
-        fallout.anim(Critter, 1000, fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
+        Critter = Place_critter()
+        fallout.anim(Critter, 1000,
+            fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
         Tot_Critter_A = Tot_Critter_A - 1
     end
     fallout.radiation_inc(fallout.dude_obj(), fallout.random(15, 30))
@@ -4181,7 +3840,7 @@ function Glow5()
     Tot_Critter_A = 1 + fallout.random(0, 1)
     Critter_type = 16777261
     Critter_script = 953
-    while Tot_Critter_A do
+    while Tot_Critter_A > 0 do
         Critter_direction = group_angle + (fallout.random(0, 2) - 1)
         while Critter_direction < 0 do
             Critter_direction = Critter_direction + 6
@@ -4189,29 +3848,19 @@ function Glow5()
         if Critter_direction > 5 then
             Critter_direction = Critter_direction % 6
         end
-        Place_critter()
+        Critter = Place_critter()
         if group_angle == 0 then
             Critter_direction = 3
-        else
-            if group_angle == 1 then
-                Critter_direction = 4
-            else
-                if group_angle == 2 then
-                    Critter_direction = 5
-                else
-                    if group_angle == 3 then
-                        Critter_direction = 0
-                    else
-                        if group_angle == 4 then
-                            Critter_direction = 1
-                        else
-                            if group_angle == 5 then
-                                Critter_direction = 2
-                            end
-                        end
-                    end
-                end
-            end
+        elseif group_angle == 1 then
+            Critter_direction = 4
+        elseif group_angle == 2 then
+            Critter_direction = 5
+        elseif group_angle == 3 then
+            Critter_direction = 0
+        elseif group_angle == 4 then
+            Critter_direction = 1
+        elseif group_angle == 5 then
+            Critter_direction = 2
         end
         if fallout.random(0, 2) == 0 then
             Critter_direction = Critter_direction + (fallout.random(0, 2) - 1)
@@ -4225,7 +3874,7 @@ function Glow5()
         fallout.anim(Critter, 1000, Critter_direction)
         Tot_Critter_A = Tot_Critter_A - 1
     end
-    if fallout.random(0, 1) then
+    if fallout.random(0, 1) ~= 0 then
         Critter_type = 16777259
         Critter_direction = group_angle + (fallout.random(0, 2) - 1)
         while Critter_direction < 0 do
@@ -4234,29 +3883,19 @@ function Glow5()
         if Critter_direction > 5 then
             Critter_direction = Critter_direction % 6
         end
-        Place_critter()
+        Critter = Place_critter()
         if group_angle == 0 then
             Critter_direction = 3
-        else
-            if group_angle == 1 then
-                Critter_direction = 4
-            else
-                if group_angle == 2 then
-                    Critter_direction = 5
-                else
-                    if group_angle == 3 then
-                        Critter_direction = 0
-                    else
-                        if group_angle == 4 then
-                            Critter_direction = 1
-                        else
-                            if group_angle == 5 then
-                                Critter_direction = 2
-                            end
-                        end
-                    end
-                end
-            end
+        elseif group_angle == 1 then
+            Critter_direction = 4
+        elseif group_angle == 2 then
+            Critter_direction = 5
+        elseif group_angle == 3 then
+            Critter_direction = 0
+        elseif group_angle == 4 then
+            Critter_direction = 1
+        elseif group_angle == 5 then
+            Critter_direction = 2
         end
         if fallout.random(0, 2) == 0 then
             Critter_direction = Critter_direction + (fallout.random(0, 2) - 1)
@@ -4278,13 +3917,14 @@ function Glow6()
     Critter_script = 953
     Critter_type = 16777259
     Critter_direction = fallout.random(2, 5)
-    Place_critter()
+    Critter = Place_critter()
     fallout.anim(Critter, 1000, fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
-    if fallout.random(0, 1) then
+    if fallout.random(0, 1) ~= 0 then
         Critter_type = 16777261
         Critter_direction = fallout.random(1, 4)
-        Place_critter()
-        fallout.anim(Critter, 1000, fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
+        Critter = Place_critter()
+        fallout.anim(Critter, 1000,
+            fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
     end
     fallout.set_global_var(288, 3)
     stranger()
@@ -4298,17 +3938,19 @@ function Death1()
         Critter_direction = fallout.random(0, 5)
         Critter_type = 16777267
         Critter_script = 642
-        Place_critter()
-        fallout.anim(Critter, 1000, fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
+        Critter = Place_critter()
+        fallout.anim(Critter, 1000,
+            fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
     else
         fallout.display_msg(fallout.message_str(112, 287))
         Critter_type = 16777227
         Critter_script = 12
         Tot_Critter_A = fallout.random(3, 5)
-        while Tot_Critter_A do
+        while Tot_Critter_A > 0 do
             Critter_direction = fallout.random(0, 5)
-            Place_critter()
-            fallout.anim(Critter, 1000, fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
+            Critter = Place_critter()
+            fallout.anim(Critter, 1000,
+                fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
             Tot_Critter_A = Tot_Critter_A - 1
         end
     end
@@ -4322,7 +3964,7 @@ function Death2()
     Inner_ring = (fallout.get_critter_stat(fallout.dude_obj(), 1) // 3) + 3
     Critter_direction = fallout.random(0, 5)
     Critter_type = 16777259
-    Place_critter()
+    Critter = Place_critter()
     fallout.anim(Critter, 1000, fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
     fallout.set_global_var(288, 2)
     stranger()
@@ -4345,7 +3987,8 @@ function Death3()
             else
                 v1 = fallout.random(2, 3)
             end
-            fallout.display_msg(fallout.message_str(112, 114) .. v0 .. fallout.message_str(112, 115) .. v1 .. fallout.message_str(112, 116))
+            fallout.display_msg(fallout.message_str(112, 114) ..
+                v0 .. fallout.message_str(112, 115) .. v1 .. fallout.message_str(112, 116))
             fallout.critter_injure(fallout.dude_obj(), 2)
         end
         fallout.critter_dmg(fallout.dude_obj(), v1, 0)
@@ -4362,7 +4005,7 @@ function Death4()
     group_angle = fallout.random(0, 5)
     Critter_type = 16777227
     Critter_script = 12
-    while Tot_Critter_A do
+    while Tot_Critter_A > 0 do
         Critter_direction = group_angle + (fallout.random(0, 4) - 2)
         while Critter_direction < 0 do
             Critter_direction = Critter_direction + 6
@@ -4370,29 +4013,19 @@ function Death4()
         if Critter_direction > 5 then
             Critter_direction = Critter_direction % 6
         end
-        Place_critter()
+        Critter = Place_critter()
         if group_angle == 0 then
             Critter_direction = 3
-        else
-            if group_angle == 1 then
-                Critter_direction = 4
-            else
-                if group_angle == 2 then
-                    Critter_direction = 5
-                else
-                    if group_angle == 3 then
-                        Critter_direction = 0
-                    else
-                        if group_angle == 4 then
-                            Critter_direction = 1
-                        else
-                            if group_angle == 5 then
-                                Critter_direction = 2
-                            end
-                        end
-                    end
-                end
-            end
+        elseif group_angle == 1 then
+            Critter_direction = 4
+        elseif group_angle == 2 then
+            Critter_direction = 5
+        elseif group_angle == 3 then
+            Critter_direction = 0
+        elseif group_angle == 4 then
+            Critter_direction = 1
+        elseif group_angle == 5 then
+            Critter_direction = 2
         end
         if fallout.random(0, 2) == 0 then
             Critter_direction = Critter_direction + (fallout.random(0, 2) - 1)
@@ -4424,13 +4057,15 @@ function Death5()
         end
         Critter_type = 16777254
         Critter_script = 703
-        Place_critter()
-        fallout.anim(Critter, 1000, fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
+        Critter = Place_critter()
+        fallout.anim(Critter, 1000,
+            fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
         Item = fallout.create_object_sid(18, 0, 0, -1)
         fallout.add_obj_to_inven(Critter, Item)
         Item = fallout.create_object_sid(4, 0, 0, -1)
         fallout.add_obj_to_inven(Critter, Item)
-        Item = fallout.item_caps_adjust(Critter, (fallout.random(20, 60) * fallout.has_trait(0, fallout.dude_obj(), 20)) + 1)
+        Item = fallout.item_caps_adjust(Critter,
+            (fallout.random(20, 60) * fallout.has_trait(0, fallout.dude_obj(), 20)) + 1)
         Item = fallout.create_object_sid(40, 0, 0, -1)
         fallout.add_obj_to_inven(Critter, Item)
         Item = fallout.create_object_sid(31, 0, 0, -1)
@@ -4457,8 +4092,9 @@ function Death5()
             Critter_type = 16777378
         end
         Critter_script = 222
-        Place_critter()
-        fallout.anim(Critter, 1000, fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
+        Critter = Place_critter()
+        fallout.anim(Critter, 1000,
+            fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
     end
     fallout.set_global_var(288, 2)
     stranger()
@@ -4472,15 +4108,16 @@ function Death6()
         Critter_direction = fallout.random(0, 5)
         Critter_type = 16777267
         Critter_script = 642
-        Place_critter()
-        fallout.anim(Critter, 1000, fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
+        Critter = Place_critter()
+        fallout.anim(Critter, 1000,
+            fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
     else
         fallout.display_msg(fallout.message_str(112, 303))
         Critter_type = 16777227
         Critter_script = 12
         Tot_Critter_A = fallout.random(3, 5)
         group_angle = fallout.random(0, 5)
-        while Tot_Critter_A do
+        while Tot_Critter_A > 0 do
             Critter_direction = group_angle + (fallout.random(0, 4) - 2)
             while Critter_direction < 0 do
                 Critter_direction = Critter_direction + 6
@@ -4488,8 +4125,9 @@ function Death6()
             if Critter_direction > 5 then
                 Critter_direction = Critter_direction % 6
             end
-            Place_critter()
-            fallout.anim(Critter, 1000, fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
+            Critter = Place_critter()
+            fallout.anim(Critter, 1000,
+                fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
             Tot_Critter_A = Tot_Critter_A - 1
         end
     end
@@ -4505,7 +4143,7 @@ function Bone1()
     Inner_ring = (fallout.get_critter_stat(fallout.dude_obj(), 1) // 2) + 4
     Critter_type = 16777403
     Critter_script = 850
-    while Tot_Critter_A do
+    while Tot_Critter_A > 0 do
         Critter_direction = group_angle + (fallout.random(0, 4) - 2)
         while Critter_direction < 0 do
             Critter_direction = Critter_direction + 6
@@ -4513,8 +4151,9 @@ function Bone1()
         if Critter_direction > 5 then
             Critter_direction = Critter_direction % 6
         end
-        Place_critter()
-        fallout.anim(Critter, 1000, fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
+        Critter = Place_critter()
+        fallout.anim(Critter, 1000,
+            fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
         if fallout.random(1, 4) == 1 then
             Item = fallout.create_object_sid(11, 0, 0, -1)
         else
@@ -4526,11 +4165,12 @@ function Bone1()
             fallout.add_obj_to_inven(Critter, Item)
         end
         if fallout.random(0, 2) == 0 then
-            Item = fallout.item_caps_adjust(Critter, fallout.random(5, 20) * ((2 * fallout.has_trait(0, fallout.dude_obj(), 20)) + 1))
+            Item = fallout.item_caps_adjust(Critter,
+                fallout.random(5, 20) * ((2 * fallout.has_trait(0, fallout.dude_obj(), 20)) + 1))
         end
         Tot_Critter_A = Tot_Critter_A - 1
     end
-    if fallout.random(0, 1) then
+    if fallout.random(0, 1) ~= 0 then
         Critter_type = 16777241
         Critter_script = 854
         Critter_direction = group_angle + (fallout.random(0, 4) - 2)
@@ -4540,12 +4180,14 @@ function Bone1()
         if Critter_direction > 5 then
             Critter_direction = Critter_direction % 6
         end
-        Place_critter()
-        fallout.anim(Critter, 1000, fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
+        Critter = Place_critter()
+        fallout.anim(Critter, 1000,
+            fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
         Item = fallout.create_object_sid(12, 0, 0, -1)
         fallout.add_obj_to_inven(Critter, Item)
         if fallout.random(0, 2) == 0 then
-            Item = fallout.item_caps_adjust(Critter, fallout.random(5, 20) * ((2 * fallout.has_trait(0, fallout.dude_obj(), 20)) + 1))
+            Item = fallout.item_caps_adjust(Critter,
+                fallout.random(5, 20) * ((2 * fallout.has_trait(0, fallout.dude_obj(), 20)) + 1))
         end
     end
     fallout.set_global_var(288, 3)
@@ -4563,26 +4205,16 @@ function Bone2()
         Critter = fallout.create_object_sid(33555044, 0, 0, -1)
         if group_angle == 0 then
             Item = 3
-        else
-            if group_angle == 1 then
-                Item = 4
-            else
-                if group_angle == 2 then
-                    Item = 5
-                else
-                    if group_angle == 3 then
-                        Item = 0
-                    else
-                        if group_angle == 4 then
-                            Item = 1
-                        else
-                            if group_angle == 5 then
-                                Item = 2
-                            end
-                        end
-                    end
-                end
-            end
+        elseif group_angle == 1 then
+            Item = 4
+        elseif group_angle == 2 then
+            Item = 5
+        elseif group_angle == 3 then
+            Item = 0
+        elseif group_angle == 4 then
+            Item = 1
+        elseif group_angle == 5 then
+            Item = 2
         end
         Critter_tile = fallout.tile_num_in_direction(Dude_tile, Item, 4)
         fallout.critter_attempt_placement(Critter, Critter_tile, 0)
@@ -4594,7 +4226,7 @@ function Bone2()
     Tot_Critter_B = fallout.random(3, 5)
     Critter_type = 16777419
     Critter_script = 749
-    while Tot_Critter_A do
+    while Tot_Critter_A > 0 do
         Critter_direction = group_angle + (fallout.random(0, 2) - 1)
         while Critter_direction < 0 do
             Critter_direction = Critter_direction + 6
@@ -4602,29 +4234,19 @@ function Bone2()
         if Critter_direction > 5 then
             Critter_direction = Critter_direction % 6
         end
-        Place_critter()
+        Critter = Place_critter()
         if group_angle == 0 then
             Critter_direction = 3
-        else
-            if group_angle == 1 then
-                Critter_direction = 4
-            else
-                if group_angle == 2 then
-                    Critter_direction = 5
-                else
-                    if group_angle == 3 then
-                        Critter_direction = 0
-                    else
-                        if group_angle == 4 then
-                            Critter_direction = 1
-                        else
-                            if group_angle == 5 then
-                                Critter_direction = 2
-                            end
-                        end
-                    end
-                end
-            end
+        elseif group_angle == 1 then
+            Critter_direction = 4
+        elseif group_angle == 2 then
+            Critter_direction = 5
+        elseif group_angle == 3 then
+            Critter_direction = 0
+        elseif group_angle == 4 then
+            Critter_direction = 1
+        elseif group_angle == 5 then
+            Critter_direction = 2
         end
         if fallout.random(0, 2) == 0 then
             Critter_direction = Critter_direction + (fallout.random(0, 2) - 1)
@@ -4648,7 +4270,8 @@ function Bone2()
         end
         fallout.add_obj_to_inven(Critter, Item)
         if fallout.random(0, 2) == 0 then
-            Item = fallout.item_caps_adjust(Critter, fallout.random(5, 25) * ((2 * fallout.has_trait(0, fallout.dude_obj(), 20)) + 1))
+            Item = fallout.item_caps_adjust(Critter,
+                fallout.random(5, 25) * ((2 * fallout.has_trait(0, fallout.dude_obj(), 20)) + 1))
         end
         Tot_Critter_A = Tot_Critter_A - 1
     end
@@ -4657,28 +4280,18 @@ function Bone2()
     Critter_script = 751
     if group_angle == 0 then
         group_angle = 3
-    else
-        if group_angle == 1 then
-            group_angle = 4
-        else
-            if group_angle == 2 then
-                group_angle = 5
-            else
-                if group_angle == 3 then
-                    group_angle = 0
-                else
-                    if group_angle == 4 then
-                        group_angle = 1
-                    else
-                        if group_angle == 5 then
-                            group_angle = 2
-                        end
-                    end
-                end
-            end
-        end
+    elseif group_angle == 1 then
+        group_angle = 4
+    elseif group_angle == 2 then
+        group_angle = 5
+    elseif group_angle == 3 then
+        group_angle = 0
+    elseif group_angle == 4 then
+        group_angle = 1
+    elseif group_angle == 5 then
+        group_angle = 2
     end
-    while Tot_Critter_B do
+    while Tot_Critter_B > 0 do
         Critter_direction = group_angle + (fallout.random(0, 2) - 1)
         while Critter_direction < 0 do
             Critter_direction = Critter_direction + 6
@@ -4686,29 +4299,19 @@ function Bone2()
         if Critter_direction > 5 then
             Critter_direction = Critter_direction % 6
         end
-        Place_critter()
+        Critter = Place_critter()
         if group_angle == 0 then
             Critter_direction = 3
-        else
-            if group_angle == 1 then
-                Critter_direction = 4
-            else
-                if group_angle == 2 then
-                    Critter_direction = 5
-                else
-                    if group_angle == 3 then
-                        Critter_direction = 0
-                    else
-                        if group_angle == 4 then
-                            Critter_direction = 1
-                        else
-                            if group_angle == 5 then
-                                Critter_direction = 2
-                            end
-                        end
-                    end
-                end
-            end
+        elseif group_angle == 1 then
+            Critter_direction = 4
+        elseif group_angle == 2 then
+            Critter_direction = 5
+        elseif group_angle == 3 then
+            Critter_direction = 0
+        elseif group_angle == 4 then
+            Critter_direction = 1
+        elseif group_angle == 5 then
+            Critter_direction = 2
         end
         if fallout.random(0, 2) == 0 then
             Critter_direction = Critter_direction + (fallout.random(0, 2) - 1)
@@ -4720,14 +4323,15 @@ function Bone2()
             end
         end
         fallout.anim(Critter, 1000, Critter_direction)
-        if fallout.random(0, 1) then
+        if fallout.random(0, 1) ~= 0 then
             Item = fallout.create_object_sid(4, 0, 0, -1)
         else
             Item = fallout.create_object_sid(7, 0, 0, -1)
         end
         fallout.add_obj_to_inven(Critter, Item)
         if fallout.random(0, 2) == 0 then
-            Item = fallout.item_caps_adjust(Critter, fallout.random(4, 25) * ((2 * fallout.has_trait(0, fallout.dude_obj(), 20)) + 1))
+            Item = fallout.item_caps_adjust(Critter,
+                fallout.random(4, 25) * ((2 * fallout.has_trait(0, fallout.dude_obj(), 20)) + 1))
         end
         Tot_Critter_B = Tot_Critter_B - 1
     end
@@ -4744,7 +4348,7 @@ function Bone3()
     group_angle = fallout.random(0, 5)
     Critter_type = 16777419
     Critter_script = 749
-    while Tot_Critter_A do
+    while Tot_Critter_A > 0 do
         Critter_direction = group_angle + fallout.random(0, 2 * 2) - 2
         while Critter_direction < 0 do
             Critter_direction = Critter_direction + 6
@@ -4752,16 +4356,18 @@ function Bone3()
         if Critter_direction > 5 then
             Critter_direction = Critter_direction % 6
         end
-        Place_critter()
-        fallout.anim(Critter, 1000, fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
-        if fallout.random(0, 1) then
+        Critter = Place_critter()
+        fallout.anim(Critter, 1000,
+            fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
+        if fallout.random(0, 1) ~= 0 then
             Item = fallout.create_object_sid(8, 0, 0, -1)
         else
             Item = fallout.create_object_sid(10, 0, 0, -1)
         end
         fallout.add_obj_to_inven(Critter, Item)
         if fallout.random(0, 2) == 0 then
-            Item = fallout.item_caps_adjust(Critter, fallout.random(4, 25) * ((2 * fallout.has_trait(0, fallout.dude_obj(), 20)) + 1))
+            Item = fallout.item_caps_adjust(Critter,
+                fallout.random(4, 25) * ((2 * fallout.has_trait(0, fallout.dude_obj(), 20)) + 1))
         end
         Tot_Critter_A = Tot_Critter_A - 1
     end
@@ -4774,26 +4380,27 @@ function Bone3()
     if Critter_direction > 5 then
         Critter_direction = Critter_direction % 6
     end
-    Place_critter()
+    Critter = Place_critter()
     fallout.anim(Critter, 1000, fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
     Item = fallout.create_object_sid(1, 0, 0, -1)
     fallout.add_obj_to_inven(Critter, Item)
     Item = fallout.create_object_sid(47, 0, 0, -1)
     fallout.add_obj_to_inven(Critter, Item)
-    Item = fallout.item_caps_adjust(Critter, fallout.random(25, 100) * ((2 * fallout.has_trait(0, fallout.dude_obj(), 20)) + 1))
-    if fallout.random(0, 1) then
+    Item = fallout.item_caps_adjust(Critter,
+        fallout.random(25, 100) * ((2 * fallout.has_trait(0, fallout.dude_obj(), 20)) + 1))
+    if fallout.random(0, 1) ~= 0 then
         Item = fallout.create_object_sid(38, 0, 0, -1)
         fallout.add_mult_objs_to_inven(Critter, Item, fallout.has_trait(0, fallout.dude_obj(), 40) + 1)
     end
-    if fallout.random(0, 1) then
+    if fallout.random(0, 1) ~= 0 then
         Item = fallout.create_object_sid(6, 0, 0, -1)
         fallout.add_obj_to_inven(Critter, Item)
     end
-    if fallout.random(0, 1) then
+    if fallout.random(0, 1) ~= 0 then
         Item = fallout.create_object_sid(31, 0, 0, -1)
         fallout.add_mult_objs_to_inven(Critter, Item, fallout.has_trait(0, fallout.dude_obj(), 40) + 1)
     end
-    if fallout.random(0, 1) then
+    if fallout.random(0, 1) ~= 0 then
         Item = fallout.create_object_sid(4, 0, 0, -1)
         fallout.add_obj_to_inven(Critter, Item)
     end
@@ -4809,7 +4416,7 @@ function Bone4()
     group_angle = fallout.random(0, 5)
     Critter_type = 16777419
     Critter_script = 749
-    while Tot_Critter_A do
+    while Tot_Critter_A > 0 do
         Critter_direction = group_angle + fallout.random(0, 2 * 2) - 2
         while Critter_direction < 0 do
             Critter_direction = Critter_direction + 6
@@ -4817,16 +4424,18 @@ function Bone4()
         if Critter_direction > 5 then
             Critter_direction = Critter_direction % 6
         end
-        Place_critter()
-        fallout.anim(Critter, 1000, fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
-        if fallout.random(0, 1) then
+        Critter = Place_critter()
+        fallout.anim(Critter, 1000,
+            fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
+        if fallout.random(0, 1) ~= 0 then
             Item = fallout.create_object_sid(8, 0, 0, -1)
         else
             Item = fallout.create_object_sid(10, 0, 0, -1)
         end
         fallout.add_obj_to_inven(Critter, Item)
         if fallout.random(0, 2) == 0 then
-            Item = fallout.item_caps_adjust(Critter, fallout.random(4, 25) * ((2 * fallout.has_trait(0, fallout.dude_obj(), 20)) + 1))
+            Item = fallout.item_caps_adjust(Critter,
+                fallout.random(4, 25) * ((2 * fallout.has_trait(0, fallout.dude_obj(), 20)) + 1))
         end
         Tot_Critter_A = Tot_Critter_A - 1
     end
@@ -4839,24 +4448,25 @@ function Bone4()
     if Critter_direction > 5 then
         Critter_direction = Critter_direction % 6
     end
-    Place_critter()
+    Critter = Place_critter()
     fallout.anim(Critter, 1000, fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
     Item = fallout.create_object_sid(47, 0, 0, -1)
     fallout.add_obj_to_inven(Critter, Item)
-    Item = fallout.item_caps_adjust(Critter, fallout.random(25, 100) * ((2 * fallout.has_trait(0, fallout.dude_obj(), 20)) + 1))
-    if fallout.random(0, 1) then
+    Item = fallout.item_caps_adjust(Critter,
+        fallout.random(25, 100) * ((2 * fallout.has_trait(0, fallout.dude_obj(), 20)) + 1))
+    if fallout.random(0, 1) ~= 0 then
         Item = fallout.create_object_sid(38, 0, 0, -1)
         fallout.add_mult_objs_to_inven(Critter, Item, fallout.has_trait(0, fallout.dude_obj(), 40) + 1)
     end
-    if fallout.random(0, 1) then
+    if fallout.random(0, 1) ~= 0 then
         Item = fallout.create_object_sid(6, 0, 0, -1)
         fallout.add_obj_to_inven(Critter, Item)
     end
-    if fallout.random(0, 1) then
+    if fallout.random(0, 1) ~= 0 then
         Item = fallout.create_object_sid(31, 0, 0, -1)
         fallout.add_mult_objs_to_inven(Critter, Item, fallout.has_trait(0, fallout.dude_obj(), 40) + 1)
     end
-    if fallout.random(0, 1) then
+    if fallout.random(0, 1) ~= 0 then
         Item = fallout.create_object_sid(4, 0, 0, -1)
         fallout.add_obj_to_inven(Critter, Item)
     end
@@ -4872,7 +4482,7 @@ function Bone5()
     group_angle = fallout.random(0, 5)
     Critter_type = 16777419
     Critter_script = 749
-    while Tot_Critter_A do
+    while Tot_Critter_A > 0 do
         Critter_direction = group_angle + fallout.random(0, 2 * 2) - 2
         while Critter_direction < 0 do
             Critter_direction = Critter_direction + 6
@@ -4880,16 +4490,18 @@ function Bone5()
         if Critter_direction > 5 then
             Critter_direction = Critter_direction % 6
         end
-        Place_critter()
-        fallout.anim(Critter, 1000, fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
-        if fallout.random(0, 1) then
+        Critter = Place_critter()
+        fallout.anim(Critter, 1000,
+            fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
+        if fallout.random(0, 1) ~= 0 then
             Item = fallout.create_object_sid(8, 0, 0, -1)
         else
             Item = fallout.create_object_sid(10, 0, 0, -1)
         end
         fallout.add_obj_to_inven(Critter, Item)
         if fallout.random(0, 2) == 0 then
-            Item = fallout.item_caps_adjust(Critter, fallout.random(4, 25) * ((2 * fallout.has_trait(0, fallout.dude_obj(), 20)) + 1))
+            Item = fallout.item_caps_adjust(Critter,
+                fallout.random(4, 25) * ((2 * fallout.has_trait(0, fallout.dude_obj(), 20)) + 1))
         end
         Tot_Critter_A = Tot_Critter_A - 1
     end
@@ -4902,26 +4514,27 @@ function Bone5()
     if Critter_direction > 5 then
         Critter_direction = Critter_direction % 6
     end
-    Place_critter()
+    Critter = Place_critter()
     fallout.anim(Critter, 1000, fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
     Item = fallout.create_object_sid(1, 0, 0, -1)
     fallout.add_obj_to_inven(Critter, Item)
     Item = fallout.create_object_sid(47, 0, 0, -1)
     fallout.add_obj_to_inven(Critter, Item)
-    Item = fallout.item_caps_adjust(Critter, fallout.random(25, 100) * ((2 * fallout.has_trait(0, fallout.dude_obj(), 20)) + 1))
-    if fallout.random(0, 1) then
+    Item = fallout.item_caps_adjust(Critter,
+        fallout.random(25, 100) * ((2 * fallout.has_trait(0, fallout.dude_obj(), 20)) + 1))
+    if fallout.random(0, 1) ~= 0 then
         Item = fallout.create_object_sid(38, 0, 0, -1)
         fallout.add_mult_objs_to_inven(Critter, Item, fallout.has_trait(0, fallout.dude_obj(), 40) + 1)
     end
-    if fallout.random(0, 1) then
+    if fallout.random(0, 1) ~= 0 then
         Item = fallout.create_object_sid(6, 0, 0, -1)
         fallout.add_obj_to_inven(Critter, Item)
     end
-    if fallout.random(0, 1) then
+    if fallout.random(0, 1) ~= 0 then
         Item = fallout.create_object_sid(31, 0, 0, -1)
         fallout.add_mult_objs_to_inven(Critter, Item, fallout.has_trait(0, fallout.dude_obj(), 40) + 1)
     end
-    if fallout.random(0, 1) then
+    if fallout.random(0, 1) ~= 0 then
         Item = fallout.create_object_sid(4, 0, 0, -1)
         fallout.add_obj_to_inven(Critter, Item)
     end
@@ -4941,10 +4554,11 @@ function Bone6()
     end
     Critter_type = 16777284
     Critter_script = 735
-    while Tot_Critter_A do
+    while Tot_Critter_A > 0 do
         Critter_direction = fallout.random(0, 5)
-        Place_critter()
-        fallout.anim(Critter, 1000, fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
+        Critter = Place_critter()
+        fallout.anim(Critter, 1000,
+            fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
         Tot_Critter_A = Tot_Critter_A - 1
     end
     fallout.set_global_var(288, 1)
@@ -4959,7 +4573,7 @@ function Scenes()
     local v4 = 0
     Tot_Critter_A = fallout.random(3, 14)
     v4 = -1
-    while Tot_Critter_A do
+    while Tot_Critter_A > 0 do
         Critter_direction = fallout.random(0, 5)
         Range = fallout.random(4, 28)
         Place_Holder = Range
@@ -4981,177 +4595,121 @@ function Scenes()
             v3 = fallout.random(1, 6)
             if v3 == 1 then
                 Item = fallout.create_object_sid(33554517, 0, 0, -1)
-            else
-                if v3 == 2 then
-                    if fallout.random(1, 4) == 1 then
-                        Item = fallout.create_object_sid(33554749, 0, 0, -1)
-                    else
-                        Item = fallout.create_object_sid(33554496, 0, 0, -1)
-                    end
+            elseif v3 == 2 then
+                if fallout.random(1, 4) == 1 then
+                    Item = fallout.create_object_sid(33554749, 0, 0, -1)
                 else
-                    if v3 == 3 then
-                        Item = fallout.create_object_sid(33554555, 0, 0, -1)
-                    else
-                        if v3 == 4 then
-                            Item = fallout.create_object_sid(33554496, 0, 0, -1)
-                        else
-                            if v3 == 5 then
-                                Item = fallout.create_object_sid(33554497, 0, 0, -1)
-                            else
-                                if fallout.random(1, 3) == 1 then
-                                    Item = fallout.create_object_sid(33554498, 0, 0, -1)
-                                else
-                                    Item = fallout.create_object_sid(33554744, 0, 0, -1)
-                                end
-                            end
-                        end
-                    end
+                    Item = fallout.create_object_sid(33554496, 0, 0, -1)
+                end
+            elseif v3 == 3 then
+                Item = fallout.create_object_sid(33554555, 0, 0, -1)
+            elseif v3 == 4 then
+                Item = fallout.create_object_sid(33554496, 0, 0, -1)
+            elseif v3 == 5 then
+                Item = fallout.create_object_sid(33554497, 0, 0, -1)
+            else
+                if fallout.random(1, 3) == 1 then
+                    Item = fallout.create_object_sid(33554498, 0, 0, -1)
+                else
+                    Item = fallout.create_object_sid(33554744, 0, 0, -1)
                 end
             end
-        else
-            if v2 == 1 then
-                v3 = fallout.random(1, 3)
-                if v3 == 1 then
-                    Item = fallout.create_object_sid(33554712, 0, 0, -1)
-                else
-                    if v3 == 2 then
-                        Item = fallout.create_object_sid(33554711, 0, 0, -1)
-                    else
-                        Item = fallout.create_object_sid(33554710, 0, 0, -1)
-                    end
-                end
+        elseif v2 == 1 then
+            v3 = fallout.random(1, 3)
+            if v3 == 1 then
+                Item = fallout.create_object_sid(33554712, 0, 0, -1)
+            elseif v3 == 2 then
+                Item = fallout.create_object_sid(33554711, 0, 0, -1)
             else
-                if v2 == 2 then
-                    v3 = fallout.random(1, 5)
-                    if v3 == 1 then
-                        Item = fallout.create_object_sid(33554514, 0, 0, -1)
-                    else
-                        if v3 == 2 then
-                            Item = fallout.create_object_sid(33554515, 0, 0, -1)
-                        else
-                            if v3 == 3 then
-                                Item = fallout.create_object_sid(33554516, 0, 0, -1)
-                            else
-                                if v3 == 4 then
-                                    Item = fallout.create_object_sid(33554517, 0, 0, -1)
-                                else
-                                    Item = fallout.create_object_sid(33554518, 0, 0, -1)
-                                end
-                            end
-                        end
-                    end
+                Item = fallout.create_object_sid(33554710, 0, 0, -1)
+            end
+        elseif v2 == 2 then
+            v3 = fallout.random(1, 5)
+            if v3 == 1 then
+                Item = fallout.create_object_sid(33554514, 0, 0, -1)
+            elseif v3 == 2 then
+                Item = fallout.create_object_sid(33554515, 0, 0, -1)
+            elseif v3 == 3 then
+                Item = fallout.create_object_sid(33554516, 0, 0, -1)
+            elseif v3 == 4 then
+                Item = fallout.create_object_sid(33554517, 0, 0, -1)
+            else
+                Item = fallout.create_object_sid(33554518, 0, 0, -1)
+            end
+        elseif v2 == 3 then
+            Item = fallout.create_object_sid(33554533, 0, 0, -1)
+        elseif v2 == 4 then
+            v3 = fallout.random(1, 4)
+            if v3 == 1 then
+                Item = fallout.create_object_sid(33554524, 0, 0, -1)
+            elseif v3 == 2 then
+                Item = fallout.create_object_sid(33554525, 0, 0, -1)
+            elseif v3 == 3 then
+                Item = fallout.create_object_sid(33554524, 0, 0, -1)
+            else
+                Item = fallout.create_object_sid(33554525, 0, 0, -1)
+            end
+        elseif v2 == 5 then
+            v3 = fallout.random(1, 4)
+            if v3 == 1 then
+                Item = fallout.create_object_sid(33554534, 0, 0, -1)
+            elseif v3 == 2 then
+                Item = fallout.create_object_sid(33554535, 0, 0, -1)
+            elseif v3 == 3 then
+                Item = fallout.create_object_sid(33554536, 0, 0, -1)
+            else
+                Item = fallout.create_object_sid(33554534, 0, 0, -1)
+            end
+        elseif v2 == 6 then
+            v3 = fallout.random(1, 3)
+            if v3 == 1 then
+                Item = fallout.create_object_sid(33554541, 0, 0, -1)
+            elseif v3 == 2 then
+                Item = fallout.create_object_sid(33554542, 0, 0, -1)
+            else
+                Item = fallout.create_object_sid(33554540, 0, 0, -1)
+            end
+        elseif v2 == 7 then
+            v3 = fallout.random(1, 4)
+            if v3 == 1 then
+                Item = fallout.create_object_sid(33554555, 0, 0, -1)
+            elseif v3 == 2 then
+                Item = fallout.create_object_sid(33554553, 0, 0, -1)
+            elseif v3 == 3 then
+                Item = fallout.create_object_sid(33554556, 0, 0, -1)
+            else
+                Item = fallout.create_object_sid(33554554, 0, 0, -1)
+            end
+        elseif v2 == 8 then
+            v3 = fallout.random(1, 3)
+            if v3 == 1 then
+                Item = fallout.create_object_sid(33554712, 0, 0, -1)
+            elseif v3 == 2 then
+                Item = fallout.create_object_sid(33554711, 0, 0, -1)
+            else
+                Item = fallout.create_object_sid(33554710, 0, 0, -1)
+            end
+        else
+            v3 = fallout.random(1, 6)
+            if v3 == 1 then
+                Item = fallout.create_object_sid(33554517, 0, 0, -1)
+            elseif v3 == 2 then
+                if fallout.random(1, 3) == 1 then
+                    Item = fallout.create_object_sid(33554749, 0, 0, -1)
                 else
-                    if v2 == 3 then
-                        Item = fallout.create_object_sid(33554533, 0, 0, -1)
-                    else
-                        if v2 == 4 then
-                            v3 = fallout.random(1, 4)
-                            if v3 == 1 then
-                                Item = fallout.create_object_sid(33554524, 0, 0, -1)
-                            else
-                                if v3 == 2 then
-                                    Item = fallout.create_object_sid(33554525, 0, 0, -1)
-                                else
-                                    if v3 == 3 then
-                                        Item = fallout.create_object_sid(33554524, 0, 0, -1)
-                                    else
-                                        Item = fallout.create_object_sid(33554525, 0, 0, -1)
-                                    end
-                                end
-                            end
-                        else
-                            if v2 == 5 then
-                                v3 = fallout.random(1, 4)
-                                if v3 == 1 then
-                                    Item = fallout.create_object_sid(33554534, 0, 0, -1)
-                                else
-                                    if v3 == 2 then
-                                        Item = fallout.create_object_sid(33554535, 0, 0, -1)
-                                    else
-                                        if v3 == 3 then
-                                            Item = fallout.create_object_sid(33554536, 0, 0, -1)
-                                        else
-                                            Item = fallout.create_object_sid(33554534, 0, 0, -1)
-                                        end
-                                    end
-                                end
-                            else
-                                if v2 == 6 then
-                                    v3 = fallout.random(1, 3)
-                                    if v3 == 1 then
-                                        Item = fallout.create_object_sid(33554541, 0, 0, -1)
-                                    else
-                                        if v3 == 2 then
-                                            Item = fallout.create_object_sid(33554542, 0, 0, -1)
-                                        else
-                                            Item = fallout.create_object_sid(33554540, 0, 0, -1)
-                                        end
-                                    end
-                                else
-                                    if v2 == 7 then
-                                        v3 = fallout.random(1, 4)
-                                        if v3 == 1 then
-                                            Item = fallout.create_object_sid(33554555, 0, 0, -1)
-                                        else
-                                            if v3 == 2 then
-                                                Item = fallout.create_object_sid(33554553, 0, 0, -1)
-                                            else
-                                                if v3 == 3 then
-                                                    Item = fallout.create_object_sid(33554556, 0, 0, -1)
-                                                else
-                                                    Item = fallout.create_object_sid(33554554, 0, 0, -1)
-                                                end
-                                            end
-                                        end
-                                    else
-                                        if v2 == 8 then
-                                            v3 = fallout.random(1, 3)
-                                            if v3 == 1 then
-                                                Item = fallout.create_object_sid(33554712, 0, 0, -1)
-                                            else
-                                                if v3 == 2 then
-                                                    Item = fallout.create_object_sid(33554711, 0, 0, -1)
-                                                else
-                                                    Item = fallout.create_object_sid(33554710, 0, 0, -1)
-                                                end
-                                            end
-                                        else
-                                            v3 = fallout.random(1, 6)
-                                            if v3 == 1 then
-                                                Item = fallout.create_object_sid(33554517, 0, 0, -1)
-                                            else
-                                                if v3 == 2 then
-                                                    if fallout.random(1, 3) == 1 then
-                                                        Item = fallout.create_object_sid(33554749, 0, 0, -1)
-                                                    else
-                                                        Item = fallout.create_object_sid(33554496, 0, 0, -1)
-                                                    end
-                                                else
-                                                    if v3 == 3 then
-                                                        Item = fallout.create_object_sid(33554555, 0, 0, -1)
-                                                    else
-                                                        if v3 == 4 then
-                                                            Item = fallout.create_object_sid(33554496, 0, 0, -1)
-                                                        else
-                                                            if v3 == 5 then
-                                                                Item = fallout.create_object_sid(33554497, 0, 0, -1)
-                                                            else
-                                                                if fallout.random(1, 3) == 1 then
-                                                                    Item = fallout.create_object_sid(33554498, 0, 0, -1)
-                                                                else
-                                                                    Item = fallout.create_object_sid(fallout.random(0, 2) + 33554710, 0, 0, -1)
-                                                                end
-                                                            end
-                                                        end
-                                                    end
-                                                end
-                                            end
-                                        end
-                                    end
-                                end
-                            end
-                        end
-                    end
+                    Item = fallout.create_object_sid(33554496, 0, 0, -1)
+                end
+            elseif v3 == 3 then
+                Item = fallout.create_object_sid(33554555, 0, 0, -1)
+            elseif v3 == 4 then
+                Item = fallout.create_object_sid(33554496, 0, 0, -1)
+            elseif v3 == 5 then
+                Item = fallout.create_object_sid(33554497, 0, 0, -1)
+            else
+                if fallout.random(1, 3) == 1 then
+                    Item = fallout.create_object_sid(33554498, 0, 0, -1)
+                else
+                    Item = fallout.create_object_sid(fallout.random(0, 2) + 33554710, 0, 0, -1)
                 end
             end
         end
@@ -5162,17 +4720,17 @@ function Scenes()
 end
 
 function Place_critter()
-    local v0 = 0
     local v1 = 0
-    Critter = fallout.create_object_sid(Critter_type, 0, 0, Critter_script)
+    local critter_obj = fallout.create_object_sid(Critter_type, 0, 0, Critter_script)
     Range = fallout.random(Inner_ring, Outer_ring)
-    v0 = fallout.random(0, 5)
+    local rotation = fallout.random(0, 5)
     Critter_tile = fallout.tile_num_in_direction(Dude_tile, Critter_direction, Range)
-    v1 = fallout.tile_num_in_direction(Critter_tile, v0, Range // 2)
-    if (fallout.tile_distance(Dude_tile, v1) <= Outer_ring) and (fallout.tile_distance(Dude_tile, v1) >= Inner_ring) then
-        Critter_tile = fallout.tile_num_in_direction(Critter_tile, v0, Range // 2)
+    v1 = fallout.tile_num_in_direction(Critter_tile, rotation, Range // 2)
+    if fallout.tile_distance(Dude_tile, v1) <= Outer_ring and fallout.tile_distance(Dude_tile, v1) >= Inner_ring then
+        Critter_tile = fallout.tile_num_in_direction(Critter_tile, rotation, Range // 2)
     end
-    fallout.critter_attempt_placement(Critter, Critter_tile, 0)
+    fallout.critter_attempt_placement(critter_obj, Critter_tile, 0)
+    return critter_obj
 end
 
 function hunters()
@@ -5188,7 +4746,7 @@ function hunters()
     end
     Critter_type = 16777349
     Critter_script = 241
-    Place_critter()
+    Critter = Place_critter()
     fallout.anim(Critter, 1000, fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
     Item = fallout.create_object_sid(23, 0, 0, -1)
     fallout.add_obj_to_inven(Critter, Item)
@@ -5196,7 +4754,8 @@ function hunters()
     fallout.add_mult_objs_to_inven(Critter, Item, 4 * (fallout.has_trait(0, fallout.dude_obj(), 40) + 1))
     Item = fallout.create_object_sid(17, 0, 0, -1)
     fallout.add_obj_to_inven(Critter, Item)
-    Item = fallout.item_caps_adjust(Critter, fallout.random(5, 30) * ((2 * fallout.has_trait(0, fallout.dude_obj(), 20)) + 1))
+    Item = fallout.item_caps_adjust(Critter,
+        fallout.random(5, 30) * ((2 * fallout.has_trait(0, fallout.dude_obj(), 20)) + 1))
     Item = fallout.create_object_sid(144, 0, 0, -1)
     fallout.add_mult_objs_to_inven(Critter, Item, 2)
     Critter_direction = group_angle + fallout.random(0, 3 * 2) - 3
@@ -5208,14 +4767,15 @@ function hunters()
     end
     Critter_type = 16777467
     Critter_script = 383
-    Place_critter()
+    Critter = Place_critter()
     fallout.anim(Critter, 1000, fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
     Item = fallout.create_object_sid(7, 0, 0, -1)
     fallout.add_obj_to_inven(Critter, Item)
     Item = fallout.create_object_sid(2, 0, 0, -1)
     fallout.add_obj_to_inven(Critter, Item)
     if fallout.random(0, 2) == 0 then
-        Item = fallout.item_caps_adjust(Critter, fallout.random(5, 30) * ((2 * fallout.has_trait(0, fallout.dude_obj(), 20)) + 1))
+        Item = fallout.item_caps_adjust(Critter,
+            fallout.random(5, 30) * ((2 * fallout.has_trait(0, fallout.dude_obj(), 20)) + 1))
     end
     Critter_direction = group_angle + fallout.random(0, 3 * 2) - 3
     while Critter_direction < 0 do
@@ -5226,7 +4786,7 @@ function hunters()
     end
     Critter_type = 16777472
     Critter_script = 383
-    Place_critter()
+    Critter = Place_critter()
     fallout.anim(Critter, 1000, fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
     Item = fallout.create_object_sid(143, 0, 0, -1)
     fallout.add_obj_to_inven(Critter, Item)
@@ -5237,7 +4797,8 @@ function hunters()
     Item = fallout.create_object_sid(14, 0, 0, -1)
     fallout.add_mult_objs_to_inven(Critter, Item, 2 * (fallout.has_trait(0, fallout.dude_obj(), 40) + 1))
     if fallout.random(0, 2) == 0 then
-        Item = fallout.item_caps_adjust(Critter, fallout.random(5, 40) * ((2 * fallout.has_trait(0, fallout.dude_obj(), 20)) + 1))
+        Item = fallout.item_caps_adjust(Critter,
+            fallout.random(5, 40) * ((2 * fallout.has_trait(0, fallout.dude_obj(), 20)) + 1))
     end
     Critter_direction = group_angle + fallout.random(0, 3 * 2) - 3
     while Critter_direction < 0 do
@@ -5248,7 +4809,7 @@ function hunters()
     end
     Critter_type = 16777462
     Critter_script = 383
-    Place_critter()
+    Critter = Place_critter()
     fallout.anim(Critter, 1000, fallout.rotation_to_tile(fallout.tile_num(Critter), fallout.tile_num(fallout.dude_obj())))
     Item = fallout.create_object_sid(18, 0, 0, -1)
     fallout.add_obj_to_inven(Critter, Item)
@@ -5257,11 +4818,15 @@ function hunters()
     Item = fallout.create_object_sid(2, 0, 0, -1)
     fallout.add_obj_to_inven(Critter, Item)
     if fallout.random(0, 2) == 0 then
-        Item = fallout.item_caps_adjust(Critter, fallout.random(5, 30) * ((2 * fallout.has_trait(0, fallout.dude_obj(), 20)) + 1))
+        Item = fallout.item_caps_adjust(Critter,
+            fallout.random(5, 30) * ((2 * fallout.has_trait(0, fallout.dude_obj(), 20)) + 1))
     end
     stranger()
 end
 
 local exports = {}
 exports.start = start
+exports.map_enter_p_proc = map_enter_p_proc
+exports.map_exit_p_proc = map_exit_p_proc
+exports.map_update_p_proc = map_update_p_proc
 return exports
