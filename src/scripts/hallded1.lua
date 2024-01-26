@@ -1,5 +1,6 @@
 local fallout = require("fallout")
 local light = require("lib.light")
+local misc = require("lib.misc")
 local party = require("lib.party")
 local time = require("lib.time")
 
@@ -64,7 +65,7 @@ function start()
                 fallout.set_global_var(13, 1)
             end
         end
-        if (fallout.global_var(13) == 1) and (fallout.global_var(18) == 0) and (fallout.metarule(22, 0) == 0) then
+        if (fallout.global_var(13) == 1) and (fallout.global_var(18) == 0) and (not misc.is_loading_game()) then
             fallout.kill_critter_type(16777320, 1)
             fallout.kill_critter_type(16777321, 1)
             fallout.kill_critter_type(16777521, 1)
@@ -96,7 +97,7 @@ function start()
                 fallout.kill_critter_type(16777321, 1)
             end
         end
-        if (fallout.global_var(30) == 1) and (fallout.metarule(22, 0) == 0) then
+        if (fallout.global_var(30) == 1) and (not misc.is_loading_game()) then
             if (time.game_time_in_days() - fallout.global_var(552)) > 7 then
                 if fallout.global_var(31) ~= 2 then
                     fallout.kill_critter_type(16777320, 2)

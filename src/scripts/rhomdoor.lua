@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 
 local start
 local damage_p_proc
@@ -55,7 +56,7 @@ function hear_check()
     local bonus = -35
     local failure = true
     local dude_obj = fallout.dude_obj()
-    if fallout.metarule(16, 0) > 1 and fallout.source_obj() == dude_obj then
+    if misc.party_member_count() > 1 and fallout.source_obj() == dude_obj then
         fallout.set_map_var(19, 2)
     else
         if fallout.source_obj() == dude_obj then

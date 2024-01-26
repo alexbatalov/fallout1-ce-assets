@@ -1,5 +1,6 @@
 local fallout = require("fallout")
 local light = require("lib.light")
+local misc = require("lib.misc")
 local party = require("lib.party")
 local time = require("lib.time")
 
@@ -21,7 +22,7 @@ fallout.create_external_var("Tandi_ptr")
 function start()
     if fallout.script_action() == 15 then
         party_elevation = party.add_party()
-        if fallout.metarule(14, 0) then
+        if misc.map_first_run() then
             fallout.set_global_var(224, 1)
             fallout.display_msg(fallout.message_str(194, 108))
         end

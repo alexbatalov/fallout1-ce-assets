@@ -1,5 +1,6 @@
 local fallout = require("fallout")
 local light = require("lib.light")
+local misc = require("lib.misc")
 local party = require("lib.party")
 local time = require("lib.time")
 
@@ -29,7 +30,7 @@ function start()
     if fallout.script_action() == 15 then
         light.lighting()
         fallout.set_global_var(77, 2)
-        if fallout.metarule(14, 0) then
+        if misc.map_first_run() then
             fallout.display_msg(fallout.message_str(194, 110))
         end
         Player_Elevation = fallout.elevation(fallout.dude_obj())
@@ -70,7 +71,7 @@ function start()
             if (time.game_time_in_seconds() - fallout.global_var(55)) > 240 then
                 fallout.display_msg(fallout.message_str(444, 106))
                 fallout.play_gmovie(4)
-                fallout.metarule(13, 0)
+                misc.signal_end_game()
             end
         end
         party_elevation = party.update_party(party_elevation)

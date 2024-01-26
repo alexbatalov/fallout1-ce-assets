@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local reputation = require("lib.reputation")
 
 local start
@@ -75,7 +76,7 @@ function critter_p_proc()
         and fallout.obj_pid(fallout.critter_inven_obj(dude_obj, 0)) ~= 113 then
         hostile = true
     end
-    if fallout.metarule(16, 0) > 1 and self_can_see_dude then
+    if misc.party_member_count() > 1 and self_can_see_dude then
         hostile = true
     end
     if hostile then

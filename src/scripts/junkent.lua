@@ -1,5 +1,6 @@
 local fallout = require("fallout")
 local light = require("lib.light")
+local misc = require("lib.misc")
 local party = require("lib.party")
 local time = require("lib.time")
 
@@ -29,12 +30,12 @@ fallout.create_external_var("Tandi_ptr")
 
 function start()
     if fallout.script_action() == 15 then
-        if fallout.metarule(14, 0) then
+        if misc.map_first_run() then
             fallout.display_msg(fallout.message_str(194, 104))
         end
         light.lighting()
         fallout.set_global_var(569, 1)
-        if fallout.metarule(22, 0) == 0 then
+        if not misc.is_loading_game() then
             if fallout.global_var(32) == 3 then
                 fallout.override_map_start(107, 138, 0, 2)
             else

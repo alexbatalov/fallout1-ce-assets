@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local reputation = require("lib.reputation")
 
 local start
@@ -11,7 +12,7 @@ local creation_pid = 0
 local critter_tile = 0
 
 function start()
-    if not initialized and fallout.metarule(14, 0) then
+    if not initialized and misc.map_first_run() then
         creation_pid = fallout.obj_pid(fallout.self_obj())
         if creation_pid == 16777261 then
             fallout.critter_add_trait(fallout.self_obj(), 1, 5, 73)

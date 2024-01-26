@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
 
@@ -76,7 +77,7 @@ end
 
 function talk_p_proc()
     if fallout.obj_pid(fallout.critter_inven_obj(fallout.dude_obj(), 0)) == 113 then
-        if fallout.metarule(16, 0) > 1 then
+        if misc.party_member_count() > 1 then
             disguised = false
         else
             disguised = true
@@ -122,7 +123,7 @@ function critter_p_proc()
         end
         disguised = false
         if fallout.obj_pid(fallout.critter_inven_obj(fallout.dude_obj(), 0)) == 113 then
-            if fallout.metarule(16, 0) > 1 then
+            if misc.party_member_count() > 1 then
                 disguised = false
             else
                 disguised = true

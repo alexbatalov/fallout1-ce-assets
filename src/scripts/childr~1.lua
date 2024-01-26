@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local time = require("lib.time")
 
 local start
@@ -36,7 +37,7 @@ function start()
             if (time.game_time_in_seconds() - fallout.global_var(55)) > 240 then
                 fallout.display_msg(fallout.message_str(446, 102))
                 fallout.play_gmovie(6)
-                fallout.metarule(13, 0)
+                misc.signal_end_game()
             end
         end
         add_party()
@@ -48,7 +49,7 @@ function start()
             if (time.game_time_in_seconds() - fallout.global_var(55)) > 240 then
                 fallout.display_msg(fallout.message_str(446, 106))
                 fallout.play_gmovie(6)
-                fallout.metarule(13, 0)
+                misc.signal_end_game()
             end
         end
         update_party()
@@ -59,7 +60,7 @@ function start()
             if (time.game_time_in_seconds() - fallout.global_var(55)) > 240 then
                 fallout.display_msg(fallout.message_str(446, 110))
                 fallout.play_gmovie(6)
-                fallout.metarule(13, 0)
+                misc.signal_end_game()
             end
         end
         remove_party()

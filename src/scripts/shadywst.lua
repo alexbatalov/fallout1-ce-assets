@@ -1,5 +1,6 @@
 local fallout = require("fallout")
 local light = require("lib.light")
+local misc = require("lib.misc")
 local time = require("lib.time")
 
 local start
@@ -19,7 +20,7 @@ fallout.create_external_var("Tandi_ptr")
 
 function start()
     if fallout.script_action() == 15 then
-        if fallout.metarule(14, 0) then
+        if misc.map_first_run() then
             fallout.display_msg(fallout.message_str(194, 101))
         end
         fallout.set_global_var(566, 1)

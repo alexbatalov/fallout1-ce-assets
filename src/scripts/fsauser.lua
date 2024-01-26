@@ -1,5 +1,6 @@
 local fallout = require("fallout")
 local light = require("lib.light")
+local misc = require("lib.misc")
 
 local start
 local map_enter_p_proc
@@ -16,7 +17,7 @@ end
 
 function map_enter_p_proc()
     light.lighting()
-    if fallout.metarule(14, 0) ~= 0 then
+    if misc.map_first_run() then
         fallout.override_map_start(109, 121, 0, 5)
         fallout.display_msg(fallout.message_str(112, 314))
     end

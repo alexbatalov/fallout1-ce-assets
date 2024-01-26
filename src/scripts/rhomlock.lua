@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 
 local start
 local use_p_proc
@@ -33,7 +34,7 @@ function use_p_proc()
     if source_obj == dude_obj then
         local bonus = -35
         local failure = true
-        if fallout.metarule(16, 0) > 1 then
+        if misc.party_member_count() > 1 then
             fallout.set_map_var(19, 2)
         else
             if source_obj == dude_obj then

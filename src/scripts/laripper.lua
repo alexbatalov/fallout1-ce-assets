@@ -1,5 +1,6 @@
 local fallout = require("fallout")
 local light = require("lib.light")
+local misc = require("lib.misc")
 local party = require("lib.party")
 local time = require("lib.time")
 
@@ -36,7 +37,7 @@ end
 
 function map_enter_p_proc()
     fallout.set_global_var(598, 1)
-    if fallout.metarule(22, 0) == 0 then
+    if not misc.is_loading_game() then
         if fallout.map_var(0) == 0 and time.game_time_in_seconds() - fallout.global_var(270) > 60 * 60 then
             fallout.set_global_var(270, time.game_time_in_seconds())
             if fallout.map_var(1) == 0 then

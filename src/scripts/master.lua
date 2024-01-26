@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
 local time = require("lib.time")
@@ -152,7 +153,7 @@ function do_dialogue()
     if so_long then
         fallout.play_gmovie(10)
         fallout.play_gmovie(7)
-        fallout.metarule(13, 0)
+        misc.signal_end_game()
     end
 end
 

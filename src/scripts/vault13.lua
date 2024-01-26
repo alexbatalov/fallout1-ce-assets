@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local party = require("lib.party")
 
 local start
@@ -36,7 +37,7 @@ function start()
         if fallout.global_var(18) and fallout.global_var(17) then
             fallout.load_map(35, 0)
         end
-        if fallout.metarule(14, 0) then
+        if misc.map_first_run() then
             if fallout.get_critter_stat(fallout.dude_obj(), 34) == 0 then
                 fallout.set_external_var("Officer_ptr", fallout.create_object_sid(16777271, 22093, 2, 178))
             else

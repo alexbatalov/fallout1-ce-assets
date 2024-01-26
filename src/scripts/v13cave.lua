@@ -1,5 +1,6 @@
 local fallout = require("fallout")
 local light = require("lib.light")
+local misc = require("lib.misc")
 local party = require("lib.party")
 
 local start
@@ -45,7 +46,7 @@ function start()
 end
 
 function map_enter_p_proc()
-    if fallout.metarule(14, 0) then
+    if misc.map_first_run() then
         fallout.override_map_start(90, 88, 0, 2)
         base_inventory()
         TagInven()

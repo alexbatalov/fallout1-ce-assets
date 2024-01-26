@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 
 local start
 local map_enter_p_proc
@@ -21,7 +22,7 @@ function map_enter_p_proc()
     if fallout.obj_pid(self_obj) == 33555090 then
         fallout.set_external_var("Tardis_ptr", self_obj)
     end
-    if fallout.metarule(14, 0) ~= 0 then
+    if misc.map_first_run() then
         fallout.override_map_start(113, 107, 0, 0)
         fallout.display_msg(fallout.message_str(112, 317))
     end

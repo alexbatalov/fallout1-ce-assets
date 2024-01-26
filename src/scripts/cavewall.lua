@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 
 local start
 local look_at_p_proc
@@ -78,7 +79,7 @@ function damage_p_proc()
         fallout.give_exp_points(xp)
         fallout.gfade_in(600)
         if fallout.tile_distance(fallout.tile_num(fallout.dude_obj()), 21155) >= 15 then
-            fallout.metarule(13, 0)
+            misc.signal_end_game()
         end
     end
 end

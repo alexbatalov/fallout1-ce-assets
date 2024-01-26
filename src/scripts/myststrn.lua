@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 
 local start
 local destroy_p_proc
@@ -7,7 +8,7 @@ local talk_p_proc
 local initialized = false
 
 function start()
-    if not initialized and fallout.metarule(14, 0) ~= 0 then
+    if not initialized and misc.map_first_run() then
         local self_obj = fallout.self_obj()
         fallout.critter_add_trait(self_obj, 1, 6, 0)
         fallout.critter_add_trait(self_obj, 1, 5, 92)

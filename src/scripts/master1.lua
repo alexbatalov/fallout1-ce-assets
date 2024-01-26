@@ -1,5 +1,6 @@
 local fallout = require("fallout")
 local light = require("lib.light")
+local misc = require("lib.misc")
 local party = require("lib.party")
 local time = require("lib.time")
 
@@ -49,7 +50,7 @@ end
 function map_enter_p_proc()
     light.darkness()
     if fallout.elevation(fallout.dude_obj()) == 0 then
-        if time.is_day() and fallout.metarule(22, 0) == 0 then
+        if time.is_day() and not misc.is_loading_game() then
             if fallout.map_var(10) == 0 then
                 local monstr_obj
                 fallout.set_map_var(10, 1)
@@ -94,7 +95,7 @@ function map_update_p_proc()
         if time.game_time_in_seconds() - fallout.global_var(55) > 240 then
             fallout.display_msg(fallout.message_str(446, 106))
             fallout.play_gmovie(4)
-            fallout.metarule(13, 0)
+            misc.signal_end_game()
         end
     end
     party_elevation = party.update_party(party_elevation)

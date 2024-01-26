@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local reputation = require("lib.reputation")
 
 local start
@@ -16,7 +17,7 @@ function timed_event_p_proc()
     local dude_obj = fallout.dude_obj()
     local event = fallout.fixed_param()
     if event == 3 then
-        fallout.metarule(13, 0)
+        misc.signal_end_game()
     elseif event == 4 then
         fallout.float_msg(fallout.self_obj(), fallout.message_str(1, 500), -2)
         fallout.add_timer_event(dude_obj, fallout.game_ticks(15), 3)
@@ -61,7 +62,7 @@ function timed_event_p_proc()
     elseif event == 8 then
         fallout.game_ui_enable()
         fallout.endgame_movie()
-        fallout.metarule(13, 0)
+        misc.signal_end_game()
     end
 end
 

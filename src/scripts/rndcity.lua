@@ -1,5 +1,6 @@
 local fallout = require("fallout")
 local light = require("lib.light")
+local misc = require("lib.misc")
 local time = require("lib.time")
 
 local start
@@ -56,7 +57,7 @@ function start()
 end
 
 function map_enter_p_proc()
-    if fallout.metarule(14, 0) then
+    if misc.map_first_run() then
         dude_pos = fallout.random(0, 2)
         dude_rot = fallout.random(0, 5)
         if dude_pos == 0 then
@@ -67,7 +68,7 @@ function map_enter_p_proc()
             fallout.override_map_start(92, 110, 0, dude_rot)
         end
     end
-    if fallout.global_var(32) ~= 1 and fallout.metarule(14, 0) ~= 0 then
+    if fallout.global_var(32) ~= 1 and misc.map_first_run() then
         Dude_tile = fallout.tile_num(fallout.dude_obj())
         Ranger_rerolls = fallout.has_trait(0, fallout.dude_obj(), 47)
         fallout.set_global_var(334, 0)

@@ -1,5 +1,6 @@
 local fallout = require("fallout")
 local light = require("lib.light")
+local misc = require("lib.misc")
 local party = require("lib.party")
 local time = require("lib.time")
 
@@ -39,7 +40,7 @@ function start()
 end
 
 function map_enter_p_proc()
-    if fallout.metarule(14, 0) then
+    if misc.map_first_run() then
         fallout.display_msg(fallout.message_str(194, 113))
     end
     fallout.set_global_var(595, 1)

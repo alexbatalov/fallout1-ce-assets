@@ -1,5 +1,6 @@
 local fallout = require("fallout")
 local light = require("lib.light")
+local misc = require("lib.misc")
 local party = require("lib.party")
 local time = require("lib.time")
 
@@ -39,7 +40,7 @@ end
 
 function map_enter_p_proc()
     party_elevation = party.add_party()
-    if fallout.metarule(14, 0) ~= 0 then
+    if misc.map_first_run() then
         fallout.display_msg(fallout.message_str(194, 105))
     end
     fallout.override_map_start(107, 49, 0, 2)

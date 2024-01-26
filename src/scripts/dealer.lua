@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local reputation = require("lib.reputation")
 
 local start
@@ -21,7 +22,7 @@ local said_hi = false
 
 function start()
     if not initialized then
-        if fallout.metarule(14, 0) ~= 0 then
+        if misc.map_first_run() then
             local caps_obj = fallout.create_object_sid(41, 0, 0, -1)
             fallout.add_mult_objs_to_inven(fallout.self_obj(), caps_obj, fallout.random(0, 100))
             fallout.critter_add_trait(fallout.self_obj(), 1, 6, 24)

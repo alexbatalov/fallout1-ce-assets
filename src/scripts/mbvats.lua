@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local party = require("lib.party")
 local time = require("lib.time")
 
@@ -33,7 +34,7 @@ function start()
         combat_p_proc()
     else
         if fallout.script_action() == 15 then
-            if fallout.metarule(14, 0) then
+            if misc.map_first_run() then
                 fallout.set_external_var("field_change", "off")
             end
             if fallout.global_var(146) ~= 0 then
@@ -94,7 +95,7 @@ function start()
                     fallout.display_msg(fallout.message_str(442, 107) .. (300 - (time.game_time_in_seconds() - fallout.global_var(147))) .. fallout.message_str(442, 108))
                     if (time.game_time_in_seconds() - fallout.global_var(147)) >= 300 then
                         fallout.play_gmovie(3)
-                        fallout.metarule(13, 0)
+                        misc.signal_end_game()
                     end
                 end
                 if fallout.external_var("removal_ptr") ~= 0 then

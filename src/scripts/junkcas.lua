@@ -1,5 +1,6 @@
 local fallout = require("fallout")
 local light = require("lib.light")
+local misc = require("lib.misc")
 local party = require("lib.party")
 local time = require("lib.time")
 
@@ -62,7 +63,7 @@ function start()
         if fallout.global_var(32) == 1 then
             fallout.override_map_start(99, 94, 0, 3)
         else
-            if (fallout.global_var(32) == 4) and (fallout.metarule(22, 0) == 0) then
+            if (fallout.global_var(32) == 4) and (not misc.is_loading_game()) then
                 fallout.gfade_in(600)
                 fallout.override_map_start(120, 87, 0, 5)
                 v0 = fallout.create_object_sid(16777295, 0, 0, 47)
@@ -80,7 +81,7 @@ function start()
                 item = fallout.create_object_sid(100, 0, 0, -1)
                 fallout.add_obj_to_inven(v1, item)
             else
-                if (fallout.global_var(32) == 7) and (fallout.metarule(22, 0) == 0) then
+                if (fallout.global_var(32) == 7) and (not misc.is_loading_game()) then
                     Kill_Neal()
                 else
                     fallout.override_map_start(99, 94, 0, 5)
@@ -88,7 +89,7 @@ function start()
             end
         end
         if (fallout.global_var(283) ~= 0) and (fallout.external_var("Neal_ptr") ~= 0) then
-            if (fallout.global_var(283) < time.game_time_in_days()) and (fallout.metarule(22, 0) == 0) then
+            if (fallout.global_var(283) < time.game_time_in_days()) and (not misc.is_loading_game()) then
                 fallout.kill_critter(fallout.external_var("Neal_ptr"), 49)
             end
         end
@@ -96,7 +97,7 @@ function start()
         if fallout.script_action() == 23 then
             party_elevation = party.update_party(party_elevation)
             light.lighting()
-            if fallout.metarule(22, 0) == 0 then
+            if not misc.is_loading_game() then
                 if (fallout.global_var(38) == 1) and (fallout.map_var(3) == 0) and (fallout.combat_is_initialized() == 0) and (fallout.global_var(348) == 0) then
                     fallout.display_msg(fallout.message_str(44, 217))
                     fallout.give_exp_points(600)

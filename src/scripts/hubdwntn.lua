@@ -1,5 +1,6 @@
 local fallout = require("fallout")
 local light = require("lib.light")
+local misc = require("lib.misc")
 local party = require("lib.party")
 local time = require("lib.time")
 
@@ -47,7 +48,7 @@ function start()
                 light.lighting()
             end
             party_elevation = party.update_party(party_elevation)
-            if (fallout.combat_is_initialized() == 0) and (fallout.global_var(202) == 1) and (fallout.map_var(52) == 1) and (fallout.metarule(22, 0) == 0) then
+            if (fallout.combat_is_initialized() == 0) and (fallout.global_var(202) == 1) and (fallout.map_var(52) == 1) and (not misc.is_loading_game()) then
                 fallout.set_map_var(52, 0)
                 fallout.set_map_var(53, 1)
                 fallout.gfade_out(1000)

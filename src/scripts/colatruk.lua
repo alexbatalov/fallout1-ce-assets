@@ -1,5 +1,6 @@
 local fallout = require("fallout")
 local light = require("lib.light")
+local misc = require("lib.misc")
 
 local start
 local map_enter_p_proc
@@ -36,7 +37,7 @@ function map_enter_p_proc()
     local qty = CAPS[luck] * (fallout.has_trait(0, fallout.dude_obj(), 20) + 1)
     fallout.add_mult_objs_to_inven(crate_obj, caps_obj, qty)
 
-    if fallout.metarule(14, 0) ~= 0 then
+    if misc.map_first_run() then
         fallout.override_map_start(130, 107, 0, 0)
         fallout.display_msg(fallout.message_str(112, 315))
     end

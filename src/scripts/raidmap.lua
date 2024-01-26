@@ -1,5 +1,6 @@
 local fallout = require("fallout")
 local light = require("lib.light")
+local misc = require("lib.misc")
 local party = require("lib.party")
 
 fallout.create_external_var("women_killed")
@@ -27,7 +28,7 @@ function start()
     if fallout.script_action() == 15 then
         light.lighting()
         fallout.set_global_var(69, 2)
-        if fallout.metarule(14, 0) then
+        if misc.map_first_run() then
             fallout.display_msg(fallout.message_str(194, 103))
             if fallout.get_critter_stat(fallout.dude_obj(), 34) == 0 then
                 if (fallout.get_critter_stat(fallout.dude_obj(), 6) > 8) and fallout.random(0, 1) then
@@ -35,7 +36,7 @@ function start()
                 end
             end
         end
-        if fallout.metarule(22, 0) == 0 then
+        if not misc.is_loading_game() then
             if (fallout.global_var(114) == 1) and (fallout.global_var(115) <= 12) or (fallout.global_var(115) <= 6) then
                 fallout.kill_critter_type(16777254, 0)
                 fallout.kill_critter_type(16777235, 0)

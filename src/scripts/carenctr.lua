@@ -1,5 +1,6 @@
 local fallout = require("fallout")
 local light = require("lib.light")
+local misc = require("lib.misc")
 local party = require("lib.party")
 
 local start
@@ -84,7 +85,7 @@ function map_enter_p_proc()
     party_elevation = party.add_party()
     Outer_Circle = fallout.random(4, 9) + 4
     Inner_Circle = Outer_Circle - 4
-    if fallout.metarule(14, 0) ~= 0 then
+    if misc.map_first_run() then
         fallout.set_global_var(215, 1)
         fallout.set_global_var(216, 2)
         fallout.debug_msg("CVan_Driver == " .. fallout.global_var(215))

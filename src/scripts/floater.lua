@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local reputation = require("lib.reputation")
 
 local start
@@ -9,7 +10,7 @@ local initialized = false
 local hostile = false
 
 function start()
-    if not initialized and fallout.metarule(14, 0) ~= 0 then
+    if not initialized and misc.map_first_run() then
         local self_obj = fallout.self_obj()
         local pid = fallout.obj_pid(self_obj)
         if pid == 16777261 then

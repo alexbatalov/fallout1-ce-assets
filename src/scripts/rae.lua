@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
 
@@ -114,7 +115,7 @@ function talk_p_proc()
     fallout.end_dialogue()
     if movie then
         fallout.play_gmovie(4)
-        fallout.metarule(13, 0)
+        misc.signal_end_game()
     end
 end
 

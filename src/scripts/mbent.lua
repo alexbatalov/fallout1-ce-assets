@@ -1,5 +1,6 @@
 local fallout = require("fallout")
 local light = require("lib.light")
+local misc = require("lib.misc")
 local party = require("lib.party")
 local time = require("lib.time")
 
@@ -27,7 +28,7 @@ local radio_kludge
 function start()
     if fallout.script_action() == 15 then
         fallout.set_global_var(78, 2)
-        if fallout.metarule(14, 0) then
+        if misc.map_first_run() then
             fallout.display_msg(fallout.message_str(194, 109))
         end
         fallout.set_external_var("radio_trick", fallout.map_var(0))
@@ -50,7 +51,7 @@ function start()
                 fallout.display_msg(fallout.message_str(443, 103) .. (300 - (time.game_time_in_seconds() - fallout.global_var(147))) .. fallout.message_str(443, 104))
                 if (time.game_time_in_seconds() - fallout.global_var(147)) >= 300 then
                     fallout.play_gmovie(3)
-                    fallout.metarule(13, 0)
+                    misc.signal_end_game()
                 end
             end
             if fallout.external_var("removal_ptr") ~= 0 then
