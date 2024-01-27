@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local reputation = require("lib.reputation")
 local time = require("lib.time")
 
@@ -48,7 +49,7 @@ function start()
 end
 
 function talk_p_proc()
-    if not Has_Weapon and ((fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3)) then
+    if not Has_Weapon and misc.is_armed(fallout.dude_obj()) then
         Has_Weapon = true
         fallout.start_gdialog(341, fallout.self_obj(), 4, -1, -1)
         fallout.gsay_start()

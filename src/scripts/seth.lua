@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
 
@@ -142,7 +143,7 @@ end
 function critter_p_proc()
     if fallout.local_var(6) == 0 then
         fallout.set_local_var(6, 1)
-        if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) then
+        if misc.is_armed(fallout.dude_obj()) then
             fallout.float_msg(fallout.self_obj(), fallout.message_str(183, 204), 8)
         else
             fallout.float_msg(fallout.self_obj(), fallout.message_str(183, 205), 8)

@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
 
@@ -104,7 +105,7 @@ end
 function timed_event_p_proc()
     local event = fallout.fixed_param()
     if event == 1 then
-        if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) then
+        if misc.is_armed(fallout.dude_obj()) then
             combat()
         end
     elseif event == 2 then
@@ -245,7 +246,7 @@ function combat()
 end
 
 function weapon_check()
-    if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) then
+    if misc.is_armed(fallout.dude_obj()) then
         Weapons = false
     else
         Weapons = true
@@ -302,7 +303,7 @@ function critter_p_proc()
             fallout.tile_num_in_direction(fallout.tile_num(self_obj), rotation, 1), 0)
     else
         if self_can_see_dude and fallout.global_var(611) ~= 1 then
-            if (fallout.obj_item_subtype(fallout.critter_inven_obj(dude_obj, 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(dude_obj, 2)) == 3)
+            if misc.is_armed(dude_obj)
                 and not Weapons
                 and fallout.external_var("killing_women") == 0 then
                 Weapons = true

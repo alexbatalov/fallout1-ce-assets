@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
 
@@ -108,7 +109,7 @@ function Cop00()
         end
     elseif reputation.has_rep_champion() then
         fallout.float_msg(fallout.self_obj(), fallout.message_str(573, fallout.random(117, 118)), 2)
-    elseif (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) then
+    elseif misc.is_armed(fallout.dude_obj()) then
         fallout.float_msg(fallout.self_obj(), fallout.message_str(573, fallout.random(107, 109)), 2)
     elseif fallout.global_var(44) == 2 then
         fallout.float_msg(fallout.self_obj(), fallout.message_str(573, 119), 2)
@@ -120,9 +121,10 @@ end
 function Cop01()
     if fallout.random(0, 3) == 1 then
         fallout.float_msg(fallout.self_obj(), fallout.message_str(573, fallout.random(120, 129)), 2)
-    elseif (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) then
+    elseif misc.is_armed(fallout.dude_obj()) then
         fallout.float_msg(fallout.self_obj(), fallout.message_str(573, fallout.random(130, 133)), 2)
     elseif fallout.obj_pid(fallout.critter_inven_obj(fallout.dude_obj(), 0)) == 3 then
+        -- FIXME: Checks if dude have armor in weapon slot?
         fallout.float_msg(fallout.self_obj(), fallout.message_str(573, 134), 2)
     elseif fallout.global_var(198) == 1 then
         fallout.float_msg(fallout.self_obj(), fallout.message_str(573, fallout.random(135, 137)), 2)

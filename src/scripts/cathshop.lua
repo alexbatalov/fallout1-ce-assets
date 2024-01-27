@@ -88,7 +88,7 @@ function talk_p_proc()
     if Caught_Stealing then
         BarterGuy00()
     else
-        if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) or (fallout.global_var(195) == 1) then
+        if misc.is_armed(fallout.dude_obj()) or (fallout.global_var(195) == 1) then
             BarterGuy02()
         elseif misc.is_wearing_coc_robe(fallout.dude_obj()) then
             BarterGuy07()

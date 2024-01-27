@@ -99,7 +99,7 @@ function talk_p_proc()
     if fallout.global_var(54) ~= 0 then
         GenSupr08()
     else
-        if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) and not hostile then
+        if misc.is_armed(fallout.dude_obj()) and not hostile then
             if fallout.random(0, 5) == 5 then
                 GenSupr00()
             else

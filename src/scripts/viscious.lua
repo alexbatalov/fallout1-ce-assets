@@ -86,7 +86,7 @@ function talk_p_proc()
     indlog = true
     armed = false
     disguised = false
-    if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) then
+    if misc.is_armed(fallout.dude_obj()) then
         armed = true
     end
     if misc.is_wearing_coc_robe(fallout.dude_obj()) then
@@ -183,7 +183,7 @@ function moveme()
     if fallout.obj_can_see_obj(self_obj, fallout.dude_obj()) then
         armed = false
         disguised = false
-        if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) then
+        if misc.is_armed(fallout.dude_obj()) then
             armed = true
         end
         if misc.is_wearing_coc_robe(fallout.dude_obj()) then

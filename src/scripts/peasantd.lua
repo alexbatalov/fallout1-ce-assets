@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local reputation = require("lib.reputation")
 
 --
@@ -81,7 +82,7 @@ function go_inside()
 end
 
 function weapon_check()
-    if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) then
+    if misc.is_armed(fallout.dude_obj()) then
         g1 = 1
     else
         g1 = 0

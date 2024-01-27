@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
 
@@ -122,7 +123,7 @@ function talk_p_proc()
     if fallout.global_var(261) ~= 0 then
         Officer00()
     else
-        if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) then
+        if misc.is_armed(fallout.dude_obj()) then
             Officer27()
         else
             if fallout.global_var(101) ~= 0 and fallout.global_var(101) ~= 1 then

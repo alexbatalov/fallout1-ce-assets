@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
 local time = require("lib.time")
@@ -104,7 +105,7 @@ function critter_p_proc()
                     fallout.dialogue_system_enter()
                 end
             else
-                if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) and not(fallout.local_var(4)) and (fallout.global_var(36) == 0) and (fallout.global_var(104) == 0) then
+                if misc.is_armed(fallout.dude_obj()) and not(fallout.local_var(4)) and (fallout.global_var(36) == 0) and (fallout.global_var(104) == 0) then
                     if not(fallout.external_var("weapon_checked")) then
                         fallout.set_external_var("weapon_checked", 1)
                         fallout.rm_timer_event(fallout.self_obj())
@@ -167,7 +168,7 @@ end
 
 function timed_event_p_proc()
     if fallout.fixed_param() == 1 then
-        if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) then
+        if misc.is_armed(fallout.dude_obj()) then
             hostile = 1
         else
             fallout.set_external_var("weapon_checked", 0)
@@ -208,7 +209,7 @@ function do_dialogue()
     else
         fallout.start_gdialog(135, fallout.self_obj(), 4, -1, -1)
         fallout.gsay_start()
-        if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) and not(fallout.local_var(4)) then
+        if misc.is_armed(fallout.dude_obj()) and not(fallout.local_var(4)) then
             guard00()
         else
             if sneaking then
@@ -232,7 +233,7 @@ function pre_dialogue()
     if (fallout.global_var(247) == 1) and (line166flag == 0) then
         Guard18()
     else
-        if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) and not(fallout.local_var(4)) then
+        if misc.is_armed(fallout.dude_obj()) and not(fallout.local_var(4)) then
             do_dialogue()
         else
             if sneaking then

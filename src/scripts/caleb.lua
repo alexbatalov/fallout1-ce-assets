@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
 
@@ -78,7 +79,7 @@ function talk_p_proc()
         reaction.get_reaction()
         fallout.start_gdialog(255, fallout.self_obj(), -1, -1, -1)
         fallout.gsay_start()
-        if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) then
+        if misc.is_armed(fallout.dude_obj()) then
             DialogWeapon()
         elseif fallout.local_var(4) == 0 then
             if fallout.local_var(1) < 2 then

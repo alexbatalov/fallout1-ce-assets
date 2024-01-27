@@ -1,5 +1,6 @@
 local fallout = require("fallout")
 local behaviour = require("lib.behaviour")
+local misc = require("lib.misc")
 local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
 local time = require("lib.time")
@@ -193,7 +194,7 @@ function talk_p_proc()
             if fallout.global_var(247) ~= 0 then
                 fallout.float_msg(fallout.self_obj(), fallout.message_str(669, 104), 2)
             else
-                if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) then
+                if misc.is_armed(fallout.dude_obj()) then
                     Saul06()
                 else
                     fallout.start_gdialog(528, fallout.self_obj(), 4, -1, -1)

@@ -91,7 +91,7 @@ end
 function zamin()
     disguised = false
     armed = false
-    if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) then
+    if misc.is_armed(fallout.dude_obj()) then
         armed = true
     end
     if misc.is_wearing_coc_robe(fallout.dude_obj()) then

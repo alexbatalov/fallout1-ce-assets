@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local reputation = require("lib.reputation")
 local time = require("lib.time")
 
@@ -41,7 +42,7 @@ end
 function critter_p_proc()
     local dude_obj = fallout.dude_obj()
     local self_obj = fallout.self_obj()
-    if fallout.obj_item_subtype(fallout.critter_inven_obj(dude_obj, 1)) == 3 or fallout.obj_item_subtype(fallout.critter_inven_obj(dude_obj, 2)) == 3 then
+    if misc.is_armed(dude_obj) then
         if fallout.obj_can_see_obj(self_obj, dude_obj) then
             if fallout.tile_distance_objs(self_obj, dude_obj) < 12 then
                 if not (weapon_check) then
@@ -98,7 +99,7 @@ function talk_p_proc()
     fallout.script_overrides()
 
     local dude_obj = fallout.dude_obj()
-    if fallout.obj_item_subtype(fallout.critter_inven_obj(dude_obj, 1)) == 3 or fallout.obj_item_subtype(fallout.critter_inven_obj(dude_obj, 2)) == 3 then
+    if misc.is_armed(dude_obj) then
         gambler1()
     elseif fallout.global_var(158) > 2 then
         gambler3()

@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 
 local start
 local pickup_p_proc
@@ -55,7 +56,7 @@ function talk_p_proc()
         Lenore02()
     elseif fallout.external_var("dog_is_angry") == 0 then
         Lenore04()
-    elseif (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) then
+    elseif misc.is_armed(fallout.dude_obj()) then
         Lenore01()
     else
         Lenore03()

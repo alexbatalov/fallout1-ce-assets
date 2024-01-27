@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
 
@@ -75,7 +76,7 @@ function critter_p_proc()
                     fallout.float_msg(self_obj, fallout.message_str(37, 138), 2)
                     hostile = true
                 else
-                    if (fallout.obj_item_subtype(fallout.critter_inven_obj(dude_obj, 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(dude_obj, 2)) == 3)
+                    if misc.is_armed(dude_obj)
                         and fallout.local_var(4) == 0
                         and fallout.map_var(2) == 0
                         and fallout.global_var(36) == 0
@@ -191,10 +192,10 @@ function talk_p_proc()
     if sneaking and (fallout.external_var("times_caught_sneaking") >= 3) then
         JTGenGrd18()
     else
-        if fallout.local_var(4) == 0 and ((fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3)) or (sneaking and (fallout.external_var("times_caught_sneaking") < 3)) then
+        if fallout.local_var(4) == 0 and misc.is_armed(fallout.dude_obj()) or (sneaking and (fallout.external_var("times_caught_sneaking") < 3)) then
             fallout.start_gdialog(37, fallout.self_obj(), 4, -1, -1)
             fallout.gsay_start()
-            if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) then
+            if misc.is_armed(fallout.dude_obj()) then
                 JTGenGrd00()
             else
                 if sneaking then
@@ -221,7 +222,7 @@ function timed_event_p_proc()
     local event = fallout.fixed_param()
     if event == 1 then
         if fallout.external_var("weapon_checked") ~= 0 then
-            if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) then
+            if misc.is_armed(fallout.dude_obj()) then
                 fallout.float_msg(fallout.self_obj(), fallout.message_str(37, 134), 0)
                 fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(5), 3)
             else

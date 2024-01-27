@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 
 --
 -- Some unreferenced imported varables found.
@@ -66,7 +67,7 @@ function talk_p_proc()
         if not(fallout.external_var("dog_is_angry")) then
             PeasantD04()
         else
-            if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) then
+            if misc.is_armed(fallout.dude_obj()) then
                 PeasantD01()
             else
                 PeasantD03()

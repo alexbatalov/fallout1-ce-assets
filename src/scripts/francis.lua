@@ -77,7 +77,7 @@ function talk_p_proc()
         if fallout.local_var(0) == 1 then
             fallout.float_msg(fallout.self_obj(), fallout.message_str(399, 102), 0)
         else
-            if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) then
+            if misc.is_armed(fallout.dude_obj()) then
                 fallout.float_msg(fallout.self_obj(), fallout.message_str(399, 103), 0)
             else
                 if not misc.is_wearing_coc_robe(fallout.dude_obj()) and (reputation.has_rep_berserker() or (fallout.global_var(158) > 2)) then

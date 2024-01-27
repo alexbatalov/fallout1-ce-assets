@@ -1,5 +1,6 @@
 local fallout = require("fallout")
 local behaviour = require("lib.behaviour")
+local misc = require("lib.misc")
 local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
 local time = require("lib.time")
@@ -125,7 +126,7 @@ function talk_p_proc()
                 if fallout.global_var(101) ~= 0 then
                     Rebel01()
                 else
-                    if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) then
+                    if misc.is_armed(fallout.dude_obj()) then
                         Rebel02()
                     else
                         if fallout.local_var(1) >= 2 then

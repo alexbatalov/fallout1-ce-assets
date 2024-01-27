@@ -108,7 +108,7 @@ end
 function talk_p_proc()
     fallout.script_overrides()
     if misc.is_wearing_coc_robe(fallout.dude_obj()) then
-        if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) then
+        if misc.is_armed(fallout.dude_obj()) then
             fallout.start_gdialog(384, fallout.self_obj(), 4, -1, -1)
             fallout.gsay_start()
             lasher04()
@@ -122,7 +122,7 @@ function talk_p_proc()
             fallout.end_dialogue()
         end
     else
-        if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) then
+        if misc.is_armed(fallout.dude_obj()) then
             fallout.start_gdialog(384, fallout.self_obj(), 4, -1, -1)
             fallout.gsay_start()
             lasher06()
@@ -171,7 +171,7 @@ function critter_p_proc()
         fallout.set_local_var(1, 1)
         fallout.dialogue_system_enter()
     else
-        if self_can_see_dude and ((fallout.obj_item_subtype(fallout.critter_inven_obj(dude_obj, 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(dude_obj, 2)) == 3)) then
+        if self_can_see_dude and misc.is_armed(dude_obj) then
             hostile = true
         end
     end

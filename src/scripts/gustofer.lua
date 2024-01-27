@@ -1,5 +1,6 @@
 local fallout = require("fallout")
 local behaviour = require("lib.behaviour")
+local misc = require("lib.misc")
 local reputation = require("lib.reputation")
 local time = require("lib.time")
 
@@ -82,7 +83,7 @@ function critter_p_proc()
     local self_obj = fallout.self_obj()
     local dude_obj = fallout.dude_obj()
     local distance_self_to_dude = fallout.tile_distance_objs(self_obj, dude_obj)
-    if (fallout.obj_item_subtype(fallout.critter_inven_obj(dude_obj, 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(dude_obj, 2)) == 3) and distance_self_to_dude < 8 and fallout.local_var(1) == 0 then
+    if misc.is_armed(dude_obj) and distance_self_to_dude < 8 and fallout.local_var(1) == 0 then
         behaviour.flee_dude(1)
     else
         if fallout.game_time_hour() == 1400 then

@@ -1,5 +1,6 @@
 local fallout = require("fallout")
 local behaviour = require("lib.behaviour")
+local misc = require("lib.misc")
 local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
 
@@ -109,7 +110,7 @@ function talk_p_proc()
         if (fallout.global_var(158) > 2) or (fallout.local_var(1) < 2) or (fallout.global_var(155) < -30) then
             FishrSon00()
         else
-            if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) then
+            if misc.is_armed(fallout.dude_obj()) then
                 FishrSon01()
             else
                 fallout.start_gdialog(645, fallout.self_obj(), 4, -1, -1)

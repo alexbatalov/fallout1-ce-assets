@@ -1,5 +1,6 @@
 local fallout = require("fallout")
 local behaviour = require("lib.behaviour")
+local misc = require("lib.misc")
 local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
 local time = require("lib.time")
@@ -131,7 +132,7 @@ function talk_p_proc()
         Vault00()
     elseif fallout.global_var(101) ~= 0 and fallout.global_var(101) ~= 1 then
         Vault01()
-    elseif fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3 or fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3 then
+    elseif misc.is_armed(fallout.dude_obj()) then
         Vault02()
     elseif fallout.global_var(10) < 80 then
         Vault00b()

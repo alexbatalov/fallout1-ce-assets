@@ -22,10 +22,26 @@ local function is_wearing_coc_robe(critter_obj)
     return armor_obj ~= nil and fallout.obj_pid(armor_obj) == 113
 end
 
+--- @param critter_obj Object
+local function is_armed(critter_obj)
+    local right_hand_obj = fallout.critter_inven_obj(critter_obj, 1)
+    if right_hand_obj ~= nil and fallout.obj_item_subtype(right_hand_obj) == 3 then
+        return true
+    end
+
+    local left_hand_obj = fallout.critter_inven_obj(critter_obj, 2)
+    if left_hand_obj ~= nil and fallout.obj_item_subtype(left_hand_obj) == 3 then
+        return true
+    end
+
+    return false
+end
+
 local exports = {}
 exports.signal_end_game = signal_end_game
 exports.map_first_run = map_first_run
 exports.party_member_count = party_member_count
 exports.is_loading_game = is_loading_game
 exports.is_wearing_coc_robe = is_wearing_coc_robe
+exports.is_armed = is_armed
 return exports

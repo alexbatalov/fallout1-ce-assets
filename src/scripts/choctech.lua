@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local reputation = require("lib.reputation")
 
 local start
@@ -57,7 +58,7 @@ function critter_p_proc()
             fallout.critter_dmg(fallout.self_obj(), fallout.random(200, 250), 6)
         else
             if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
-                if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) then
+                if misc.is_armed(fallout.dude_obj()) then
                     if not said_stuff then
                         said_stuff = true
                         if fallout.external_var("Team9_Count") > 0 then

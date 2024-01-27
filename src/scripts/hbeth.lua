@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
 local time = require("lib.time")
@@ -161,10 +162,10 @@ function talk_p_proc()
     if time.is_night() then
         fallout.float_msg(fallout.self_obj(), fallout.message_str(617, 361), 2)
     else
-        if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) and (fallout.local_var(14) == 0) then
+        if misc.is_armed(fallout.dude_obj()) and (fallout.local_var(14) == 0) then
             Beth55()
         else
-            if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) and (fallout.local_var(14) == 1) then
+            if misc.is_armed(fallout.dude_obj()) and (fallout.local_var(14) == 1) then
                 Beth56()
             else
                 if fallout.local_var(4) == 1 then

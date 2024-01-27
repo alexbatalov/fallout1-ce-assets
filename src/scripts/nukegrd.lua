@@ -134,7 +134,7 @@ function critter_p_proc()
         fallout.attack(dude_obj, 0, 1, 0, 0, 30000, 0, 0)
     end
     if self_can_see_dude then
-        if (fallout.obj_item_subtype(fallout.critter_inven_obj(dude_obj, 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(dude_obj, 2)) == 3) then
+        if misc.is_armed(dude_obj) then
             if not Weapons then
                 Weapons = true
                 if fallout.tile_distance_objs(self_obj, dude_obj) < 6 then

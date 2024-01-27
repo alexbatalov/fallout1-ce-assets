@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local reputation = require("lib.reputation")
 
 local start
@@ -52,7 +53,7 @@ function critter_p_proc()
     else
         if fallout.obj_can_see_obj(self_obj, dude_obj) then
             if fallout.tile_distance_objs(self_obj, dude_obj) < 12 then
-                if (fallout.obj_item_subtype(fallout.critter_inven_obj(dude_obj, 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(dude_obj, 2)) == 3) and not (fallout.external_var("weapon_checked")) then
+                if misc.is_armed(dude_obj) and not (fallout.external_var("weapon_checked")) then
                     fallout.dialogue_system_enter()
                 else
                     if fallout.using_skill(fallout.dude_obj(), 8) and not (sneak_checked) then
@@ -99,7 +100,7 @@ end
 
 function talk_p_proc()
     local dude_obj = fallout.dude_obj()
-    if fallout.obj_item_subtype(fallout.critter_inven_obj(dude_obj, 1)) == 3 or fallout.obj_item_subtype(fallout.critter_inven_obj(dude_obj, 2)) == 3 then
+    if misc.is_armed(dude_obj) then
         GizGuard00()
     else
         if fallout.using_skill(dude_obj, 8) then
@@ -121,7 +122,7 @@ end
 function timed_event_p_proc()
     local event = fallout.fixed_param()
     if event == 1 then
-        if fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3 or fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3 then
+        if misc.is_armed(fallout.dude_obj()) then
             fallout.float_msg(fallout.self_obj(), fallout.message_str(639, fallout.random(100, 103)), 2)
             hostile = true
         else
