@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local reputation = require("lib.reputation")
 
 local start
@@ -35,7 +36,7 @@ function critter_p_proc()
         if fallout.global_var(146) ~= 0 then
             hostile = true
         else
-            if not (fallout.obj_pid(fallout.critter_inven_obj(fallout.dude_obj(), 0)) == 113) then
+            if not misc.is_wearing_coc_robe(fallout.dude_obj()) then
                 hostile = true
             end
         end

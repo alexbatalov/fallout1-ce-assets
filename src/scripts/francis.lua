@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local reputation = require("lib.reputation")
 
 local start
@@ -79,17 +80,18 @@ function talk_p_proc()
             if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) then
                 fallout.float_msg(fallout.self_obj(), fallout.message_str(399, 103), 0)
             else
-                if not (fallout.obj_pid(fallout.critter_inven_obj(fallout.dude_obj(), 0)) == 113) and (reputation.has_rep_berserker() or (fallout.global_var(158) > 2)) then
+                if not misc.is_wearing_coc_robe(fallout.dude_obj()) and (reputation.has_rep_berserker() or (fallout.global_var(158) > 2)) then
                     fallout.float_msg(fallout.self_obj(), fallout.message_str(399, 104), 0)
                 else
                     fallout.start_gdialog(399, fallout.self_obj(), 4, -1, -1)
                     fallout.gsay_start()
-                    if not (fallout.obj_pid(fallout.critter_inven_obj(fallout.dude_obj(), 0)) == 113) then
+                    if not misc.is_wearing_coc_robe(fallout.dude_obj()) then
                         Francis04()
                     else
-                        if fallout.obj_pid(fallout.critter_inven_obj(fallout.dude_obj(), 0)) == 113 then
+                        if misc.is_wearing_coc_robe(fallout.dude_obj()) then
                             Francis05()
                         else
+                            -- FIXME: Unreachable.
                             Francis06()
                         end
                     end

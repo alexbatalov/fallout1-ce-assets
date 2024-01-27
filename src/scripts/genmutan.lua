@@ -92,7 +92,7 @@ function pickup_p_proc()
 end
 
 function talk_p_proc()
-    if fallout.obj_pid(fallout.critter_inven_obj(fallout.dude_obj(), 0)) == 113 then
+    if misc.is_wearing_coc_robe(fallout.dude_obj()) then
         if misc.party_member_count() > 1 then
             disguised = false
         else
@@ -133,7 +133,7 @@ function critter_p_proc()
                     end
                 end
                 disguised = false
-                if fallout.obj_pid(fallout.critter_inven_obj(fallout.dude_obj(), 0)) == 113 then
+                if misc.is_wearing_coc_robe(fallout.dude_obj()) then
                     if misc.party_member_count() > 1 then
                         disguised = false
                     else

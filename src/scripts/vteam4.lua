@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local reputation = require("lib.reputation")
 local time = require("lib.time")
 
@@ -174,7 +175,7 @@ function GenSupr03()
     fallout.giq_option(4, 433, 108, GenSupr04, 0)
     fallout.giq_option(5, 433, 109, GenSupr05, 0)
     fallout.giq_option(6, 433, 110, GenSupr03a, 0)
-    if fallout.obj_pid(fallout.critter_inven_obj(fallout.dude_obj(), 0)) == 113 then
+    if misc.is_wearing_coc_robe(fallout.dude_obj()) then
         fallout.giq_option(6, 433, 111, GenSupr03b, 0)
     end
 end

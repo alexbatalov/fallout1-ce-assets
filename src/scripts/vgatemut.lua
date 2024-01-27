@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local reputation = require("lib.reputation")
 
 local start
@@ -161,7 +162,7 @@ function VGateMut03()
     fallout.giq_option(4, 433, 108, VGateMut04, 51)
     fallout.giq_option(5, 433, 109, VGateMut05, 50)
     fallout.giq_option(6, 433, 110, VGateMut03a, 50)
-    if fallout.obj_pid(fallout.critter_inven_obj(fallout.dude_obj(), 0)) == 113 then
+    if misc.is_wearing_coc_robe(fallout.dude_obj()) then
         fallout.giq_option(6, 433, 111, VGateMut03b, 50)
     end
 end

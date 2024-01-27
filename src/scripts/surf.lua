@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 
 local start
 local do_dialogue
@@ -141,7 +142,7 @@ function do_dialogue()
                             if armed == 1 then
                                 surf04()
                             else
-                                if fallout.obj_pid(fallout.critter_inven_obj(fallout.dude_obj(), 0)) == 113 then
+                                if misc.is_wearing_coc_robe(fallout.dude_obj()) then
                                     surf05()
                                 else
                                     if POWERBLOWN == 1 then

@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
 
@@ -244,7 +245,7 @@ function morph02a()
 end
 
 function morph02_1()
-    if fallout.obj_pid(fallout.critter_inven_obj(fallout.dude_obj(), 0)) == 113 then
+    if misc.is_wearing_coc_robe(fallout.dude_obj()) then
         morph02_2()
     else
         morph06()

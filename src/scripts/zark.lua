@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local reputation = require("lib.reputation")
 
 local start
@@ -131,7 +132,7 @@ function talk_p_proc()
     weapon_check()
     fallout.start_gdialog(-1, fallout.self_obj(), 4, -1, -1)
     fallout.gsay_start()
-    if fallout.obj_pid(fallout.critter_inven_obj(fallout.dude_obj(), 0)) == 113 then
+    if misc.is_wearing_coc_robe(fallout.dude_obj()) then
         if fallout.local_var(4) == 0 then
             if armed then
                 zark14()
@@ -710,7 +711,7 @@ function zark39a()
 end
 
 function zark39b()
-    if fallout.obj_pid(fallout.critter_inven_obj(fallout.dude_obj(), 0)) == 113 then
+    if misc.is_wearing_coc_robe(fallout.dude_obj()) then
         zark16()
     else
         zark25()
@@ -752,7 +753,7 @@ function zark41()
 end
 
 function zark41a()
-    if fallout.obj_pid(fallout.critter_inven_obj(fallout.dude_obj(), 0)) == 113 then
+    if misc.is_wearing_coc_robe(fallout.dude_obj()) then
         zark42()
     else
         zark45()
@@ -760,7 +761,7 @@ function zark41a()
 end
 
 function zark41b()
-    if fallout.obj_pid(fallout.critter_inven_obj(fallout.dude_obj(), 0)) == 113 then
+    if misc.is_wearing_coc_robe(fallout.dude_obj()) then
         zark42()
     else
         zark45()

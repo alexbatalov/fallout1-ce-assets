@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
 
@@ -89,7 +90,7 @@ function talk_p_proc()
     else
         if (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 1)) == 3) or (fallout.obj_item_subtype(fallout.critter_inven_obj(fallout.dude_obj(), 2)) == 3) or (fallout.global_var(195) == 1) then
             BarterGuy02()
-        elseif fallout.obj_pid(fallout.critter_inven_obj(fallout.dude_obj(), 0)) == 113 then
+        elseif misc.is_wearing_coc_robe(fallout.dude_obj()) then
             BarterGuy07()
         else
             BarterGuy10()

@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local reputation = require("lib.reputation")
 
 local start
@@ -55,7 +56,7 @@ end
 function talk_p_proc()
     fallout.start_gdialog(359, fallout.self_obj(), 4, -1, -1)
     fallout.gsay_start()
-    if fallout.obj_pid(fallout.critter_inven_obj(fallout.dude_obj(), 0)) == 113 then
+    if misc.is_wearing_coc_robe(fallout.dude_obj()) then
         Abel06()
     else
         if fallout.local_var(4) == 1 then

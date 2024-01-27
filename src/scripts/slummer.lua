@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
 
@@ -136,7 +137,7 @@ function talk_p_proc()
     weapon_check()
     fallout.start_gdialog(-1, fallout.self_obj(), 4, -1, -1)
     fallout.gsay_start()
-    if fallout.obj_pid(fallout.critter_inven_obj(fallout.dude_obj(), 0)) == 113 then
+    if misc.is_wearing_coc_robe(fallout.dude_obj()) then
         if fallout.local_var(4) == 0 then
             if armed then
                 slummer02()
@@ -602,7 +603,7 @@ end
 function slummer36()
     fallout.gsay_reply(391, 253)
     fallout.giq_option(4, 391, 254, slummer18, 50)
-    if fallout.obj_pid(fallout.critter_inven_obj(fallout.dude_obj(), 0)) == 113 then
+    if misc.is_wearing_coc_robe(fallout.dude_obj()) then
         fallout.giq_option(7, 391, 255, slummer36a, 50)
         fallout.giq_option(4, 391, 256, slummer52, 50)
     else
