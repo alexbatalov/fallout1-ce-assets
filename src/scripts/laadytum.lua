@@ -34,17 +34,36 @@ fallout.create_external_var("RazorPtr")
 fallout.create_external_var("RegGuard1")
 fallout.create_external_var("RegGuard2")
 
+fallout.set_external_var("Ian_ptr", nil)
+fallout.set_external_var("Dog_ptr", nil)
+fallout.set_external_var("Tycho_ptr", nil)
+fallout.set_external_var("Katja_ptr", nil)
+fallout.set_external_var("Tandi_ptr", nil)
+fallout.set_external_var("warned", 0)
+fallout.set_external_var("AdyStor1_ptr", nil)
+fallout.set_external_var("AdyStor2_ptr", nil)
+fallout.set_external_var("Tine_barter", 0)
+fallout.set_external_var("JonPtr", nil)
+fallout.set_external_var("InBladePtr1", nil)
+fallout.set_external_var("InBladePtr2", nil)
+fallout.set_external_var("InBladePtr3", nil)
+fallout.set_external_var("InBladePtr4", nil)
+fallout.set_external_var("InBladePtr5", nil)
+fallout.set_external_var("InBladePtr6", nil)
+fallout.set_external_var("InBladePtr7", nil)
+fallout.set_external_var("InBladePtr8", nil)
+fallout.set_external_var("RazorPtr", nil)
+fallout.set_external_var("RegGuard1", nil)
+fallout.set_external_var("RegGuard2", nil)
+
 function start()
-    if fallout.script_action() == 15 then
+    local script_action = fallout.script_action()
+    if script_action == 15 then
         map_enter_p_proc()
-    else
-        if fallout.script_action() == 23 then
-            map_update_p_proc()
-        else
-            if fallout.script_action() == 16 then
-                map_exit_p_proc()
-            end
-        end
+    elseif script_action == 23 then
+        map_update_p_proc()
+    elseif script_action == 16 then
+        map_exit_p_proc()
     end
 end
 
@@ -65,61 +84,55 @@ function map_update_p_proc()
         light.lighting()
     end
     party_elevation = party.add_party()
-    if (fallout.global_var(613) == 9103) and (fallout.map_var(2) == 0) and (fallout.global_var(266) == 1) then
+    if fallout.global_var(613) == 9103 and fallout.map_var(2) == 0 and fallout.global_var(266) == 1 then
         AddInBlades()
         fallout.gfade_in(600)
-    else
-        if (fallout.global_var(613) == 9104) and (fallout.map_var(2) == 0) then
-            fallout.set_map_var(2, 1)
-            fallout.kill_critter(fallout.external_var("JonPtr"), 0)
-            fallout.kill_critter_type(16777216 + 3, 0)
-            fallout.kill_critter_type(16777216 + 27, 0)
-            fallout.kill_critter_type(16777216 + 36, 0)
-            fallout.kill_critter_type(16777216 + 112, 0)
-            fallout.kill_critter_type(16777216 + 215, 0)
-            fallout.kill_critter_type(16777216 + 244, 0)
-            fallout.kill_critter_type(16777216 + 245, 0)
-            fallout.kill_critter_type(16777216 + 246, 0)
-            fallout.kill_critter_type(16777216 + 247, 0)
-            fallout.kill_critter_type(16777216 + 248, 0)
-            fallout.kill_critter_type(16777216 + 249, 0)
-            fallout.kill_critter_type(16777216 + 250, 0)
-            fallout.kill_critter_type(16777216 + 251, 0)
-            fallout.kill_critter_type(16777216 + 252, 0)
-            fallout.kill_critter_type(16777216 + 253, 0)
-            fallout.kill_critter_type(16777216 + 254, 0)
-            fallout.kill_critter_type(16777216 + 255, 0)
-            fallout.kill_critter_type(16777216 + 256, 0)
-            fallout.kill_critter_type(16777216 + 257, 0)
-            fallout.kill_critter_type(16777216 + 258, 0)
-            fallout.kill_critter_type(16777216 + 259, 0)
-            fallout.kill_critter_type(16777216 + 260, 0)
-            fallout.kill_critter_type(16777216 + 261, 0)
-            fallout.kill_critter_type(16777216 + 262, 0)
-            fallout.kill_critter_type(16777216 + 263, 0)
-            fallout.critter_attempt_placement(fallout.external_var("RazorPtr"), 12700, 0)
-            fallout.set_global_var(613, 2)
-            fallout.set_global_var(155, fallout.global_var(155) + 2)
-            fallout.display_msg(fallout.message_str(766, 103) .. 2000 .. fallout.message_str(766, 104))
-            fallout.give_exp_points(2000)
-        else
-            if (fallout.map_var(1) == 0) and (fallout.global_var(613) == 9103) then
-                fallout.gfade_out(600)
-                fallout.kill_critter_type(16777216 + 268, 0)
-                fallout.critter_attempt_placement(fallout.external_var("RazorPtr"), 12700, 0)
-                fallout.set_global_var(613, 2)
-                fallout.set_global_var(352, 1)
-                fallout.set_global_var(155, fallout.global_var(155) + 2)
-                fallout.display_msg(fallout.message_str(766, 103) .. 2000 .. fallout.message_str(766, 104))
-                fallout.give_exp_points(2000)
-                fallout.gfade_in(600)
-            else
-                if (fallout.map_var(1) == 0) and (fallout.global_var(613) ~= 2) and (fallout.global_var(351) == 1) then
-                    fallout.set_global_var(613, 2)
-                    fallout.set_global_var(350, 1)
-                end
-            end
-        end
+    elseif fallout.global_var(613) == 9104 and fallout.map_var(2) == 0 then
+        fallout.set_map_var(2, 1)
+        fallout.kill_critter(fallout.external_var("JonPtr"), 0)
+        fallout.kill_critter_type(16777216 + 3, 0)
+        fallout.kill_critter_type(16777216 + 27, 0)
+        fallout.kill_critter_type(16777216 + 36, 0)
+        fallout.kill_critter_type(16777216 + 112, 0)
+        fallout.kill_critter_type(16777216 + 215, 0)
+        fallout.kill_critter_type(16777216 + 244, 0)
+        fallout.kill_critter_type(16777216 + 245, 0)
+        fallout.kill_critter_type(16777216 + 246, 0)
+        fallout.kill_critter_type(16777216 + 247, 0)
+        fallout.kill_critter_type(16777216 + 248, 0)
+        fallout.kill_critter_type(16777216 + 249, 0)
+        fallout.kill_critter_type(16777216 + 250, 0)
+        fallout.kill_critter_type(16777216 + 251, 0)
+        fallout.kill_critter_type(16777216 + 252, 0)
+        fallout.kill_critter_type(16777216 + 253, 0)
+        fallout.kill_critter_type(16777216 + 254, 0)
+        fallout.kill_critter_type(16777216 + 255, 0)
+        fallout.kill_critter_type(16777216 + 256, 0)
+        fallout.kill_critter_type(16777216 + 257, 0)
+        fallout.kill_critter_type(16777216 + 258, 0)
+        fallout.kill_critter_type(16777216 + 259, 0)
+        fallout.kill_critter_type(16777216 + 260, 0)
+        fallout.kill_critter_type(16777216 + 261, 0)
+        fallout.kill_critter_type(16777216 + 262, 0)
+        fallout.kill_critter_type(16777216 + 263, 0)
+        fallout.critter_attempt_placement(fallout.external_var("RazorPtr"), 12700, 0)
+        fallout.set_global_var(613, 2)
+        fallout.set_global_var(155, fallout.global_var(155) + 2)
+        fallout.display_msg(fallout.message_str(766, 103) .. 2000 .. fallout.message_str(766, 104))
+        fallout.give_exp_points(2000)
+    elseif fallout.map_var(1) == 0 and fallout.global_var(613) == 9103 then
+        fallout.gfade_out(600)
+        fallout.kill_critter_type(16777216 + 268, 0)
+        fallout.critter_attempt_placement(fallout.external_var("RazorPtr"), 12700, 0)
+        fallout.set_global_var(613, 2)
+        fallout.set_global_var(352, 1)
+        fallout.set_global_var(155, fallout.global_var(155) + 2)
+        fallout.display_msg(fallout.message_str(766, 103) .. 2000 .. fallout.message_str(766, 104))
+        fallout.give_exp_points(2000)
+        fallout.gfade_in(600)
+    elseif fallout.map_var(1) == 0 and fallout.global_var(613) ~= 2 and fallout.global_var(351) == 1 then
+        fallout.set_global_var(613, 2)
+        fallout.set_global_var(350, 1)
     end
 end
 
