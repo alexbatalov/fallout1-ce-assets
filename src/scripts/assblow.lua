@@ -10,6 +10,7 @@ local damage_p_proc
 local destroy_p_proc
 local map_enter_p_proc
 local pickup_p_proc
+local look_at_p_proc
 local timed_event_p_proc
 local do_dialogue
 local pre_dialogue
@@ -50,89 +51,77 @@ local guard03N
 local guard04N
 local guardend
 
-local sneaking = 0
-local RoundCounter = 0
-local hostile = 0
-local warned = 0
-local line166flag = 0
-
-local exit_line = 0
+local sneaking = false
+local hostile = false
+local warned = false
+local line166flag = false
 
 function start()
-    if fallout.script_action() == 12 then
+    local script_action = fallout.script_action()
+    if script_action == 12 then
         critter_p_proc()
-    else
-        if fallout.script_action() == 14 then
-            damage_p_proc()
-        else
-            if fallout.script_action() == 18 then
-                destroy_p_proc()
-            else
-                if fallout.script_action() == 15 then
-                    map_enter_p_proc()
-                else
-                    if fallout.script_action() == 4 then
-                        pickup_p_proc()
-                    else
-                        if fallout.script_action() == 11 then
-                            pre_dialogue()
-                        else
-                            if fallout.script_action() == 21 then
-                                fallout.script_overrides()
-                                fallout.display_msg(fallout.message_str(135, 100))
-                            else
-                                if fallout.script_action() == 22 then
-                                    timed_event_p_proc()
-                                end
-                            end
-                        end
-                    end
-                end
-            end
-        end
+    elseif script_action == 14 then
+        damage_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 15 then
+        map_enter_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        pre_dialogue()
+    elseif script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 22 then
+        timed_event_p_proc()
     end
 end
 
 function critter_p_proc()
-    if hostile and not(fallout.local_var(4)) then
-        hostile = 0
+    local dude_obj = fallout.dude_obj()
+    local self_obj = fallout.self_obj()
+    if hostile and fallout.local_var(4) == 0 then
+        hostile = false
         fallout.set_local_var(4, 1)
-        fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
+        fallout.attack(dude_obj, 0, 1, 0, 0, 30000, 0, 0)
     else
-        if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
+        if fallout.obj_can_see_obj(self_obj, dude_obj) then
             if fallout.global_var(247) == 1 then
                 if line166flag == 0 then
                     fallout.dialogue_system_enter()
                 end
             else
-                if misc.is_armed(fallout.dude_obj()) and not(fallout.local_var(4)) and (fallout.global_var(36) == 0) and (fallout.global_var(104) == 0) then
-                    if not(fallout.external_var("weapon_checked")) then
+                if misc.is_armed(dude_obj)
+                    and fallout.local_var(4) == 0
+                    and fallout.global_var(36) == 0
+                    and fallout.global_var(104) == 0 then
+                    if fallout.external_var("weapon_checked") == 0 then
                         fallout.set_external_var("weapon_checked", 1)
-                        fallout.rm_timer_event(fallout.self_obj())
-                        fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(5), 1)
+                        fallout.rm_timer_event(self_obj)
+                        fallout.add_timer_event(self_obj, fallout.game_ticks(5), 1)
                         fallout.dialogue_system_enter()
                     end
                 else
-                    if fallout.using_skill(fallout.dude_obj(), 8) and not(fallout.external_var("sneak_checked")) then
-                        sneaking = 1
+                    if fallout.using_skill(dude_obj, 8) and fallout.external_var("sneak_checked") == 0 then
+                        sneaking = true
                         fallout.set_external_var("sneak_checked", 1)
-                        fallout.rm_timer_event(fallout.self_obj())
-                        fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(5), 2)
+                        fallout.rm_timer_event(self_obj)
+                        fallout.add_timer_event(self_obj, fallout.game_ticks(5), 2)
                         fallout.dialogue_system_enter()
                     end
                 end
             end
         end
         if time.is_night() then
-            if fallout.tile_distance(fallout.tile_num(fallout.dude_obj()), 27106) > fallout.tile_distance(fallout.tile_num(fallout.dude_obj()), 25905) then
+            if fallout.tile_distance(fallout.tile_num(dude_obj), 27106) > fallout.tile_distance(fallout.tile_num(dude_obj), 25905) then
                 if fallout.local_var(5) == 0 then
-                    if fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 12 then
-                        if not(warned) then
-                            if not(fallout.using_skill(fallout.dude_obj(), 8)) then
-                                warned = 1
+                    if fallout.tile_distance_objs(self_obj, dude_obj) < 12 then
+                        if not warned then
+                            if not fallout.using_skill(dude_obj, 8) then
+                                warned = true
                                 fallout.dialogue_system_enter()
-                                fallout.rm_timer_event(fallout.self_obj())
-                                fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(3), 4)
+                                fallout.rm_timer_event(self_obj)
+                                fallout.add_timer_event(self_obj, fallout.game_ticks(3), 4)
                             end
                         end
                     end
@@ -163,36 +152,38 @@ function map_enter_p_proc()
 end
 
 function pickup_p_proc()
-    hostile = 1
+    hostile = true
+end
+
+function look_at_p_proc()
+    fallout.script_overrides()
+    fallout.display_msg(fallout.message_str(135, 100))
 end
 
 function timed_event_p_proc()
-    if fallout.fixed_param() == 1 then
+    local event = fallout.fixed_param()
+    if event == 1 then
         if misc.is_armed(fallout.dude_obj()) then
-            hostile = 1
+            hostile = true
         else
             fallout.set_external_var("weapon_checked", 0)
         end
-    else
-        if fallout.fixed_param() == 2 then
-            fallout.set_external_var("sneak_checked", 0)
-        else
-            if fallout.fixed_param() == 3 then
-                hostile = 1
-            else
-                if fallout.fixed_param() == 4 then
-                    if time.is_night() then
-                        if fallout.tile_distance(fallout.tile_num(fallout.dude_obj()), 27106) > fallout.tile_distance(fallout.tile_num(fallout.dude_obj()), 25905) then
-                            if fallout.local_var(5) == 0 then
-                                if not(fallout.using_skill(fallout.dude_obj(), 8)) then
-                                    hostile = 1
-                                end
-                            end
-                        else
-                            warned = 0
-                        end
+    elseif event == 2 then
+        fallout.set_external_var("sneak_checked", 0)
+    elseif event == 3 then
+        hostile = true
+    elseif event == 4 then
+        if time.is_night() then
+            local dude_obj = fallout.dude_obj()
+            local dude_tile_num = fallout.tile_num(dude_obj)
+            if fallout.tile_distance(dude_tile_num, 27106) > fallout.tile_distance(dude_tile_num, 25905) then
+                if fallout.local_var(5) == 0 then
+                    if not fallout.using_skill(dude_obj, 8) then
+                        hostile = true
                     end
                 end
+            else
+                warned = false
             end
         end
     end
@@ -200,7 +191,7 @@ end
 
 function do_dialogue()
     reaction.get_reaction()
-    if time.is_night() and (fallout.local_var(7) == 1) then
+    if time.is_night() and fallout.local_var(7) == 1 then
         if fallout.local_var(5) == 1 then
             fallout.float_msg(fallout.self_obj(), fallout.message_str(135, 167), 0)
         else
@@ -209,20 +200,14 @@ function do_dialogue()
     else
         fallout.start_gdialog(135, fallout.self_obj(), 4, -1, -1)
         fallout.gsay_start()
-        if misc.is_armed(fallout.dude_obj()) and not(fallout.local_var(4)) then
+        if misc.is_armed(fallout.dude_obj()) and fallout.local_var(4) == 0 then
             guard00()
-        else
-            if sneaking then
-                guard06()
-            else
-                if time.is_night() then
-                    guard00N()
-                else
-                    if fallout.local_var(8) == 0 then
-                        guard10()
-                    end
-                end
-            end
+        elseif sneaking then
+            guard06()
+        elseif time.is_night() then
+            guard00N()
+        elseif fallout.local_var(8) == 0 then
+            guard10()
         end
         fallout.gsay_end()
         fallout.end_dialogue()
@@ -230,26 +215,18 @@ function do_dialogue()
 end
 
 function pre_dialogue()
-    if (fallout.global_var(247) == 1) and (line166flag == 0) then
+    if fallout.global_var(247) == 1 and not line166flag then
         Guard18()
+    elseif misc.is_armed(fallout.dude_obj()) and fallout.local_var(4) == 0 then
+        do_dialogue()
+    elseif sneaking then
+        do_dialogue()
+    elseif time.is_night() then
+        do_dialogue()
+    elseif fallout.local_var(8) == 0 then
+        do_dialogue()
     else
-        if misc.is_armed(fallout.dude_obj()) and not(fallout.local_var(4)) then
-            do_dialogue()
-        else
-            if sneaking then
-                do_dialogue()
-            else
-                if time.is_night() then
-                    do_dialogue()
-                else
-                    if fallout.local_var(8) == 0 then
-                        do_dialogue()
-                    else
-                        guard02a()
-                    end
-                end
-            end
-        end
+        guard02a()
     end
 end
 
@@ -305,7 +282,7 @@ function guard02()
 end
 
 function guard02i()
-    hostile = 1
+    hostile = true
 end
 
 function guard03()
@@ -322,7 +299,7 @@ function guard05()
 end
 
 function guard06()
-    sneaking = 0
+    sneaking = false
     fallout.gsay_reply(135, 124)
     fallout.giq_option(4, 135, 125, guard07, 50)
     fallout.giq_option(5, 135, 126, guard06i, 50)
@@ -330,10 +307,9 @@ function guard06()
 end
 
 function guard06i()
-    local v0 = 0
     fallout.set_external_var("times_caught_sneaking", fallout.external_var("times_caught_sneaking") + 1)
-    v0 = -5 * fallout.external_var("times_caught_sneaking")
-    if fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), 14, v0)) then
+    local modifier = -5 * fallout.external_var("times_caught_sneaking")
+    if fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), 14, modifier)) then
         guard08()
     else
         guard07()
@@ -425,9 +401,10 @@ function guard17()
 end
 
 function Guard18()
-    fallout.float_msg(fallout.self_obj(), fallout.message_str(135, 166), 2)
-    fallout.rm_timer_event(fallout.self_obj())
-    fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(5), 3)
+    local self_obj = fallout.self_obj()
+    fallout.float_msg(self_obj, fallout.message_str(135, 166), 2)
+    fallout.rm_timer_event(self_obj)
+    fallout.add_timer_event(self_obj, fallout.game_ticks(5), 3)
 end
 
 function guard00N()
@@ -462,7 +439,9 @@ end
 
 function guard04N()
     fallout.set_local_var(5, 1)
-    fallout.gsay_message(135, fallout.message_str(135, 164) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(135, 165), 50)
+    fallout.gsay_message(135,
+        fallout.message_str(135, 164) ..
+        fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(135, 165), 50)
 end
 
 function guardend()
@@ -475,5 +454,6 @@ exports.damage_p_proc = damage_p_proc
 exports.destroy_p_proc = destroy_p_proc
 exports.map_enter_p_proc = map_enter_p_proc
 exports.pickup_p_proc = pickup_p_proc
+exports.look_at_p_proc = look_at_p_proc
 exports.timed_event_p_proc = timed_event_p_proc
 return exports
