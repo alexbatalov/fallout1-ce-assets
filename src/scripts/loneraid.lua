@@ -37,41 +37,37 @@ local LoneRaidCombat
 local LoneRaidEnd
 local LoneRaidLoot
 
-local hostile = 0
+local hostile = false
 local initialized = false
-local known = 0
-local broken = 0
+local known = false
+local broken = false
 
 function start()
     if not initialized then
         fallout.critter_add_trait(fallout.self_obj(), 1, 6, 6)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 20)
         initialized = true
-    else
-        if fallout.script_action() == 12 then
-            critter_p_proc()
-        else
-            if fallout.script_action() == 18 then
-                destroy_p_proc()
-            else
-                if fallout.script_action() == 4 then
-                    pickup_p_proc()
-                else
-                    if fallout.script_action() == 11 then
-                        talk_p_proc()
-                    end
-                end
-            end
-        end
+    end
+
+    local script_action = fallout.script_action()
+    if script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
     end
 end
 
 function critter_p_proc()
     if hostile then
-        hostile = 0
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     else
-        if (fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) > 8) and (fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 24) then
+        local distance_self_to_dude = fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj())
+        if distance_self_to_dude > 8 and distance_self_to_dude < 24 then
             behaviour.flee_dude(0)
         end
     end
@@ -82,39 +78,31 @@ function destroy_p_proc()
 end
 
 function pickup_p_proc()
-    hostile = 1
+    hostile = true
 end
 
 function talk_p_proc()
     if broken then
         LoneRaid01()
+    elseif misc.is_armed(fallout.dude_obj()) then
+        LoneRaid00()
+    elseif known then
+        LoneRaid02()
     else
-        if misc.is_armed(fallout.dude_obj()) then
-            LoneRaid00()
+        fallout.start_gdialog(700, fallout.self_obj(), 4, -1, -1)
+        fallout.gsay_start()
+        known = true
+        if fallout.global_var(12) ~= 0 then
+            LoneRaid06()
+        elseif fallout.global_var(26) == 2 or fallout.global_var(254) ~= 0 then
+            LoneRaid05()
+        elseif fallout.global_var(611) ~= 0 then
+            LoneRaid04()
         else
-            if known then
-                LoneRaid02()
-            else
-                fallout.start_gdialog(700, fallout.self_obj(), 4, -1, -1)
-                fallout.gsay_start()
-                known = 1
-                if fallout.global_var(12) ~= 0 then
-                    LoneRaid06()
-                else
-                    if (fallout.global_var(26) == 2) or fallout.global_var(254) then
-                        LoneRaid05()
-                    else
-                        if fallout.global_var(611) ~= 0 then
-                            LoneRaid04()
-                        else
-                            LoneRaid03()
-                        end
-                    end
-                end
-                fallout.gsay_end()
-                fallout.end_dialogue()
-            end
+            LoneRaid03()
         end
+        fallout.gsay_end()
+        fallout.end_dialogue()
     end
 end
 
@@ -141,7 +129,7 @@ function LoneRaid03()
 end
 
 function LoneRaid03a()
-    if (fallout.get_critter_stat(fallout.dude_obj(), 0) + fallout.get_critter_stat(fallout.dude_obj(), 2)) > 13 then
+    if fallout.get_critter_stat(fallout.dude_obj(), 0) + fallout.get_critter_stat(fallout.dude_obj(), 2) > 13 then
         LoneRaid08()
     else
         LoneRaidCombat()
@@ -167,7 +155,7 @@ end
 
 function LoneRaid05()
     fallout.gsay_reply(700, 116)
-    if (fallout.global_var(103) == 1) and (fallout.global_var(26) == 1) then
+    if fallout.global_var(103) == 1 and fallout.global_var(26) == 1 then
         fallout.giq_option(7, 700, 117, LoneRaid18, 50)
     end
     fallout.giq_option(4, 700, 118, LoneRaid03a, 51)
@@ -194,7 +182,7 @@ function LoneRaid07()
 end
 
 function LoneRaid08()
-    broken = 1
+    broken = true
     fallout.gsay_reply(700, 130)
     fallout.giq_option(0, 634, 106, LoneRaidLoot, 50)
 end
@@ -221,7 +209,7 @@ end
 
 function LoneRaid14()
     fallout.gsay_message(700, 137, 51)
-    hostile = 1
+    hostile = true
 end
 
 function LoneRaid15()
@@ -242,7 +230,7 @@ end
 
 function LoneRaid19()
     fallout.gsay_message(700, 144, 51)
-    hostile = 1
+    hostile = true
 end
 
 function LoneRaid20()
@@ -255,11 +243,11 @@ end
 
 function LoneRaid22()
     fallout.gsay_message(700, 147, 51)
-    hostile = 1
+    hostile = true
 end
 
 function LoneRaidCombat()
-    hostile = 1
+    hostile = true
 end
 
 function LoneRaidEnd()
