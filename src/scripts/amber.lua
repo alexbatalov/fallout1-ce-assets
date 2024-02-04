@@ -231,7 +231,7 @@ function Amber17()
         fallout.giq_option(7, 272, 141, Amber10, 50)
     end
     fallout.giq_option(7, 272, 142, AmberEnd, 50)
-    if not (fallout.local_var(1)) then
+    if fallout.local_var(1) == 0 then
         fallout.giq_option(6, 272, 143, Amber4, 50)
     end
 end

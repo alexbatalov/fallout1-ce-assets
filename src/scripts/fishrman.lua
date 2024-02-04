@@ -93,7 +93,7 @@ function critter_p_proc()
         hostile = 0
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
-    if fallout.external_var("dude_enemy") then
+    if fallout.external_var("dude_enemy") ~= 0 then
         if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
             hostile = 1
             fallout.set_global_var(334, 1)
@@ -123,7 +123,7 @@ end
 
 function talk_p_proc()
     reaction.get_reaction()
-    if fallout.external_var("dude_enemy") then
+    if fallout.external_var("dude_enemy") ~= 0 then
         fallout.float_msg(fallout.self_obj(), fallout.message_str(669, 101), 0)
     else
         if (fallout.local_var(1) < 2) or (fallout.global_var(158) > 2) or (fallout.global_var(155) < -30) then

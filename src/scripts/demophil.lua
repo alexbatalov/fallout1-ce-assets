@@ -70,14 +70,14 @@ function start()
                 end
             else
                 if fallout.script_action() == 12 then
-                    if fallout.external_var("growling") then
+                    if fallout.external_var("growling") ~= 0 then
                         run_away()
                     end
-                    if fallout.external_var("smartass") then
+                    if fallout.external_var("smartass") ~= 0 then
                         fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(2), 2)
                         fallout.set_external_var("smartass", 0)
                     end
-                    if not(fallout.external_var("dog_is_angry")) then
+                    if fallout.external_var("dog_is_angry") == 0 then
                         fallout.animate_move_obj_to_tile(fallout.self_obj(), 15686, 0)
                     end
                 else
@@ -88,7 +88,7 @@ function start()
                             if fallout.fixed_param() == 2 then
                                 fallout.float_msg(fallout.self_obj(), fallout.message_str(376, 102), 0)
                             else
-                                if fallout.external_var("dog_is_angry") then
+                                if fallout.external_var("dog_is_angry") ~= 0 then
                                     go_forward()
                                 end
                             end

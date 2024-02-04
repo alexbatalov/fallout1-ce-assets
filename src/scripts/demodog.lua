@@ -50,8 +50,8 @@ function start()
                                 fallout.animate_move_obj_to_tile(fallout.self_obj(), fallout.tile_num_in_direction(fallout.tile_num(fallout.dude_obj()), fallout.random(0, 5), 3), 0)
                             end
                         else
-                            if fallout.external_var("Phil_approaches") then
-                                if fallout.external_var("dog_is_angry") then
+                            if fallout.external_var("Phil_approaches") ~= 0 then
+                                if fallout.external_var("dog_is_angry") ~= 0 then
                                     fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(4), 1)
                                 end
                                 fallout.set_external_var("Phil_approaches", 0)

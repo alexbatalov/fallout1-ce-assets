@@ -47,10 +47,10 @@ function start()
                     fallout.display_msg(fallout.message_str(372, 100))
                 else
                     if fallout.script_action() == 12 then
-                        if fallout.external_var("smartass2") then
+                        if fallout.external_var("smartass2") ~= 0 then
                             PeasantD00()
                         end
-                        if not(fallout.external_var("dog_is_angry")) then
+                        if fallout.external_var("dog_is_angry") == 0 then
                             go_inside()
                         end
                     end

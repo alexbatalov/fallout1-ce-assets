@@ -120,7 +120,7 @@ function talk_p_proc()
         fallout.float_msg(self_obj, fallout.message_str(137, 208), 2)
         fallout.add_timer_event(self_obj, 5, 4)
     else
-        if fallout.external_var("killing_women") then
+        if fallout.external_var("killing_women") ~= 0 then
             garl39a()
         else
             fallout.set_local_var(3, 1)

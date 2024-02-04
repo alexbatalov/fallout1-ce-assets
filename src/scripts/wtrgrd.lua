@@ -105,7 +105,7 @@ function critter_p_proc()
                 end
             end
         end
-        if fallout.external_var("getting_ration") then
+        if fallout.external_var("getting_ration") ~= 0 then
             fallout.use_obj(fallout.external_var("recipient"))
             fallout.float_msg(self_obj, fallout.message_str(163, fallout.random(113, 114)), 3)
             fallout.set_external_var("getting_ration", 0)

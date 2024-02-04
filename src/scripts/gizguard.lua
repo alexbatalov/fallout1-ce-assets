@@ -53,10 +53,10 @@ function critter_p_proc()
     else
         if fallout.obj_can_see_obj(self_obj, dude_obj) then
             if fallout.tile_distance_objs(self_obj, dude_obj) < 12 then
-                if misc.is_armed(dude_obj) and not (fallout.external_var("weapon_checked")) then
+                if misc.is_armed(dude_obj) and fallout.external_var("weapon_checked") == 0 then
                     fallout.dialogue_system_enter()
                 else
-                    if fallout.using_skill(fallout.dude_obj(), 8) and not (sneak_checked) then
+                    if fallout.using_skill(fallout.dude_obj(), 8) and not sneak_checked then
                         fallout.dialogue_system_enter()
                     end
                 end

@@ -320,7 +320,7 @@ function Sherry22()
     fallout.giq_option(4, 388, 151, SherryEnd, 50)
     fallout.giq_option(4, 388, 152, Sherry23, 50)
     fallout.giq_option(4, 388, 153, Sherry24, 50)
-    if (fallout.local_var(10) == 0) and fallout.global_var(555) then
+    if fallout.local_var(10) == 0 and fallout.global_var(555) ~= 0 then
         fallout.giq_option(4, 388, 166, Sherry27, 50)
     end
 end

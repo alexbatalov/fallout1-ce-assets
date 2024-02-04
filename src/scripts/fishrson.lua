@@ -104,7 +104,7 @@ end
 
 function talk_p_proc()
     reaction.get_reaction()
-    if fallout.external_var("dude_enemy") then
+    if fallout.external_var("dude_enemy") ~= 0 then
         fallout.float_msg(fallout.self_obj(), fallout.message_str(669, 103), 0)
     else
         if (fallout.global_var(158) > 2) or (fallout.local_var(1) < 2) or (fallout.global_var(155) < -30) then

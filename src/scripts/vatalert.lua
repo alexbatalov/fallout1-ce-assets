@@ -20,7 +20,7 @@ function description_p_proc()
     local message = fallout.message_str(611, 100)
     if fallout.local_var(0) == 0 then
         local dude_obj = fallout.dude_obj()
-        if not (fallout.is_success(fallout.do_check(dude_obj, 1, fallout.has_trait(0, dude_obj, 0)))) then
+        if not fallout.is_success(fallout.do_check(dude_obj, 1, fallout.has_trait(0, dude_obj, 0))) then
             message = fallout.message_str(611, 101)
         else
             fallout.set_local_var(0, 1)

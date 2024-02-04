@@ -149,7 +149,7 @@ function Jennifer02()
     fallout.gsay_message(462, 112, 50)
     fallout.gsay_reply(462, 113)
     fallout.giq_option(5, 462, 114, reaction.UpReact, 50)
-    if not (line5flag) then
+    if not line5flag then
         fallout.giq_option(4, 462, 115, Jennifer05, 50)
     end
     fallout.giq_option(4, 0, reaction.Goodbyes(), JenniferEnd, 50)

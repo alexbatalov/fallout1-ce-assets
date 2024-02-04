@@ -93,9 +93,10 @@ function start()
                 fallout.give_exp_points(300)
                 fallout.set_global_var(38, 2)
             end
-            if fallout.external_var("removal_ptr") then
-                fallout.destroy_object(fallout.external_var("removal_ptr"))
-                fallout.set_external_var("removal_ptr", 0)
+            local removal_obj = fallout.external_var("removal_ptr")
+            if removal_obj ~= nil then
+                fallout.destroy_object(removal_obj)
+                fallout.set_external_var("removal_ptr", nil)
             end
         else
             if fallout.script_action() == 16 then

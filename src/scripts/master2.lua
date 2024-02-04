@@ -53,7 +53,7 @@ end
 
 function map_enter_p_proc()
     if fallout.elevation(fallout.dude_obj()) == 0 then
-        if time.is_day() and (not misc.is_loading_game()) then
+        if time.is_day() and not misc.is_loading_game() then
             if fallout.map_var(10) == 0 then
                 local critter_obj
                 local item_obj

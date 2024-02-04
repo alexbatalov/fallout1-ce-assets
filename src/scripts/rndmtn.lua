@@ -994,7 +994,7 @@ end
 
 function Vault5()
     local roll = fallout.do_check(fallout.dude_obj(), 5, 0)
-    if not (fallout.is_success(roll)) then
+    if not fallout.is_success(roll) then
         if fallout.is_critical(roll) then
             fallout.display_msg(fallout.message_str(246, 132))
             fallout.critter_dmg(fallout.dude_obj(), fallout.random(1, 3), 0)

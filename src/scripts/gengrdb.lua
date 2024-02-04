@@ -80,13 +80,13 @@ end
 
 function talk_p_proc()
     if g2 then
-        if fallout.external_var("random_seed_2") then
+        if fallout.external_var("random_seed_2") ~= 0 then
             fallout.float_msg(fallout.self_obj(), fallout.message_str(756, 103), 2)
         else
             fallout.float_msg(fallout.self_obj(), fallout.message_str(756, 104), 3)
         end
     else
-        if fallout.external_var("random_seed_2") then
+        if fallout.external_var("random_seed_2") ~= 0 then
             fallout.float_msg(fallout.self_obj(), fallout.message_str(756, 102), 2)
         else
             if fallout.external_var("random_seed_1") == 0 then

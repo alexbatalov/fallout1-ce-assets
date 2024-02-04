@@ -41,10 +41,10 @@ function start()
                     fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
                 else
                     if fallout.script_action() == 12 then
-                        if fallout.external_var("smartass2") then
+                        if fallout.external_var("smartass2") ~= 0 then
                             PeasantD00()
                         end
-                        if not(fallout.external_var("dog_is_angry")) then
+                        if fallout.external_var("dog_is_angry") == 0 then
                             go_inside()
                         end
                     else
@@ -94,20 +94,20 @@ function PeasantD00()
             v1 = fallout.message_str(375, 103)
         end
     end
-    if fallout.external_var("dog_is_angry") then
+    if fallout.external_var("dog_is_angry") ~= 0 then
         fallout.float_msg(fallout.self_obj(), v1, 3)
     end
     fallout.set_external_var("smartass2", 0)
 end
 
 function PeasantD01()
-    if fallout.external_var("dog_is_angry") then
+    if fallout.external_var("dog_is_angry") ~= 0 then
         fallout.float_msg(fallout.self_obj(), fallout.message_str(375, 104), 3)
     end
 end
 
 function PeasantD02()
-    if fallout.external_var("dog_is_angry") then
+    if fallout.external_var("dog_is_angry") ~= 0 then
         fallout.float_msg(fallout.self_obj(), fallout.message_str(375, 105), 3)
     end
 end

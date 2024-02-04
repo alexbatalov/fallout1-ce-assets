@@ -3585,7 +3585,7 @@ function Vats3()
     fallout.add_obj_to_inven(Critter, Item)
     Item = fallout.create_object_sid(38, 0, 0, -1)
     fallout.add_mult_objs_to_inven(Critter, Item, fallout.has_trait(0, fallout.dude_obj(), 40) + 2)
-    if not (fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 100)) then
+    if fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 100) == 0 then
         Item = fallout.create_object_sid(100, 0, 0, -1)
         fallout.add_obj_to_inven(Critter, Item)
     end
