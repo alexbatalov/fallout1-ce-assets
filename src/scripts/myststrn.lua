@@ -11,7 +11,7 @@ function start()
     if not initialized and misc.map_first_run() then
         local self_obj = fallout.self_obj()
         misc.set_team(self_obj, 0)
-        fallout.critter_add_trait(self_obj, 1, 5, 92)
+        misc.set_ai(self_obj, 92)
         local item_obj = fallout.create_object_sid(fallout.global_var(288), 0, 0, -1)
         fallout.add_obj_to_inven(self_obj, item_obj)
         fallout.float_msg(self_obj, fallout.message_str(766, 182 + fallout.random(0, 1)), 0)

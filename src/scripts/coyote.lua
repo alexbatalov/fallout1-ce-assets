@@ -10,7 +10,7 @@ local initialized = false
 function start()
     if not initialized then
         misc.set_team(fallout.self_obj(), 21)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 8)
+        misc.set_ai(fallout.self_obj(), 8)
         fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(fallout.random(3, 30)), 0)
         initialized = true
     else

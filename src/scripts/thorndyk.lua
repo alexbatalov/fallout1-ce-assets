@@ -62,7 +62,7 @@ function start()
         local self_obj = fallout.self_obj()
         fallout.set_external_var("Thorndyke_Ptr", self_obj)
         misc.set_team(self_obj, 72)
-        fallout.critter_add_trait(self_obj, 1, 5, 77)
+        misc.set_ai(self_obj, 77)
         initialized = true
     end
 

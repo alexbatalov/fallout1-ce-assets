@@ -20,7 +20,7 @@ function start()
         if fallout.local_var(0) < 1 then
             fallout.set_local_var(0, fallout.random(1, 2))
         end
-        fallout.critter_add_trait(self_obj, 1, 5, 62)
+        misc.set_ai(self_obj, 62)
         initialized = true
     end
 

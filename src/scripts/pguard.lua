@@ -24,7 +24,7 @@ function start()
             fallout.item_caps_adjust(self_obj, fallout.random(1, 10))
         end
         misc.set_team(self_obj, 89)
-        fallout.critter_add_trait(self_obj, 1, 5, 29)
+        misc.set_ai(self_obj, 29)
         fallout.add_timer_event(self_obj, fallout.game_ticks(fallout.random(1, 3)), 1)
         if fallout.local_var(5) == 0 then
             fallout.set_map_var(1, fallout.map_var(1) + 1)

@@ -109,7 +109,7 @@ function map_enter_p_proc()
     sleep_tile = 7000
     local self_obj = fallout.self_obj()
     misc.set_team(self_obj, 14)
-    fallout.critter_add_trait(self_obj, 1, 5, 58)
+    misc.set_ai(self_obj, 58)
     if fallout.global_var(555) == 2 or fallout.global_var(282) == 1 then
         fallout.move_to(self_obj, 7000, 0)
         fallout.set_obj_visibility(self_obj, true)

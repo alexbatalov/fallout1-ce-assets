@@ -17,7 +17,7 @@ function start()
             fallout.set_local_var(3, fallout.tile_num(self_obj))
         end
         misc.set_team(self_obj, 44)
-        fallout.critter_add_trait(self_obj, 1, 5, 62)
+        misc.set_ai(self_obj, 62)
         if fallout.local_var(0) ~= 0 then
             if fallout.map_var(4) == fallout.local_var(0) then
                 fallout.set_external_var("Student_ptr", self_obj)

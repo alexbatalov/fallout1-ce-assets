@@ -62,7 +62,7 @@ function start()
             fallout.set_obj_visibility(self_obj, true)
         end
         misc.set_team(self_obj, 38)
-        fallout.critter_add_trait(self_obj, 1, 5, 87)
+        misc.set_ai(self_obj, 87)
         initialized = true
     end
 

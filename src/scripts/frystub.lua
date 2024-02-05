@@ -22,7 +22,7 @@ function start()
         fallout.set_external_var("Fry_Stub_Ptr", self_obj)
         fallout.set_obj_visibility(self_obj, true)
         misc.set_team(self_obj, 0)
-        fallout.critter_add_trait(self_obj, 1, 5, 86)
+        misc.set_ai(self_obj, 86)
         initialized = true
     end
 

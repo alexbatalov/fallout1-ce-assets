@@ -187,7 +187,7 @@ function map_enter_p_proc()
         fallout.kill_critter(self_obj, 49)
     end
     misc.set_team(self_obj, 12)
-    fallout.critter_add_trait(self_obj, 1, 5, 17)
+    misc.set_ai(self_obj, 17)
     if fallout.local_var(1) == 0 then
         fallout.set_local_var(1, fallout.tile_num(self_obj))
     end

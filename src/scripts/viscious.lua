@@ -48,7 +48,7 @@ function start()
         smoke_tile = 21299
         local self_obj = fallout.self_obj()
         misc.set_team(self_obj, 34)
-        fallout.critter_add_trait(self_obj, 1, 5, 49)
+        misc.set_ai(self_obj, 49)
         if fallout.local_var(0) == 1 then
             fallout.set_obj_visibility(self_obj, true)
             moving = false

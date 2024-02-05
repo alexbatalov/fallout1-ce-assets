@@ -23,6 +23,12 @@ local function set_team(critter_obj, team)
 end
 
 --- @param critter_obj Object
+--- @param team integer
+local function set_ai(critter_obj, team)
+    fallout.critter_add_trait(critter_obj, 1, 5, team)
+end
+
+--- @param critter_obj Object
 local function is_wearing_coc_robe(critter_obj)
     local armor_obj = fallout.critter_inven_obj(critter_obj, 0)
     return armor_obj ~= nil and fallout.obj_pid(armor_obj) == 113
@@ -49,6 +55,7 @@ exports.map_first_run = map_first_run
 exports.party_member_count = party_member_count
 exports.is_loading_game = is_loading_game
 exports.set_team = set_team
+exports.set_ai = set_ai
 exports.is_wearing_coc_robe = is_wearing_coc_robe
 exports.is_armed = is_armed
 return exports

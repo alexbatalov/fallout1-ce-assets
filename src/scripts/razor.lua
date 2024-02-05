@@ -73,7 +73,7 @@ function start()
     if not initialized then
         local self_obj = fallout.self_obj()
         misc.set_team(self_obj, 47)
-        fallout.critter_add_trait(self_obj, 1, 5, 27)
+        misc.set_ai(self_obj, 27)
         fallout.set_external_var("RazorPtr", self_obj)
         if fallout.global_var(352) == 1 then
             fallout.set_local_var(4, 1)

@@ -63,7 +63,7 @@ function map_enter_p_proc()
     sleep_tile = 7000
     home_tile = 20675
     misc.set_team(self_obj, 26)
-    fallout.critter_add_trait(self_obj, 1, 5, 5)
+    misc.set_ai(self_obj, 5)
     if fallout.map_var(2) == 1 then
         fallout.destroy_object(self_obj)
     end

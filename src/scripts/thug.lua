@@ -16,7 +16,7 @@ function start()
     if not initialized then
         local self_obj = fallout.self_obj()
         misc.set_team(self_obj, 29)
-        fallout.critter_add_trait(self_obj, 1, 5, 11)
+        misc.set_ai(self_obj, 11)
         if fallout.cur_map_index() ~= 29 then
             fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
             my_script_mode = true

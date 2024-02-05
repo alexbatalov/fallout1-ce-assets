@@ -19,7 +19,7 @@ function start()
     if not initialized then
         local self_obj = fallout.self_obj()
         misc.set_team(self_obj, 30)
-        fallout.critter_add_trait(self_obj, 1, 5, 78)
+        misc.set_ai(self_obj, 78)
         if fallout.global_var(227) == 1 then
             active = true
             fallout.set_obj_visibility(self_obj, false)

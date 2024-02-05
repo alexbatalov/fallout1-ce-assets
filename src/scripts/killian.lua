@@ -337,7 +337,7 @@ function talk_p_proc()
         local item_obj = fallout.create_object_sid(10, 0, 0, -1)
         fallout.add_obj_to_inven(critter_obj, item_obj)
         misc.set_team(critter_obj, 13)
-        fallout.critter_add_trait(critter_obj, 1, 5, 1)
+        misc.set_ai(critter_obj, 1)
         fallout.critter_attempt_placement(critter_obj, 28283, 0)
         fallout.set_map_var(5, 2)
     end

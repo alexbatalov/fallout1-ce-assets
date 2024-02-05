@@ -15,7 +15,7 @@ local scared = 0
 function start()
     if not initialized then
         misc.set_team(fallout.self_obj(), 86)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 20 + fallout.random(0, 1))
+        misc.set_ai(fallout.self_obj(), 20 + fallout.random(0, 1))
         hostile = fallout.global_var(334)
         initialized = true
     else

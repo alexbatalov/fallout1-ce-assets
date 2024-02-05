@@ -27,7 +27,7 @@ function start()
             end
         end
         misc.set_team(self_obj, 87)
-        fallout.critter_add_trait(self_obj, 1, 5, 93)
+        misc.set_ai(self_obj, 93)
         fallout.critter_injure(self_obj, 4)
         initialized = true
     end

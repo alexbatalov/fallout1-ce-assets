@@ -39,7 +39,7 @@ function start()
             fallout.set_local_var(4, 1)
         end
         misc.set_team(self_obj, 34)
-        fallout.critter_add_trait(self_obj, 1, 5, 49)
+        misc.set_ai(self_obj, 49)
         initialized = true
     end
 

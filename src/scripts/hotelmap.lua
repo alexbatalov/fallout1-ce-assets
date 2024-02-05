@@ -78,13 +78,13 @@ function map_enter_p_proc()
             local fugee_obj
             fallout.set_map_var(10, 1)
             fugee_obj = fallout.create_object_sid(16777404, 0, 0, 912)
-            fallout.critter_add_trait(fugee_obj, 1, 5, 48)
+            misc.set_ai(fugee_obj, 48)
             fallout.critter_attempt_placement(fugee_obj, 25717, 1)
             fugee_obj = fallout.create_object_sid(16777404, 0, 0, 912)
-            fallout.critter_add_trait(fugee_obj, 1, 5, 48)
+            misc.set_ai(fugee_obj, 48)
             fallout.critter_attempt_placement(fugee_obj, 24516, 1)
             fugee_obj = fallout.create_object_sid(16777404, 0, 0, 912)
-            fallout.critter_add_trait(fugee_obj, 1, 5, 48)
+            misc.set_ai(fugee_obj, 48)
             fallout.critter_attempt_placement(fugee_obj, 24927, 1)
         end
     end

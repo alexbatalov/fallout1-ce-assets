@@ -28,7 +28,7 @@ local loopcount = 0
 function start()
     if not initialized then
         misc.set_team(fallout.self_obj(), 30)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 78)
+        misc.set_ai(fallout.self_obj(), 78)
         initialized = true
     else
         if fallout.script_action() == 22 then

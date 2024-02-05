@@ -28,7 +28,7 @@ local talk_p_proc
 function start()
     if not(g1) then
         misc.set_team(fallout.self_obj(), 35)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, fallout.random(15, 19))
+        misc.set_ai(fallout.self_obj(), fallout.random(15, 19))
         g0 = fallout.global_var(334)
         g1 = 1
     else

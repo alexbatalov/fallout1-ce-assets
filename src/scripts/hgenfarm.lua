@@ -30,7 +30,7 @@ function start()
     if not initialized then
         local self_obj = fallout.self_obj()
         misc.set_team(self_obj, 65)
-        fallout.critter_add_trait(self_obj, 1, 5, 51)
+        misc.set_ai(self_obj, 51)
         initialized = true
         LastMove = 21461
         Count = 0

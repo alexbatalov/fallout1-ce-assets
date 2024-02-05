@@ -24,7 +24,7 @@ local job_index = 0
 function start()
     if not initialized then
         misc.set_team(fallout.self_obj(), 2)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 50)
+        misc.set_ai(fallout.self_obj(), 50)
         name_index = 105 + fallout.global_var(335)
         job_index = 109 + fallout.global_var(335)
         hostile = fallout.global_var(334)

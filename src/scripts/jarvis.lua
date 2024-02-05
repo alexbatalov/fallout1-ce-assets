@@ -70,7 +70,7 @@ function map_enter_p_proc()
         fallout.add_timer_event(self_obj, fallout.game_ticks(3600), 1)
     end
     misc.set_team(self_obj, 2)
-    fallout.critter_add_trait(self_obj, 1, 5, 6)
+    misc.set_ai(self_obj, 6)
 end
 
 function talk_p_proc()

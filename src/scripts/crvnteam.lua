@@ -38,7 +38,7 @@ end
 function initialize_p_proc()
     initialized = true
     misc.set_team(fallout.self_obj(), 0)
-    fallout.critter_add_trait(fallout.self_obj(), 1, 5, 1)
+    misc.set_ai(fallout.self_obj(), 1)
 end
 
 local exports = {}

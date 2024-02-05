@@ -48,7 +48,7 @@ function start()
     if not initialized then
         local self_obj = fallout.self_obj()
         misc.set_team(self_obj, 44)
-        fallout.critter_add_trait(self_obj, 1, 5, 64)
+        misc.set_ai(self_obj, 64)
         my_hex = fallout.tile_num(self_obj)
         fallout.set_map_var(1, fallout.tile_num_in_direction(my_hex, 4, 1))
         my_knife = fallout.obj_carrying_pid_obj(self_obj, 4)

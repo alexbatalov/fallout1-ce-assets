@@ -72,7 +72,7 @@ function start()
             fallout.item_caps_adjust(self_obj, 500)
         end
         misc.set_team(self_obj, 41)
-        fallout.critter_add_trait(self_obj, 1, 5, 51)
+        misc.set_ai(self_obj, 51)
         LastMove = 21325
         initialized = true
     end

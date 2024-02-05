@@ -22,7 +22,7 @@ function start()
             fallout.item_caps_adjust(self_obj, fallout.random(10, 100))
         end
         misc.set_team(self_obj, 47)
-        fallout.critter_add_trait(self_obj, 1, 5, 27)
+        misc.set_ai(self_obj, 27)
         fallout.add_timer_event(self_obj, fallout.game_ticks(fallout.random(3, 5)), 1)
         if fallout.local_var(4) == 0 then
             fallout.set_local_var(4, fallout.tile_num(self_obj))

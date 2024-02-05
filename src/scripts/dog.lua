@@ -8,7 +8,7 @@ local rndy = 0
 local critter_tile = 0
 
 function start()
-    fallout.critter_add_trait(fallout.self_obj(), 1, 5, 8)
+    misc.set_ai(fallout.self_obj(), 8)
     if (fallout.cur_map_index() == 26) or (fallout.cur_map_index() == 25) then
         misc.set_team(fallout.self_obj(), 2)
     end

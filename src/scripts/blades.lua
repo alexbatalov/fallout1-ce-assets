@@ -98,7 +98,7 @@ end
 function map_update_p_proc()
     local self_obj = fallout.self_obj()
     if not initialized then
-        fallout.critter_add_trait(self_obj, 1, 5, 27)
+        misc.set_ai(self_obj, 27)
         if fallout.cur_map_index() == 44 then
             misc.set_team(self_obj, 47)
         elseif fallout.cur_map_index() == 17 or fallout.cur_map_index() == 18 then

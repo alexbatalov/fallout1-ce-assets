@@ -63,7 +63,7 @@ function start()
     if g1 then
         g1 = 0
         misc.set_team(fallout.self_obj(), 20)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 69)
+        misc.set_ai(fallout.self_obj(), 69)
         fallout.set_external_var("Shopkepper_Ptr", fallout.self_obj())
     end
     if fallout.script_action() == 21 then

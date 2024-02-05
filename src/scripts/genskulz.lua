@@ -127,7 +127,7 @@ function map_enter_p_proc()
         end
     end
     misc.set_team(self_obj, 14)
-    fallout.critter_add_trait(self_obj, 1, 5, 59)
+    misc.set_ai(self_obj, 59)
     if fallout.global_var(555) == 2 then
         if fallout.cur_map_index() == 10 then
             fallout.set_obj_visibility(self_obj, false)

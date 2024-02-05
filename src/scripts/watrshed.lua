@@ -1,5 +1,6 @@
 local fallout = require("fallout")
 local light = require("lib.light")
+local misc = require("lib.misc")
 local party = require("lib.party")
 local time = require("lib.time")
 
@@ -95,15 +96,15 @@ function map_enter_p_proc()
             fallout.set_map_var(10, 1)
 
             fugee_obj = fallout.create_object_sid(16777404, 0, 0, 912)
-            fallout.critter_add_trait(fugee_obj, 1, 5, 48)
+            misc.set_ai(fugee_obj, 48)
             fallout.critter_attempt_placement(fugee_obj, 16501, 1)
 
             fugee_obj = fallout.create_object_sid(16777404, 0, 0, 912)
-            fallout.critter_add_trait(fugee_obj, 1, 5, 48)
+            misc.set_ai(fugee_obj, 48)
             fallout.critter_attempt_placement(fugee_obj, 15696, 1)
 
             fugee_obj = fallout.create_object_sid(16777404, 0, 0, 912)
-            fallout.critter_add_trait(fugee_obj, 1, 5, 48)
+            misc.set_ai(fugee_obj, 48)
             fallout.critter_attempt_placement(fugee_obj, 16696, 1)
         end
     end

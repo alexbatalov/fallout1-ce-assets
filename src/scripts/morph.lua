@@ -112,7 +112,7 @@ function start()
         else
             misc.set_team(self_obj, 55)
         end
-        fallout.critter_add_trait(self_obj, 1, 5, 82)
+        misc.set_ai(self_obj, 82)
         initialized = true
     end
 

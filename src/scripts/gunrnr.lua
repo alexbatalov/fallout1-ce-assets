@@ -22,7 +22,7 @@ function start()
             fallout.item_caps_adjust(self_obj, fallout.random(2, 20))
         end
         misc.set_team(self_obj, 48)
-        fallout.critter_add_trait(self_obj, 1, 5, 28)
+        misc.set_ai(self_obj, 28)
         initialized = true
     end
 end

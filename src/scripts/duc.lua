@@ -34,7 +34,7 @@ local exit_line = 0
 function start()
     if not initialized then
         misc.set_team(fallout.self_obj(), 2)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 6)
+        misc.set_ai(fallout.self_obj(), 6)
         known = fallout.global_var(333)
         initialized = true
     else

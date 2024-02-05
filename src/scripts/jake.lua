@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local reputation = require("lib.reputation")
 local time = require("lib.time")
 
@@ -37,7 +38,7 @@ local initialized = false
 
 function start()
     if not initialized then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 34)
+        misc.set_ai(fallout.self_obj(), 34)
         initialized = true
     end
 

@@ -141,7 +141,7 @@ function start()
         else
             misc.set_team(fallout.self_obj(), 0)
         end
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 2)
+        misc.set_ai(fallout.self_obj(), 2)
     end
     if fallout.script_action() == 15 then
         map_enter_p_proc()

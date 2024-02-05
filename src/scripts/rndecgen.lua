@@ -15,21 +15,21 @@ function start()
     if not initialized and misc.map_first_run() then
         creation_pid = fallout.obj_pid(fallout.self_obj())
         if creation_pid == 16777261 then
-            fallout.critter_add_trait(fallout.self_obj(), 1, 5, 73)
+            misc.set_ai(fallout.self_obj(), 73)
             misc.set_team(fallout.self_obj(), 43)
             fallout.debug_msg(" Init Floater.")
         else
             if creation_pid == 16777259 then
-                fallout.critter_add_trait(fallout.self_obj(), 1, 5, 72)
+                misc.set_ai(fallout.self_obj(), 72)
                 misc.set_team(fallout.self_obj(), 43)
                 fallout.debug_msg(" Init Centaur.")
             else
                 if creation_pid == 16777230 then
-                    fallout.critter_add_trait(fallout.self_obj(), 1, 5, 42)
+                    misc.set_ai(fallout.self_obj(), 42)
                     misc.set_team(fallout.self_obj(), 43)
                     fallout.debug_msg(" Init ghoul.")
                 else
-                    fallout.critter_add_trait(fallout.self_obj(), 1, 5, -1)
+                    misc.set_ai(fallout.self_obj(), -1)
                     misc.set_team(fallout.self_obj(), 43)
                     fallout.debug_msg(" Init defualt.")
                 end

@@ -62,7 +62,7 @@ function start()
     if not initialized then
         local self_obj = fallout.self_obj()
         misc.set_team(self_obj, 62)
-        fallout.critter_add_trait(self_obj, 1, 5, 50)
+        misc.set_ai(self_obj, 50)
         fallout.set_external_var("Dan_ptr", self_obj)
         initialized = true
     end

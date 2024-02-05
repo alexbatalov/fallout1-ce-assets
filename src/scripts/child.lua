@@ -29,7 +29,7 @@ function start()
     if not initialized then
         initialized = true
         misc.set_team(fallout.self_obj(), 2)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 68)
+        misc.set_ai(fallout.self_obj(), 68)
         item = fallout.create_object_sid(19, 0, 0, -1)
         fallout.add_mult_objs_to_inven(fallout.self_obj(), item, fallout.random(8, 14))
         if fallout.local_var(3) == 0 then

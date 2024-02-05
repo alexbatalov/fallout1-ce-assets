@@ -58,7 +58,7 @@ function start()
     if g1 then
         g1 = 0
         misc.set_team(fallout.self_obj(), 84)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 0)
+        misc.set_ai(fallout.self_obj(), 0)
     end
     if fallout.script_action() == 21 then
         look_at_p_proc()

@@ -26,7 +26,7 @@ function start()
         else
             misc.set_team(self_obj, 49)
         end
-        fallout.critter_add_trait(self_obj, 1, 5, 6)
+        misc.set_ai(self_obj, 6)
         fallout.add_timer_event(self_obj, fallout.game_ticks(fallout.random(3, 5)), 1)
         if fallout.local_var(4) == 0 then
             fallout.set_local_var(4, fallout.tile_num(self_obj))

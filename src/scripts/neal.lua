@@ -172,7 +172,7 @@ function map_enter_p_proc()
         fallout.float_msg(self_obj, fallout.message_str(508, 149), 7)
     end
     misc.set_team(self_obj, 26)
-    fallout.critter_add_trait(self_obj, 1, 5, 56)
+    misc.set_ai(self_obj, 56)
 end
 
 function pickup_p_proc()

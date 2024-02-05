@@ -40,7 +40,7 @@ function start()
             fallout.item_caps_adjust(self_obj, fallout.random(10, 100))
         end
         misc.set_team(self_obj, 89)
-        fallout.critter_add_trait(self_obj, 1, 5, 29)
+        misc.set_ai(self_obj, 29)
         if fallout.local_var(7) == 0 then
             fallout.set_map_var(1, fallout.map_var(1) + 1)
             fallout.set_local_var(7, 1)

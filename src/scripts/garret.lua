@@ -48,7 +48,7 @@ function start()
             fallout.set_local_var(7, fallout.tile_num(self_obj))
         end
         misc.set_team(self_obj, 30)
-        fallout.critter_add_trait(self_obj, 1, 5, 78)
+        misc.set_ai(self_obj, 78)
         fallout.set_external_var("Garret_ptr", self_obj)
         initialized = true
     end

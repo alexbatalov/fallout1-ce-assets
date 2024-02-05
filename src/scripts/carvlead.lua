@@ -39,7 +39,7 @@ function start()
     if not initialized then
         initialized = true
         misc.set_team(fallout.self_obj(), 64)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 50)
+        misc.set_ai(fallout.self_obj(), 50)
         if fallout.local_var(5) == 1 then
             if (time.game_time_in_hours() - fallout.local_var(6)) < 2 then
                 WaitForTwoHours = 1

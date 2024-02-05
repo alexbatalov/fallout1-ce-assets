@@ -54,7 +54,7 @@ local description_p_proc
 function start()
     if not initialized then
         misc.set_team(fallout.self_obj(), 49)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 5, 39)
+        misc.set_ai(fallout.self_obj(), 39)
         initialized = true
     else
         if fallout.script_action() == 12 then
