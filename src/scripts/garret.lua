@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
 local time = require("lib.time")
@@ -46,7 +47,7 @@ function start()
         if fallout.local_var(7) == 0 then
             fallout.set_local_var(7, fallout.tile_num(self_obj))
         end
-        fallout.critter_add_trait(self_obj, 1, 6, 30)
+        misc.set_team(self_obj, 30)
         fallout.critter_add_trait(self_obj, 1, 5, 78)
         fallout.set_external_var("Garret_ptr", self_obj)
         initialized = true

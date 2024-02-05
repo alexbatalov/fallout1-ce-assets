@@ -83,9 +83,9 @@ function map_enter_p_proc()
         fallout.item_caps_adjust(self_obj, fallout.random(0, 10))
     end
     if fallout.global_var(32) == 4 then
-        fallout.critter_add_trait(self_obj, 1, 6, 87)
+        misc.set_team(self_obj, 87)
     else
-        fallout.critter_add_trait(self_obj, 1, 6, 13)
+        misc.set_team(self_obj, 13)
     end
     if (fallout.global_var(38) == 1) or (fallout.global_var(104) == 2) then
         fallout.set_obj_visibility(self_obj, true)

@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local reputation = require("lib.reputation")
 local time = require("lib.time")
 
@@ -98,12 +99,12 @@ function map_update_p_proc()
     if not initialized then
         fallout.critter_add_trait(self_obj, 1, 5, 27)
         if fallout.cur_map_index() == 44 then
-            fallout.critter_add_trait(self_obj, 1, 6, 47)
+            misc.set_team(self_obj, 47)
         elseif fallout.cur_map_index() == 17 or fallout.cur_map_index() == 18 then
             fallout.party_add(self_obj)
             if fallout.global_var(131) == 1 then
                 fallout.set_obj_visibility(self_obj, 0)
-                fallout.critter_add_trait(self_obj, 1, 6, 0)
+                misc.set_team(self_obj, 0)
                 fallout.add_timer_event(self_obj, fallout.game_ticks(1), 1)
             else
                 fallout.set_obj_visibility(self_obj, true)

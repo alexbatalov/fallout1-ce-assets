@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local reputation = require("lib.reputation")
 
 local start
@@ -22,7 +23,7 @@ local new_tile = 0
 
 function start()
     if not initialized then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 34)
+        misc.set_team(fallout.self_obj(), 34)
         initialized = true
     end
     if fallout.script_action() == 22 then

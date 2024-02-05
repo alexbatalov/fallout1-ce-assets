@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 
 local start
 local pickup_p_proc
@@ -14,7 +15,7 @@ local oktoyell = true
 function start()
     if not initialized then
         local self_obj = fallout.self_obj()
-        fallout.critter_add_trait(self_obj, 1, 6, 30)
+        misc.set_team(self_obj, 30)
         if fallout.global_var(31) == 1 then
             fallout.set_obj_visibility(self_obj, false)
         else

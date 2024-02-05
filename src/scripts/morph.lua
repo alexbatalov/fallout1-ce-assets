@@ -108,9 +108,9 @@ function start()
     if not initialized then
         local self_obj = fallout.self_obj()
         if fallout.cur_map_index() == 18 then
-            fallout.critter_add_trait(self_obj, 1, 6, 20)
+            misc.set_team(self_obj, 20)
         else
-            fallout.critter_add_trait(self_obj, 1, 6, 55)
+            misc.set_team(self_obj, 55)
         end
         fallout.critter_add_trait(self_obj, 1, 5, 82)
         initialized = true

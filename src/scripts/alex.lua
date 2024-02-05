@@ -1,5 +1,6 @@
 local fallout = require("fallout")
 local behaviour = require("lib.behaviour")
+local misc = require("lib.misc")
 local reputation = require("lib.reputation")
 
 local start
@@ -26,7 +27,7 @@ local initialized = false
 function start()
     if not initialized then
         local self_obj = fallout.self_obj()
-        fallout.critter_add_trait(self_obj, 1, 6, 49)
+        misc.set_team(self_obj, 49)
         sleep_tile = 14275
         home_tile = 11300
         wake_time = 2030

@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
 
@@ -65,7 +66,7 @@ function start()
         if fallout.global_var(221) == 1 then
             fallout.set_obj_visibility(self_obj, false)
         end
-        fallout.critter_add_trait(self_obj, 1, 6, 40)
+        misc.set_team(self_obj, 40)
         fallout.critter_add_trait(self_obj, 1, 5, 86)
         initialized = true
     end
@@ -477,7 +478,7 @@ function GoToDecker()
     fallout.set_obj_visibility(fry_obj, false)
     fallout.move_to(self_obj, 23926, 1)
     fallout.anim(self_obj, 1000, fallout.rotation_to_tile(fallout.tile_num(self_obj), decker_tile_num))
-    fallout.critter_add_trait(self_obj, 1, 6, 0)
+    misc.set_team(self_obj, 0)
     fallout.move_to(kane_obj, 22526, 1)
     fallout.anim(kane_obj, 1000, fallout.rotation_to_tile(fallout.tile_num(kane_obj), decker_tile_num))
     fallout.move_to(dude_obj, 23924, 1)

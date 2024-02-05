@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local reputation = require("lib.reputation")
 
 local start
@@ -74,7 +75,7 @@ function map_enter_p_proc()
     if fallout.local_var(0) == 0 then
         fallout.set_local_var(0, fallout.tile_num(self_obj))
     end
-    fallout.critter_add_trait(self_obj, 1, 6, 25)
+    misc.set_team(self_obj, 25)
     if fallout.item_caps_total(self_obj) == 0 then
         fallout.item_caps_adjust(self_obj, fallout.random(10, 25))
     end

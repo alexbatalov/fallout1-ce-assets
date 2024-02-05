@@ -37,7 +37,7 @@ local Caught_Stealing = false
 function start()
     if not initialized then
         local self_obj = fallout.self_obj()
-        fallout.critter_add_trait(self_obj, 1, 6, 20)
+        misc.set_team(self_obj, 20)
         fallout.critter_add_trait(self_obj, 1, 5, 69)
         fallout.set_external_var("Shopkepper_Ptr", self_obj)
         initialized = true

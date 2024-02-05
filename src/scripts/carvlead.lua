@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
 local time = require("lib.time")
@@ -37,7 +38,7 @@ local exit_line = 0
 function start()
     if not initialized then
         initialized = true
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 64)
+        misc.set_team(fallout.self_obj(), 64)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 50)
         if fallout.local_var(5) == 1 then
             if (time.game_time_in_hours() - fallout.local_var(6)) < 2 then

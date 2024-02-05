@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local reputation = require("lib.reputation")
 
 local start
@@ -14,7 +15,7 @@ local hostile = false
 function start()
     if not initialized then
         local self_obj = fallout.self_obj()
-        fallout.critter_add_trait(self_obj, 1, 6, 0)
+        misc.set_team(self_obj, 0)
         fallout.critter_add_trait(self_obj, 1, 5, 4)
         if fallout.global_var(124) == 3 then
             fallout.set_obj_visibility(self_obj, true)

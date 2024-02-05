@@ -1,5 +1,6 @@
 local fallout = require("fallout")
 local behaviour = require("lib.behaviour")
+local misc = require("lib.misc")
 local reputation = require("lib.reputation")
 
 local start
@@ -65,7 +66,7 @@ end
 
 function map_update_p_proc()
     if not initialized then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 2)
+        misc.set_team(fallout.self_obj(), 2)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 15 + fallout.random(0, 4))
         fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(fallout.random(1, 3)), 1)
         hostile = fallout.global_var(334)

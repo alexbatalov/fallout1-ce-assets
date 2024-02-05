@@ -1,5 +1,6 @@
 local fallout = require("fallout")
 local behaviour = require("lib.behaviour")
+local misc = require("lib.misc")
 local reputation = require("lib.reputation")
 
 local start
@@ -69,7 +70,7 @@ function map_enter_p_proc()
     sleep_tile = 13097
     sleep_time = 2203
     wake_time = 707
-    fallout.critter_add_trait(fallout.self_obj(), 1, 6, 14)
+    misc.set_team(fallout.self_obj(), 14)
     if fallout.global_var(555) == 2 then
         fallout.destroy_object(fallout.self_obj())
     end

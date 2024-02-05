@@ -56,13 +56,13 @@ function map_enter_p_proc()
                 fallout.set_map_var(10, 1)
                 monstr_obj = fallout.create_object_sid(16777259, 0, 0, 686)
                 fallout.critter_attempt_placement(monstr_obj, 24678, 0)
-                fallout.critter_add_trait(monstr_obj, 1, 6, 34)
+                misc.set_team(monstr_obj, 34)
                 monstr_obj = fallout.create_object_sid(16777261, 0, 0, 686)
                 fallout.critter_attempt_placement(monstr_obj, 25680, 0)
-                fallout.critter_add_trait(monstr_obj, 1, 6, 34)
+                misc.set_team(monstr_obj, 34)
                 monstr_obj = fallout.create_object_sid(16777261, 0, 0, 686)
                 fallout.critter_attempt_placement(monstr_obj, 25276, 0)
-                fallout.critter_add_trait(monstr_obj, 1, 6, 34)
+                misc.set_team(monstr_obj, 34)
             end
         end
     end

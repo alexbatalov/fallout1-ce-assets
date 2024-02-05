@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local time = require("lib.time")
 
 local start
@@ -15,7 +16,7 @@ function start()
         if fallout.obj_is_carrying_obj_pid(self_obj, 41) == 0 then
             fallout.item_caps_adjust(self_obj, fallout.random(1, 10))
         end
-        fallout.critter_add_trait(self_obj, 1, 6, 6)
+        misc.set_team(self_obj, 6)
         fallout.critter_add_trait(self_obj, 1, 5, 17)
         if fallout.local_var(4) == 0 then
             fallout.set_global_var(269, fallout.global_var(269) + 1)

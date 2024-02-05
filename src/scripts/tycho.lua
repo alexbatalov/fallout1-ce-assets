@@ -1,5 +1,6 @@
 local fallout = require("fallout")
 local behaviour = require("lib.behaviour")
+local misc = require("lib.misc")
 local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
 
@@ -118,10 +119,10 @@ function map_enter_p_proc()
         cola2_ptr = fallout.obj_carrying_pid_obj(self_obj, 106)
     end
     if fallout.global_var(121) == 2 then
-        fallout.critter_add_trait(self_obj, 1, 6, 0)
+        misc.set_team(self_obj, 0)
         fallout.add_timer_event(self_obj, fallout.game_ticks(1), 1)
     else
-        fallout.critter_add_trait(self_obj, 1, 6, 26)
+        misc.set_team(self_obj, 26)
     end
 end
 
@@ -459,7 +460,7 @@ end
 function TychoJoins()
     local self_obj = fallout.self_obj()
     fallout.set_global_var(121, 2)
-    fallout.critter_add_trait(self_obj, 1, 6, 0)
+    misc.set_team(self_obj, 0)
     fallout.party_add(self_obj)
     fallout.add_timer_event(self_obj, fallout.game_ticks(1), 1)
 end

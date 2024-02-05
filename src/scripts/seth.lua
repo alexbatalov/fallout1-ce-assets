@@ -89,7 +89,7 @@ end
 
 function map_update_p_proc()
     if not initialized then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 2)
+        misc.set_team(fallout.self_obj(), 2)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 4)
         home_tile = 14108
         sleep_tile = 15925

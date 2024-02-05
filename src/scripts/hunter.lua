@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local reputation = require("lib.reputation")
 
 local start
@@ -22,7 +23,7 @@ local pre_fight = false
 function start()
     if not initialized then
         local self_obj = fallout.self_obj()
-        fallout.critter_add_trait(self_obj, 1, 6, 29)
+        misc.set_team(self_obj, 29)
         if fallout.cur_map_index() ~= 29 then
             Hunter05()
             fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)

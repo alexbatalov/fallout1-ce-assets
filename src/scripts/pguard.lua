@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local reputation = require("lib.reputation")
 local time = require("lib.time")
 
@@ -22,7 +23,7 @@ function start()
         if fallout.obj_is_carrying_obj_pid(self_obj, 41) == 0 then
             fallout.item_caps_adjust(self_obj, fallout.random(1, 10))
         end
-        fallout.critter_add_trait(self_obj, 1, 6, 89)
+        misc.set_team(self_obj, 89)
         fallout.critter_add_trait(self_obj, 1, 5, 29)
         fallout.add_timer_event(self_obj, fallout.game_ticks(fallout.random(1, 3)), 1)
         if fallout.local_var(5) == 0 then

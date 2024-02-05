@@ -88,7 +88,7 @@ function map_enter_p_proc()
         fallout.item_caps_adjust(self_obj, fallout.random(0, 200))
     end
     if fallout.cur_map_index() == 11 then
-        fallout.critter_add_trait(self_obj, 1, 6, 24)
+        misc.set_team(self_obj, 24)
         if fallout.global_var(104) == 2 or fallout.global_var(38) == 1 then
             fallout.destroy_object(self_obj)
         end

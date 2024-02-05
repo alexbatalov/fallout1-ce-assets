@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
 
@@ -20,7 +21,7 @@ function start()
         local self_obj = fallout.self_obj()
         fallout.set_external_var("Fry_Stub_Ptr", self_obj)
         fallout.set_obj_visibility(self_obj, true)
-        fallout.critter_add_trait(self_obj, 1, 6, 0)
+        misc.set_team(self_obj, 0)
         fallout.critter_add_trait(self_obj, 1, 5, 86)
         initialized = true
     end

@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local reputation = require("lib.reputation")
 local time = require("lib.time")
 
@@ -21,7 +22,7 @@ function start()
             fallout.item_caps_adjust(self_obj, fallout.random(10, 100))
         end
         if fallout.global_var(613) == 9103 or fallout.global_var(613) == 9102 then
-            fallout.critter_add_trait(self_obj, 1, 6, 0)
+            misc.set_team(self_obj, 0)
             local v0 = fallout.global_var(267)
             if v0 == 0 then
                 fallout.set_external_var("InBladePtr1", self_obj)
@@ -44,7 +45,7 @@ function start()
             v0 = v0 + 1
             fallout.set_global_var(267, v0)
         else
-            fallout.critter_add_trait(self_obj, 1, 6, 47)
+            misc.set_team(self_obj, 47)
         end
         initialized = true
     end
@@ -87,7 +88,7 @@ end
 function damage_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
         fallout.set_global_var(253, 1)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 47)
+        misc.set_team(fallout.self_obj(), 47)
     end
 end
 
@@ -95,7 +96,7 @@ function destroy_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
         fallout.set_global_var(253, 1)
         reputation.inc_good_critter()
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 47)
+        misc.set_team(fallout.self_obj(), 47)
     end
 end
 

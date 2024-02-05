@@ -1,5 +1,6 @@
 local fallout = require("fallout")
 local behaviour = require("lib.behaviour")
+local misc = require("lib.misc")
 local reputation = require("lib.reputation")
 local time = require("lib.time")
 
@@ -119,7 +120,7 @@ function map_enter_p_proc()
     home_tile = 24687
     sleep_time = fallout.random(1900, 1930)
     wake_time = fallout.random(600, 630)
-    fallout.critter_add_trait(fallout.self_obj(), 1, 6, 1)
+    misc.set_team(fallout.self_obj(), 1)
 end
 
 function pickup_p_proc()

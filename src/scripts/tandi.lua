@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local reputation = require("lib.reputation")
 
 --
@@ -136,9 +137,9 @@ function start()
             fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(1), 2)
         end
         if (fallout.cur_map_index() == 26) or (fallout.cur_map_index() == 25) then
-            fallout.critter_add_trait(fallout.self_obj(), 1, 6, 2)
+            misc.set_team(fallout.self_obj(), 2)
         else
-            fallout.critter_add_trait(fallout.self_obj(), 1, 6, 0)
+            misc.set_team(fallout.self_obj(), 0)
         end
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 2)
     end
@@ -599,16 +600,16 @@ function tandix2()
 end
 
 function tandix3()
-    fallout.critter_add_trait(fallout.self_obj(), 1, 6, 0)
+    misc.set_team(fallout.self_obj(), 0)
 end
 
 function tandix4()
-    fallout.critter_add_trait(fallout.self_obj(), 1, 6, 0)
+    misc.set_team(fallout.self_obj(), 0)
 end
 
 function tandix5()
     fallout.set_local_var(5, 1)
-    fallout.critter_add_trait(fallout.self_obj(), 1, 6, 0)
+    misc.set_team(fallout.self_obj(), 0)
 end
 
 function tandiend()

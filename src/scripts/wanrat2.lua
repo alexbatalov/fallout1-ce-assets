@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local time = require("lib.time")
 
 local start
@@ -13,7 +14,7 @@ function start()
     if not initialized then
         local self_obj = fallout.self_obj()
         fallout.critter_add_trait(self_obj, 1, 5, 12)
-        fallout.critter_add_trait(self_obj, 1, 6, 9)
+        misc.set_team(self_obj, 9)
         if time.is_night() then
             fallout.add_timer_event(self_obj, fallout.game_ticks(fallout.random(30, 40)), 0)
         end

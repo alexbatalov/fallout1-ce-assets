@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local reputation = require("lib.reputation")
 
 local start
@@ -41,9 +42,9 @@ local initialized = false
 function start()
     if not initialized then
         if fallout.global_var(613) == 9103 or fallout.global_var(613) == 9102 then
-            fallout.critter_add_trait(fallout.self_obj(), 1, 6, 0)
+            misc.set_team(fallout.self_obj(), 0)
         else
-            fallout.critter_add_trait(fallout.self_obj(), 1, 6, 49)
+            misc.set_team(fallout.self_obj(), 49)
         end
         initialized = true
     end
@@ -63,7 +64,7 @@ end
 function damage_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
         fallout.set_global_var(251, 1)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 49)
+        misc.set_team(fallout.self_obj(), 49)
     end
 end
 
@@ -71,7 +72,7 @@ function destroy_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
         fallout.set_global_var(251, 1)
         reputation.inc_good_critter()
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 49)
+        misc.set_team(fallout.self_obj(), 49)
     end
 end
 

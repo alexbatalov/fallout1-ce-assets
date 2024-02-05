@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local reputation = require("lib.reputation")
 
 local start
@@ -36,7 +37,7 @@ local initialized = false
 
 function start()
     if not initialized then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 49)
+        misc.set_team(fallout.self_obj(), 49)
         initialized = true
     end
 
@@ -196,7 +197,7 @@ end
 
 function Jason20()
     fallout.gsay_message(382, 144, 50)
-    fallout.critter_add_trait(fallout.self_obj(), 1, 6, 0)
+    misc.set_team(fallout.self_obj(), 0)
     following = true
 end
 

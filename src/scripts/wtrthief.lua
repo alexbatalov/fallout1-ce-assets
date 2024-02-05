@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local reputation = require("lib.reputation")
 
 local start
@@ -66,7 +67,7 @@ function combat_p_proc()
     if fallout.fixed_param() == 4 then
         local officer_obj = fallout.external_var("Officer_ptr")
         if officer_obj ~= nil then
-            fallout.critter_add_trait(officer_obj, 1, 6, 0)
+            misc.set_team(officer_obj, 0)
         end
     end
 end
@@ -136,7 +137,7 @@ function destroy_p_proc()
     fallout.set_global_var(188, 2)
     local officer_obj = fallout.external_var("Officer_ptr")
     if officer_obj ~= nil then
-        fallout.critter_add_trait(officer_obj, 1, 6, 1)
+        misc.set_team(officer_obj, 1)
     end
 end
 
@@ -158,7 +159,7 @@ end
 function map_enter_p_proc()
     local self_obj = fallout.self_obj()
     fallout.set_external_var("WtrThief_ptr", self_obj)
-    fallout.critter_add_trait(self_obj, 1, 6, 87)
+    misc.set_team(self_obj, 87)
     fallout.critter_add_trait(self_obj, 1, 5, 1)
     if fallout.global_var(188) == 0 then
         fallout.set_obj_visibility(self_obj, true)

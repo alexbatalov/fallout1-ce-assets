@@ -1,5 +1,6 @@
 local fallout = require("fallout")
 local behaviour = require("lib.behaviour")
+local misc = require("lib.misc")
 local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
 local time = require("lib.time")
@@ -85,7 +86,7 @@ function critter_p_proc()
     else
         if fallout.global_var(556) == 1 then
             if time.game_time_in_days() - fallout.local_var(6) > 1 then
-                fallout.critter_add_trait(self_obj, 1, 6, 26)
+                misc.set_team(self_obj, 26)
                 fallout.set_global_var(556, 2)
                 fallout.set_local_var(6, 0)
                 home_tile = 18125
@@ -132,11 +133,11 @@ function map_enter_p_proc()
     sleep_time = 2000
     wake_time = 630
     if fallout.global_var(556) == 0 then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 14)
+        misc.set_team(fallout.self_obj(), 14)
         home_tile = 15513
         sleep_tile = 13494
     else
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 26)
+        misc.set_team(fallout.self_obj(), 26)
         home_tile = 18125
         sleep_tile = 17924
     end

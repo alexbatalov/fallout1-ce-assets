@@ -1,5 +1,6 @@
 local fallout = require("fallout")
 local behaviour = require("lib.behaviour")
+local misc = require("lib.misc")
 local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
 
@@ -143,7 +144,7 @@ function map_enter_p_proc()
     night_person = true
     local self_obj = fallout.self_obj()
     fallout.set_external_var("Trish_ptr", self_obj)
-    fallout.critter_add_trait(self_obj, 1, 6, 26)
+    misc.set_team(self_obj, 26)
     if fallout.cur_map_index() == 11 then
         sleep_tile = 7000
         home_tile = 20083

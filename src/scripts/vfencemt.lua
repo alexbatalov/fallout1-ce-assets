@@ -31,7 +31,7 @@ local waypoint = 0
 function start()
     if not initialized then
         local self_obj = fallout.self_obj()
-        fallout.critter_add_trait(self_obj, 1, 6, 34)
+        misc.set_team(self_obj, 34)
         fallout.add_timer_event(self_obj, fallout.game_ticks(30), 1)
         initialized = true
     end

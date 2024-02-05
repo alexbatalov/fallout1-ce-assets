@@ -105,7 +105,7 @@ function map_enter_p_proc()
     sleep_tile = home_tile
     sleep_time = fallout.random(1900, 1930)
     wake_time = fallout.random(700, 715)
-    fallout.critter_add_trait(fallout.self_obj(), 1, 6, 87)
+    misc.set_team(fallout.self_obj(), 87)
 end
 
 function pickup_p_proc()

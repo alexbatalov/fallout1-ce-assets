@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local reputation = require("lib.reputation")
 local time = require("lib.time")
 
@@ -73,7 +74,7 @@ function map_enter_p_proc()
     if fallout.global_var(15) == 1 then
         fallout.kill_critter(self_obj, 57)
     end
-    fallout.critter_add_trait(self_obj, 1, 6, 19)
+    misc.set_team(self_obj, 19)
 end
 
 function pickup_p_proc()

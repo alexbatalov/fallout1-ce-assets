@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
 local time = require("lib.time")
@@ -140,9 +141,9 @@ end
 function map_enter_p_proc()
     local self_obj = fallout.self_obj()
     if fallout.cur_map_index() == 11 then
-        fallout.critter_add_trait(self_obj, 1, 6, 0)
+        misc.set_team(self_obj, 0)
     else
-        fallout.critter_add_trait(self_obj, 1, 6, 12)
+        misc.set_team(self_obj, 12)
     end
     if fallout.global_var(38) == 1 and fallout.cur_map_index() == 11 then
         fallout.destroy_object(self_obj)

@@ -47,7 +47,7 @@ function start()
         home_tile = 23488
         smoke_tile = 21299
         local self_obj = fallout.self_obj()
-        fallout.critter_add_trait(self_obj, 1, 6, 34)
+        misc.set_team(self_obj, 34)
         fallout.critter_add_trait(self_obj, 1, 5, 49)
         if fallout.local_var(0) == 1 then
             fallout.set_obj_visibility(self_obj, true)

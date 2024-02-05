@@ -1167,7 +1167,7 @@ function Place_Caravan()
 
     critter_tile_num = fallout.tile_num_in_direction(dude_tile_num, 4, 6)
     critter_obj = fallout.create_object_sid(16777233, critter_tile_num, dude_elevation, 761)
-    fallout.critter_add_trait(critter_obj, 1, 6, 0)
+    misc.set_team(critter_obj, 0)
     fallout.critter_add_trait(critter_obj, 1, 5, 17)
     fallout.anim(critter_obj, 1000, 1)
 
@@ -1177,7 +1177,7 @@ function Place_Caravan()
 
     critter_tile_num = fallout.tile_num_in_direction(dude_tile_num, 5, 4)
     critter_obj = fallout.create_object_sid(16777420, critter_tile_num, dude_elevation, 761)
-    fallout.critter_add_trait(critter_obj, 1, 6, 0)
+    misc.set_team(critter_obj, 0)
     fallout.critter_add_trait(critter_obj, 1, 5, 17)
     fallout.anim(critter_obj, 1000, 1)
 
@@ -1187,7 +1187,7 @@ function Place_Caravan()
 
     critter_tile_num = fallout.tile_num_in_direction(dude_tile_num, 3, 4)
     critter_obj = fallout.create_object_sid(16777420, critter_tile_num, dude_elevation, 761)
-    fallout.critter_add_trait(critter_obj, 1, 6, 0)
+    misc.set_team(critter_obj, 0)
     fallout.critter_add_trait(critter_obj, 1, 5, 17)
     fallout.anim(critter_obj, 1000, 1)
 
@@ -1207,7 +1207,7 @@ function Place_Stranger()
 
     critter_tile_num = fallout.tile_num_in_direction(fallout.tile_num(fallout.dude_obj()), 5, 2)
     critter_obj = fallout.create_object_sid(16777520, critter_tile_num, fallout.elevation(fallout.dude_obj()), 761)
-    fallout.critter_add_trait(critter_obj, 1, 6, 0)
+    misc.set_team(critter_obj, 0)
     fallout.critter_add_trait(critter_obj, 1, 5, 92)
 
     item_obj = fallout.create_object_sid(23, 0, 0, -1)

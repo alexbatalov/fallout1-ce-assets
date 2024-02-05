@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
 
@@ -53,12 +54,12 @@ function start()
         end
         if fallout.global_var(613) == 9103 then
             if fallout.global_var(612) ~= 9003 then
-                fallout.critter_add_trait(self_obj, 1, 6, 89)
+                misc.set_team(self_obj, 89)
             else
-                fallout.critter_add_trait(self_obj, 1, 6, 0)
+                misc.set_team(self_obj, 0)
             end
         else
-            fallout.critter_add_trait(self_obj, 1, 6, 49)
+            misc.set_team(self_obj, 49)
         end
         fallout.critter_add_trait(self_obj, 1, 5, 6)
         fallout.set_external_var("JonPtr", self_obj)
@@ -124,7 +125,7 @@ function damage_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
         if fallout.global_var(616) ~= 1 then
             fallout.set_global_var(251, 1)
-            fallout.critter_add_trait(fallout.self_obj(), 1, 6, 49)
+            misc.set_team(fallout.self_obj(), 49)
         end
     end
 end
@@ -133,7 +134,7 @@ function destroy_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
         if fallout.global_var(616) ~= 1 then
             fallout.set_global_var(251, 1)
-            fallout.critter_add_trait(fallout.self_obj(), 1, 6, 49)
+            misc.set_team(fallout.self_obj(), 49)
         end
         reputation.inc_good_critter()
     end
@@ -144,7 +145,7 @@ function critter_p_proc()
     local dude_obj = fallout.dude_obj()
     if fallout.obj_can_see_obj(self_obj, dude_obj) then
         if fallout.global_var(613) == 9103 and fallout.global_var(612) ~= 9003 then
-            fallout.critter_add_trait(self_obj, 1, 6, 89)
+            misc.set_team(self_obj, 89)
             fallout.float_msg(self_obj, fallout.message_str(288, 174), 2)
             fallout.attack(dude_obj, 0, 1, 0, 0, 30000, 0, 0)
         else
@@ -154,7 +155,7 @@ function critter_p_proc()
         end
     end
     if fallout.global_var(616) == 1 then
-        fallout.critter_add_trait(self_obj, 1, 6, 89)
+        misc.set_team(self_obj, 89)
         fallout.attack(dude_obj, 0, 1, 0, 0, 30000, 0, 0)
     end
 end
@@ -351,10 +352,10 @@ function Zim26()
     fallout.gsay_message(288, 173, 50)
     fallout.set_global_var(612, 9003)
     if fallout.global_var(613) == 9102 then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 0)
+        misc.set_team(fallout.self_obj(), 0)
         fallout.set_global_var(613, 9103)
     else
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 0)
+        misc.set_team(fallout.self_obj(), 0)
     end
 end
 

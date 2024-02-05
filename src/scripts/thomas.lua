@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local reputation = require("lib.reputation")
 
 local start
@@ -46,7 +47,7 @@ local do_round
 function start()
     if not initialized then
         local self_obj = fallout.self_obj()
-        fallout.critter_add_trait(self_obj, 1, 6, 44)
+        misc.set_team(self_obj, 44)
         fallout.critter_add_trait(self_obj, 1, 5, 64)
         my_hex = fallout.tile_num(self_obj)
         fallout.set_map_var(1, fallout.tile_num_in_direction(my_hex, 4, 1))

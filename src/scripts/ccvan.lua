@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 
 local start
 local combat
@@ -38,7 +39,7 @@ local exit_line = 0
 function start()
     if not initialized then
         initialized = true
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 36)
+        misc.set_team(fallout.self_obj(), 36)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 50)
     end
     if fallout.script_action() == 21 then

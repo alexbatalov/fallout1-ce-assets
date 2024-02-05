@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 
 --
 -- Some unreferenced imported varables found.
@@ -56,7 +57,7 @@ local Goodbyes
 function start()
     if g1 then
         g1 = 0
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 84)
+        misc.set_team(fallout.self_obj(), 84)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 0)
     end
     if fallout.script_action() == 21 then

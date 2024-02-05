@@ -1,5 +1,6 @@
 local fallout = require("fallout")
 local behaviour = require("lib.behaviour")
+local misc = require("lib.misc")
 local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
 
@@ -107,7 +108,7 @@ function map_enter_p_proc()
     home_tile = 20486
     sleep_tile = 7000
     local self_obj = fallout.self_obj()
-    fallout.critter_add_trait(self_obj, 1, 6, 14)
+    misc.set_team(self_obj, 14)
     fallout.critter_add_trait(self_obj, 1, 5, 58)
     if fallout.global_var(555) == 2 or fallout.global_var(282) == 1 then
         fallout.move_to(self_obj, 7000, 0)

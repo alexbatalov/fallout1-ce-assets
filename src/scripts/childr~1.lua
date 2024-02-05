@@ -75,7 +75,7 @@ function add_party()
             fallout.set_external_var("Ian_ptr", fallout.create_object_sid(16777233, 0, 0, 235))
             fallout.critter_attempt_placement(fallout.external_var("Ian_ptr"), fallout.tile_num_in_direction(fallout.tile_num(fallout.dude_obj()), 1, 2), fallout.elevation(fallout.dude_obj()))
         end
-        fallout.critter_add_trait(fallout.external_var("Ian_ptr"), 1, 6, 0)
+        misc.set_team(fallout.external_var("Ian_ptr"), 0)
         v0 = fallout.create_object_sid(74, 0, 0, -1)
         fallout.add_obj_to_inven(fallout.external_var("Ian_ptr"), v0)
         fallout.wield_obj_critter(fallout.external_var("Ian_ptr"), v0)
@@ -87,14 +87,14 @@ function add_party()
             fallout.set_external_var("Dog_ptr", fallout.create_object_sid(16777252, 0, 0, 229))
             fallout.critter_attempt_placement(fallout.external_var("Dog_ptr"), fallout.tile_num_in_direction(fallout.tile_num(fallout.dude_obj()), 2, 2), fallout.elevation(fallout.dude_obj()))
         end
-        fallout.critter_add_trait(fallout.external_var("Dog_ptr"), 1, 6, 0)
+        misc.set_team(fallout.external_var("Dog_ptr"), 0)
     end
     if fallout.global_var(121) == 2 then
         if not(fallout.external_var("Tycho_ptr")) then
             fallout.set_external_var("Tycho_ptr", fallout.create_object_sid(16777218, 0, 0, 389))
             fallout.critter_attempt_placement(fallout.external_var("Tycho_ptr"), fallout.tile_num_in_direction(fallout.tile_num(fallout.dude_obj()), 3, 2), fallout.elevation(fallout.dude_obj()))
         end
-        fallout.critter_add_trait(fallout.external_var("Tycho_ptr"), 1, 6, 0)
+        misc.set_team(fallout.external_var("Tycho_ptr"), 0)
         v0 = fallout.create_object_sid(1, 0, 0, -1)
         fallout.add_obj_to_inven(fallout.external_var("Tycho_ptr"), v0)
         fallout.wield_obj_critter(fallout.external_var("Tycho_ptr"), v0)

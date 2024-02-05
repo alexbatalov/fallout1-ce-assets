@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local reputation = require("lib.reputation")
 
 local start
@@ -10,7 +11,7 @@ local initialized = false
 
 function start()
     if not initialized then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 20)
+        misc.set_team(fallout.self_obj(), 20)
         if fallout.local_var(0) == 0 then
             fallout.set_local_var(0, fallout.random(100, 109))
         end

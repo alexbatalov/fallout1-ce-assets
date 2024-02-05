@@ -54,7 +54,7 @@ local Goodbyes
 
 function start()
     if not(g3) then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 5)
+        misc.set_team(fallout.self_obj(), 5)
         fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(10), 1)
         g3 = 1
     else

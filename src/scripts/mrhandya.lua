@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 
 local start
 local critter_p_proc
@@ -12,12 +13,12 @@ local initialized = false
 function start()
     local self_obj = fallout.self_obj()
     if not initialized then
-        fallout.critter_add_trait(self_obj, 1, 6, 34)
+        misc.set_team(self_obj, 34)
         fallout.critter_add_trait(self_obj, 1, 5, 71)
         initialized = true
     end
     if fallout.global_var(273) == 2 then
-        fallout.critter_add_trait(self_obj, 1, 6, 85)
+        misc.set_team(self_obj, 85)
     end
 
     local script_action = fallout.script_action()

@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local reputation = require("lib.reputation")
 
 local start
@@ -95,9 +96,9 @@ end
 function map_enter_p_proc()
     local self_obj = fallout.self_obj()
     if fallout.global_var(244) < 2 then
-        fallout.critter_add_trait(self_obj, 1, 6, 49)
+        misc.set_team(self_obj, 49)
     else
-        fallout.critter_add_trait(self_obj, 1, 6, 0)
+        misc.set_team(self_obj, 0)
         fallout.add_timer_event(self_obj, fallout.game_ticks(2), 1)
     end
     fallout.set_external_var("Katja_ptr", self_obj)
@@ -318,7 +319,7 @@ function Katja20()
     fallout.set_global_var(244, 2)
     fallout.party_add(self_obj)
     fallout.add_timer_event(self_obj, fallout.game_ticks(1), 1)
-    fallout.critter_add_trait(self_obj, 1, 6, 0)
+    misc.set_team(self_obj, 0)
     fallout.gsay_message(623, 153, 50)
 end
 

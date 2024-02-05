@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local reputation = require("lib.reputation")
 
 local start
@@ -28,7 +29,7 @@ function start()
             fallout.set_local_var(7, fallout.tile_num(self_obj))
             fallout.set_local_var(5, 1)
         end
-        fallout.critter_add_trait(self_obj, 1, 6, 32)
+        misc.set_team(self_obj, 32)
         initialized = true
     end
 

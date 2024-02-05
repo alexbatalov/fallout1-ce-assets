@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
 local time = require("lib.time")
@@ -57,7 +58,7 @@ local SetDayNight = false
 function start()
     if not initialized then
         local self_obj = fallout.self_obj()
-        fallout.critter_add_trait(self_obj, 1, 6, 62)
+        misc.set_team(self_obj, 62)
         fallout.critter_add_trait(self_obj, 1, 5, 51)
         fallout.set_external_var("Billy_ptr", self_obj)
         initialized = true

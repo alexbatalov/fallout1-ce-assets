@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local reputation = require("lib.reputation")
 
 local hostile = false
@@ -15,7 +16,7 @@ function start()
         if fallout.local_var(3) == 0 then
             fallout.set_local_var(3, fallout.tile_num(self_obj))
         end
-        fallout.critter_add_trait(self_obj, 1, 6, 44)
+        misc.set_team(self_obj, 44)
         fallout.critter_add_trait(self_obj, 1, 5, 62)
         if fallout.local_var(0) ~= 0 then
             if fallout.map_var(4) == fallout.local_var(0) then

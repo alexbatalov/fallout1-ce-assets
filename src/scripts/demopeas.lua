@@ -27,7 +27,7 @@ local PeasantD04
 
 function start()
     if not(g2) then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 5)
+        misc.set_team(fallout.self_obj(), 5)
         g2 = 1
     else
         if fallout.script_action() == 11 then

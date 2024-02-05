@@ -15,10 +15,10 @@ function start()
         local pid = fallout.obj_pid(self_obj)
         if pid == 16777261 then
             fallout.critter_add_trait(self_obj, 1, 5, 73)
-            fallout.critter_add_trait(self_obj, 1, 6, 43)
+            misc.set_team(self_obj, 43)
         elseif pid == 16777259 then
             fallout.critter_add_trait(self_obj, 1, 5, 72)
-            fallout.critter_add_trait(self_obj, 1, 6, 43)
+            misc.set_team(self_obj, 43)
         end
         initialized = true
     end

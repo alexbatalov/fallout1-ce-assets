@@ -1,5 +1,6 @@
 local fallout = require("fallout")
 local behaviour = require("lib.behaviour")
+local misc = require("lib.misc")
 local reputation = require("lib.reputation")
 
 local start
@@ -18,7 +19,7 @@ local scared = 0
 
 function start()
     if not initialized then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 35)
+        misc.set_team(fallout.self_obj(), 35)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 50)
         scared = fallout.global_var(334)
         initialized = true

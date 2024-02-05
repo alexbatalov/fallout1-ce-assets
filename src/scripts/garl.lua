@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
 
@@ -86,7 +87,7 @@ local tandi_pid_ptr = nil
 function start()
     if not initialized then
         local self_obj = fallout.self_obj()
-        fallout.critter_add_trait(self_obj, 1, 6, 6)
+        misc.set_team(self_obj, 6)
         fallout.critter_add_trait(self_obj, 1, 5, 22)
         initialized = true
     end
@@ -640,7 +641,7 @@ function honorarea()
             fallout.move_to(party_member_obj, fallout.tile_num_in_direction(dude_tile_num, rotation, 10), 1)
         end
     end
-    fallout.critter_add_trait(self_obj, 1, 6, 87)
+    misc.set_team(self_obj, 87)
     fallout.critter_add_trait(self_obj, 1, 5, 43)
     garlcbt()
 end

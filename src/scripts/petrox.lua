@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
 
@@ -30,7 +31,7 @@ local initialized = false
 function start()
     if not initialized then
         local self_obj = fallout.self_obj()
-        fallout.critter_add_trait(self_obj, 1, 6, 6)
+        misc.set_team(self_obj, 6)
         fallout.critter_add_trait(self_obj, 1, 5, 20)
         initialized = true
     end
@@ -149,7 +150,7 @@ end
 
 function combat()
     if fallout.global_var(116) == 1 then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 87)
+        misc.set_team(fallout.self_obj(), 87)
     end
     hostile = true
 end

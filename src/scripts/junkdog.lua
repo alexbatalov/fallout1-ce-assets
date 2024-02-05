@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 
 local start
 local critter_p_proc
@@ -83,9 +84,9 @@ end
 
 function map_enter_p_proc()
     if fallout.global_var(5) == 1 then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 0)
+        misc.set_team(fallout.self_obj(), 0)
     else
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 6)
+        misc.set_team(fallout.self_obj(), 6)
     end
     if fallout.cur_map_index() == 11 and fallout.global_var(5) == 0 then
         fallout.set_map_var(5, 1)
@@ -127,7 +128,7 @@ function dog_joins_dude()
     fallout.set_global_var(187, 2)
     fallout.set_global_var(186, 2)
     fallout.party_add(self_obj)
-    fallout.critter_add_trait(self_obj, 1, 6, 0)
+    misc.set_team(self_obj, 0)
     fallout.set_map_var(5, 0)
 end
 

@@ -62,7 +62,7 @@ local Goodbyes
 function start()
     if g1 then
         g1 = 0
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 20)
+        misc.set_team(fallout.self_obj(), 20)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 69)
         fallout.set_external_var("Shopkepper_Ptr", fallout.self_obj())
     end

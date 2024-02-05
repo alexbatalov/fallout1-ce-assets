@@ -54,7 +54,7 @@ function map_enter_p_proc()
             local scrop_obj = fallout.create_object_sid(16777227, 0, 0, 12)
             local hex = 21515
             fallout.critter_attempt_placement(scrop_obj, hex, 0)
-            fallout.critter_add_trait(scrop_obj, 1, 6, 5)
+            misc.set_team(scrop_obj, 5)
         end
     end
     party_elevation = party.add_party()

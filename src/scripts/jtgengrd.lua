@@ -153,7 +153,7 @@ function destroy_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
         fallout.set_global_var(247, 1)
         reputation.inc_good_critter()
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 11)
+        misc.set_team(fallout.self_obj(), 11)
     end
     if fallout.cur_map_index() == 11 then
         if fallout.map_var(2) == 1 then
@@ -166,11 +166,11 @@ function map_enter_p_proc()
     local self_obj = fallout.self_obj()
     local cur_map_index = fallout.cur_map_index()
     if cur_map_index == 12 then
-        fallout.critter_add_trait(self_obj, 1, 6, 12)
+        misc.set_team(self_obj, 12)
     elseif cur_map_index == 10 then
-        fallout.critter_add_trait(self_obj, 1, 6, 11)
+        misc.set_team(self_obj, 11)
     elseif cur_map_index == 11 then
-        fallout.critter_add_trait(self_obj, 1, 6, 0)
+        misc.set_team(self_obj, 0)
         dest_tile = 23666
         waypoint = 1
         if fallout.map_var(2) == 0 then
@@ -241,7 +241,7 @@ end
 function damage_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
         fallout.set_global_var(247, 1)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 11)
+        misc.set_team(fallout.self_obj(), 11)
     end
 end
 

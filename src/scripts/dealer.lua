@@ -25,7 +25,7 @@ function start()
         if misc.map_first_run() then
             local caps_obj = fallout.create_object_sid(41, 0, 0, -1)
             fallout.add_mult_objs_to_inven(fallout.self_obj(), caps_obj, fallout.random(0, 100))
-            fallout.critter_add_trait(fallout.self_obj(), 1, 6, 24)
+            misc.set_team(fallout.self_obj(), 24)
             fallout.set_global_var(289, 0)
         end
         initialized = true

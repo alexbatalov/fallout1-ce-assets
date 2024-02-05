@@ -97,7 +97,7 @@ function map_update_p_proc()
         local justin_obj = fallout.external_var("Justin_Ptr")
         if fallout.global_var(221) ~= 1 then
             fallout.move_to(justin_obj, 24064, 0)
-            fallout.critter_add_trait(justin_obj, 1, 6, 67)
+            misc.set_team(justin_obj, 67)
         end
         fallout.move_to(dude_obj, 24267, 0)
         if fallout.global_var(221) ~= 1 then

@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
 
@@ -21,7 +22,7 @@ function start()
         if fallout.global_var(202) == 1 then
             fallout.set_obj_visibility(self_obj, true)
         end
-        fallout.critter_add_trait(self_obj, 1, 6, 38)
+        misc.set_team(self_obj, 38)
         fallout.critter_add_trait(self_obj, 1, 5, 16)
         initialized = true
     end

@@ -28,7 +28,7 @@ local Start_Moving = 0
 function start()
     if not initialized then
         initialized = true
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 2)
+        misc.set_team(fallout.self_obj(), 2)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 68)
         item = fallout.create_object_sid(19, 0, 0, -1)
         fallout.add_mult_objs_to_inven(fallout.self_obj(), item, fallout.random(8, 14))

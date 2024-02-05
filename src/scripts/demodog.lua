@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 
 --
 -- Some unreferenced imported varables found.
@@ -24,7 +25,7 @@ local follow_player
 
 function start()
     if not(g2) then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 6)
+        misc.set_team(fallout.self_obj(), 6)
         g2 = 1
         fallout.set_external_var("dog_is_angry", 1)
     else
@@ -77,7 +78,7 @@ function start()
                                         fallout.set_global_var(5, 1)
                                         fallout.set_global_var(187, 2)
                                         fallout.set_global_var(186, 2)
-                                        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 0)
+                                        misc.set_team(fallout.self_obj(), 0)
                                         fallout.set_external_var("dog_is_angry", 0)
                                         fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(1), 2)
                                     end

@@ -1,5 +1,6 @@
 local fallout = require("fallout")
 local behaviour = require("lib.behaviour")
+local misc = require("lib.misc")
 local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
 local time = require("lib.time")
@@ -145,7 +146,7 @@ end
 
 function map_enter_p_proc()
     local self_obj = fallout.self_obj()
-    fallout.critter_add_trait(self_obj, 1, 6, 19)
+    misc.set_team(self_obj, 19)
     fallout.set_external_var("Morbid_ptr", self_obj)
     sleep_time = 2340
     wake_time = 810

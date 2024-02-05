@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
 
@@ -136,7 +137,7 @@ function map_enter_p_proc()
     if fallout.local_var(7) == 0 then
         fallout.set_local_var(7, 1000)
     end
-    fallout.critter_add_trait(self_obj, 1, 6, 13)
+    misc.set_team(self_obj, 13)
     fallout.critter_add_trait(self_obj, 1, 5, 60)
     if fallout.global_var(104) == 2 then
         fallout.create_object_sid(213, fallout.tile_num(self_obj), 0, -1)

@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local reputation = require("lib.reputation")
 
 local start
@@ -15,7 +16,7 @@ local line103flag = false
 function start()
     if not initialized then
         local self_obj = fallout.self_obj()
-        fallout.critter_add_trait(self_obj, 1, 6, 13)
+        misc.set_team(self_obj, 13)
         if fallout.global_var(104) == 2 then
             fallout.kill_critter(self_obj, 62)
         end

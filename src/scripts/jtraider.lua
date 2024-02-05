@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
 
@@ -152,7 +153,7 @@ end
 function map_enter_p_proc()
     local self_obj = fallout.self_obj()
     fallout.set_external_var("JTRaider_ptr", self_obj)
-    fallout.critter_add_trait(self_obj, 1, 6, 15)
+    misc.set_team(self_obj, 15)
 end
 
 function pickup_p_proc()

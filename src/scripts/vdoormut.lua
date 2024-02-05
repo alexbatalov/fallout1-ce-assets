@@ -38,7 +38,7 @@ function start()
             fallout.add_obj_to_inven(self_obj, item_obj)
             fallout.set_local_var(4, 1)
         end
-        fallout.critter_add_trait(self_obj, 1, 6, 34)
+        misc.set_team(self_obj, 34)
         fallout.critter_add_trait(self_obj, 1, 5, 49)
         initialized = true
     end

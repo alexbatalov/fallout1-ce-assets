@@ -44,7 +44,7 @@ local broken = false
 
 function start()
     if not initialized then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 6)
+        misc.set_team(fallout.self_obj(), 6)
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 20)
         initialized = true
     end

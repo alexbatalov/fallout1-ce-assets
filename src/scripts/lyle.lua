@@ -1,5 +1,6 @@
 local fallout = require("fallout")
 local behaviour = require("lib.behaviour")
+local misc = require("lib.misc")
 local reputation = require("lib.reputation")
 local time = require("lib.time")
 
@@ -84,7 +85,7 @@ function look_at_p_proc()
 end
 
 function map_enter_p_proc()
-    fallout.critter_add_trait(fallout.self_obj(), 1, 6, 1)
+    misc.set_team(fallout.self_obj(), 1)
     sleep_time = 1920
     wake_time = 710
     home_tile = 24911

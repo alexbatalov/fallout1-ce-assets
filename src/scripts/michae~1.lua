@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local time = require("lib.time")
 
 local start
@@ -111,7 +112,7 @@ local exit_line = 0
 
 function start()
     if not initialized then
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 44)
+        misc.set_team(fallout.self_obj(), 44)
     end
     if fallout.script_action() == 21 then
         look_at_p_proc()

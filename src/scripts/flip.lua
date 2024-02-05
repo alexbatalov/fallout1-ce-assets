@@ -33,7 +33,7 @@ local home_tile = 14338
 function start()
     if not initialized then
         local self_obj = fallout.self_obj()
-        fallout.critter_add_trait(self_obj, 1, 6, 43)
+        misc.set_team(self_obj, 43)
         fallout.critter_add_trait(self_obj, 1, 5, 4)
         initialized = true
     end

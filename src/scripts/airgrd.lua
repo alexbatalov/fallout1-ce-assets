@@ -48,7 +48,7 @@ local indialog = false
 function start()
     if not initialized then
         local self_obj = fallout.self_obj()
-        fallout.critter_add_trait(self_obj, 1, 6, 34)
+        misc.set_team(self_obj, 34)
         fallout.critter_add_trait(self_obj, 1, 5, 46)
         initialized = true
     end

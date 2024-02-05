@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 
 local start
 
@@ -14,9 +15,9 @@ function start()
         initialized = true
         fallout.critter_add_trait(fallout.self_obj(), 1, 5, 8)
         if (fallout.cur_map_index() == 26) or (fallout.cur_map_index() == 25) then
-            fallout.critter_add_trait(fallout.self_obj(), 1, 6, 2)
+            misc.set_team(fallout.self_obj(), 2)
         else
-            fallout.critter_add_trait(fallout.self_obj(), 1, 6, 21)
+            misc.set_team(fallout.self_obj(), 21)
         end
     end
     if fallout.script_action() == 12 then

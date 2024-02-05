@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local reputation = require("lib.reputation")
 
 local start
@@ -55,7 +56,7 @@ function map_enter_p_proc()
     if fallout.global_var(15) == 1 then
         fallout.kill_critter(script_action, 48)
     end
-    fallout.critter_add_trait(script_action, 1, 6, 19)
+    misc.set_team(script_action, 19)
 end
 
 function pickup_p_proc()

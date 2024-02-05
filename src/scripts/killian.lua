@@ -1,5 +1,6 @@
 local fallout = require("fallout")
 local behaviour = require("lib.behaviour")
+local misc = require("lib.misc")
 local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
 local time = require("lib.time")
@@ -246,9 +247,9 @@ function map_enter_p_proc()
         else
             fallout.float_msg(self_obj, fallout.message_str(47, 271), 3)
         end
-        fallout.critter_add_trait(self_obj, 1, 6, 0)
+        misc.set_team(self_obj, 0)
     else
-        fallout.critter_add_trait(self_obj, 1, 6, 12)
+        misc.set_team(self_obj, 12)
     end
     if fallout.item_caps_total(self_obj) == 0 then
         fallout.item_caps_adjust(self_obj, fallout.random(10, 150))
@@ -335,7 +336,7 @@ function talk_p_proc()
         local critter_obj = fallout.create_object_sid(16777528, 0, 0, 510)
         local item_obj = fallout.create_object_sid(10, 0, 0, -1)
         fallout.add_obj_to_inven(critter_obj, item_obj)
-        fallout.critter_add_trait(critter_obj, 1, 6, 13)
+        misc.set_team(critter_obj, 13)
         fallout.critter_add_trait(critter_obj, 1, 5, 1)
         fallout.critter_attempt_placement(critter_obj, 28283, 0)
         fallout.set_map_var(5, 2)

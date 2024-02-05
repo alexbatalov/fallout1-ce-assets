@@ -46,7 +46,7 @@ local Warned_Tile = 0
 function start()
     if not initialized then
         local self_obj = fallout.self_obj()
-        fallout.critter_add_trait(self_obj, 1, 6, 2)
+        misc.set_team(self_obj, 2)
         fallout.critter_add_trait(self_obj, 1, 5, 4)
         if fallout.local_var(10) == 0 then
             fallout.set_local_var(10, fallout.tile_num(self_obj))

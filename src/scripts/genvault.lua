@@ -109,7 +109,7 @@ function map_enter_p_proc()
         fallout.set_local_var(4, fallout.tile_num(fallout.self_obj()))
     end
     home_tile = fallout.local_var(4)
-    fallout.critter_add_trait(fallout.self_obj(), 1, 6, 1)
+    misc.set_team(fallout.self_obj(), 1)
     set_ration_tile()
     set_sleep_tile()
     sleep_time = fallout.random(1900, 1930)

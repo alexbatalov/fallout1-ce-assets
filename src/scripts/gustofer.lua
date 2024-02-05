@@ -121,7 +121,7 @@ function map_enter_p_proc()
     if fallout.obj_is_carrying_obj_pid(self_obj, 41) == 0 then
         fallout.item_caps_adjust(self_obj, fallout.random(0, 10))
     end
-    fallout.critter_add_trait(self_obj, 1, 6, 25)
+    misc.set_team(self_obj, 25)
     sleep_time = 1920
     wake_time = 530
     home_tile = 17096

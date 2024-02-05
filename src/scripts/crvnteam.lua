@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local reputation = require("lib.reputation")
 
 local start
@@ -36,7 +37,7 @@ end
 
 function initialize_p_proc()
     initialized = true
-    fallout.critter_add_trait(fallout.self_obj(), 1, 6, 0)
+    misc.set_team(fallout.self_obj(), 0)
     fallout.critter_add_trait(fallout.self_obj(), 1, 5, 1)
 end
 

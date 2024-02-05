@@ -16,21 +16,21 @@ function start()
         creation_pid = fallout.obj_pid(fallout.self_obj())
         if creation_pid == 16777261 then
             fallout.critter_add_trait(fallout.self_obj(), 1, 5, 73)
-            fallout.critter_add_trait(fallout.self_obj(), 1, 6, 43)
+            misc.set_team(fallout.self_obj(), 43)
             fallout.debug_msg(" Init Floater.")
         else
             if creation_pid == 16777259 then
                 fallout.critter_add_trait(fallout.self_obj(), 1, 5, 72)
-                fallout.critter_add_trait(fallout.self_obj(), 1, 6, 43)
+                misc.set_team(fallout.self_obj(), 43)
                 fallout.debug_msg(" Init Centaur.")
             else
                 if creation_pid == 16777230 then
                     fallout.critter_add_trait(fallout.self_obj(), 1, 5, 42)
-                    fallout.critter_add_trait(fallout.self_obj(), 1, 6, 43)
+                    misc.set_team(fallout.self_obj(), 43)
                     fallout.debug_msg(" Init ghoul.")
                 else
                     fallout.critter_add_trait(fallout.self_obj(), 1, 5, -1)
-                    fallout.critter_add_trait(fallout.self_obj(), 1, 6, 43)
+                    misc.set_team(fallout.self_obj(), 43)
                     fallout.debug_msg(" Init defualt.")
                 end
             end

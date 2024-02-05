@@ -1,5 +1,6 @@
 local fallout = require("fallout")
 local behaviour = require("lib.behaviour")
+local misc = require("lib.misc")
 local reputation = require("lib.reputation")
 
 local start
@@ -125,7 +126,7 @@ function map_enter_p_proc()
             fallout.destroy_object(self_obj)
         end
     end
-    fallout.critter_add_trait(self_obj, 1, 6, 14)
+    misc.set_team(self_obj, 14)
     fallout.critter_add_trait(self_obj, 1, 5, 59)
     if fallout.global_var(555) == 2 then
         if fallout.cur_map_index() == 10 then

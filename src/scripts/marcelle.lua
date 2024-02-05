@@ -1,5 +1,6 @@
 local fallout = require("fallout")
 local behaviour = require("lib.behaviour")
+local misc = require("lib.misc")
 local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
 local time = require("lib.time")
@@ -207,7 +208,7 @@ function map_enter_p_proc()
         Bessy = fallout.create_object_sid(94, 0, 0, -1)
         fallout.add_obj_to_inven(self_obj, Bessy)
     end
-    fallout.critter_add_trait(self_obj, 1, 6, 16)
+    misc.set_team(self_obj, 16)
     sleep_tile = 20509
     home_tile = 19901
     wake_time = 600

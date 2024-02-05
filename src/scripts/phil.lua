@@ -96,7 +96,7 @@ end
 
 function map_enter_p_proc()
     local self_obj = fallout.self_obj()
-    fallout.critter_add_trait(self_obj, 1, 6, 5)
+    misc.set_team(self_obj, 5)
     if fallout.map_var(5) == 1 then
         fallout.add_timer_event(self_obj, fallout.game_ticks(10), 1)
     end

@@ -1,5 +1,6 @@
 local fallout = require("fallout")
 local behaviour = require("lib.behaviour")
+local misc = require("lib.misc")
 local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
 
@@ -160,7 +161,7 @@ end
 
 function map_enter_p_proc()
     local self_obj = fallout.self_obj()
-    fallout.critter_add_trait(self_obj, 1, 6, 16)
+    misc.set_team(self_obj, 16)
     fallout.set_external_var("Sinthia_ptr", self_obj)
     home_tile = 17485
     sleep_tile = 16681

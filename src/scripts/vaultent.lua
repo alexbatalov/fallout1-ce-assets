@@ -53,7 +53,7 @@ function map_enter_p_proc()
         if luck < 4 or roll < 8 then
             local scorp_obj = fallout.create_object_sid(16777227, 0, 0, 12)
             fallout.critter_attempt_placement(scorp_obj, 21515, 0)
-            fallout.critter_add_trait(scorp_obj, 1, 6, 5)
+            misc.set_team(scorp_obj, 5)
         end
     end
     party_elevation = party.add_party()

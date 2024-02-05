@@ -12,7 +12,7 @@ function start()
     if not initialized and misc.map_first_run() then
         local dude_obj = fallout.dude_obj()
         local self_obj = fallout.self_obj()
-        fallout.critter_add_trait(self_obj, 1, 6, 0)
+        misc.set_team(self_obj, 0)
         fallout.add_timer_event(self_obj, fallout.game_ticks(1), 1) -- FIXME: What for?
         fallout.move_to(self_obj,
             fallout.tile_num_in_direction(fallout.tile_num(dude_obj), (fallout.has_trait(1, dude_obj, 10) + 3) % 6, 2),

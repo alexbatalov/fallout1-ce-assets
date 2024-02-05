@@ -1,4 +1,5 @@
 local fallout = require("fallout")
+local misc = require("lib.misc")
 local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
 
@@ -46,9 +47,9 @@ function start()
             local coins = fallout.create_object_sid(41, 0, 0, -1)
             fallout.add_mult_objs_to_inven(self_obj, coins, fallout.random(0, 20))
             if fallout.global_var(613) == 9103 or fallout.global_var(613) == 9102 then
-                fallout.critter_add_trait(self_obj, 1, 6, 0)
+                misc.set_team(self_obj, 0)
             else
-                fallout.critter_add_trait(self_obj, 1, 6, 49)
+                misc.set_team(self_obj, 49)
             end
         end
         initialized = true
@@ -67,7 +68,7 @@ end
 function damage_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
         fallout.set_global_var(251, 1)
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 49)
+        misc.set_team(fallout.self_obj(), 49)
     end
 end
 
@@ -75,7 +76,7 @@ function destroy_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
         fallout.set_global_var(251, 1)
         reputation.inc_good_critter()
-        fallout.critter_add_trait(fallout.self_obj(), 1, 6, 49)
+        misc.set_team(fallout.self_obj(), 49)
     end
 end
 

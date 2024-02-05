@@ -10,7 +10,7 @@ local initialized = false
 function start()
     if not initialized and misc.map_first_run() then
         local self_obj = fallout.self_obj()
-        fallout.critter_add_trait(self_obj, 1, 6, 0)
+        misc.set_team(self_obj, 0)
         fallout.critter_add_trait(self_obj, 1, 5, 92)
         local item_obj = fallout.create_object_sid(fallout.global_var(288), 0, 0, -1)
         fallout.add_obj_to_inven(self_obj, item_obj)

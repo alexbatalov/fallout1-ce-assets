@@ -1,5 +1,6 @@
 local fallout = require("fallout")
 local behaviour = require("lib.behaviour")
+local misc = require("lib.misc")
 local reaction = require("lib.reaction")
 local reputation = require("lib.reputation")
 
@@ -170,7 +171,7 @@ function map_enter_p_proc()
     if fallout.map_var(2) == 1 then
         fallout.float_msg(self_obj, fallout.message_str(508, 149), 7)
     end
-    fallout.critter_add_trait(self_obj, 1, 6, 26)
+    misc.set_team(self_obj, 26)
     fallout.critter_add_trait(self_obj, 1, 5, 56)
 end
 

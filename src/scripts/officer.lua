@@ -108,7 +108,7 @@ function destroy_p_proc()
 end
 
 function map_enter_p_proc()
-    fallout.critter_add_trait(fallout.self_obj(), 1, 6, 1)
+    misc.set_team(fallout.self_obj(), 1)
     fallout.set_external_var("Officer_ptr", fallout.self_obj())
 end
 
