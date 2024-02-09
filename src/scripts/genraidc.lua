@@ -8,42 +8,40 @@ local critter_p_proc
 local destroy_p_proc
 local pickup_p_proc
 
-local hostile = 0
+local hostile = false
 local initialized = false
-local scared = 0
+local scared = false
 
 function start()
     if not initialized then
-        misc.set_team(fallout.self_obj(), 86)
-        misc.set_ai(fallout.self_obj(), 20 + fallout.random(0, 1))
-        hostile = fallout.global_var(334)
+        local self_obj = fallout.self_obj()
+        misc.set_team(self_obj, 86)
+        misc.set_ai(self_obj, 20 + fallout.random(0, 1))
+        hostile = fallout.global_var(334) ~= 0
         initialized = true
-    else
-        if fallout.script_action() == 12 then
-            critter_p_proc()
-        else
-            if fallout.script_action() == 18 then
-                destroy_p_proc()
-            else
-                if fallout.script_action() == 4 then
-                    pickup_p_proc()
-                end
-            end
-        end
+    end
+
+    local script_action = fallout.script_action()
+    if script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
     end
 end
 
 function critter_p_proc()
     if hostile then
-        hostile = 0
-        scared = 1
+        hostile = false
+        scared = true
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     else
         if fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 12 then
             if scared then
                 behaviour.flee_dude(1)
             else
-                hostile = 1
+                hostile = true
                 fallout.set_global_var(334, 1)
             end
         end
@@ -55,8 +53,8 @@ function destroy_p_proc()
 end
 
 function pickup_p_proc()
-    if not(scared) then
-        hostile = 1
+    if not scared then
+        hostile = true
         fallout.set_global_var(334, 1)
     end
 end
