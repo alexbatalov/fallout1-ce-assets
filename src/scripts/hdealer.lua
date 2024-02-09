@@ -26,62 +26,53 @@ local CheckMoney03
 local DealerEnd
 local GetOdds
 
-local hostile = 0
-local Bet = 0
 local initialized = false
-
-local exit_line = 0
+local hostile = false
+local bet = 0
 
 function start()
     if not initialized then
+        local self_obj = fallout.self_obj()
+        misc.set_team(self_obj, 38)
+        misc.set_ai(self_obj, 50)
         initialized = true
-        misc.set_team(fallout.self_obj(), 38)
-        misc.set_ai(fallout.self_obj(), 50)
     end
-    if fallout.script_action() == 21 then
+
+    local script_action = fallout.script_action()
+    if script_action == 21 then
         look_at_p_proc()
-    else
-        if fallout.script_action() == 15 then
-            map_enter_p_proc()
-        else
-            if fallout.script_action() == 4 then
-                pickup_p_proc()
-            else
-                if fallout.script_action() == 11 then
-                    talk_p_proc()
-                else
-                    if fallout.script_action() == 12 then
-                        critter_p_proc()
-                    else
-                        if fallout.script_action() == 18 then
-                            destroy_p_proc()
-                        end
-                    end
-                end
-            end
-        end
+    elseif script_action == 15 then
+        map_enter_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
     end
 end
 
 function combat()
-    hostile = 1
+    hostile = true
 end
 
 function critter_p_proc()
     if fallout.cur_map_index() == 11 then
-        if (fallout.global_var(104) == 2) or (fallout.global_var(38) == 1) then
+        if fallout.global_var(104) == 2 or fallout.global_var(38) == 1 then
             fallout.destroy_object(fallout.self_obj())
         end
     end
     if hostile then
-        hostile = 0
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
 end
 
 function map_enter_p_proc()
     if fallout.cur_map_index() == 11 then
-        if (fallout.global_var(104) == 2) or (fallout.global_var(38) == 1) then
+        if fallout.global_var(104) == 2 or fallout.global_var(38) == 1 then
             fallout.destroy_object(fallout.self_obj())
         end
     end
@@ -89,7 +80,7 @@ end
 
 function pickup_p_proc()
     if fallout.source_obj() == fallout.dude_obj() then
-        hostile = 1
+        hostile = true
     end
 end
 
@@ -112,9 +103,9 @@ function look_at_p_proc()
 end
 
 function Dealer00()
-    local v0 = 0
-    v0 = fallout.message_str(697, 173) .. fallout.message_str(697, 202) .. fallout.item_caps_total(fallout.dude_obj()) .. fallout.message_str(697, 203)
-    fallout.gsay_reply(697, v0)
+    local reply = fallout.message_str(697, 173) ..
+        fallout.message_str(697, 202) .. fallout.item_caps_total(fallout.dude_obj()) .. fallout.message_str(697, 203)
+    fallout.gsay_reply(697, reply)
     fallout.giq_option(4, 697, 174, CheckMoney00, 50)
     fallout.giq_option(4, 697, 175, CheckMoney01, 50)
     fallout.giq_option(4, 697, 176, CheckMoney02, 50)
@@ -129,7 +120,7 @@ end
 
 function Dealer02()
     fallout.gsay_reply(697, fallout.message_str(697, 182) .. fallout.message_str(697, 204))
-    fallout.item_caps_adjust(fallout.dude_obj(), Bet * -1)
+    fallout.item_caps_adjust(fallout.dude_obj(), bet * -1)
     Dealer07()
 end
 
@@ -140,13 +131,13 @@ end
 
 function Dealer04()
     fallout.gsay_reply(697, fallout.message_str(697, 184) .. fallout.message_str(697, 204))
-    fallout.item_caps_adjust(fallout.dude_obj(), Bet)
+    fallout.item_caps_adjust(fallout.dude_obj(), bet)
     Dealer07()
 end
 
 function Dealer05()
     fallout.gsay_reply(697, fallout.message_str(697, 185) .. fallout.message_str(697, 204))
-    fallout.item_caps_adjust(fallout.dude_obj(), Bet * 2)
+    fallout.item_caps_adjust(fallout.dude_obj(), bet * 2)
     Dealer07()
 end
 
@@ -165,8 +156,8 @@ function Dealer07()
 end
 
 function CheckMoney00()
-    Bet = 5
-    if fallout.item_caps_total(fallout.dude_obj()) < Bet then
+    bet = 5
+    if fallout.item_caps_total(fallout.dude_obj()) < bet then
         Dealer06()
     else
         GetOdds()
@@ -174,8 +165,8 @@ function CheckMoney00()
 end
 
 function CheckMoney01()
-    Bet = 15
-    if fallout.item_caps_total(fallout.dude_obj()) < Bet then
+    bet = 15
+    if fallout.item_caps_total(fallout.dude_obj()) < bet then
         Dealer06()
     else
         GetOdds()
@@ -183,8 +174,8 @@ function CheckMoney01()
 end
 
 function CheckMoney02()
-    Bet = 25
-    if fallout.item_caps_total(fallout.dude_obj()) < Bet then
+    bet = 25
+    if fallout.item_caps_total(fallout.dude_obj()) < bet then
         Dealer06()
     else
         GetOdds()
@@ -192,8 +183,8 @@ function CheckMoney02()
 end
 
 function CheckMoney03()
-    Bet = 50
-    if fallout.item_caps_total(fallout.dude_obj()) < Bet then
+    bet = 50
+    if fallout.item_caps_total(fallout.dude_obj()) < bet then
         Dealer06()
     else
         GetOdds()
@@ -204,36 +195,30 @@ function DealerEnd()
 end
 
 function GetOdds()
-    local v0 = 0
-    local v1 = 0
-    v0 = fallout.random(1, 36) - 10
-    v1 = fallout.roll_vs_skill(fallout.dude_obj(), 16, -15)
-    if fallout.is_critical(v1) then
-        if fallout.is_success(v1) then
-            v0 = v0 + 10
+    local odds = fallout.random(1, 36) - 10
+    local roll = fallout.roll_vs_skill(fallout.dude_obj(), 16, -15)
+    if fallout.is_critical(roll) then
+        if fallout.is_success(roll) then
+            odds = odds + 10
         else
-            v0 = v0 - 5
+            odds = odds - 5
         end
     else
-        if fallout.is_success(v1) then
-            v0 = v0 + 5
+        if fallout.is_success(roll) then
+            odds = odds + 5
         end
     end
     if fallout.do_check(fallout.dude_obj(), 6, 0) then
-        v0 = v0 + 5
+        odds = odds + 5
     end
-    if v0 < 10 then
+    if odds < 10 then
         Dealer02()
+    elseif odds < 20 then
+        Dealer03()
+    elseif odds < 30 then
+        Dealer04()
     else
-        if v0 < 20 then
-            Dealer03()
-        else
-            if v0 < 30 then
-                Dealer04()
-            else
-                Dealer05()
-            end
-        end
+        Dealer05()
     end
 end
 
