@@ -18,42 +18,34 @@ local look_at_p_proc
 local description_p_proc
 local timed_event_p_proc
 
-local rndx = 0
-local rndy = 0
 local initialized = false
-local hostile = 0
-local item = 0
+local hostile = false
 local Start_Moving = 0
 
 function start()
     if not initialized then
-        initialized = true
-        misc.set_team(fallout.self_obj(), 2)
-        misc.set_ai(fallout.self_obj(), 68)
-        item = fallout.create_object_sid(19, 0, 0, -1)
-        fallout.add_mult_objs_to_inven(fallout.self_obj(), item, fallout.random(8, 14))
+        local self_obj = fallout.self_obj()
+        misc.set_team(self_obj, 2)
+        misc.set_ai(self_obj, 68)
+        local item_obj = fallout.create_object_sid(19, 0, 0, -1)
+        fallout.add_mult_objs_to_inven(self_obj, item_obj, fallout.random(8, 14))
         if fallout.local_var(3) == 0 then
-            fallout.set_local_var(3, fallout.tile_num(fallout.self_obj()))
+            fallout.set_local_var(3, fallout.tile_num(self_obj))
         end
+        initialized = true
     end
-    if fallout.script_action() == 11 then
+
+    local script_action = fallout.script_action()
+    if script_action == 11 then
         talk_p_proc()
-    else
-        if fallout.script_action() == 12 then
-            critter_p_proc()
-        else
-            if fallout.script_action() == 4 then
-                pickup_p_proc()
-            else
-                if (fallout.script_action() == 3) or (fallout.script_action() == 21) then
-                    look_at_p_proc()
-                else
-                    if fallout.script_action() == 18 then
-                        destroy_p_proc()
-                    end
-                end
-            end
-        end
+    elseif script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 3 or script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
     end
 end
 
@@ -91,48 +83,56 @@ function childend()
 end
 
 function critter_p_proc()
-    if (fallout.game_time_hour() > 600) and (fallout.game_time_hour() < 1900) then
+    local game_time_hour = fallout.game_time_hour()
+    if game_time_hour > 600 and game_time_hour < 1900 then
         fallout.set_local_var(0, 0)
         fallout.set_local_var(1, 1)
     else
         fallout.set_local_var(1, 0)
         fallout.set_local_var(0, 1)
     end
-    if fallout.cur_map_index() == 25 then
+
+    local cur_map_index = fallout.cur_map_index()
+    local self_obj = fallout.self_obj()
+    if cur_map_index == 25 then
         if fallout.local_var(0) == 1 then
-            if fallout.tile_num(fallout.self_obj()) ~= 14950 then
-                fallout.animate_move_obj_to_tile(fallout.self_obj(), 14950, 0)
+            if fallout.tile_num(self_obj) ~= 14950 then
+                fallout.animate_move_obj_to_tile(self_obj, 14950, 0)
             else
-                fallout.set_obj_visibility(fallout.self_obj(), 1)
+                fallout.set_obj_visibility(self_obj, true)
             end
         else
-            fallout.set_obj_visibility(fallout.self_obj(), 0)
+            fallout.set_obj_visibility(self_obj, false)
             if fallout.random(0, 15) == 1 then
-                fallout.animate_move_obj_to_tile(fallout.self_obj(), fallout.tile_num_in_direction(fallout.local_var(3), fallout.random(0, 5), fallout.random(3, 7)), 1)
+                local rotation = fallout.random(0, 5)
+                local distance = fallout.random(3, 7)
+                fallout.animate_move_obj_to_tile(self_obj,
+                    fallout.tile_num_in_direction(fallout.local_var(3), rotation, distance), 1)
+            end
+        end
+    elseif cur_map_index == 26 then
+        if fallout.local_var(0) == 1 then
+            if fallout.tile_num(self_obj) ~= 14950 then
+                fallout.animate_move_obj_to_tile(self_obj, 22443, 0)
+            else
+                fallout.set_obj_visibility(self_obj, true)
+            end
+        else
+            fallout.set_obj_visibility(self_obj, false)
+            if fallout.random(0, 15) == 1 then
+                local rotation = fallout.random(0, 5)
+                local distance = fallout.random(3, 7)
+                fallout.animate_move_obj_to_tile(self_obj,
+                    fallout.tile_num_in_direction(fallout.local_var(3), rotation, distance), 1)
             end
         end
     else
-        if fallout.cur_map_index() == 26 then
-            if fallout.local_var(0) == 1 then
-                if fallout.tile_num(fallout.self_obj()) ~= 14950 then
-                    fallout.animate_move_obj_to_tile(fallout.self_obj(), 22443, 0)
-                else
-                    fallout.set_obj_visibility(fallout.self_obj(), 1)
-                end
-            else
-                fallout.set_obj_visibility(fallout.self_obj(), 0)
-                if fallout.random(0, 15) == 1 then
-                    fallout.animate_move_obj_to_tile(fallout.self_obj(), fallout.tile_num_in_direction(fallout.local_var(3), fallout.random(0, 5), fallout.random(3, 7)), 1)
-                end
-            end
-        else
-            if (fallout.random(0, 15) == 1) and (Start_Moving == 0) then
-                fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(fallout.random(3, 6)), 1)
-            end
+        if fallout.random(0, 15) == 1 and Start_Moving == 0 then
+            fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(fallout.random(3, 6)), 1)
         end
     end
     if hostile then
-        hostile = 0
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
 end
@@ -150,7 +150,7 @@ function talk_p_proc()
 end
 
 function pickup_p_proc()
-    hostile = 1
+    hostile = true
 end
 
 function destroy_p_proc()
@@ -173,8 +173,12 @@ end
 
 function timed_event_p_proc()
     Start_Moving = 0
-    if fallout.obj_on_screen(fallout.self_obj()) then
-        fallout.animate_move_obj_to_tile(fallout.self_obj(), fallout.tile_num_in_direction(fallout.tile_num(fallout.self_obj()), fallout.random(0, 5), fallout.random(3, 7)), 1)
+    local self_obj = fallout.self_obj()
+    if fallout.obj_on_screen(self_obj) then
+        local rotation = fallout.random(0, 5)
+        local distance = fallout.random(3, 7)
+        fallout.animate_move_obj_to_tile(self_obj,
+            fallout.tile_num_in_direction(fallout.tile_num(self_obj), rotation, distance), 1)
     end
 end
 
