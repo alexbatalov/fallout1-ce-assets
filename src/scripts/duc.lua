@@ -24,48 +24,38 @@ local Duc10
 local DucBarter
 local DucEnd
 
-local known = 0
+local known = false
 local initialized = false
-local Tandi_seed = 0
-local Tandi_rescued = 0
-
-local exit_line = 0
+local Tandi_seed = false
+local Tandi_rescued = false
 
 function start()
     if not initialized then
-        misc.set_team(fallout.self_obj(), 2)
-        misc.set_ai(fallout.self_obj(), 6)
-        known = fallout.global_var(333)
+        local self_obj = fallout.self_obj()
+        misc.set_team(self_obj, 2)
+        misc.set_ai(self_obj, 6)
+        known = fallout.global_var(333) ~= 0
         initialized = true
-    else
-        if fallout.script_action() == 12 then
-            critter_p_proc()
-        else
-            if fallout.script_action() == 14 then
-                damage_p_proc()
-            else
-                if fallout.script_action() == 18 then
-                    destroy_p_proc()
-                else
-                    if fallout.script_action() == 21 then
-                        look_at_p_proc()
-                    else
-                        if fallout.script_action() == 4 then
-                            pickup_p_proc()
-                        else
-                            if fallout.script_action() == 11 then
-                                talk_p_proc()
-                            end
-                        end
-                    end
-                end
-            end
-        end
+    end
+
+    local script_action = fallout.script_action()
+    if script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 14 then
+        damage_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
     end
 end
 
 function critter_p_proc()
-    if (fallout.global_var(289) == 1) and (fallout.tile_distance_objs(fallout.dude_obj(), fallout.self_obj()) < 8) then
+    if fallout.global_var(289) == 1 and fallout.tile_distance_objs(fallout.dude_obj(), fallout.self_obj()) < 8 then
         behaviour.flee_dude(1)
     end
 end
@@ -84,7 +74,7 @@ end
 
 function look_at_p_proc()
     fallout.script_overrides()
-    if not(known) then
+    if not known then
         fallout.display_msg(fallout.message_str(243, 100))
     else
         fallout.display_msg(fallout.message_str(243, 101))
@@ -102,13 +92,13 @@ function talk_p_proc()
         fallout.start_gdialog(243, fallout.self_obj(), 4, -1, -1)
         fallout.gsay_start()
         reaction.get_reaction()
-        if (fallout.global_var(26) == 1) and (Tandi_seed == 0) then
+        if fallout.global_var(26) == 1 and not Tandi_seed then
             Duc09()
         else
-            if (fallout.global_var(26) == 2) and (Tandi_rescued == 0) then
+            if fallout.global_var(26) == 2 and not Tandi_rescued then
                 Duc10()
             else
-                if not(known) then
+                if not known then
                     if fallout.local_var(1) > 1 then
                         Duc01()
                     else
@@ -130,8 +120,8 @@ end
 
 function Duc01()
     fallout.gsay_reply(243, 102)
-    known = 1
-    fallout.set_global_var(333, known)
+    known = true
+    fallout.set_global_var(333, 1)
     fallout.giq_option(4, 243, 103, Duc02, 50)
     fallout.giq_option(4, 243, 104, Duc03, 50)
     fallout.giq_option(-3, 243, 105, Duc04, 50)
@@ -164,7 +154,9 @@ end
 function Duc06()
     fallout.gsay_reply(243, 113)
     fallout.giq_option(4, 243, 114, Duc04, 51)
-    fallout.giq_option(4, 243, fallout.message_str(243, 115) .. fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(243, 116), Duc08, 50)
+    fallout.giq_option(4, 243,
+        fallout.message_str(243, 115) ..
+        fallout.proto_data(fallout.obj_pid(fallout.dude_obj()), 1) .. fallout.message_str(243, 116), Duc08, 50)
     fallout.giq_option(-3, 243, 117, Duc04, 50)
 end
 
@@ -177,8 +169,8 @@ end
 
 function Duc08()
     fallout.gsay_reply(243, 122)
-    known = 1
-    fallout.set_global_var(333, known)
+    known = true
+    fallout.set_global_var(333, 1)
     fallout.giq_option(6, 243, 123, DucEnd, 50)
     fallout.giq_option(6, 243, 124, Duc02, 50)
     fallout.giq_option(-3, 243, 125, Duc04, 50)
@@ -186,12 +178,12 @@ end
 
 function Duc09()
     fallout.gsay_message(243, 126, 50)
-    Tandi_seed = 1
+    Tandi_seed = true
 end
 
 function Duc10()
     fallout.gsay_message(243, 127, 49)
-    Tandi_rescued = 1
+    Tandi_rescued = true
     reaction.UpReact()
 end
 
