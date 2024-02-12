@@ -1,33 +1,22 @@
 local fallout = require("fallout")
 
 local start
-local do_stuff
-local manholeend
-local manhole00
-
-local OPEN = 0
+local use_p_proc
 
 function start()
     if fallout.script_action() == 6 then
-        fallout.script_overrides()
-        do_stuff()
+        use_p_proc()
     end
 end
 
-function do_stuff()
-    OPEN = fallout.map_var(fallout.local_var(0))
-    if OPEN then
-        manhole00()
+function use_p_proc()
+    fallout.script_overrides()
+    if fallout.map_var(fallout.local_var(0)) ~= 0 then
+        fallout.move_to(fallout.dude_obj(), fallout.local_var(1), fallout.local_var(2))
     end
-end
-
-function manholeend()
-end
-
-function manhole00()
-    fallout.move_to(fallout.dude_obj(), fallout.local_var(1), fallout.local_var(2))
 end
 
 local exports = {}
 exports.start = start
+exports.use_p_proc = use_p_proc
 return exports
