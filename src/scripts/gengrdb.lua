@@ -1,17 +1,11 @@
 local fallout = require("fallout")
+local behaviour = require("lib.behaviour")
 local misc = require("lib.misc")
 local reputation = require("lib.reputation")
 
---
--- Some unreferenced imported varables found.
--- Because of it it is impossible to specify
--- the real names of global variables.
---
-
-local g0 = 0
-local g1 = 0
-local g2 = 0
-local g3 = 0
+local hostile = false
+local initialized = false
+local scared = false
 
 local start
 local critter_p_proc
@@ -19,45 +13,34 @@ local destroy_p_proc
 local pickup_p_proc
 local talk_p_proc
 
--- ?import? variable hostile
--- ?import? variable initialized
--- ?import? variable scared
--- ?import? variable flee_dude
--- ?import? variable random_seed_3
-
 function start()
-    if not(g1) then
+    if not initialized then
         misc.set_team(fallout.self_obj(), 35)
         misc.set_ai(fallout.self_obj(), fallout.random(15, 19))
-        g0 = fallout.global_var(334)
-        g1 = 1
-    else
-        if fallout.script_action() == 12 then
-            critter_p_proc()
-        else
-            if fallout.script_action() == 18 then
-                destroy_p_proc()
-            else
-                if fallout.script_action() == 4 then
-                    pickup_p_proc()
-                else
-                    if fallout.script_action() == 11 then
-                        talk_p_proc()
-                    end
-                end
-            end
-        end
+        hostile = fallout.global_var(334) ~= 0
+        initialized = true
+    end
+
+    local script_action = fallout.script_action()
+    if script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
     end
 end
 
 function critter_p_proc()
     if fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 8 then
-        if g2 then
-            g3()
+        if scared then
+            behaviour.flee_dude(1)
         else
-            if g0 then
-                g0 = 0
-                g2 = 1
+            if hostile then
+                hostile = false
+                scared = true
                 fallout.set_global_var(334, 1)
                 fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
             end
@@ -73,14 +56,14 @@ function destroy_p_proc()
 end
 
 function pickup_p_proc()
-    if not(g2) then
-        g0 = 1
+    if not scared then
+        hostile = true
         fallout.set_global_var(334, 1)
     end
 end
 
 function talk_p_proc()
-    if g2 then
+    if scared then
         if fallout.external_var("random_seed_2") ~= 0 then
             fallout.float_msg(fallout.self_obj(), fallout.message_str(756, 103), 2)
         else
