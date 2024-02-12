@@ -38,45 +38,35 @@ local FishrSon20
 local FishrSon21
 
 local initialized = false
-local known = 0
-
-local exit_line = 0
+local known = false
 
 function start()
     if not initialized then
-        misc.set_team(fallout.self_obj(), 2)
-        misc.set_ai(fallout.self_obj(), 68)
+        local self_obj = fallout.self_obj()
+        misc.set_team(self_obj, 2)
+        misc.set_ai(self_obj, 68)
         fallout.set_external_var("dude_enemy", fallout.global_var(334))
         initialized = true
-    else
-        if fallout.script_action() == 12 then
-            critter_p_proc()
-        else
-            if fallout.script_action() == 14 then
-                damage_p_proc()
-            else
-                if fallout.script_action() == 18 then
-                    destroy_p_proc()
-                else
-                    if fallout.script_action() == 21 then
-                        look_at_p_proc()
-                    else
-                        if fallout.script_action() == 4 then
-                            pickup_p_proc()
-                        else
-                            if fallout.script_action() == 11 then
-                                talk_p_proc()
-                            end
-                        end
-                    end
-                end
-            end
-        end
+    end
+
+    local script_action = fallout.script_action()
+    if script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 14 then
+        damage_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
     end
 end
 
 function critter_p_proc()
-    if fallout.external_var("dude_enemy") and (fallout.tile_distance_objs(fallout.dude_obj(), fallout.self_obj()) < 8) then
+    if fallout.external_var("dude_enemy") ~= 0 and fallout.tile_distance_objs(fallout.dude_obj(), fallout.self_obj()) < 8 then
         behaviour.flee_dude(1)
     end
 end
@@ -106,24 +96,20 @@ function talk_p_proc()
     reaction.get_reaction()
     if fallout.external_var("dude_enemy") ~= 0 then
         fallout.float_msg(fallout.self_obj(), fallout.message_str(669, 103), 0)
+    elseif fallout.global_var(158) > 2 or fallout.local_var(1) < 2 or fallout.global_var(155) < -30 then
+        FishrSon00()
+    elseif misc.is_armed(fallout.dude_obj()) then
+        FishrSon01()
     else
-        if (fallout.global_var(158) > 2) or (fallout.local_var(1) < 2) or (fallout.global_var(155) < -30) then
-            FishrSon00()
+        fallout.start_gdialog(645, fallout.self_obj(), 4, -1, -1)
+        fallout.gsay_start()
+        if known or fallout.global_var(155) < 30 then
+            FishrSon04()
         else
-            if misc.is_armed(fallout.dude_obj()) then
-                FishrSon01()
-            else
-                fallout.start_gdialog(645, fallout.self_obj(), 4, -1, -1)
-                fallout.gsay_start()
-                if known or (fallout.global_var(155) < 30) then
-                    FishrSon04()
-                else
-                    FishrSon02()
-                end
-                fallout.gsay_end()
-                fallout.end_dialogue()
-            end
+            FishrSon02()
         end
+        fallout.gsay_end()
+        fallout.end_dialogue()
     end
 end
 
@@ -136,7 +122,7 @@ function FishrSon01()
 end
 
 function FishrSon02()
-    known = 1
+    known = true
     fallout.gsay_reply(645, 103)
     FishrSon02a()
 end
@@ -150,7 +136,7 @@ function FishrSon02a()
 end
 
 function FishrSon03()
-    known = 1
+    known = true
     fallout.gsay_reply(645, 109)
     fallout.giq_option(4, 645, 110, FishrSon05, 50)
     FishrSon02a()
