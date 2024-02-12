@@ -11,33 +11,24 @@ local pickup_p_proc
 local talk_p_proc
 local timed_event_p_proc
 
-local hostile = 0
+local hostile = false
 local initialized = false
-local scared = 0
+local scared = false
 
 function start()
-    if fallout.script_action() == 12 then
+    local script_action = fallout.script_action()
+    if script_action == 12 then
         critter_p_proc()
-    else
-        if fallout.script_action() == 18 then
-            destroy_p_proc()
-        else
-            if fallout.script_action() == 23 then
-                map_update_p_proc()
-            else
-                if fallout.script_action() == 4 then
-                    pickup_p_proc()
-                else
-                    if fallout.script_action() == 11 then
-                        talk_p_proc()
-                    else
-                        if fallout.script_action() == 22 then
-                            timed_event_p_proc()
-                        end
-                    end
-                end
-            end
-        end
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 23 then
+        map_update_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
+    elseif script_action == 22 then
+        timed_event_p_proc()
     end
 end
 
@@ -48,12 +39,12 @@ function critter_p_proc()
         end
     else
         if hostile then
-            hostile = 0
-            scared = 1
+            hostile = false
+            scared = true
             fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
         else
             if fallout.global_var(289) == 1 then
-                hostile = 1
+                hostile = true
             end
         end
     end
@@ -66,17 +57,18 @@ end
 
 function map_update_p_proc()
     if not initialized then
-        misc.set_team(fallout.self_obj(), 2)
-        misc.set_ai(fallout.self_obj(), 15 + fallout.random(0, 4))
-        fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(fallout.random(1, 3)), 1)
-        hostile = fallout.global_var(334)
+        local self_obj = fallout.self_obj()
+        misc.set_team(self_obj, 2)
+        misc.set_ai(self_obj, 15 + fallout.random(0, 4))
+        fallout.add_timer_event(self_obj, fallout.game_ticks(fallout.random(1, 3)), 1)
+        hostile = fallout.global_var(334) ~= 0
         initialized = true
     end
 end
 
 function pickup_p_proc()
-    if scared == 0 then
-        hostile = 1
+    if not scared then
+        hostile = true
         fallout.set_global_var(334, 1)
     end
 end
@@ -90,8 +82,12 @@ function talk_p_proc()
 end
 
 function timed_event_p_proc()
-    fallout.animate_move_obj_to_tile(fallout.self_obj(), fallout.tile_num_in_direction(fallout.tile_num(fallout.self_obj()), fallout.random(0, 5), fallout.random(3, 5)), 0)
-    fallout.add_timer_event(fallout.self_obj(), fallout.game_ticks(fallout.random(0, 3)), 1)
+    local self_obj = fallout.self_obj()
+    local rotation = fallout.random(0, 5)
+    local distance = fallout.random(3, 5)
+    fallout.animate_move_obj_to_tile(self_obj,
+        fallout.tile_num_in_direction(fallout.tile_num(self_obj), rotation, distance), 0)
+    fallout.add_timer_event(self_obj, fallout.game_ticks(fallout.random(0, 3)), 1)
 end
 
 local exports = {}
