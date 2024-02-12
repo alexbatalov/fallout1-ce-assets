@@ -51,51 +51,43 @@ local FishrManEnd
 local FishrManEnd1
 local FishrManEnd2
 
-local hostile = 0
+local hostile = false
 local initialized = false
-local known = 0
+local known = false
 
 fallout.create_external_var("dude_enemy")
 
-local exit_line = 0
-
 function start()
     if not initialized then
-        misc.set_team(fallout.self_obj(), 2)
-        misc.set_ai(fallout.self_obj(), 6)
-        hostile = fallout.global_var(334)
+        local self_obj = fallout.self_obj()
+        misc.set_team(self_obj, 2)
+        misc.set_ai(self_obj, 6)
+        hostile = fallout.global_var(334) ~= 0
         initialized = true
-    else
-        if fallout.script_action() == 12 then
-            critter_p_proc()
-        else
-            if fallout.script_action() == 14 then
-                damage_p_proc()
-            else
-                if fallout.script_action() == 18 then
-                    destroy_p_proc()
-                else
-                    if fallout.script_action() == 21 then
-                        look_at_p_proc()
-                    else
-                        if fallout.script_action() == 11 then
-                            talk_p_proc()
-                        end
-                    end
-                end
-            end
-        end
+    end
+
+    local script_action = fallout.script_action()
+    if script_action == 12 then
+        critter_p_proc()
+    elseif script_action == 14 then
+        damage_p_proc()
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 21 then
+        look_at_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
     end
 end
 
 function critter_p_proc()
     if hostile then
-        hostile = 0
+        hostile = false
         fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
     end
     if fallout.external_var("dude_enemy") ~= 0 then
         if fallout.obj_can_see_obj(fallout.self_obj(), fallout.dude_obj()) then
-            hostile = 1
+            hostile = true
             fallout.set_global_var(334, 1)
         end
     end
@@ -117,7 +109,7 @@ end
 
 function pickup_p_proc()
     fallout.set_external_var("dude_enemy", 1)
-    hostile = 1
+    hostile = true
     fallout.set_global_var(334, 1)
 end
 
@@ -125,43 +117,40 @@ function talk_p_proc()
     reaction.get_reaction()
     if fallout.external_var("dude_enemy") ~= 0 then
         fallout.float_msg(fallout.self_obj(), fallout.message_str(669, 101), 0)
+    elseif fallout.local_var(1) < 2 or fallout.global_var(158) > 2 or fallout.global_var(155) < -30 then
+        FishrMan00()
+    elseif misc.is_armed(fallout.dude_obj()) then
+        FishrMan25()
     else
-        if (fallout.local_var(1) < 2) or (fallout.global_var(158) > 2) or (fallout.global_var(155) < -30) then
-            FishrMan00()
+        fallout.start_gdialog(644, fallout.self_obj(), 4, -1, -1)
+        fallout.gsay_start()
+        if known then
+            FishrMan03()
         else
-            if misc.is_armed(fallout.dude_obj()) then
-                FishrMan25()
+            if fallout.global_var(155) >= 30 then
+                FishrMan02()
             else
-                fallout.start_gdialog(644, fallout.self_obj(), 4, -1, -1)
-                fallout.gsay_start()
-                if known then
-                    FishrMan03()
-                else
-                    if fallout.global_var(155) >= 30 then
-                        FishrMan02()
-                    else
-                        FishrMan01()
-                    end
-                end
-                fallout.gsay_end()
-                fallout.end_dialogue()
+                FishrMan01()
             end
         end
+        fallout.gsay_end()
+        fallout.end_dialogue()
     end
 end
 
 function FishrMan00()
-    fallout.float_msg(fallout.self_obj(), fallout.message_str(644, 101 + (fallout.get_critter_stat(fallout.dude_obj(), 34) == 1)), 0)
+    fallout.float_msg(fallout.self_obj(),
+        fallout.message_str(644, 101 + (fallout.get_critter_stat(fallout.dude_obj(), 34) == 1)), 0)
 end
 
 function FishrMan01()
-    known = 1
+    known = true
     if fallout.get_critter_stat(fallout.dude_obj(), 34) == 0 then
         fallout.gsay_reply(644, 103)
     else
         fallout.gsay_reply(644, 104)
     end
-    if (fallout.global_var(101) == 1) and (fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 55) == 0) then
+    if fallout.global_var(101) == 1 and fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 55) == 0 then
         fallout.giq_option(4, 644, 105, FishrMan04, 50)
     end
     fallout.giq_option(7, 644, 106, FishrMan05, 50)
@@ -174,13 +163,13 @@ function FishrMan01()
 end
 
 function FishrMan02()
-    known = 1
+    known = true
     if fallout.get_critter_stat(fallout.dude_obj(), 34) == 0 then
         fallout.gsay_reply(644, 111)
     else
         fallout.gsay_reply(644, 112)
     end
-    if (fallout.global_var(101) == 1) and (fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 55) == 0) then
+    if fallout.global_var(101) == 1 and fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 55) == 0 then
         fallout.giq_option(4, 644, 105, FishrMan04, 50)
     end
     fallout.giq_option(7, 644, 106, FishrMan05, 50)
@@ -255,7 +244,13 @@ function FishrMan08()
 end
 
 function FishrMan08a()
-    if (fallout.get_critter_stat(fallout.dude_obj(), 0) >= 8) or fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 11) or fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 12) or fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 13) or fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 118) or fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 15) then
+    local dude_obj = fallout.dude_obj()
+    if fallout.get_critter_stat(dude_obj, 0) >= 8
+        or fallout.obj_is_carrying_obj_pid(dude_obj, 11) ~= 0
+        or fallout.obj_is_carrying_obj_pid(dude_obj, 12) ~= 0
+        or fallout.obj_is_carrying_obj_pid(dude_obj, 13) ~= 0
+        or fallout.obj_is_carrying_obj_pid(dude_obj, 118) ~= 0
+        or fallout.obj_is_carrying_obj_pid(dude_obj, 15) ~= 0 then
         FishrMan20()
     else
         FishrMan21()
@@ -268,11 +263,11 @@ function FishrMan09()
 end
 
 function FishrMan09a()
-    local v0 = 0
-    if fallout.obj_is_carrying_obj_pid(fallout.self_obj(), 109) then
-        v0 = fallout.obj_carrying_pid_obj(fallout.self_obj(), 109)
-        fallout.rm_obj_from_inven(fallout.self_obj(), v0)
-        fallout.add_obj_to_inven(fallout.dude_obj(), v0)
+    local self_obj = fallout.self_obj()
+    if fallout.obj_is_carrying_obj_pid(self_obj, 109) ~= 0 then
+        local item_obj = fallout.obj_carrying_pid_obj(self_obj, 109)
+        fallout.rm_obj_from_inven(self_obj, item_obj)
+        fallout.add_obj_to_inven(fallout.dude_obj(), item_obj)
         fallout.gsay_message(644, 133, 50)
     else
         fallout.gsay_message(644, 134, 50)
@@ -324,7 +319,7 @@ end
 
 function FishrMan17()
     fallout.gsay_reply(644, 145)
-    if (fallout.global_var(101) == 1) and (fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 55) == 0) then
+    if fallout.global_var(101) == 1 and fallout.obj_is_carrying_obj_pid(fallout.dude_obj(), 55) == 0 then
         fallout.giq_option(4, 644, 146, FishrMan04, 50)
     end
     fallout.giq_option(4, 644, 147, FishrMan11, 50)
@@ -373,7 +368,7 @@ function FishrManBarter()
 end
 
 function FishrManCombat()
-    hostile = 1
+    hostile = true
     fallout.set_global_var(334, 1)
 end
 
