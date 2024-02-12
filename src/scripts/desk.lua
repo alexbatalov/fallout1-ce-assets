@@ -1,23 +1,19 @@
 local fallout = require("fallout")
 
 local start
-local do_stuff
-local deskend
+local pickup_p_proc
 
 function start()
-    local v0 = 0
     if fallout.script_action() == 4 then
-        do_stuff()
+        pickup_p_proc()
     end
 end
 
-function do_stuff()
+function pickup_p_proc()
     fallout.display_msg(fallout.message_str(25, 100))
-end
-
-function deskend()
 end
 
 local exports = {}
 exports.start = start
+exports.pickup_p_proc = pickup_p_proc
 return exports
