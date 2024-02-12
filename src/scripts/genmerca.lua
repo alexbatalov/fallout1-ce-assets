@@ -15,46 +15,43 @@ local GenMercA03
 local GenMercA04
 local GenMercAEnd
 
-local hostile = 0
+local hostile = false
 local initialized = false
-local scared = 0
+local scared = false
 local name_index = 0
 local job_index = 0
 
 function start()
     if not initialized then
-        misc.set_team(fallout.self_obj(), 2)
-        misc.set_ai(fallout.self_obj(), 50)
+        local self_obj = fallout.self_obj()
+        misc.set_team(self_obj, 2)
+        misc.set_ai(self_obj, 50)
         name_index = 105 + fallout.global_var(335)
         job_index = 109 + fallout.global_var(335)
-        hostile = fallout.global_var(334)
+        hostile = fallout.global_var(334) ~= 0
         fallout.set_global_var(335, fallout.global_var(335) + 1)
         initialized = true
     end
-    if fallout.script_action() == 12 then
+
+    local script_action = fallout.script_action()
+    if script_action == 12 then
         critter_p_proc()
-    else
-        if fallout.script_action() == 18 then
-            destroy_p_proc()
-        else
-            if fallout.script_action() == 4 then
-                pickup_p_proc()
-            else
-                if fallout.script_action() == 11 then
-                    talk_p_proc()
-                end
-            end
-        end
+    elseif script_action == 18 then
+        destroy_p_proc()
+    elseif script_action == 4 then
+        pickup_p_proc()
+    elseif script_action == 11 then
+        talk_p_proc()
     end
 end
 
 function critter_p_proc()
-    if scared and (fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 8) then
+    if scared and fallout.tile_distance_objs(fallout.self_obj(), fallout.dude_obj()) < 8 then
         behaviour.flee_dude(1)
     else
         if hostile then
-            hostile = 0
-            scared = 1
+            hostile = false
+            scared = true
             fallout.attack(fallout.dude_obj(), 0, 1, 0, 0, 30000, 0, 0)
         end
     end
@@ -68,8 +65,8 @@ function destroy_p_proc()
 end
 
 function pickup_p_proc()
-    if scared == 0 then
-        hostile = 1
+    if not scared then
+        hostile = true
         fallout.set_global_var(334, 1)
     end
 end
@@ -114,12 +111,12 @@ function GenMercA02()
 end
 
 function GenMercA03()
-    scared = 1
+    scared = true
     fallout.gsay_message(752, 113, 51)
 end
 
 function GenMercA04()
-    if reputation.has_rep_berserker() or (fallout.global_var(158) > 2) or (fallout.global_var(155) < -20) then
+    if reputation.has_rep_berserker() or fallout.global_var(158) > 2 or fallout.global_var(155) < -20 then
         fallout.gsay_message(752, 117, 51)
     else
         if fallout.is_success(fallout.roll_vs_skill(fallout.dude_obj(), 14, 0)) then
